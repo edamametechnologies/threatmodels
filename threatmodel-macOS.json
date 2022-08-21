@@ -1,0 +1,597 @@
+{
+  "name": "threats macOS",
+  "extends": "none",
+  "date": "August 1st 2022",
+  "signature": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+  "metrics": [
+    {
+      "name": "edamame helper disabled",
+      "metrictype": "bool",
+      "dimension": "system services",
+      "severity": 5,
+      "scope": "generic",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "executable": "ps -ef | grep edamame_helper | grep -v grep > /dev/null || echo nohelper"
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "installer",
+        "elevation": "user",
+        "executable": "https://edamametech.sharepoint.com/:u:/s/dev/EVsBfplJ4ohOvJFKFRrNm4ABLebmTArVpXQR6GbF3fAC5A?e=Z5JeWD"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "executable": "/Library/Application Support/Edamame/Edamame-Helper/uninstall.sh"
+      }
+    },
+    {
+      "name": "WOL enabled",
+      "metrictype": "bool",
+      "dimension": "network",
+      "severity": 1,
+      "scope": "generic",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "executable": "systemsetup getwakeonnetworkaccess | grep -v Off"
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "executable": "systemsetup -setwakeonnetworkaccess off"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "executable": "systemsetup -setwakeonnetworkaccess on"
+      }
+    },
+    {
+      "name": "manual store application updates",
+      "metrictype": "bool",
+      "dimension": "applications",
+      "severity": 3,
+      "scope": "generic",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "executable": "defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled | grep -v 1"
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "executable": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool TRUE"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "helper",
+        "elevation": "admin",
+        "executable": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool FALSE"
+      }
+    },
+    {
+      "name": "local firewall disabled",
+      "metrictype": "bool",
+      "dimension": "network",
+      "severity": 2,
+      "scope": "generic",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "executable": "defaults read /Library/Preferences/com.apple.alf globalstate | grep 0"
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "executable": "defaults write /Library/Preferences/com.apple.alf globalstate -int 2"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "executable": "defaults write /Library/Preferences/com.apple.alf globalstate -int 0"
+      }
+    },
+    {
+      "name": "automatic login enabled",
+      "metrictype": "bool",
+      "dimension": "credentials",
+      "severity": 4,
+      "scope": "generic",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "user",
+        "executable": "defaults read /Library/Preferences/com.apple.loginwindow | grep autoLoginUser"
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "user",
+        "executable": "defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "youtube",
+        "elevation": "user",
+        "executable": "https://www.youtube.com/watch?v=G89On8uvQuQ"
+      }
+    },
+    {
+      "name": "remote login enabled",
+      "metrictype": "bool",
+      "dimension": "system services",
+      "severity": 4,
+      "scope": "generic",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "executable": "systemsetup -getremotelogin | grep On"
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "executable": "systemsetup -setremotelogin off"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "executable": "systemsetup -setremotelogin on"
+      }
+    },
+    {
+      "name": "remote desktop enabled",
+      "metrictype": "bool",
+      "dimension": "system services",
+      "severity": 4,
+      "scope": "generic",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "executable": "pgrep ARDAgent"
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "executable": "/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -configure -access -off"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "executable": "/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent"
+      }
+    },
+    {
+      "name": "file sharing enabled",
+      "metrictype": "bool",
+      "dimension": "system services",
+      "severity": 4,
+      "scope": "generic",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "executable": "pgrep smbd"
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "executable": "launchctl unload -w /System/Library/LaunchDaemons/com.apple.smbd.plist"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "executable": "launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist"
+      }
+    },
+    {
+      "name": "encrypted disk organizational recovery",
+      "metrictype": "bool",
+      "dimension": "system services",
+      "severity": 4,
+      "scope": "generic",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "executable": "fdesetup hasinstitutionalrecoverykey | grep true"
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "link",
+        "elevation": "user",
+        "executable": "https://derflounder.wordpress.com/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "link",
+        "elevation": "user",
+        "executable": "https://derflounder.wordpress.com/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/|FR|link|https://derflounder-wordpress-com.translate.goog/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+      }
+    },
+    {
+      "name": "encrypted disk disabled",
+      "metrictype": "bool",
+      "dimension": "system services",
+      "severity": 4,
+      "scope": "generic",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "executable": "fdesetup isactive | grep false"
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "link",
+        "elevation": "user",
+        "executable": "https://derflounder.wordpress.com/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/|FR|link|https://derflounder-wordpress-com.translate.goog/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "link",
+        "elevation": "user",
+        "executable": "https://derflounder.wordpress.com/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/|FR|link|https://derflounder-wordpress-com.translate.goog/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+      }
+    },
+    {
+      "name": "unsigned applications allowed",
+      "metrictype": "bool",
+      "dimension": "applications",
+      "severity": 4,
+      "scope": "generic",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "user",
+        "executable": "spctl --status | grep disabled"
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "user",
+        "executable": "spctl --global-enable"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "user",
+        "executable": "spctl --global-disable"
+      }
+    },
+    {
+      "name": "manual system updates",
+      "metrictype": "bool",
+      "dimension": "system integrity",
+      "severity": 4,
+      "scope": "generic",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "executable": "defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled | grep -v 1"
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "link",
+        "elevation": "user",
+        "executable": "https://community.jamf.com/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341|FR|link|https://community-jamf-com.translate.goog/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "link",
+        "elevation": "user",
+        "executable": "https://community.jamf.com/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341|FR|link|https://community-jamf-com.translate.goog/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+      }
+    },
+    {
+      "name": "response to ping enabled",
+      "metrictype": "bool",
+      "dimension": "network",
+      "severity": 3,
+      "scope": "generic",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "executable": "/usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode | grep disabled"
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "executable": "/usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "executable": "/usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode off"
+      }
+    },
+    {
+      "name": "too slow or disabled screensaver",
+      "metrictype": "bool",
+      "dimension": "credentials",
+      "severity": 3,
+      "scope": "generic",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "executable": "[[ $(defaults -currentHost read com.apple.screensaver idleTime) == \"0\" ]] && echo disabled"
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "youtube",
+        "elevation": "user",
+        "executable": "https://www.youtube.com/watch?v=VKnsfvZDs4U|FR|youtube|https://www.youtube.com/watch?v=X6iPwDtU8WI"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "youtube",
+        "elevation": "user",
+        "executable": "https://www.youtube.com/watch?v=VKnsfvZDs4U|FR|youtube|https://www.youtube.com/watch?v=X6iPwDtU8WI"
+      }
+    },
+    {
+      "name": "installed EPP",
+      "metrictype": "bool",
+      "dimension": "applications",
+      "severity": 4,
+      "scope": "generic",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "executable": "pgrep RTProtectionDaemon >/dev/null || echo noepp"
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "link",
+        "elevation": "user",
+        "executable": "https://www.malwarebytes.com/mac-download"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "executable": "https://support.malwarebytes.com/hc/en-us/articles/360039023473-Uninstall-and-reinstall-Malwarebytes-using-the-Malwarebytes-Support-Tool"
+      }
+    },
+    {
+      "name": "SIP disabled",
+      "metrictype": "bool",
+      "dimension": "system integrity",
+      "severity": 5,
+      "scope": "macOS",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "user",
+        "executable": "csrutil status | grep disabled"
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "youtube",
+        "elevation": "user",
+        "executable": "https://www.youtube.com/watch?v=Fx_1OPFzu88|FR|link|https://www.remosoftware.com/info/fr/comment-activer-ou-desactiver-la-protection-de-lintegrite-du-systeme-mac/"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "youtube",
+        "elevation": "user",
+        "executable": "https://www.youtube.com/watch?v=StAn0ZHiXTc"
+      }
+    },
+    {
+      "name": "guest account enabled",
+      "metrictype": "bool",
+      "dimension": "system services",
+      "severity": 2,
+      "scope": "macOS",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "user",
+        "executable": "defaults read /Library/Preferences/com.apple.loginwindow GuestEnabled | grep -v 0"
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "link",
+        "elevation": "user",
+        "executable": "https://www.youtube.com/watch?v=TB-sCAmRi5U"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "link",
+        "elevation": "user",
+        "executable": "https://www.youtube.com/watch?v=TB-sCAmRi5U"
+      }
+    },
+    {
+      "name": "root user enabled",
+      "metrictype": "bool",
+      "dimension": "credentials",
+      "severity": 3,
+      "scope": "macOS",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "user",
+        "executable": "dscl . -read /Users/root Password | grep \"\\*\\*\""
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "youtube",
+        "elevation": "user",
+        "executable": "https://www.youtube.com/watch?v=Sx8o8C1oqyc|FR|youtube|https://www.youtube.com/watch?v=Bw05ksrrD4g"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "link",
+        "elevation": "user",
+        "executable": "https://www.youtube.com/watch?v=Sx8o8C1oqyc|FR|youtube|https://www.youtube.com/watch?v=Bw05ksrrD4g"
+      }
+    },
+    {
+      "name": "unprotected system wide changes",
+      "metrictype": "bool",
+      "dimension": "system integrity",
+      "severity": 3,
+      "scope": "macOS",
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "user",
+        "executable": "security authorizationdb read system.preferences 2> /dev/null | grep -A1 shared | grep true"
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "link",
+        "elevation": "user",
+        "executable": "https://nwstrauss.com/posts/2021-01-28-managing-authorizationdb/"
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "link",
+        "elevation": "user",
+        "executable": "https://nwstrauss.com/posts/2021-01-28-managing-authorizationdb/"
+      }
+    }
+  ]
+}
