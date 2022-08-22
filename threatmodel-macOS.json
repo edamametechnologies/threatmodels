@@ -10,13 +10,26 @@
       "dimension": "system services",
       "severity": 5,
       "scope": "generic",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Edamame helper inactive",
+          "summary": "Edamame's Helper software is not running. You should set it up for maximum Security Score analysis."
+        },
+        {
+          "locale": "FR",
+          "title": "Edamame Helper inactif",
+          "summary": "Le logiciel d'assistance d'Edamame n'est pas en cours d'exécution. Vous devez le configurer pour une analyse maximale du score de sécurité."
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "executable": "ps -ef | grep edamame_helper | grep -v grep > /dev/null || echo nohelper"
+        "target": "ps -ef | grep edamame_helper | grep -v grep > /dev/null || echo nohelper",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
@@ -24,7 +37,8 @@
         "maxversion": 0,
         "class": "installer",
         "elevation": "user",
-        "executable": "https://edamametech.sharepoint.com/:u:/s/dev/EVsBfplJ4ohOvJFKFRrNm4ABLebmTArVpXQR6GbF3fAC5A?e=Z5JeWD"
+        "target": "https://edamametech.sharepoint.com/:u:/s/dev/EVsBfplJ4ohOvJFKFRrNm4ABLebmTArVpXQR6GbF3fAC5A?e=Z5JeWD",
+        "education": []
       },
       "rollback": {
         "system": "macOS",
@@ -32,7 +46,8 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "executable": "/Library/Application Support/Edamame/Edamame-Helper/uninstall.sh"
+        "target": "/Library/Application Support/Edamame/Edamame-Helper/uninstall.sh",
+        "education": []
       }
     },
     {
@@ -41,13 +56,26 @@
       "dimension": "network",
       "severity": 1,
       "scope": "generic",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Wake On LAN enabled",
+          "summary": "Wake on LAN is a feature that can wake up your computer automatically when something is attempting to connect to it. This is not something you need in most cases and it can allow an attacker to connect to your computer at any time."
+        },
+        {
+          "locale": "FR",
+          "title": "Wake On LAN activé",
+          "summary": "Wake on LAN est une fonctionnalité qui peut réveiller automatiquement votre ordinateur lorsque quelque chose tente de s'y connecter. Ce n'est pas quelque chose dont vous avez besoin dans la plupart des cas et cela peut permettre à un malfrat de se connecter à votre ordinateur à tout moment."
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "executable": "systemsetup getwakeonnetworkaccess | grep -v Off"
+        "target": "systemsetup getwakeonnetworkaccess | grep -v Off",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
@@ -55,7 +83,8 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "executable": "systemsetup -setwakeonnetworkaccess off"
+        "target": "systemsetup -setwakeonnetworkaccess off",
+        "education": []
       },
       "rollback": {
         "system": "macOS",
@@ -63,7 +92,8 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "executable": "systemsetup -setwakeonnetworkaccess on"
+        "target": "systemsetup -setwakeonnetworkaccess on",
+        "education": []
       }
     },
     {
@@ -72,13 +102,26 @@
       "dimension": "applications",
       "severity": 3,
       "scope": "generic",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Manual Appstore updates",
+          "summary": "Applications are constantly updated to fix potential security issues. It's your best interest to get updates as soon as you can through automatic updates."
+        },
+        {
+          "locale": "FR",
+          "title": "Mises à jour Appstore manuelles",
+          "summary": "Les applications sont constamment mises à jour pour résoudre les problèmes de sécurité potentiels. Il est dans votre intérêt d'obtenir les mises à jour dès que possible grâce aux mises à jour automatiques."
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "executable": "defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled | grep -v 1"
+        "target": "defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled | grep -v 1",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
@@ -86,7 +129,8 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "executable": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool TRUE"
+        "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool TRUE",
+        "education": []
       },
       "rollback": {
         "system": "macOS",
@@ -94,7 +138,8 @@
         "maxversion": 0,
         "class": "helper",
         "elevation": "admin",
-        "executable": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool FALSE"
+        "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool FALSE",
+        "education": []
       }
     },
     {
@@ -103,13 +148,26 @@
       "dimension": "network",
       "severity": 2,
       "scope": "generic",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Local firewall disabled",
+          "summary": "Your local firewall is disabled. This is fine in a trusted environment but dangerous if you happened to connect to public networks. You should turn it on by default."
+        },
+        {
+          "locale": "FR",
+          "title": "Pare-feu local désactivé",
+          "summary": "Votre pare-feu local est désactivé. C'est bien dans un environnement de confiance mais dangereux si vous vous connectez à des réseaux publics. Vous devriez l'activer par défaut."
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "executable": "defaults read /Library/Preferences/com.apple.alf globalstate | grep 0"
+        "target": "defaults read /Library/Preferences/com.apple.alf globalstate | grep 0",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
@@ -117,7 +175,8 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "executable": "defaults write /Library/Preferences/com.apple.alf globalstate -int 2"
+        "target": "defaults write /Library/Preferences/com.apple.alf globalstate -int 2",
+        "education": []
       },
       "rollback": {
         "system": "macOS",
@@ -125,7 +184,8 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "executable": "defaults write /Library/Preferences/com.apple.alf globalstate -int 0"
+        "target": "defaults write /Library/Preferences/com.apple.alf globalstate -int 0",
+        "education": []
       }
     },
     {
@@ -134,13 +194,26 @@
       "dimension": "credentials",
       "severity": 4,
       "scope": "generic",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Automatic login enabled",
+          "summary": "Automatic login could appear as very handy but in fact it's a major security threat: it allows anyone to access your data without knowing your password."
+        },
+        {
+          "locale": "FR",
+          "title": "Login automatique activé",
+          "summary": "La connexion automatique peut sembler très pratique mais en fait c'est une menace majeure pour la sécurité : elle permet à n'importe qui d'accéder à vos données sans connaître votre mot de passe."
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "executable": "defaults read /Library/Preferences/com.apple.loginwindow | grep autoLoginUser"
+        "target": "defaults read /Library/Preferences/com.apple.loginwindow | grep autoLoginUser",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
@@ -148,15 +221,23 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "executable": "defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser"
+        "target": "defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser",
+        "education": []
       },
       "rollback": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "youtube",
-        "elevation": "user",
-        "executable": "https://www.youtube.com/watch?v=G89On8uvQuQ"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=G89On8uvQuQ"
+          }
+        ]
       }
     },
     {
@@ -165,13 +246,26 @@
       "dimension": "system services",
       "severity": 4,
       "scope": "generic",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Remote login enabled",
+          "summary": "Remote login is enabled. This is not necessary unless your are an IT professional. This is unusual and dangerous for most users."
+        },
+        {
+          "locale": "FR",
+          "title": "Accès à distance activé",
+          "summary": "L'accès' à distance est activée. Ce n'est pas nécessaire sauf si vous êtes un professionnel de l'informatique. Ceci est inhabituel et dangereux pour la plupart des utilisateurs."
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "executable": "systemsetup -getremotelogin | grep On"
+        "target": "systemsetup -getremotelogin | grep On",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
@@ -179,7 +273,8 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "executable": "systemsetup -setremotelogin off"
+        "target": "systemsetup -setremotelogin off",
+        "education": []
       },
       "rollback": {
         "system": "macOS",
@@ -187,7 +282,8 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "executable": "systemsetup -setremotelogin on"
+        "target": "systemsetup -setremotelogin on",
+        "education": []
       }
     },
     {
@@ -196,13 +292,26 @@
       "dimension": "system services",
       "severity": 4,
       "scope": "generic",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Remote desktop enabled",
+          "summary": "Remote desktop is enabled. This is not necessary unless your are an IT professional. This is unusual and dangerous for most users."
+        },
+        {
+          "locale": "FR",
+          "title": "Bureau à distance activé",
+          "summary": "La connexion au bureau à distance est activée. Ce n'est pas nécessaire sauf si vous êtes un professionnel de l'informatique. Ceci est inhabituel et dangereux pour la plupart des utilisateurs."
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "executable": "pgrep ARDAgent"
+        "target": "pgrep ARDAgent",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
@@ -210,7 +319,8 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "executable": "/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -configure -access -off"
+        "target": "/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -configure -access -off",
+        "education": []
       },
       "rollback": {
         "system": "macOS",
@@ -218,7 +328,8 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "executable": "/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent"
+        "target": "/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent",
+        "education": []
       }
     },
     {
@@ -227,13 +338,26 @@
       "dimension": "system services",
       "severity": 4,
       "scope": "generic",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "File sharing enabled",
+          "summary": "File sharing is enabled. While this could be intentional we strongly recommend to turn it off. It's not that easy to configure and can expose your data to unwanted people."
+        },
+        {
+          "locale": "FR",
+          "title": "Partage de fichiers activé",
+          "summary": "Le partage de fichiers est activé. Bien que cela puisse être intentionnel, nous vous recommandons fortement de le désactiver. Ce n'est pas si facile à configurer et cela peut exposer vos données à des personnes indésirables."
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "executable": "pgrep smbd"
+        "target": "pgrep smbd",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
@@ -241,7 +365,8 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "executable": "launchctl unload -w /System/Library/LaunchDaemons/com.apple.smbd.plist"
+        "target": "launchctl unload -w /System/Library/LaunchDaemons/com.apple.smbd.plist",
+        "education": []
       },
       "rollback": {
         "system": "macOS",
@@ -249,7 +374,8 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "executable": "launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist"
+        "target": "launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist",
+        "education": []
       }
     },
     {
@@ -258,29 +384,66 @@
       "dimension": "system services",
       "severity": 4,
       "scope": "generic",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Corporate disk recovery key",
+          "summary": "It seems your computer hard disk has been encrypted by your employer. It means that they could potentially decrypt it if you give the computer back to them. You should suppress that possibility."
+        },
+        {
+          "locale": "FR",
+          "title": "Clé d'entreprise de récupération de disque",
+          "summary": "Il semble que le disque dur de votre ordinateur ait été crypté par votre employeur. Cela signifie qu'ils pourraient potentiellement le déchiffrer si vous leur rendez l'ordinateur. Vous devriez supprimer cette possibilité."
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "executable": "fdesetup hasinstitutionalrecoverykey | grep true"
+        "target": "fdesetup hasinstitutionalrecoverykey | grep true",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "link",
-        "elevation": "user",
-        "executable": "https://derflounder.wordpress.com/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://derflounder.wordpress.com/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/"
+          },
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://derflounder-wordpress-com.translate.goog/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+          }
+        ]
       },
       "rollback": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "link",
-        "elevation": "user",
-        "executable": "https://derflounder.wordpress.com/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/|FR|link|https://derflounder-wordpress-com.translate.goog/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://derflounder.wordpress.com/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/"
+          },
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://derflounder-wordpress-com.translate.goog/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+          }
+        ]
       }
     },
     {
@@ -289,29 +452,66 @@
       "dimension": "system services",
       "severity": 4,
       "scope": "generic",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Disk encryption disabled",
+          "summary": "Your main storage is not encrypted. While there is a little performance impact by enabling it, we really urge you to set it up. Without that anyone physically accessing your computer can access your data."
+        },
+        {
+          "locale": "FR",
+          "title": "Encryption du disque désactivée",
+          "summary": "Votre stockage principal n'est pas crypté. Bien qu'il y ait un petit impact sur les performances en l'activant, nous vous invitons vraiment à le configurer. Sans cela, toute personne accédant physiquement à votre ordinateur peut accéder à vos données."
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "executable": "fdesetup isactive | grep false"
+        "target": "fdesetup isactive | grep false",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "link",
-        "elevation": "user",
-        "executable": "https://derflounder.wordpress.com/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/|FR|link|https://derflounder-wordpress-com.translate.goog/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://derflounder.wordpress.com/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/"
+          },
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://derflounder-wordpress-com.translate.goog/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+          }
+        ]
       },
       "rollback": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "link",
-        "elevation": "user",
-        "executable": "https://derflounder.wordpress.com/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/|FR|link|https://derflounder-wordpress-com.translate.goog/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://derflounder.wordpress.com/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/"
+          },
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://derflounder-wordpress-com.translate.goog/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+          }
+        ]
       }
     },
     {
@@ -320,13 +520,26 @@
       "dimension": "applications",
       "severity": 4,
       "scope": "generic",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Unsigned applications allowed",
+          "summary": "Your computer has been setup to allow unsigned applications to run. This is unusual and dangerous. You should turn this off."
+        },
+        {
+          "locale": "FR",
+          "title": "Applications non signées autorisées",
+          "summary": "Votre ordinateur a été configuré pour autoriser l'exécution d'applications non signées. C'est inhabituel et dangereux. Vous devriez désactiver cette option."
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "executable": "spctl --status | grep disabled"
+        "target": "spctl --status | grep disabled",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
@@ -334,7 +547,8 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "executable": "spctl --global-enable"
+        "target": "spctl --global-enable",
+        "education": []
       },
       "rollback": {
         "system": "macOS",
@@ -342,7 +556,8 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "executable": "spctl --global-disable"
+        "target": "spctl --global-disable",
+        "education": []
       }
     },
     {
@@ -351,29 +566,66 @@
       "dimension": "system integrity",
       "severity": 4,
       "scope": "generic",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Manual system updates",
+          "summary": "System updates are manual. Your really should turn on automatic system updates to get the latest security fixes for your computer."
+        },
+        {
+          "locale": "FR",
+          "title": "Mises à jour système manuelles",
+          "summary": "Les mises à jour du système sont manuelles. Vous devriez vraiment activer les mises à jour automatiques du système pour obtenir les derniers correctifs de sécurité pour votre ordinateur."
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "executable": "defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled | grep -v 1"
+        "target": "defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled | grep -v 1",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "link",
-        "elevation": "user",
-        "executable": "https://community.jamf.com/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341|FR|link|https://community-jamf-com.translate.goog/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://community.jamf.com/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341"
+          },
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://community-jamf-com.translate.goog/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+          }
+        ]
       },
       "rollback": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "link",
-        "elevation": "user",
-        "executable": "https://community.jamf.com/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341|FR|link|https://community-jamf-com.translate.goog/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://community.jamf.com/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341"
+          },
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://community-jamf-com.translate.goog/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+          }
+        ]
       }
     },
     {
@@ -382,13 +634,26 @@
       "dimension": "network",
       "severity": 3,
       "scope": "generic",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Response to ping enabled",
+          "summary": "Your computer will respond if anything on the network is trying to check its presence. This can be very bad and allow anyone to check your presence and possibly attack your computer."
+        },
+        {
+          "locale": "FR",
+          "title": "Réponse au ping activée",
+          "summary": "Votre ordinateur répondra si quelque chose essaie de vérifier sa présence. Cela peut être très mauvais et permettre à quiconque de vérifier votre présence sur un réseau et éventuellement d'attaquer votre ordinateur...."
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "executable": "/usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode | grep disabled"
+        "target": "/usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode | grep disabled",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
@@ -396,7 +661,8 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "executable": "/usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on"
+        "target": "/usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on",
+        "education": []
       },
       "rollback": {
         "system": "macOS",
@@ -404,7 +670,8 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "executable": "/usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode off"
+        "target": "/usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode off",
+        "education": []
       }
     },
     {
@@ -413,29 +680,66 @@
       "dimension": "credentials",
       "severity": 3,
       "scope": "generic",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Screensaver disabled",
+          "summary": "Your computer doesn't have a screensaver enabled. It leaves it open for phsyical access by anyone. This is very dangerous!"
+        },
+        {
+          "locale": "FR",
+          "title": "Economiseur d'écran désactivé",
+          "summary": "Votre ordinateur n'a pas d'économiseur d'écran activé. Il le laisse ouvert à l'accès physique par n'importe qui. C'est très dangereux !"
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "executable": "[[ $(defaults -currentHost read com.apple.screensaver idleTime) == \"0\" ]] && echo disabled"
+        "target": "[[ $(defaults -currentHost read com.apple.screensaver idleTime) == \"0\" ]] && echo disabled",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "youtube",
-        "elevation": "user",
-        "executable": "https://www.youtube.com/watch?v=VKnsfvZDs4U|FR|youtube|https://www.youtube.com/watch?v=X6iPwDtU8WI"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=VKnsfvZDs4U"
+          },
+          {
+            "locale": "FR",
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=X6iPwDtU8WI"
+          }
+        ]
       },
       "rollback": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "youtube",
-        "elevation": "user",
-        "executable": "https://www.youtube.com/watch?v=VKnsfvZDs4U|FR|youtube|https://www.youtube.com/watch?v=X6iPwDtU8WI"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=VKnsfvZDs4U"
+          },
+          {
+            "locale": "FR",
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=X6iPwDtU8WI"
+          }
+        ]
       }
     },
     {
@@ -444,29 +748,56 @@
       "dimension": "applications",
       "severity": 4,
       "scope": "generic",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "No antivirus installed",
+          "summary": "You don't have any antivirus installed. We recommend you to install one."
+        },
+        {
+          "locale": "FR",
+          "title": "Pas d'antivirus installé",
+          "summary": "Vous n'avez pas d'antivirus installé. Nous vous recommandons d'en installer un."
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "executable": "pgrep RTProtectionDaemon >/dev/null || echo noepp"
+        "target": "pgrep RTProtectionDaemon >/dev/null || echo noepp",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "link",
-        "elevation": "user",
-        "executable": "https://www.malwarebytes.com/mac-download"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://www.malwarebytes.com/mac-download"
+          }
+        ]
       },
       "rollback": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "cli",
-        "elevation": "system",
-        "executable": "https://support.malwarebytes.com/hc/en-us/articles/360039023473-Uninstall-and-reinstall-Malwarebytes-using-the-Malwarebytes-Support-Tool"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://support.malwarebytes.com/hc/en-us/articles/360039023473-Uninstall-and-reinstall-Malwarebytes-using-the-Malwarebytes-Support-Tool"
+          }
+        ]
       }
     },
     {
@@ -475,29 +806,61 @@
       "dimension": "system integrity",
       "severity": 5,
       "scope": "macOS",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "System Integrity Protection disabled",
+          "summary": "System Integrity Protection is a great ability of macOS that prevents any software to change system files and components. To some extent it's a \\\"good enough\\\" antivirus for your Mac. Having it disabled is... unusual and dangerous. It should be enabled by default on your Mac. This content will explain a way to enable it again. Bear with me .. it's somewhat hard to achieve!"
+        },
+        {
+          "locale": "FR",
+          "title": "Protection d'intégrité système désactivée",
+          "summary": "La Protection de l'Intégrité du Système est une capacité clé de macOS qui empêche tous logiciels de modifier les fichiers et les composants du système. Dans une certaine mesure, c'est un antivirus \\\"assez bon\\\" pour votre Mac. Le désactiver est... inhabituel et dangereux. Il devrait être activé par défaut sur votre Mac. Ce contenu vous expliquera comment l'activer à nouveau. Soyez courageux... c'est un peu difficile à réaliser !"
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "executable": "csrutil status | grep disabled"
+        "target": "csrutil status | grep disabled",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "youtube",
-        "elevation": "user",
-        "executable": "https://www.youtube.com/watch?v=Fx_1OPFzu88|FR|link|https://www.remosoftware.com/info/fr/comment-activer-ou-desactiver-la-protection-de-lintegrite-du-systeme-mac/"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=Fx_1OPFzu88"
+          },
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://www.remosoftware.com/info/fr/comment-activer-ou-desactiver-la-protection-de-lintegrite-du-systeme-mac/"
+          }
+        ]
       },
       "rollback": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "youtube",
-        "elevation": "user",
-        "executable": "https://www.youtube.com/watch?v=StAn0ZHiXTc"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=StAn0ZHiXTc"
+          }
+        ]
       }
     },
     {
@@ -506,29 +869,62 @@
       "dimension": "system services",
       "severity": 2,
       "scope": "macOS",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Guest account enabled",
+          "summary": "Guest account is enabled. This is usually fine but it's not that easy to limit access to your data. You should disable it."
+        },
+        {
+          "locale": "FR",
+          "title": "Compte invité activé",
+          "summary": "Le compte invité est activé. C'est généralement bien, mais il n'est pas si facile de limiter l'accès à vos données. Vous devriez le désactiver."
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "executable": "defaults read /Library/Preferences/com.apple.loginwindow GuestEnabled | grep -v 0"
+        "target": "defaults read /Library/Preferences/com.apple.loginwindow GuestEnabled | grep -v 0",
+        "education": [
+          {
+            "locale": "",
+            "class": "",
+            "target": ""
+          }
+        ]
       },
       "remediation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "link",
-        "elevation": "user",
-        "executable": "https://www.youtube.com/watch?v=TB-sCAmRi5U"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=TB-sCAmRi5U"
+          }
+        ]
       },
       "rollback": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "link",
-        "elevation": "user",
-        "executable": "https://www.youtube.com/watch?v=TB-sCAmRi5U"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=TB-sCAmRi5U"
+          }
+        ]
       }
     },
     {
@@ -537,29 +933,66 @@
       "dimension": "credentials",
       "severity": 3,
       "scope": "macOS",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Root user enabled",
+          "summary": "A special system user has been configured on your computer. This is unusual and should be disabled immediately."
+        },
+        {
+          "locale": "FR",
+          "title": "Utilisateur root activé",
+          "summary": "Un utilisateur système spécial a été configuré sur votre ordinateur. Ceci est inhabituel et doit être désactivé immédiatement."
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "executable": "dscl . -read /Users/root Password | grep \"\\*\\*\""
+        "target": "dscl . -read /Users/root Password | grep \"\\*\\*\"",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "youtube",
-        "elevation": "user",
-        "executable": "https://www.youtube.com/watch?v=Sx8o8C1oqyc|FR|youtube|https://www.youtube.com/watch?v=Bw05ksrrD4g"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=Sx8o8C1oqyc"
+          },
+          {
+            "locale": "FR",
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=Bw05ksrrD4g"
+          }
+        ]
       },
       "rollback": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "link",
-        "elevation": "user",
-        "executable": "https://www.youtube.com/watch?v=Sx8o8C1oqyc|FR|youtube|https://www.youtube.com/watch?v=Bw05ksrrD4g"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=Sx8o8C1oqyc"
+          },
+          {
+            "locale": "FR",
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=Bw05ksrrD4g"
+          }
+        ]
       }
     },
     {
@@ -568,29 +1001,56 @@
       "dimension": "system integrity",
       "severity": 3,
       "scope": "macOS",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Unprotected system changes",
+          "summary": "Your computer system settings can be modified by any users. You should restrict it."
+        },
+        {
+          "locale": "FR",
+          "title": "Changement de paramètres système non protégés",
+          "summary": "Les paramètres de votre système informatique peuvent être modifiés par tous les utilisateurs. Vous devriez le restreindre."
+        }
+      ],
       "implementation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "executable": "security authorizationdb read system.preferences 2> /dev/null | grep -A1 shared | grep true"
+        "target": "security authorizationdb read system.preferences 2> /dev/null | grep -A1 shared | grep true",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "link",
-        "elevation": "user",
-        "executable": "https://nwstrauss.com/posts/2021-01-28-managing-authorizationdb/"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://nwstrauss.com/posts/2021-01-28-managing-authorizationdb/"
+          }
+        ]
       },
       "rollback": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "link",
-        "elevation": "user",
-        "executable": "https://nwstrauss.com/posts/2021-01-28-managing-authorizationdb/"
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://nwstrauss.com/posts/2021-01-28-managing-authorizationdb/"
+          }
+        ]
       }
     }
   ]
