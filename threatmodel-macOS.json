@@ -483,13 +483,13 @@
         "education": [
           {
             "locale": "EN",
-            "class": "link",
-            "target": "https://derflounder.wordpress.com/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/"
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=ETgLlx3Npqg"
           },
           {
             "locale": "FR",
-            "class": "link",
-            "target": "https://derflounder-wordpress-com.translate.goog/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=Ovr9nyIagTY"
           }
         ]
       },
@@ -504,12 +504,12 @@
           {
             "locale": "EN",
             "class": "link",
-            "target": "https://derflounder.wordpress.com/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/"
+            "target": "https://www.youtube.com/watch?v=ETgLlx3Npqg"
           },
           {
             "locale": "FR",
             "class": "link",
-            "target": "https://derflounder-wordpress-com.translate.goog/2019/07/03/managing-macos-mojaves-filevault-2-with-fdesetup/?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+            "target": "https://www.youtube.com/watch?v=Ovr9nyIagTY"
           }
         ]
       }
