@@ -2,7 +2,7 @@
   "name": "threat model macOS",
   "extends": "none",
   "date": "August 1st 2022",
-  "signature": "ba7816bf8f01cfea424140de5dae2123b00361a396177a9cb410ff61f20015ad",
+  "signature": "ba7816bf8f01cfea424140de5dae2153b00361a396177a9cb410ff61f20015ad",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -255,7 +255,7 @@
         {
           "locale": "FR",
           "title": "Accès à distance activé",
-          "summary": "L'accès' à distance est activée. Ce n'est pas nécessaire sauf si vous êtes un professionnel de l'informatique. Ceci est inhabituel et dangereux pour la plupart des utilisateurs."
+          "summary": "L'accès à distance est activée. Ce n'est pas nécessaire sauf si vous êtes un professionnel de l'informatique. Ceci est inhabituel et dangereux pour la plupart des utilisateurs."
         }
       ],
       "implementation": {
@@ -810,12 +810,12 @@
         {
           "locale": "EN",
           "title": "System Integrity Protection disabled",
-          "summary": "System Integrity Protection is a great ability of macOS that prevents any software to change system files and components. To some extent it's a \\\"good enough\\\" antivirus for your Mac. Having it disabled is... unusual and dangerous. It should be enabled by default on your Mac. This content will explain a way to enable it again. Bear with me .. it's somewhat hard to achieve!"
+          "summary": "System Integrity Protection is a great ability of macOS that prevents any software to change system files and components. To some extent it's a \"good enough\" antivirus for your Mac. Having it disabled is... unusual and dangerous. It should be enabled by default on your Mac. This content will explain a way to enable it again. Bear with me .. it's somewhat hard to achieve!"
         },
         {
           "locale": "FR",
           "title": "Protection d'intégrité système désactivée",
-          "summary": "La Protection de l'Intégrité du Système est une capacité clé de macOS qui empêche tous logiciels de modifier les fichiers et les composants du système. Dans une certaine mesure, c'est un antivirus \\\"assez bon\\\" pour votre Mac. Le désactiver est... inhabituel et dangereux. Il devrait être activé par défaut sur votre Mac. Ce contenu vous expliquera comment l'activer à nouveau. Soyez courageux... c'est un peu difficile à réaliser !"
+          "summary": "La Protection de l'Intégrité du Système est une capacité clé de macOS qui empêche tous logiciels de modifier les fichiers et les composants du système. Dans une certaine mesure, c'est un antivirus \"assez bon\" pour votre Mac. Le désactiver est... inhabituel et dangereux. Il devrait être activé par défaut sur votre Mac. Ce contenu vous expliquera comment l'activer à nouveau. Soyez courageux... c'est un peu difficile à réaliser !"
         }
       ],
       "implementation": {
