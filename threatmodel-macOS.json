@@ -128,7 +128,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "system",
         "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool TRUE",
         "education": []
       },
@@ -137,7 +137,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "helper",
-        "elevation": "admin",
+        "elevation": "system",
         "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool FALSE",
         "education": []
       }
@@ -174,7 +174,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "system",
         "target": "defaults write /Library/Preferences/com.apple.alf globalstate -int 2",
         "education": []
       },
@@ -183,7 +183,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "system",
         "target": "defaults write /Library/Preferences/com.apple.alf globalstate -int 0",
         "education": []
       }
@@ -220,7 +220,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "system",
         "target": "defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser",
         "education": []
       },
@@ -318,7 +318,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "system",
         "target": "/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -configure -access -off",
         "education": []
       },
@@ -327,7 +327,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "system",
         "target": "/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent",
         "education": []
       }
@@ -603,7 +603,7 @@
           {
             "locale": "FR",
             "class": "link",
-            "target": "https://community-jamf-com.translate.goog/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+            "target": "https://community.jamf.com/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341"
           }
         ]
       },
@@ -623,7 +623,7 @@
           {
             "locale": "FR",
             "class": "link",
-            "target": "https://community-jamf-com.translate.goog/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341?_x_tr_sl=auto&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp"
+            "target": "https://community.jamf.com/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341"
           }
         ]
       }
@@ -660,7 +660,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "system",
         "target": "/usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on",
         "education": []
       },
@@ -669,7 +669,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "system",
         "target": "/usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode off",
         "education": []
       }
