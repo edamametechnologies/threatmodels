@@ -136,7 +136,7 @@
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "helper",
+        "class": "cli",
         "elevation": "system",
         "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool FALSE",
         "education": []
