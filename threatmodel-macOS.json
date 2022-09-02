@@ -46,7 +46,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "/Library/Application Support/Edamame/Edamame-Helper/uninstall.sh",
+        "target": "/Library/Application\\ Support/Edamame/Edamame-Helper/uninstall.sh",
         "education": []
       }
     },
