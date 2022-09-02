@@ -858,7 +858,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "sysadminctl -screenlock status | grep off",
+        "target": "sysadminctl -screenLock status | grep off",
         "education": []
       },
       "remediation": {
