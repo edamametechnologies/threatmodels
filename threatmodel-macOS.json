@@ -1047,7 +1047,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "sysadminctl -guestAccount status",
+        "target": "sysadminctl -guestAccount status | grep enabled",
         "education": []
       },
       "remediation": {
