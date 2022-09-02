@@ -812,7 +812,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "[[ $(defaults -currentHost read com.apple.screensaver idleTime) == \"0\" ]] && echo disabled",
+        "target": "sysadminctl -screenlock status | grep off",
         "education": []
       },
       "remediation": {
@@ -1001,44 +1001,26 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "defaults read /Library/Preferences/com.apple.loginwindow GuestEnabled | grep -v 0",
-        "education": [
-          {
-            "locale": "",
-            "class": "",
-            "target": ""
-          }
-        ]
+        "target": "sysadminctl -guestAccount status",
+        "education": []
       },
       "remediation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "",
-        "elevation": "",
-        "target": "",
-        "education": [
-          {
-            "locale": "EN",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=TB-sCAmRi5U"
-          }
-        ]
+        "class": "cli",
+        "elevation": "system",
+        "target": "sysadminctl -guestAccount off",
+        "education": []
       },
       "rollback": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "",
-        "elevation": "",
-        "target": "",
-        "education": [
-          {
-            "locale": "EN",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=TB-sCAmRi5U"
-          }
-        ]
+        "class": "cli",
+        "elevation": "system",
+        "target": "sysadminctl -guestAccount on",
+        "education": []
       }
     },
     {
