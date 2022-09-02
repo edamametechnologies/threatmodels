@@ -51,6 +51,120 @@
       }
     },
     {
+      "name": "MDM profiles",
+      "metrictype": "bool",
+      "dimension": "system integrity",
+      "severity": 5,
+      "scope": "generic",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "MDM profiles installed",
+          "summary": "You have one or more Mobile Device Management (MDM) profiles installed on your computer. This means that your computer is or can be remotely administered by a 3rd party. If this is your personal computer, this is a grave threat and the profiles should be removed."
+        },
+        {
+          "locale": "FR",
+          "title": "Profils MDM installés",
+          "summary": "Un ou plusieurs profils de gestion des appareils mobiles (MDM) sont installés sur votre ordinateur. Cela signifie que votre ordinateur est, ou peut être, administré à distance par un tiers. S'il s'agit de votre ordinateur personnel, il s'agit d'une grave menace et les profils doivent être supprimés."
+        }
+      ],
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "target": "profiles list | grep profileIdentifier",
+        "education": []
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "target": "profiles remove -all",
+        "education": []
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://en.wikipedia.org/wiki/Mobile_device_management"
+          },
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://fr.wikipedia.org/wiki/Mobile_device_management"
+          }
+        ]
+      }
+    },
+    {
+      "name": "JAMF remote admin",
+      "metrictype": "bool",
+      "dimension": "system integrity",
+      "severity": 5,
+      "scope": "generic",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "JAMF remote administration enabled",
+          "summary": "Your computer is or can be remotely administered by a 3rd party using the JAMF MDM framework. If this is your personal computer, this is a grave threat and JAMF should be removed."
+        },
+        {
+          "locale": "FR",
+          "title": "Administration à distance JAMF installée",
+          "summary": "Votre ordinateur est, ou peut être, administré à distance par un tiers à l'aide du framework JAMF MDM. S'il s'agit de votre ordinateur personnel, il s'agit d'une grave menace et JAMF doit être supprimé."
+        }
+      ],
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "target": "pgrep jamf",
+        "education": []
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "target": "jamf removeFramework",
+        "education": []
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://www.jamf.com/en"
+          },
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://www.jamf.com/fr"
+          }
+        ]
+      }
+    },
+    {
       "name": "WOL enabled",
       "metrictype": "bool",
       "dimension": "network",
