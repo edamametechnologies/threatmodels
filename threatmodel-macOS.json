@@ -112,7 +112,7 @@
       "metrictype": "bool",
       "dimension": "system integrity",
       "severity": 5,
-      "scope": "generic",
+      "scope": "macOS",
       "description": [
         {
           "locale": "EN",
