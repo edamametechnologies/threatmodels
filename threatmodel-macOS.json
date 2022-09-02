@@ -2,7 +2,7 @@
   "name": "threat model macOS",
   "extends": "none",
   "date": "August 1st 2022",
-  "signature": "ba7816bf8f01cfea484140de5dae2153b00361a396177a1cb410ff61f20015ad",
+  "signature": "ba7816bf8f01cfea484140de5dae2183b00361a396177a1cb410ff61f20015ad",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -387,7 +387,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "systemsetup -setremotelogin off",
+        "target": "echo yes | systemsetup -setremotelogin off",
         "education": []
       },
       "rollback": {
@@ -489,6 +489,52 @@
         "class": "cli",
         "elevation": "system",
         "target": "launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist; defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server.plist EnabledServices -array disk",
+        "education": []
+      }
+    },
+    {
+      "name": "remote events enabled",
+      "metrictype": "bool",
+      "dimension": "system services",
+      "severity": 4,
+      "scope": "macOS",
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Remote events enabled",
+          "summary": "Remote events are enabled. While this could be intentional we strongly recommend to turn it off. It's unnecessary for most users and has been a target for exploit in the recent past."
+        },
+        {
+          "locale": "FR",
+          "title": "Événements à distance activés",
+          "summary": "Les événements à distance sont activés. Bien que cela puisse être intentionnel, nous vous recommandons fortement de les désactiver. C'est inutile pour la plupart des utilisateurs et cela a été une cible d'attaques dans un passé récent."
+        }
+      ],
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "target": "launchctl print-disabled system | grep com.apple.AEServer | grep false",
+        "education": []
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "target": "systemsetup -setremoteappleevents off",
+        "education": []
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "target": "systemsetup -setremoteappleevents on",
         "education": []
       }
     },
@@ -894,7 +940,7 @@
           {
             "locale": "EN",
             "class": "link",
-            "target": "https://www.malwarebytes.com/mac-download"
+            "target": "https://www.malwarebytes.com/"
           }
         ]
       },
