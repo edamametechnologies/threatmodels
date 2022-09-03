@@ -377,7 +377,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "system",
+        "elevation": "admin",
         "target": "systemsetup -getremotelogin | grep On",
         "education": []
       },
@@ -395,7 +395,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "system",
+        "elevation": "fulldisk",
         "target": "systemsetup -setremotelogin on",
         "education": []
       }
@@ -524,7 +524,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "system",
+        "elevation": "fulldisk",
         "target": "systemsetup -setremoteappleevents off",
         "education": []
       },
@@ -533,7 +533,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "system",
+        "elevation": "fulldisk",
         "target": "systemsetup -setremoteappleevents on",
         "education": []
       }
