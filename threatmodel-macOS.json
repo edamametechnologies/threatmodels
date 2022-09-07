@@ -386,7 +386,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "system",
+        "elevation": "fulldisk",
         "target": "echo yes | systemsetup -setremotelogin off",
         "education": []
       },
