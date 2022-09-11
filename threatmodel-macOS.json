@@ -364,7 +364,7 @@
     {
       "name": "remote login enabled",
       "metrictype": "bool",
-      "dimension": "system services",
+      "dimension": "system integrity",
       "severity": 4,
       "scope": "generic",
       "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_ssh_disable"],
@@ -411,7 +411,7 @@
     {
       "name": "remote desktop enabled",
       "metrictype": "bool",
-      "dimension": "system services",
+      "dimension": "system integrity",
       "severity": 4,
       "scope": "generic",
       "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_remote_management_disable"],
@@ -505,7 +505,7 @@
     {
       "name": "remote events enabled",
       "metrictype": "bool",
-      "dimension": "system services",
+      "dimension": "system integrity",
       "severity": 4,
       "scope": "macOS",
       "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_rae_disable"],
