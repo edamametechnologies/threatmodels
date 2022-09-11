@@ -1,8 +1,8 @@
 {
   "name": "threat model macOS",
   "extends": "none",
-  "date": "August 1st 2022",
-  "signature": "ba7816bf8f01cfea484140de5dae2183b00361a396177a1cb410ff61f20015ad",
+  "date": "September 10th 2022",
+  "signature": "ba7816bf8f01cfea484140de5dae2183b00361a396177a0cb410ff61f20015ad",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -173,7 +173,7 @@
       "dimension": "network",
       "severity": 1,
       "scope": "generic",
-      "tags": [],
+      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_wake_network_access_disable"],
       "description": [
         {
           "locale": "EN",
@@ -220,7 +220,7 @@
       "dimension": "applications",
       "severity": 3,
       "scope": "generic",
-      "tags": [],
+      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_software_update_app_update_enforce"],
       "description": [
         {
           "locale": "EN",
@@ -267,7 +267,7 @@
       "dimension": "network",
       "severity": 2,
       "scope": "generic",
-      "tags": [],
+      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_firewall_enable"],
       "description": [
         {
           "locale": "EN",
@@ -314,7 +314,7 @@
       "dimension": "credentials",
       "severity": 4,
       "scope": "generic",
-      "tags": [],
+      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_automatic_login_disable"],
       "description": [
         {
           "locale": "EN",
@@ -367,7 +367,7 @@
       "dimension": "system services",
       "severity": 4,
       "scope": "generic",
-      "tags": [],
+      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_ssh_disable"],
       "description": [
         {
           "locale": "EN",
@@ -414,7 +414,7 @@
       "dimension": "system services",
       "severity": 4,
       "scope": "generic",
-      "tags": [],
+      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_remote_management_disable"],
       "description": [
         {
           "locale": "EN",
@@ -461,7 +461,7 @@
       "dimension": "system services",
       "severity": 4,
       "scope": "generic",
-      "tags": [],
+      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_smbd_disable"],
       "description": [
         {
           "locale": "EN",
@@ -508,7 +508,7 @@
       "dimension": "system services",
       "severity": 4,
       "scope": "macOS",
-      "tags": [],
+      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_rae_disable"],
       "description": [
         {
           "locale": "EN",
@@ -552,7 +552,7 @@
     {
       "name": "encrypted disk organizational recovery",
       "metrictype": "bool",
-      "dimension": "system services",
+      "dimension": "system integrity",
       "severity": 4,
       "scope": "generic",
       "tags": [],
@@ -624,7 +624,7 @@
       "dimension": "system services",
       "severity": 4,
       "scope": "generic",
-      "tags": [],
+      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_filevault_enforce"],
       "description": [
         {
           "locale": "EN",
@@ -693,7 +693,7 @@
       "dimension": "applications",
       "severity": 4,
       "scope": "generic",
-      "tags": [],
+      "tags": ["CIS Benchmark Level 1", "macos_security/os_gatekeeper_enable"],
       "description": [
         {
           "locale": "EN",
@@ -740,7 +740,7 @@
       "dimension": "system integrity",
       "severity": 4,
       "scope": "generic",
-      "tags": [],
+      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_install_macos_updates_enforce"],
       "description": [
         {
           "locale": "EN",
@@ -809,7 +809,7 @@
       "dimension": "network",
       "severity": 3,
       "scope": "generic",
-      "tags": [],
+      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_firewall_stealth_mode_enable"],
       "description": [
         {
           "locale": "EN",
@@ -856,7 +856,7 @@
       "dimension": "credentials",
       "severity": 3,
       "scope": "generic",
-      "tags": [],
+      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_screensaver_ask_for_password_delay_enforce"],
       "description": [
         {
           "locale": "EN",
@@ -984,7 +984,7 @@
       "dimension": "system integrity",
       "severity": 5,
       "scope": "macOS",
-      "tags": [],
+      "tags": ["CIS Benchmark Level 1", "macos_security/os_sip_enable"],
       "description": [
         {
           "locale": "EN",
@@ -1048,7 +1048,7 @@
       "dimension": "system services",
       "severity": 2,
       "scope": "macOS",
-      "tags": [],
+      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_guest_account_disable"],
       "description": [
         {
           "locale": "EN",
@@ -1092,7 +1092,7 @@
     {
       "name": "root user enabled",
       "metrictype": "bool",
-      "dimension": "credentials",
+      "dimension": "system integrity",
       "severity": 3,
       "scope": "macOS",
       "tags": [],
