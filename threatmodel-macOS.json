@@ -10,6 +10,7 @@
       "dimension": "system services",
       "severity": 5,
       "scope": "generic",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -56,6 +57,7 @@
       "dimension": "system integrity",
       "severity": 5,
       "scope": "generic",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -113,6 +115,7 @@
       "dimension": "system integrity",
       "severity": 5,
       "scope": "macOS",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -170,6 +173,7 @@
       "dimension": "network",
       "severity": 1,
       "scope": "generic",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -216,6 +220,7 @@
       "dimension": "applications",
       "severity": 3,
       "scope": "generic",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -262,6 +267,7 @@
       "dimension": "network",
       "severity": 2,
       "scope": "generic",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -308,6 +314,7 @@
       "dimension": "credentials",
       "severity": 4,
       "scope": "generic",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -360,6 +367,7 @@
       "dimension": "system services",
       "severity": 4,
       "scope": "generic",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -406,6 +414,7 @@
       "dimension": "system services",
       "severity": 4,
       "scope": "generic",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -452,6 +461,7 @@
       "dimension": "system services",
       "severity": 4,
       "scope": "generic",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -498,6 +508,7 @@
       "dimension": "system services",
       "severity": 4,
       "scope": "macOS",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -544,6 +555,7 @@
       "dimension": "system services",
       "severity": 4,
       "scope": "generic",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -612,6 +624,7 @@
       "dimension": "system services",
       "severity": 4,
       "scope": "generic",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -680,6 +693,7 @@
       "dimension": "applications",
       "severity": 4,
       "scope": "generic",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -726,6 +740,7 @@
       "dimension": "system integrity",
       "severity": 4,
       "scope": "generic",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -794,6 +809,7 @@
       "dimension": "network",
       "severity": 3,
       "scope": "generic",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -840,6 +856,7 @@
       "dimension": "credentials",
       "severity": 3,
       "scope": "generic",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -908,6 +925,7 @@
       "dimension": "applications",
       "severity": 4,
       "scope": "generic",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -966,6 +984,7 @@
       "dimension": "system integrity",
       "severity": 5,
       "scope": "macOS",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -1029,6 +1048,7 @@
       "dimension": "system services",
       "severity": 2,
       "scope": "macOS",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -1075,6 +1095,7 @@
       "dimension": "credentials",
       "severity": 3,
       "scope": "macOS",
+      "tags": [],
       "description": [
         {
           "locale": "EN",
@@ -1143,6 +1164,7 @@
       "dimension": "system integrity",
       "severity": 3,
       "scope": "macOS",
+      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_system_wide_preferences_configure", "CCE-91079-4"],
       "description": [
         {
           "locale": "EN",
@@ -1170,7 +1192,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "security authorizationdb read system.preferences > /tmp/system.preferences.plist; defaults write /tmp/system.preferences.plist shared -bool false; security authorizationdb write system.preferences < /tmp/system.preferences.plist",
+        "target": "security authorizationdb read system.preferences > /tmp/system.preferences.plist; /usr/libexec/PlistBuddy -c \"Set :shared false\" /tmp/system.preferences.plist; security authorizationdb write system.preferences < /tmp/system.preferences.plist",
         "education": []
       },
       "rollback": {
@@ -1179,7 +1201,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "security authorizationdb read system.preferences > /tmp/system.preferences.plist; defaults write /tmp/system.preferences.plist shared -bool true; security authorizationdb write system.preferences < /tmp/system.preferences.plist",
+        "target": "security authorizationdb read system.preferences > /tmp/system.preferences.plist; /usr/libexec/PlistBuddy -c \"Set :shared true\" /tmp/system.preferences.plist; security authorizationdb write system.preferences < /tmp/system.preferences.plist",
         "education": []
       }
     }
