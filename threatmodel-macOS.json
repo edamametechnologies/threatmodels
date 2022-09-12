@@ -759,48 +759,26 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "softwareupdate --schedule | grep off",
+        "target": "defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates 2>&1 | grep -v 1",
         "education": []
       },
       "remediation": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "",
-        "elevation": "",
-        "target": "",
-        "education": [
-          {
-            "locale": "EN",
-            "class": "link",
-            "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool true; softwareupdate --schedule on"
-          },
-          {
-            "locale": "FR",
-            "class": "link",
-            "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool false; softwareupdate --schedule off"
-          }
-        ]
+        "class": "cli",
+        "elevation": "system",
+        "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool true; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool true; defaults write /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall -bool true; defaults write /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall -bool true; softwareupdate --schedule on",
+        "education": []
       },
       "rollback": {
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "",
-        "elevation": "",
-        "target": "",
-        "education": [
-          {
-            "locale": "EN",
-            "class": "link",
-            "target": "https://community.jamf.com/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341"
-          },
-          {
-            "locale": "FR",
-            "class": "link",
-            "target": "https://community.jamf.com/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341"
-          }
-        ]
+        "class": "cli",
+        "elevation": "system",
+        "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool off; defaults write /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall -bool false; softwareupdate --schedule off",
+        "education": []
       }
     },
     {
