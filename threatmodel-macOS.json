@@ -2,7 +2,7 @@
   "name": "threat model macOS",
   "extends": "none",
   "date": "September 10th 2022",
-  "signature": "ba7816bf8f01cfea484140de5dae2183b00361a396177a0cb410ff61f20015ad",
+  "signature": "ba7816bf8f01cfea484940de5dae2183b00361a396177a0cb410ff61f20015ad",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -15,12 +15,12 @@
         {
           "locale": "EN",
           "title": "Edamame helper inactive",
-          "summary": "Edamame's Helper software is not running. You should set it up for maximum Security Score analysis."
+          "summary": "Edamame's Helper software is not running or requires an update. It's required for maximum Security Score analysis."
         },
         {
           "locale": "FR",
           "title": "Edamame Helper inactif",
-          "summary": "Le logiciel d'assistance d'Edamame n'est pas en cours d'exécution. Vous devez le configurer pour une analyse maximale du score de sécurité."
+          "summary": "Le logiciel d'assistance d'Edamame n'est pas en cours d'exécution ou a besoin d'être mis à jour. Il est requis pour une analyse complète du score de sécurité."
         }
       ],
       "implementation": {
@@ -239,7 +239,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled | grep -v 1",
+        "target": "defaults read /Library/Preferences/com.apple.commerce.plist AutoUpdate 2>&1 | grep -v 1",
         "education": []
       },
       "remediation": {
@@ -248,7 +248,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool TRUE",
+        "target": "defaults write /Library/Preferences/com.apple.commerce.plist AutoUpdate -bool true; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallAppUpdates -bool true",
         "education": []
       },
       "rollback": {
@@ -257,7 +257,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool FALSE",
+        "target": "defaults write /Library/Preferences/com.apple.commerce.plist AutoUpdate -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallAppUpdates -bool false",
         "education": []
       }
     },
@@ -740,7 +740,7 @@
       "dimension": "system integrity",
       "severity": 4,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_install_macos_updates_enforce"],
+      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_install_macos_updates_enforce", "macos_security/sysprefs_software_update_download_enforce"],
       "description": [
         {
           "locale": "EN",
@@ -759,7 +759,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled | grep -v 1",
+        "target": "softwareupdate --schedule | grep off",
         "education": []
       },
       "remediation": {
@@ -773,12 +773,12 @@
           {
             "locale": "EN",
             "class": "link",
-            "target": "https://community.jamf.com/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341"
+            "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool true; softwareupdate --schedule on"
           },
           {
             "locale": "FR",
             "class": "link",
-            "target": "https://community.jamf.com/t5/jamf-pro/disable-macos-from-auto-updating/td-p/218341"
+            "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool false; softwareupdate --schedule off"
           }
         ]
       },
