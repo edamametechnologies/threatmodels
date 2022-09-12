@@ -2,7 +2,7 @@
   "name": "threat model macOS",
   "extends": "none",
   "date": "September 12th 2022",
-  "signature": "ba7816bf8f01cfda484940de5dae2183b00361a396177a0ce410ff91f20015ad",
+  "signature": "ba7816bf8f01cfda484940de5dae2183b00361a396177a0ce410fe91f20015ad",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -839,12 +839,12 @@
         {
           "locale": "EN",
           "title": "Screensaver disabled",
-          "summary": "Your computer doesn't have a screensaver enabled. It leaves it open for phsyical access by anyone. This is very dangerous!"
+          "summary": "Your computer doesn't have a screensaver enabled with a password. It leaves it open for phsyical access by anyone. This is very dangerous!"
         },
         {
           "locale": "FR",
           "title": "Economiseur d'écran désactivé",
-          "summary": "Votre ordinateur n'a pas d'économiseur d'écran activé. Il le laisse ouvert à l'accès physique par n'importe qui. C'est très dangereux !"
+          "summary": "Votre ordinateur n'a pas d'économiseur d'écran activé avec un mot de passe. Il le laisse ouvert à l'accès physique par n'importe qui. C'est très dangereux !"
         }
       ],
       "implementation": {
