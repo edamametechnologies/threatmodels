@@ -2,7 +2,7 @@
   "name": "threat model macOS",
   "extends": "none",
   "date": "September 12th 2022",
-  "signature": "ba7816bf8f01cfda484940de5dae2184b00361a606577a0ce410fe91f20015ad",
+  "signature": "ba7816bf8f01cfda484940de5dae2184b00361a606577a0ce410fe91f20013ad",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -829,7 +829,7 @@
       }
     },
     {
-      "name": "too slow or disabled screensaver",
+      "name": "too slow or disabled screensaver lock",
       "metrictype": "bool",
       "dimension": "credentials",
       "severity": 3,
@@ -838,12 +838,12 @@
       "description": [
         {
           "locale": "EN",
-          "title": "Screensaver disabled",
+          "title": "Screen lock disabled",
           "summary": "Your computer doesn't have a screensaver enabled with a password. It leaves it open for phsyical access by anyone. This is very dangerous!"
         },
         {
           "locale": "FR",
-          "title": "Economiseur d'écran désactivé",
+          "title": "Ecran protégé désactivé",
           "summary": "Votre ordinateur n'a pas d'économiseur d'écran activé avec un mot de passe. Il le laisse ouvert à l'accès physique par n'importe qui. C'est très dangereux !"
         }
       ],
@@ -937,6 +937,11 @@
             "locale": "EN",
             "class": "link",
             "target": "https://www.malwarebytes.com/"
+          },
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://www.malwarebytes.com/"
           }
         ]
       },
@@ -950,6 +955,11 @@
         "education": [
           {
             "locale": "EN",
+            "class": "link",
+            "target": "https://support.malwarebytes.com/hc/en-us/articles/360039023473-Uninstall-and-reinstall-Malwarebytes-using-the-Malwarebytes-Support-Tool"
+          },
+          {
+            "locale": "FR",
             "class": "link",
             "target": "https://support.malwarebytes.com/hc/en-us/articles/360039023473-Uninstall-and-reinstall-Malwarebytes-using-the-Malwarebytes-Support-Tool"
           }
