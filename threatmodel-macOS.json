@@ -1,8 +1,8 @@
 {
   "name": "threat model macOS",
   "extends": "none",
-  "date": "September 12th 2022",
-  "signature": "ba7816bf8f01cfda484940de5dae2184b00361a606577a0ce410fe91f20013ad",
+  "date": "September 20th 2022",
+  "signature": "ba7816bf8f01cfda484940de5dae2184b00161a606577a0ce410fe91f20013ad",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -1152,7 +1152,7 @@
       "dimension": "system integrity",
       "severity": 3,
       "scope": "macOS",
-      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_system_wide_preferences_configure", "CCE-91079-4"],
+      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_system_wide_preferences_configure"],
       "description": [
         {
           "locale": "EN",
