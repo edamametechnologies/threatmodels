@@ -2,17 +2,19 @@ from mdutils.mdutils import MdUtils
 import json
 
 
-def print_action(loc, elevation, target):
+def print_action(loc, elevation, target, osName, osVersion):
 
+    systemHeader = "Tested for"
     actionHeader = "Action"
     elevationHeader = "Elevation"
     targetHeader = "Script"
     action = "Command line"
     if loc == "FR":
+        systemHeader = "Testé pour"
         action = "Ligne de commande"
 
     mdFile.new_line()
-    mdFile.new_table(columns=3, rows=2, text=[actionHeader, elevationHeader, targetHeader, action, elevation, target], text_align='left')
+    mdFile.new_table(columns=4, rows=2, text=[systemHeader, actionHeader, elevationHeader, targetHeader, osName + " " + str(osVersion), action, elevation, target], text_align='left')
 
 source = 'threatmodel-macOS.json'
 for loc in ("EN", "FR"):
@@ -47,11 +49,11 @@ for loc in ("EN", "FR"):
                 break
 
         mdFile.new_header(level=2, title=implemationHeader)
-        print_action(loc, metric["implementation"]["elevation"], metric["implementation"]["target"])
+        print_action(loc, metric["implementation"]["elevation"], metric["implementation"]["target"], metric["implementation"]["system"], metric["implementation"]["minversion"])
 
         mdFile.new_header(level=2, title=rollbackHeader)
         if metric["remediation"]["target"] != "":
-            print_action(loc, metric["remediation"]["elevation"], metric["remediation"]["target"])
+            print_action(loc, metric["remediation"]["elevation"], metric["remediation"]["target"], metric["remediation"]["system"], metric["remediation"]["minversion"])
         else:
             for localized in metric["remediation"]["education"]:
                 if localized["locale"] == loc:
@@ -60,7 +62,7 @@ for loc in ("EN", "FR"):
 
         mdFile.new_header(level=2, title=remedediationHeader)
         if metric["rollback"]["target"] != "":
-            print_action(loc, metric["rollback"]["elevation"], metric["rollback"]["target"])
+            print_action(loc, metric["rollback"]["elevation"], metric["rollback"]["target"], metric["rollback"]["system"], metric["rollback"]["minversion"])
         else:
             for localized in metric["rollback"]["education"]:
                 if localized["locale"] == loc:
