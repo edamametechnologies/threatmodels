@@ -27,6 +27,7 @@ for loc in ("EN", "FR"):
 
         threatHeader = "Threat"
         dimensionHeader = "Dimension"
+        severityHeader = "Severity"
         tagsHeader = "Tags"
         implemationHeader = "Implementation"
         remedediationHeader= "Remediation"
@@ -34,6 +35,7 @@ for loc in ("EN", "FR"):
         educationHeader = "Education"
         if loc == "FR":
             threatHeader = "Menace"
+            severityHeader = "Sévérité"
             implemationHeader = "Implémentation"
             remedediationHeader = "Remédiation"
             rollbackHeader = "Retour en arrière"
@@ -42,7 +44,7 @@ for loc in ("EN", "FR"):
             if localized["locale"] == loc:
                 mdFile.new_header(level=1, title=localized['title'])
                 mdFile.new_header(level=2, title=threatHeader)
-                mdFile.new_paragraph(dimensionHeader + " : " + metric["dimension"], bold_italics_code='b')
+                mdFile.new_paragraph(dimensionHeader + " : " + metric["dimension"] + " / " + severityHeader + " : " + str(metric["severity"]), bold_italics_code='b')
                 if len(metric["tags"]):
                     mdFile.new_paragraph(tagsHeader + " : " + ", ".join(metric["tags"]), bold_italics_code='i')
                 mdFile.new_paragraph(localized['summary'])
