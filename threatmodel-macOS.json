@@ -1,7 +1,7 @@
 {
   "name": "threat model macOS",
   "extends": "none",
-  "date": "September 20th 2022",
+  "date": "March 6th 2023",
   "signature": "ba7816bf8f01cfda484940de5dae2184c10161a606577a0ce410fe91f20013ad",
   "metrics": [
     {
