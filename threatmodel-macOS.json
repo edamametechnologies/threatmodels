@@ -2,7 +2,7 @@
   "name": "threat model macOS",
   "extends": "none",
   "date": "September 20th 2022",
-  "signature": "ba7816bf8f01cfda484940de5dae2184b00161a606577a0ce410fe91f20013ad",
+  "signature": "ba7816bf8f01cfda484940de5dae2184c10161a606577a0ce410fe91f20013ad",
   "metrics": [
     {
       "name": "edamame helper disabled",
