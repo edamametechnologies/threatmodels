@@ -173,7 +173,10 @@
       "dimension": "network",
       "severity": 1,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_wake_network_access_disable"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "macos_security/sysprefs_wake_network_access_disable"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -220,7 +223,10 @@
       "dimension": "applications",
       "severity": 3,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_software_update_app_update_enforce"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "macos_security/sysprefs_software_update_app_update_enforce"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -267,7 +273,10 @@
       "dimension": "network",
       "severity": 2,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_firewall_enable"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "macos_security/sysprefs_firewall_enable"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -314,7 +323,10 @@
       "dimension": "credentials",
       "severity": 4,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_automatic_login_disable"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "macos_security/sysprefs_automatic_login_disable"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -414,7 +426,10 @@
       "dimension": "system integrity",
       "severity": 4,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_remote_management_disable"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "macos_security/sysprefs_remote_management_disable"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -624,7 +639,10 @@
       "dimension": "system services",
       "severity": 4,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_filevault_enforce"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "macos_security/sysprefs_filevault_enforce"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -740,7 +758,11 @@
       "dimension": "system integrity",
       "severity": 4,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_install_macos_updates_enforce", "macos_security/sysprefs_software_update_download_enforce"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "macos_security/sysprefs_install_macos_updates_enforce",
+        "macos_security/sysprefs_software_update_download_enforce"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -787,7 +809,10 @@
       "dimension": "network",
       "severity": 3,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_firewall_stealth_mode_enable"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "macos_security/sysprefs_firewall_stealth_mode_enable"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -834,7 +859,10 @@
       "dimension": "credentials",
       "severity": 3,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_screensaver_ask_for_password_delay_enforce"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "macos_security/sysprefs_screensaver_ask_for_password_delay_enforce"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -1036,7 +1064,10 @@
       "dimension": "system services",
       "severity": 2,
       "scope": "macOS",
-      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_guest_account_disable"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "macos_security/sysprefs_guest_account_disable"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -1152,7 +1183,10 @@
       "dimension": "system integrity",
       "severity": 3,
       "scope": "macOS",
-      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_system_wide_preferences_configure"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "macos_security/sysprefs_system_wide_preferences_configure"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -1190,6 +1224,111 @@
         "class": "cli",
         "elevation": "system",
         "target": "security authorizationdb read system.preferences > /tmp/system.preferences.plist; /usr/libexec/PlistBuddy -c \"Set :shared true\" /tmp/system.preferences.plist; security authorizationdb write system.preferences < /tmp/system.preferences.plist",
+        "education": []
+      }
+    },
+    {
+      "name": "pwned",
+      "metrictype": "bool",
+      "dimension": "credentials",
+      "severity": 1,
+      "scope": "generic",
+      "tags": [],
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Carrefull your Apple id email get pwnd",
+          "summary": "Please change your password for this email"
+        },
+        {
+          "locale": "FR",
+          "title": "Votre apple id email a ete pwned",
+          "summary": "Il est important de changer les mot de passes relier a cette adresse"
+        }
+      ],
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "internal",
+        "elevation": "admin",
+        "target": "pwned -i 7",
+        "education": []
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://haveibeenpwned.com/"
+          },
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://haveibeenpwned.com/"
+          }
+        ]
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": []
+      }
+    },
+    {
+      "name": "OsUpdate",
+      "metrictype": "bool",
+      "dimension": "system integrity",
+      "severity": 2,
+      "scope": "generic",
+      "tags": [],
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Carrefull your OS is not up to date",
+          "summary": "Please update your OS"
+        },
+        {
+          "locale": "FR",
+          "title": "Votre OS n'est pas a jour",
+          "summary": "Il est important de mettre a jour votre OS"
+        }
+      ],
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "target": "defaults read /Library/Preferences/com.apple.SoftwareUpdate.plist | grep macOS",
+        "education": []
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "user",
+        "target": "open 'x-apple.systempreferences:com.apple.preferences.softwareupdate'",
+        "education": []
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "",
+        "elevation": "",
+        "target": "",
         "education": []
       }
     }
