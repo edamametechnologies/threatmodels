@@ -1237,13 +1237,13 @@
       "description": [
         {
           "locale": "EN",
-          "title": "Carrefull your Apple id email get pwnd",
-          "summary": "Please change your password for this email"
+          "title": "Compromised Apple ID",
+          "summary": "Your Apple ID email has been compromised, please review the breach and change your passwords accordingly."
         },
         {
           "locale": "FR",
-          "title": "Votre apple id email a ete pwned",
-          "summary": "Il est important de changer les mot de passes relier a cette adresse"
+          "title": "Apple ID compromise",
+          "summary": "Votre e-mail Apple ID a été compromise, veuillez examiner la fuite et modifier vos mots de passe en conséquence."
         }
       ],
       "implementation": {
@@ -1286,7 +1286,7 @@
       }
     },
     {
-      "name": "OsUpdate",
+      "name": "latest os",
       "metrictype": "bool",
       "dimension": "system integrity",
       "severity": 2,
@@ -1295,13 +1295,13 @@
       "description": [
         {
           "locale": "EN",
-          "title": "Carrefull your OS is not up to date",
-          "summary": "Please update your OS"
+          "title": "Your OS is not up to date",
+          "summary": "Your operating system is not up to date, please proceed to upgrade of your operating system to get the latest security patches."
         },
         {
           "locale": "FR",
-          "title": "Votre OS n'est pas a jour",
-          "summary": "Il est important de mettre a jour votre OS"
+          "title": "Votre OS n'est pas à jour",
+          "summary": "Votre système d'exploitation n'est pas à jour, veuillez procéder à la mise à niveau de votre système d'exploitation pour obtenir les derniers correctifs de sécurité."
         }
       ],
       "implementation": {
