@@ -1319,8 +1319,19 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "open 'x-apple.systempreferences:com.apple.preferences.softwareupdate'",
-        "education": []
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=FG2DXkPA93g&t=124s"
+          },
+          {
+            "locale": "FR",
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=FG2DXkPA93g&t=124s"
+          }
+        ]
       },
       "rollback": {
         "system": "macOS",
