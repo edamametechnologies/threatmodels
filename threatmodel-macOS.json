@@ -1282,7 +1282,18 @@
         "class": "",
         "elevation": "",
         "target": "",
-        "education": []
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://haveibeenpwned.com/"
+          },
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://haveibeenpwned.com/"
+          }
+        ]
       }
     },
     {
