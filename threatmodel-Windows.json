@@ -71,7 +71,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "reg query HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI /v DisablePasswordCaching",
+        "target": "if(((Get-ItemProperty -Path 'HKLM:\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\CredUI' -Name 'DisablePasswordCaching' -ErrorAction SilentlyContinue).DisablePasswordCaching) -eq 1) { 'Password caching is disabled' } else { '' }",
         "education": []
       },
       "remediation": {
@@ -120,14 +120,14 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "Get-MpPreference | Select-Object -ExpandProperty DisableRealtimeMonitoring",
+        "target": "if((Get-MpPreference | Select-Object -ExpandProperty DisableRealtimeMonitoring) -eq $true) { 'Real-time monitoring is disabled' } else { '' }",
         "education": []
       },
       "remediation": {
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "ps",
+        "class": "cli",
         "elevation": "admin",
         "target": "Set-MpPreference -DisableRealtimeMonitoring $false",
         "education": []
@@ -136,7 +136,7 @@
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "ps",
+        "class": "cli",
         "elevation": "admin",
         "target": "Set-MpPreference -DisableRealtimeMonitoring $true",
         "education": []
@@ -147,7 +147,7 @@
       "metrictype": "bool",
       "dimension": "system services",
       "severity": 3,
-      "scope": "windows 10 client",
+      "scope": "windows",
       "tags": ["CIS Benchmark Level 1", "windows_10_1709"],
       "description": [
         {
@@ -167,7 +167,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "reg query \"HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore\" /v AutoDownload",
+        "target": "if((Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\WindowsStore' -ErrorAction SilentlyContinue).AutoDownload -ne 4) { 'Automatic updates of App store apps disabled' } else { '' }",
         "education": []
       },
       "remediation": {
@@ -176,7 +176,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore\" /v AutoDownload /t REG_DWORD /d 4 /f",
+        "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore\" /v AutoDownload /t REG_DWORD /d 4 /f",
         "education": []
       },
       "rollback": {
@@ -185,7 +185,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore\" /v AutoDownload /t REG_DWORD /d 2 /f",
+        "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore\" /v AutoDownload /t REG_DWORD /d 2 /f",
         "education": []
       }
     },
@@ -214,7 +214,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "Get-ItemProperty -Path HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System | Select-Object -ExpandProperty EnableLUA | Where-Object { $_ -eq 0 }",
+        "target": "if((Get-ItemProperty -Path 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -ErrorAction SilentlyContinue).EnableLUA -eq 0) { 'UAC disabled' } else { '' }",
         "education": []
       },
       "remediation": {
@@ -259,17 +259,17 @@
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "ps",
+        "class": "cli",
         "elevation": "admin",
-        "target": "Get-SmbServerConfiguration | Select-Object EnableSMB1Protocol",
+        "target": "if((Get-SmbServerConfiguration).EnableSMB1Protocol -eq $true) { 'SMBv1 enabled' } else { '' }",
         "education": []
       },
       "remediation": {
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "ps",
-        "elevation": "admin",
+        "class": "cli",
+        "elevation": "system",
         "target": "Disable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol",
         "education": []
       },
@@ -277,7 +277,7 @@
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "ps",
+        "class": "cli",
         "elevation": "admin",
         "target": "Enable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol",
         "education": []
@@ -306,27 +306,27 @@
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "reg",
+        "class": "cli",
         "elevation": "admin",
-        "target": "Get-ItemProperty -Path HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon | Select-Object AutoAdminLogon | Format-List | Out-String",
+        "target": "if((Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon' -ErrorAction SilentlyContinue).AutoAdminLogon -eq '1') { 'Automatic logon enabled' } else { '' }",
         "education": []
       },
       "remediation": {
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "reg",
+        "class": "cli",
         "elevation": "admin",
-        "target": "Set-ItemProperty -Path HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon -Name AutoAdminLogon -Value 0",
+        "target": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon' -Name AutoAdminLogon -Value 0",
         "education": []
       },
       "rollback": {
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "reg",
+        "class": "cli",
         "elevation": "admin",
-        "target": "Set-ItemProperty -Path HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon -Name AutoAdminLogon -Value 1",
+        "target": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon' -Name AutoAdminLogon -Value 1",
         "education": []
       }
     },
@@ -355,7 +355,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "reg query HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows Script Host\\Settings /v Enabled /t REG_DWORD /d 1",
+        "target": "if((Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows Script Host\\Settings' -Name Enabled -ErrorAction SilentlyContinue).Enabled -eq 1) { 'Windows Script Host enabled' } else { '' }",
         "education": []
       },
       "remediation": {
@@ -364,7 +364,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "reg add HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows Script Host\\Settings /v Enabled /t REG_DWORD /d 0 /f",
+        "target": "reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows Script Host\\Settings' /v Enabled /t REG_DWORD /d 0 /f",
         "education": []
       },
       "rollback": {
@@ -373,7 +373,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "reg add HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows Script Host\\Settings /v Enabled /t REG_DWORD /d 1 /f",
+        "target": "reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows Script Host\\Settings' /v Enabled /t REG_DWORD /d 1 /f",
         "education": []
       }
     },
@@ -405,7 +405,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' | Select-Object -ExpandProperty fDenyTSConnections",
+        "target": "if((Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name fDenyTSConnections -ErrorAction SilentlyContinue) -eq 0) { 'Terminal Services connections allowed' } else { '' }",
         "education": []
       },
       "remediation": {
@@ -452,7 +452,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "reg query \"HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v NoAutoUpdate",
+        "target": "if((Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' -Name NoAutoUpdate -ErrorAction SilentlyContinue) -ne $null) { 'NoAutoUpdate is set' } else { '' }",
         "education": []
       },
       "remediation": {
@@ -461,7 +461,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "reg add \"HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v NoAutoUpdate /t REG_DWORD /d 0 /f",
+        "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\' /v NoAutoUpdate /t REG_DWORD /d 0 /f",
         "education": []
       },
       "rollback": {
@@ -470,7 +470,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "reg add \"HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v NoAutoUpdate /t REG_DWORD /d 1 /f",
+        "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\' /v NoAutoUpdate /t REG_DWORD /d 1 /f",
         "education": []
       }
     },
@@ -501,7 +501,7 @@
         "maxversion": 0,
         "class": "powershell",
         "elevation": "admin",
-        "target": "Get-WmiObject -Class Win32_UserAccount | Where-Object {$_.Name -eq 'Guest'} | Select-Object -Property Name",
+        "target": "if((Get-WmiObject -Class Win32_UserAccount | Where-Object {$_.Name -eq 'Guest'} | Select-Object -Property Name).Name -eq 'Guest') { 'Guest account exists' } else { '' }",
         "education": []
       },
       "remediation": {
@@ -546,16 +546,16 @@
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "ps",
+        "class": "cli",
         "elevation": "admin",
-        "target": "Get-ItemProperty -Path \"HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\" | Select-Object -ExpandProperty NoDriveTypeAutoRun",
+        "target": "if((Get-ItemProperty -Path \"HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\" | Select-Object -ExpandProperty NoDriveTypeAutoRun) -ne 0xFF) { 'Autoplay is enabled' } else { '' }",
         "education": []
       },
       "remediation": {
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "ps",
+        "class": "cli",
         "elevation": "admin",
         "target": "Set-ItemProperty -Path \"HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\" -Name NoDriveTypeAutoRun -Type DWord -Value 0xFF",
         "education": []
@@ -564,7 +564,7 @@
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "ps",
+        "class": "cli",
         "elevation": "admin",
         "target": "Set-ItemProperty -Path \"HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\" -Name NoDriveTypeAutoRun -Type DWord -Value 0x91",
         "education": []
@@ -595,7 +595,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "net user Administrator | findstr /C:\"Account active               Yes\"",
+        "target": "if((net user Administrator | findstr /C:\"Account active\") -match 'Yes') { 'Administrator account is active' } else { '' }",
         "education": []
       },
       "remediation": {
@@ -619,7 +619,7 @@
     },
     {
       "name": "Weak Password policy",
-      "metrictype": "string",
+      "metrictype": "boolean",
       "dimension": "credentials",
       "severity": 3,
       "scope": "generic",
@@ -640,16 +640,16 @@
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "ps",
+        "class": "cli",
         "elevation": "admin",
-        "target": "Get-ADDefaultDomainPasswordPolicy | Select-Object -ExpandProperty PasswordProperties",
+        "target": "if((Get-ADDefaultDomainPasswordPolicy).PasswordProperties -ne 'Strong') { 'Weak Password policy' } else { '' }",
         "education": []
       },
       "remediation": {
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "ps",
+        "class": "cli",
         "elevation": "admin",
         "target": "Set-ADDefaultDomainPasswordPolicy -ComplexityEnabled $true -LengthRequired $true -MinPasswordLength 12 -PasswordHistoryCount 5",
         "education": []
@@ -658,7 +658,7 @@
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "ps",
+        "class": "cli",
         "elevation": "admin",
         "target": "Set-ADDefaultDomainPasswordPolicy -ComplexityEnabled $true -LengthRequired $true -MinPasswordLength 8 -PasswordHistoryCount 0",
         "education": []
@@ -689,7 +689,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "powershell -Command Get-NetFirewallProfile -All | Select-Object -ExpandProperty Enabled",
+        "target": "if((Get-NetFirewallProfile -All | Where-Object { $_.Enabled -eq 'False' })) { 'One or more firewall profiles are disabled' } else { '' }",
         "education": []
       },
       "remediation": {
@@ -736,7 +736,9 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "sc query RemoteRegistry | findstr STATE | findstr RUNNING",
+        "target": "if((Get-Service -Name RemoteRegistry).Status -eq 'Running') { 'RemoteRegistry service is running' } else { '' }"
+        This target
+
         "education": []
       },
       "remediation": {
@@ -778,7 +780,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\LmCompatibilityLevel' | Select-Object -ExpandProperty LmCompatibilityLevel; Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0' | Select-Object -ExpandProperty NtlmMinClientSec; Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0' | Select-Object -ExpandProperty NtlmMinServerSec",
+        "target": "if(((Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa' -ErrorAction SilentlyContinue).LmCompatibilityLevel -lt 5) -or ((Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0' -ErrorAction SilentlyContinue).NtlmMinClientSec -lt 537395200) -or ((Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0' -ErrorAction SilentlyContinue).NtlmMinServerSec -lt 537395200)) { 'Weak NTLM settings' } else { '' }",
         "education": []
       },
       "remediation": {
@@ -825,7 +827,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "reg query HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa /v \"RunAsPPL\"",
+        "target": "if((Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa' -ErrorAction SilentlyContinue).RunAsPPL -eq 0) { 'RunAsPPL is a REG_DWORD with value 0' } else { '' }",
         "education": []
       },
       "remediation": {
@@ -872,7 +874,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "(Get-ExecutionPolicy) -neq 'RemoteSigned'",
+        "target": "if((Get-ExecutionPolicy) -ne 'RemoteSigned') { 'Execution Policy not RemoteSigned' } else { '' }",
         "education": []
       },
       "remediation": {
@@ -894,52 +896,5 @@
         "education": []
       }
     },
-    {
-      "name": "No password on screensaver",
-      "metrictype": "bool",
-      "dimension": "system integrity",
-      "severity": 3,
-      "scope": "generic",
-      "tags": [],
-      "description": [
-        {
-          "locale": "EN",
-          "title": "No password on screensaver",
-          "summary": "Screensavers are a common feature of computer systems that activate when the computer has been inactive for a certain period of time. The purpose of a screensaver is to protect the privacy of the user by automatically locking the computer and requiring a password to unlock it. However, if there is no password set on the screensaver, it can be bypassed and the user's data can be accessed by an unauthorized person. This is a security risk."
-        },
-        {
-          "locale": "FR",
-          "title": "Pas de mot de passe sur l'économiseur d'écran",
-          "summary": "Les économiseurs d'écran sont une fonctionnalité courante des systèmes informatiques qui s'activent lorsque l'ordinateur est inactif pendant une certaine période de temps. Le but d'un économiseur d'écran est de protéger la vie privée de l'utilisateur en verrouillant automatiquement l'ordinateur et en exigeant un mot de passe pour le déverrouiller. Cependant, s'il n'y a pas de mot de passe défini sur l'économiseur d'écran, il peut être contourné et les données de l'utilisateur peuvent être consultées par une personne non autorisée. Cela représente un risque pour la sécurité."
-        }
-      ],
-      "implementation": {
-        "system": "Windows",
-        "minversion": 10,
-        "maxversion": 0,
-        "class": "cli",
-        "elevation": "user",
-        "target": "REG QUERY \"HKCU\\Control Panel\\Desktop\" /v ScreenSaverIsSecure | FIND \"0x0\"",
-        "education": []
-      },
-      "remediation": {
-        "system": "Windows",
-        "minversion": 10,
-        "maxversion": 0,
-        "class": "cli",
-        "elevation": "user",
-        "target": "REG ADD \"HKCU\\Control Panel\\Desktop\" /v ScreenSaverIsSecure /t REG_SZ /d 1 /f",
-        "education": []
-      },
-      "rollback": {
-        "system": "Windows",
-        "minversion": 10,
-        "maxversion": 0,
-        "class": "cli",
-        "elevation": "user",
-        "target": "REG ADD \"HKCU\\Control Panel\\Desktop\" /v ScreenSaverIsSecure /t REG_SZ /d 0 /f",
-        "education": []
-      }
-    }
   ]
 }
