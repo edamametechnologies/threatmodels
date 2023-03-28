@@ -56,7 +56,7 @@
       "metrictype": "bool",
       "dimension": "credentials",
       "severity": 4,
-      "scope": "Windows 10",
+      "scope": "generic",
       "tags": [],
       "description": [
         {
@@ -106,12 +106,12 @@
         {
           "locale": "EN",
           "title": "Windows Defender Disabled",
-          "summary": "Windows Defender is a built-in antivirus and antimalware software that comes with Windows 10. Disabling it can leave your system vulnerable to various threats, such as viruses, Trojans, and spyware."
+          "summary": "Windows Defender is a built-in antivirus and antimalware software that comes with Windows. Disabling it can leave your system vulnerable to various threats, such as viruses, Trojans, and spyware."
         },
         {
           "locale": "FR",
           "title": "Windows Defender désactivé",
-          "summary": "Windows Defender est un logiciel antivirus et antimalware intégré à Windows 10. Le désactiver peut laisser votre système vulnérable à diverses menaces, telles que des virus, des chevaux de Troie et des logiciels espions."
+          "summary": "Windows Defender est un logiciel antivirus et antimalware intégré à Windows. Le désactiver peut laisser votre système vulnérable à diverses menaces, telles que des virus, des chevaux de Troie et des logiciels espions."
         }
       ],
       "implementation": {
@@ -429,10 +429,10 @@
     },
     {
       "name": "Windows Update disabled",
-      "title": "Windows Update disabled",
+      "metrictype": "bool",
       "dimension": "system integrity",
       "severity": 5,
-      "scope": "Windows 10",
+      "scope": "generic",
       "tags": ["CIS Benchmark Level 1", "windows_security/update_automatic_updates"],
       "description": [
         {
@@ -479,7 +479,7 @@
       "metrictype": "bool",
       "dimension": "credentials",
       "severity": 4,
-      "scope": "Windows 10",
+      "scope": "generic",
       "tags": [
         "CIS Benchmark Level 1", "windows_security/accounts_guest_account"
       ],
@@ -487,12 +487,12 @@
         {
           "locale": "EN",
           "title": "Guest account enabled",
-          "summary": "The Guest account is a default account in Windows 10, which allows users to access the system with limited privileges. It's recommended to disable this account to prevent unauthorized access to your system and data."
+          "summary": "The Guest account is a default account in Windows, which allows users to access the system with limited privileges. It's recommended to disable this account to prevent unauthorized access to your system and data."
         },
         {
           "locale": "FR",
           "title": "Compte Invité activé",
-          "summary": "Le compte Invité est un compte par défaut dans Windows 10, qui permet aux utilisateurs d'accéder au système avec des privilèges limités. Il est recommandé de désactiver ce compte pour empêcher tout accès non autorisé à votre système et à vos données."
+          "summary": "Le compte Invité est un compte par défaut dans Windows, qui permet aux utilisateurs d'accéder au système avec des privilèges limités. Il est recommandé de désactiver ce compte pour empêcher tout accès non autorisé à votre système et à vos données."
         }
       ],
       "implementation": {
@@ -758,7 +758,7 @@
       "metrictype": "bool",
       "dimension": "system integrity",
       "severity": 4,
-      "scope": "Windows 10",
+      "scope": "generic",
       "tags": ["CIS Benchmark Level 1", "windows_security/os_lsass_protection"],
       "description": [
         {
