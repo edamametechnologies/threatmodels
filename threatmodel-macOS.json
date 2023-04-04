@@ -1251,7 +1251,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "internal",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "pwned -i 7",
         "education": []
       },
