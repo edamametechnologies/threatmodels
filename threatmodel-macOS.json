@@ -1259,21 +1259,10 @@
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "",
+        "class": "internal",
         "elevation": "",
-        "target": "",
-        "education": [
-          {
-            "locale": "EN",
-            "class": "link",
-            "target": "https://haveibeenpwned.com/"
-          },
-          {
-            "locale": "FR",
-            "class": "link",
-            "target": "https://haveibeenpwned.com/"
-          }
-        ]
+        "target": "digitalidentity_manager",
+        "education": []
       },
       "rollback": {
         "system": "macOS",
