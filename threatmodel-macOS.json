@@ -1,8 +1,8 @@
 {
   "name": "threat model macOS",
   "extends": "none",
-  "date": "March 6th 2023",
-  "signature": "ba7816bf8f01cfda484940de5dae2184c10161a606577a0ce410fe93f30013ad",
+  "date": "April 8th 2023",
+  "signature": "ba7816bf8f01cfda484940de5dae2184c19161a606577a0ce410fe93f30013ad",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -1251,7 +1251,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "internal",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "pwned -i 7",
         "education": []
       },
@@ -1259,21 +1259,10 @@
         "system": "macOS",
         "minversion": 12,
         "maxversion": 0,
-        "class": "",
+        "class": "internal",
         "elevation": "",
-        "target": "",
-        "education": [
-          {
-            "locale": "EN",
-            "class": "link",
-            "target": "https://haveibeenpwned.com/"
-          },
-          {
-            "locale": "FR",
-            "class": "link",
-            "target": "https://haveibeenpwned.com/"
-          }
-        ]
+        "target": "digitalidentity_manager",
+        "education": []
       },
       "rollback": {
         "system": "macOS",
@@ -1307,12 +1296,12 @@
         {
           "locale": "EN",
           "title": "Your OS is not up to date",
-          "summary": "Your operating system is not up to date, please proceed to upgrade of your operating system to get the latest security patches."
+          "summary": "Your operating system is not up to date, please proceed to upgrade to get the latest security patches."
         },
         {
           "locale": "FR",
           "title": "Votre OS n'est pas à jour",
-          "summary": "Votre système d'exploitation n'est pas à jour, veuillez procéder à la mise à niveau de votre système d'exploitation pour obtenir les derniers correctifs de sécurité."
+          "summary": "Votre système d'exploitation n'est pas à jour, veuillez procéder à sa mise à niveau afin d'obtenir les derniers correctifs de sécurité."
         }
       ],
       "implementation": {
