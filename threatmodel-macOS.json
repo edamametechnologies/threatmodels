@@ -1310,7 +1310,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "defaults read /Library/Preferences/com.apple.SoftwareUpdate.plist | grep macOS",
+        "target": "softwareupdate --list --os-only 2> /dev/null | grep Label | grep macOS",
         "education": []
       },
       "remediation": {
