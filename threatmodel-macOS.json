@@ -2,7 +2,7 @@
   "name": "threat model macOS",
   "extends": "none",
   "date": "April 12th 2023",
-  "signature": "ba7816bf8f01cfca484940de6dae2178c19161a606577a0ce410fe93f30013ad",
+  "signature": "ba7816bf8f01dfca484940de6dae2178c19161a606577a0ce410fe93f30013ad",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -1238,12 +1238,12 @@
         {
           "locale": "EN",
           "title": "Compromised Apple ID",
-          "summary": "Your Apple ID email has recently appeared in a data breach, please review the breach and change your passwords accordingly."
+          "summary": "Your Apple ID email has recently appeared in a data breach referenced on haveibeenpwned.com, please review the breach and change your passwords accordingly."
         },
         {
           "locale": "FR",
           "title": "Apple ID compromise",
-          "summary": "Votre e-mail Apple ID est apparue récemment dans une fuite de données, veuillez examiner la fuite et modifier vos mots de passe en conséquence."
+          "summary": "Votre e-mail Apple ID est apparue récemment dans une fuite de données référencée sur haveibeenpwned.com, veuillez examiner la fuite et modifier vos mots de passe en conséquence."
         }
       ],
       "implementation": {
@@ -1262,7 +1262,18 @@
         "class": "internal",
         "elevation": "",
         "target": "digitalidentity_manager",
-        "education": []
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://en.wikipedia.org/wiki/Have_I_Been_Pwned"
+          },
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://fr.wikipedia.org/wiki/Have_I_Been_Pwned%3F"
+          }
+        ]
       },
       "rollback": {
         "system": "macOS",
