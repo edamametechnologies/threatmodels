@@ -2,7 +2,7 @@
   "name": "threat model macOS",
   "extends": "none",
   "date": "April 12th 2023",
-  "signature": "ba7816bf8f01cfda484940de6dae2178c19161a606577a0ce410fe93f30013ad",
+  "signature": "ba7816bf8f01cfca484940de6dae2178c19161a606577a0ce410fe93f30013ad",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -1231,7 +1231,7 @@
       "name": "pwned",
       "metrictype": "bool",
       "dimension": "credentials",
-      "severity": 1,
+      "severity": 4,
       "scope": "generic",
       "tags": [],
       "description": [
@@ -1289,7 +1289,7 @@
       "name": "latest os",
       "metrictype": "bool",
       "dimension": "system integrity",
-      "severity": 2,
+      "severity": 3,
       "scope": "generic",
       "tags": [],
       "description": [
