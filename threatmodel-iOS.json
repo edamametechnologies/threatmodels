@@ -5,53 +5,6 @@
   "signature": "ba7816bf8f01dfca424940de6dae2178c19161a606577a0ce410fe93f30013ad",
   "metrics": [
     {
-      "name": "edamame helper disabled",
-      "metrictype": "bool",
-      "dimension": "system services",
-      "severity": 5,
-      "scope": "generic",
-      "tags": [],
-      "description": [
-        {
-          "locale": "EN",
-          "title": "Edamame helper inactive",
-          "summary": "Edamame's Helper software is not running or requires an update. It's required for maximum Security Score analysis."
-        },
-        {
-          "locale": "FR",
-          "title": "Edamame Helper inactif",
-          "summary": "Le logiciel d'assistance d'Edamame n'est pas en cours d'exécution ou a besoin d'être mis à jour. Il est requis pour une analyse complète du score de sécurité."
-        }
-      ],
-      "implementation": {
-        "system": "iOS",
-        "minversion": 15,
-        "maxversion": 0,
-        "class": "cli",
-        "elevation": "admin",
-        "target": "ps -ef | grep edamame_helper | grep -v grep > /dev/null || echo nohelper",
-        "education": []
-      },
-      "remediation": {
-        "system": "iOS",
-        "minversion": 15,
-        "maxversion": 0,
-        "class": "installer",
-        "elevation": "user",
-        "target": "https://edamamecompany.sharepoint.com/:u:/s/Anyone/EW70U3YGjwdFryyIzVo3maMBNE6XAb0ZabQ0Bi0uAw5vsQ?e=7kVnf4",
-        "education": []
-      },
-      "rollback": {
-        "system": "iOS",
-        "minversion": 15,
-        "maxversion": 0,
-        "class": "cli",
-        "elevation": "system",
-        "target": "/Library/Application\\ Support/Edamame/Edamame-Helper/uninstall.sh",
-        "education": []
-      }
-    },
-    {
       "name": "MDM profiles",
       "metrictype": "bool",
       "dimension": "system integrity",
@@ -74,18 +27,18 @@
         "system": "iOS",
         "minversion": 15,
         "maxversion": 0,
-        "class": "cli",
-        "elevation": "system",
-        "target": "profiles list | grep profileIdentifier",
+        "class": "internal",
+        "elevation": "user",
+        "target": "mdm check",
         "education": []
       },
       "remediation": {
         "system": "iOS",
         "minversion": 15,
         "maxversion": 0,
-        "class": "cli",
-        "elevation": "system",
-        "target": "profiles remove -all",
+        "class": "internal",
+        "elevation": "user",
+        "target": "mdm remediation",
         "education": []
       },
       "rollback": {
@@ -135,27 +88,27 @@
         "system": "iOS",
         "minversion": 15,
         "maxversion": 0,
-        "class": "cli",
-        "elevation": "admin",
-        "target": "defaults read /Library/Preferences/com.apple.commerce.plist AutoUpdate 2>&1 | grep -v 1",
+        "class": "internal",
+        "elevation": "user",
+        "target": "update_appstore check",
         "education": []
       },
       "remediation": {
         "system": "iOS",
         "minversion": 15,
         "maxversion": 0,
-        "class": "cli",
-        "elevation": "system",
-        "target": "defaults write /Library/Preferences/com.apple.commerce.plist AutoUpdate -bool true; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallAppUpdates -bool true",
+        "class": "internal",
+        "elevation": "user",
+        "target": "update_appstore remediation",
         "education": []
       },
       "rollback": {
         "system": "iOS",
         "minversion": 15,
         "maxversion": 0,
-        "class": "cli",
-        "elevation": "system",
-        "target": "defaults write /Library/Preferences/com.apple.commerce.plist AutoUpdate -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallAppUpdates -bool false",
+        "class": "internal",
+        "elevation": "user",
+        "target": "update_appstore rollback",
         "education": []
       }
     },
@@ -186,27 +139,27 @@
         "system": "iOS",
         "minversion": 15,
         "maxversion": 0,
-        "class": "cli",
-        "elevation": "admin",
-        "target": "defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstalliOSUpdates 2>&1 | grep -v 1",
+        "class": "internal",
+        "elevation": "user",
+        "target": "update_system check",
         "education": []
       },
       "remediation": {
         "system": "iOS",
         "minversion": 15,
         "maxversion": 0,
-        "class": "cli",
-        "elevation": "system",
-        "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool true; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstalliOSUpdates -bool true; defaults write /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall -bool true; defaults write /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall -bool true; softwareupdate --schedule on",
+        "class": "internal",
+        "elevation": "user",
+        "target": "update_system remediation",
         "education": []
       },
       "rollback": {
         "system": "iOS",
         "minversion": 15,
         "maxversion": 0,
-        "class": "cli",
-        "elevation": "system",
-        "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstalliOSUpdates -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall -bool false; softwareupdate --schedule off",
+        "class": "internal",
+        "elevation": "user",
+        "target": "update_system rollback",
         "education": []
       }
     },
@@ -236,9 +189,9 @@
         "system": "iOS",
         "minversion": 15,
         "maxversion": 0,
-        "class": "cli",
+        "class": "internal",
         "elevation": "user",
-        "target": "sysadminctl -screenLock status 2>&1 | grep off",
+        "target": "screenlock check",
         "education": []
       },
       "remediation": {
@@ -283,76 +236,7 @@
       }
     },
     {
-      "name": "installed EPP",
-      "metrictype": "bool",
-      "dimension": "applications",
-      "severity": 4,
-      "scope": "generic",
-      "tags": [],
-      "description": [
-        {
-          "locale": "EN",
-          "title": "No antivirus installed",
-          "summary": "You don't have any antivirus installed. We recommend you to install one."
-        },
-        {
-          "locale": "FR",
-          "title": "Pas d'antivirus installé",
-          "summary": "Vous n'avez pas d'antivirus installé. Nous vous recommandons d'en installer un."
-        }
-      ],
-      "implementation": {
-        "system": "iOS",
-        "minversion": 15,
-        "maxversion": 0,
-        "class": "cli",
-        "elevation": "admin",
-        "target": "pgrep RTProtectionDaemon >/dev/null || echo noepp",
-        "education": []
-      },
-      "remediation": {
-        "system": "iOS",
-        "minversion": 15,
-        "maxversion": 0,
-        "class": "",
-        "elevation": "",
-        "target": "",
-        "education": [
-          {
-            "locale": "EN",
-            "class": "link",
-            "target": "https://www.malwarebytes.com/"
-          },
-          {
-            "locale": "FR",
-            "class": "link",
-            "target": "https://www.malwarebytes.com/"
-          }
-        ]
-      },
-      "rollback": {
-        "system": "iOS",
-        "minversion": 15,
-        "maxversion": 0,
-        "class": "",
-        "elevation": "",
-        "target": "",
-        "education": [
-          {
-            "locale": "EN",
-            "class": "link",
-            "target": "https://support.malwarebytes.com/hc/en-us/articles/360039023473-Uninstall-and-reinstall-Malwarebytes-using-the-Malwarebytes-Support-Tool"
-          },
-          {
-            "locale": "FR",
-            "class": "link",
-            "target": "https://support.malwarebytes.com/hc/en-us/articles/360039023473-Uninstall-and-reinstall-Malwarebytes-using-the-Malwarebytes-Support-Tool"
-          }
-        ]
-      }
-    },
-    {
-      "name": "Jailbroken",
+      "name": "jailbroken",
       "metrictype": "bool",
       "dimension": "system integrity",
       "severity": 5,
@@ -374,9 +258,9 @@
         "system": "iOS",
         "minversion": 15,
         "maxversion": 0,
-        "class": "cli",
+        "class": "internal",
         "elevation": "user",
-        "target": "csrutil status | grep disabled",
+        "target": "jailbreak check",
         "education": []
       },
       "remediation": {
@@ -507,9 +391,9 @@
         "system": "iOS",
         "minversion": 15,
         "maxversion": 0,
-        "class": "cli",
-        "elevation": "admin",
-        "target": "defaults read /Library/Preferences/com.apple.SoftwareUpdate.plist | grep iOS",
+        "class": "internal",
+        "elevation": "user",
+        "target": "latestos check",
         "education": []
       },
       "remediation": {
