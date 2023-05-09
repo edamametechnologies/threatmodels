@@ -1,8 +1,8 @@
 {
   "name": "threat model iOS",
   "extends": "none",
-  "date": "April 12th 2023",
-  "signature": "ba7816bf8f01dfca424940de6dae2178c19161a606577a0ce410fe93f30013ad",
+  "date": "May 9th 2023",
+  "signature": "ba7816bf8f01dfca424240de6dae2178c19161a606577a0ce410fe93f30013ad",
   "metrics": [
     {
       "name": "MDM profiles",
@@ -29,17 +29,28 @@
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
-        "target": "mdm check",
+        "target": "mdm_check",
         "education": []
       },
       "remediation": {
         "system": "iOS",
         "minversion": 15,
         "maxversion": 0,
-        "class": "internal",
-        "elevation": "user",
-        "target": "mdm remediation",
-        "education": []
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://en.wikipedia.org/wiki/Mobile_device_management"
+          },
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://fr.wikipedia.org/wiki/Mobile_device_management"
+          }
+        ]
       },
       "rollback": {
         "system": "iOS",
@@ -90,7 +101,7 @@
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
-        "target": "update_appstore check",
+        "target": "update_appstore_check",
         "education": []
       },
       "remediation": {
@@ -99,7 +110,7 @@
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
-        "target": "update_appstore remediation",
+        "target": "update_appstore_remediation",
         "education": []
       },
       "rollback": {
@@ -108,7 +119,7 @@
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
-        "target": "update_appstore rollback",
+        "target": "update_appstore_rollback",
         "education": []
       }
     },
@@ -141,7 +152,7 @@
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
-        "target": "update_system check",
+        "target": "update_system_check",
         "education": []
       },
       "remediation": {
@@ -150,7 +161,7 @@
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
-        "target": "update_system remediation",
+        "target": "update_system_remediation",
         "education": []
       },
       "rollback": {
@@ -159,7 +170,7 @@
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
-        "target": "update_system rollback",
+        "target": "update_system_rollback",
         "education": []
       }
     },
@@ -191,7 +202,7 @@
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
-        "target": "screenlock check",
+        "target": "screenlock_check",
         "education": []
       },
       "remediation": {
@@ -260,7 +271,7 @@
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
-        "target": "jailbreak check",
+        "target": "jailbreak_check",
         "education": []
       },
       "remediation": {
@@ -393,7 +404,7 @@
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
-        "target": "latestos check",
+        "target": "latestos_check",
         "education": []
       },
       "remediation": {
