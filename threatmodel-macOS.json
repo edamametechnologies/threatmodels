@@ -2,7 +2,7 @@
   "name": "threat model macOS",
   "extends": "none",
   "date": "April 8th 2023",
-  "signature": "ba7816bf8f01cfda484940de5dae2184c19161a606577a0ce410fe93f30013ad",
+  "signature": "ba7816bf8f01cfda484940de5dae2184c19161a606577a0ce410de93f30013ad",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -1252,7 +1252,7 @@
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
-        "target": "pwned -i 7",
+        "target": "pwned -i 365",
         "education": []
       },
       "remediation": {
