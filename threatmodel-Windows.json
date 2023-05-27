@@ -28,8 +28,8 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
-        "target": "echo nohelper",
+        "elevation": "user",
+        "target": "Write-Output nohelper",
         "education": []
       },
       "remediation": {
@@ -38,7 +38,7 @@
         "maxversion": 0,
         "class": "installer",
         "elevation": "user",
-        "target": "",
+        "target": "https://edamamecompany.sharepoint.com/:u:/s/Anyone/EW70U3YGjwdFryyIzVo3maMBNE6XAb0ZabQ0Bi0uAw5vsQ?e=7kVnf4",
         "education": []
       },
       "rollback": {
@@ -46,8 +46,8 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "system",
-        "target": "",
+        "elevation": "user",
+        "target": "h",
         "education": []
       }
     },
@@ -70,7 +70,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "if(((Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI' -Name 'DisablePasswordCaching' -ErrorAction SilentlyContinue).DisablePasswordCaching) -eq 1) { 'Password caching is disabled' } else { '' }",
         "education": []
       },
@@ -79,7 +79,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "reg add HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI /v DisablePasswordCaching /t REG_DWORD /d 1 /f",
         "education": []
       },
@@ -88,7 +88,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "reg add HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI /v DisablePasswordCaching /t REG_DWORD /d 0 /f",
         "education": []
       }
@@ -99,9 +99,7 @@
       "dimension": "applications",
       "severity": 5,
       "scope": "generic",
-      "tags": [
-        "CIS Benchmark Level 1", "windows_security/wd_disabled"
-      ],
+      "tags": ["CIS Benchmark Level 1", "windows_security/wd_disabled"],
       "description": [
         {
           "locale": "EN",
@@ -119,7 +117,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "if((Get-MpPreference | Select-Object -ExpandProperty DisableRealtimeMonitoring) -eq $true) { 'Real-time monitoring is disabled' } else { '' }",
         "education": []
       },
@@ -128,7 +126,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "Set-MpPreference -DisableRealtimeMonitoring $false",
         "education": []
       },
@@ -137,7 +135,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "Set-MpPreference -DisableRealtimeMonitoring $true",
         "education": []
       }
@@ -166,7 +164,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "if((Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\WindowsStore' -ErrorAction SilentlyContinue).AutoDownload -ne 4) { 'Automatic updates of App store apps disabled' } else { '' }",
         "education": []
       },
@@ -175,7 +173,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore\" /v AutoDownload /t REG_DWORD /d 4 /f",
         "education": []
       },
@@ -184,7 +182,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore\" /v AutoDownload /t REG_DWORD /d 2 /f",
         "education": []
       }
@@ -213,7 +211,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "if((Get-ItemProperty -Path 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -ErrorAction SilentlyContinue).EnableLUA -eq 0) { 'UAC disabled' } else { '' }",
         "education": []
       },
@@ -222,7 +220,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "Set-ItemProperty -Path HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System -Name EnableLUA -Value 1 -Type DWord",
         "education": []
       },
@@ -231,7 +229,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "Set-ItemProperty -Path HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System -Name EnableLUA -Value 0 -Type DWord",
         "education": []
       }
@@ -260,7 +258,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "if((Get-SmbServerConfiguration).EnableSMB1Protocol -eq $true) { 'SMBv1 enabled' } else { '' }",
         "education": []
       },
@@ -278,7 +276,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "Enable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol",
         "education": []
       }
@@ -307,7 +305,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "if((Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon' -ErrorAction SilentlyContinue).AutoAdminLogon -eq '1') { 'Automatic logon enabled' } else { '' }",
         "education": []
       },
@@ -316,7 +314,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon' -Name AutoAdminLogon -Value 0",
         "education": []
       },
@@ -325,7 +323,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon' -Name AutoAdminLogon -Value 1",
         "education": []
       }
@@ -354,7 +352,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "if((Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows Script Host\\Settings' -Name Enabled -ErrorAction SilentlyContinue).Enabled -eq 1) { 'Windows Script Host enabled' } else { '' }",
         "education": []
       },
@@ -363,7 +361,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows Script Host\\Settings' /v Enabled /t REG_DWORD /d 0 /f",
         "education": []
       },
@@ -372,7 +370,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows Script Host\\Settings' /v Enabled /t REG_DWORD /d 1 /f",
         "education": []
       }
@@ -404,7 +402,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "if((Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name fDenyTSConnections -ErrorAction SilentlyContinue) -eq 0) { 'Terminal Services connections allowed' } else { '' }",
         "education": []
       },
@@ -413,7 +411,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name fDenyTSConnections -Value 1",
         "education": []
       },
@@ -422,7 +420,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name fDenyTSConnections -Value 0",
         "education": []
       }
@@ -451,7 +449,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "if((Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' -Name NoAutoUpdate -ErrorAction SilentlyContinue) -ne $null) { 'NoAutoUpdate is set' } else { '' }",
         "education": []
       },
@@ -460,7 +458,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' /v NoAutoUpdate /t REG_DWORD /d 0 /f",
         "education": []
       },
@@ -469,7 +467,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' /v NoAutoUpdate /t REG_DWORD /d 1 /f",
         "education": []
       }
@@ -499,8 +497,8 @@
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "powershell",
-        "elevation": "admin",
+        "class": "cli",
+        "elevation": "user",
         "target": "if((Get-WmiObject -Class Win32_UserAccount | Where-Object {$_.Name -eq 'Guest'} | Select-Object -Property Name).Name -eq 'Guest') { 'Guest account exists' } else { '' }",
         "education": []
       },
@@ -508,8 +506,8 @@
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "powershell",
-        "elevation": "admin",
+        "class": "cli",
+        "elevation": "user",
         "target": "Disable-LocalUser -Name Guest",
         "education": []
       },
@@ -517,8 +515,8 @@
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "powershell",
-        "elevation": "admin",
+        "class": "cli",
+        "elevation": "user",
         "target": "Enable-LocalUser -Name Guest",
         "education": []
       }
@@ -547,7 +545,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "if((Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name NoDriveTypeAutoRun -ErrorAction SilentlyContinue).NoDriveTypeAutoRun -ne 0xFF) { 'Autoplay enabled' } else { '' }",
         "education": []
       },
@@ -556,7 +554,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name NoDriveTypeAutoRun -Type DWord -Value 0xFF -Force",
         "education": []
       },
@@ -565,7 +563,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name NoDriveTypeAutoRun -Type DWord -Value 0x91 -Force",
         "education": []
       }
@@ -594,7 +592,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "if((net user Administrator | findstr /C:\"Account active\") -match 'Yes') { 'Administrator account is active' } else { '' }",
         "education": []
       },
@@ -603,7 +601,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "net user Administrator /active:no",
         "education": []
       },
@@ -612,7 +610,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "net user Administrator /active:yes",
         "education": []
       }
@@ -641,7 +639,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "if((Get-NetFirewallProfile -All | Where-Object { $_.Enabled -eq 'False' })) { 'One or more firewall profiles are disabled' } else { '' }",
         "education": []
       },
@@ -649,18 +647,18 @@
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "powershell",
-        "elevation": "admin",
-        "target": "powershell -Command Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True",
+        "class": "cli",
+        "elevation": "user",
+        "target": "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True",
         "education": []
       },
       "rollback": {
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "powershell",
-        "elevation": "admin",
-        "target": "powershell -Command Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False",
+        "class": "cli",
+        "elevation": "user",
+        "target": "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False",
         "education": []
       }
     },
@@ -688,7 +686,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "if((Get-Service -Name RemoteRegistry).Status -eq 'Running') { 'RemoteRegistry service is running' } else { '' }",
         "education": []
       },
@@ -697,7 +695,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "sc config RemoteRegistry start= disabled && sc stop RemoteRegistry",
         "education": []
       },
@@ -706,7 +704,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "sc config RemoteRegistry start= auto && sc start RemoteRegistry",
         "education": []
       }
@@ -730,7 +728,7 @@
         "minversion": 0,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "if(((Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa' -ErrorAction SilentlyContinue).LmCompatibilityLevel -lt 5) -or ((Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0' -ErrorAction SilentlyContinue).NtlmMinClientSec -lt 537395200) -or ((Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0' -ErrorAction SilentlyContinue).NtlmMinServerSec -lt 537395200)) { 'Weak NTLM settings' } else { '' }",
         "education": []
       },
@@ -739,7 +737,7 @@
         "minversion": 0,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\LmCompatibilityLevel' -Value '5' -Type DWord; Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0' -Name 'NtlmMinClientSec' -Value '537395200' -Type DWord; Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0' -Name 'NtlmMinServerSec' -Value '537395200' -Type DWord",
         "education": []
       },
@@ -748,7 +746,7 @@
         "minversion": 0,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\LmCompatibilityLevel' -Value '1' -Type DWord; Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0' -Name 'NtlmMinClientSec' -Value '262144' -Type DWord; Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0' -Name 'NtlmMinServerSec' -Value '537395200' -Type DWord",
         "education": []
       }
@@ -777,7 +775,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "if((Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa' -ErrorAction SilentlyContinue).RunAsPPL -eq 0) { 'RunAsPPL is a REG_DWORD with value 0' } else { '' }",
         "education": []
       },
@@ -786,7 +784,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa /v \"RunAsPPL\" /t REG_DWORD /d 1 /f",
         "education": []
       },
@@ -795,7 +793,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa /v \"RunAsPPL\" /t REG_DWORD /d 0 /f",
         "education": []
       }
@@ -824,7 +822,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "if((Get-ExecutionPolicy) -ne 'RemoteSigned') { 'Execution Policy not RemoteSigned' } else { '' }",
         "education": []
       },
@@ -833,7 +831,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force",
         "education": []
       },
@@ -842,7 +840,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Force",
         "education": []
       }
