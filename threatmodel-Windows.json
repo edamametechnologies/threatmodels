@@ -80,7 +80,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "reg add HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI /v DisablePasswordCaching /t REG_DWORD /d 1 /f",
+        "target": "reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI' /v DisablePasswordCaching /t REG_DWORD /d 1 /f",
         "education": []
       },
       "rollback": {
@@ -89,7 +89,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "reg add HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI /v DisablePasswordCaching /t REG_DWORD /d 0 /f",
+        "target": "reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI' /v DisablePasswordCaching /t REG_DWORD /d 0 /f",
         "education": []
       }
     },
@@ -174,7 +174,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore\" /v AutoDownload /t REG_DWORD /d 4 /f",
+        "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore' /v AutoDownload /t REG_DWORD /d 4 /f",
         "education": []
       },
       "rollback": {
@@ -183,7 +183,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore\" /v AutoDownload /t REG_DWORD /d 2 /f",
+        "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore' /v AutoDownload /t REG_DWORD /d 2 /f",
         "education": []
       }
     },
@@ -221,7 +221,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "Set-ItemProperty -Path HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System -Name EnableLUA -Value 1 -Type DWord",
+        "target": "Set-ItemProperty -Path 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name EnableLUA -Value 1 -Type DWord",
         "education": []
       },
       "rollback": {
@@ -230,7 +230,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "Set-ItemProperty -Path HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System -Name EnableLUA -Value 0 -Type DWord",
+        "target": "Set-ItemProperty -Path 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name EnableLUA -Value 0 -Type DWord",
         "education": []
       }
     },
@@ -593,7 +593,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "if((net user Administrator | findstr /C:\"Account active\") -match 'Yes') { 'Administrator account is active' } else { '' }",
+        "target": "if((net user Administrator | findstr /C:'Account active') -match 'Yes') { 'Administrator account is active' } else { '' }",
         "education": []
       },
       "remediation": {
@@ -785,7 +785,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa /v \"RunAsPPL\" /t REG_DWORD /d 1 /f",
+        "target": "reg add 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa' /v 'RunAsPPL' /t REG_DWORD /d 1 /f",
         "education": []
       },
       "rollback": {
@@ -794,7 +794,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa /v \"RunAsPPL\" /t REG_DWORD /d 0 /f",
+        "target": "reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa /v 'RunAsPPL' /t REG_DWORD /d 0 /f",
         "education": []
       }
     },
