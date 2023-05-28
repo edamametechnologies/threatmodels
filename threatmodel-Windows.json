@@ -79,7 +79,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI' /v DisablePasswordCaching /t REG_DWORD /d 1 /f",
         "education": []
       },
@@ -88,7 +88,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI' /v DisablePasswordCaching /t REG_DWORD /d 0 /f",
         "education": []
       }
@@ -126,7 +126,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Set-MpPreference -DisableRealtimeMonitoring $false",
         "education": []
       },
@@ -135,7 +135,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Set-MpPreference -DisableRealtimeMonitoring $true",
         "education": []
       }
@@ -173,7 +173,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore' /v AutoDownload /t REG_DWORD /d 4 /f",
         "education": []
       },
@@ -182,7 +182,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore' /v AutoDownload /t REG_DWORD /d 2 /f",
         "education": []
       }
@@ -220,7 +220,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Set-ItemProperty -Path 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name EnableLUA -Value 1 -Type DWord",
         "education": []
       },
@@ -229,7 +229,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Set-ItemProperty -Path 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name EnableLUA -Value 0 -Type DWord",
         "education": []
       }
@@ -267,7 +267,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "system",
+        "elevation": "admin",
         "target": "Disable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol",
         "education": []
       },
@@ -276,7 +276,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Enable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol",
         "education": []
       }
@@ -314,7 +314,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon' -Name AutoAdminLogon -Value 0",
         "education": []
       },
@@ -323,7 +323,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon' -Name AutoAdminLogon -Value 1",
         "education": []
       }
@@ -361,7 +361,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows Script Host\\Settings' /v Enabled /t REG_DWORD /d 0 /f",
         "education": []
       },
@@ -370,7 +370,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows Script Host\\Settings' /v Enabled /t REG_DWORD /d 1 /f",
         "education": []
       }
@@ -411,7 +411,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name fDenyTSConnections -Value 1",
         "education": []
       },
@@ -420,7 +420,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name fDenyTSConnections -Value 0",
         "education": []
       }
@@ -458,7 +458,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' /v NoAutoUpdate /t REG_DWORD /d 0 /f",
         "education": []
       },
@@ -467,7 +467,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' /v NoAutoUpdate /t REG_DWORD /d 1 /f",
         "education": []
       }
@@ -507,7 +507,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Disable-LocalUser -Name Guest",
         "education": []
       },
@@ -516,7 +516,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Enable-LocalUser -Name Guest",
         "education": []
       }
@@ -554,7 +554,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name NoDriveTypeAutoRun -Type DWord -Value 0xFF -Force",
         "education": []
       },
@@ -563,7 +563,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name NoDriveTypeAutoRun -Type DWord -Value 0x91 -Force",
         "education": []
       }
@@ -601,7 +601,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "net user Administrator /active:no",
         "education": []
       },
@@ -610,7 +610,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "net user Administrator /active:yes",
         "education": []
       }
@@ -648,7 +648,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True",
         "education": []
       },
@@ -657,7 +657,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False",
         "education": []
       }
@@ -695,7 +695,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "sc config RemoteRegistry start= disabled && sc stop RemoteRegistry",
         "education": []
       },
@@ -704,7 +704,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "sc config RemoteRegistry start= auto && sc start RemoteRegistry",
         "education": []
       }
@@ -737,7 +737,7 @@
         "minversion": 0,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\LmCompatibilityLevel' -Value '5' -Type DWord; Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0' -Name 'NtlmMinClientSec' -Value '537395200' -Type DWord; Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0' -Name 'NtlmMinServerSec' -Value '537395200' -Type DWord",
         "education": []
       },
@@ -746,7 +746,7 @@
         "minversion": 0,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\LmCompatibilityLevel' -Value '1' -Type DWord; Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0' -Name 'NtlmMinClientSec' -Value '262144' -Type DWord; Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\MSV1_0' -Name 'NtlmMinServerSec' -Value '537395200' -Type DWord",
         "education": []
       }
@@ -785,7 +785,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "reg add 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa' /v 'RunAsPPL' /t REG_DWORD /d 1 /f",
+        "target": "reg admin 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa' /v 'RunAsPPL' /t REG_DWORD /d 1 /f",
         "education": []
       },
       "rollback": {
@@ -793,7 +793,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa /v 'RunAsPPL' /t REG_DWORD /d 0 /f",
         "education": []
       }
@@ -831,7 +831,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force",
         "education": []
       },
@@ -840,7 +840,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Force",
         "education": []
       }
