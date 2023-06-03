@@ -1,8 +1,8 @@
 {
   "name": "threat model Windows",
   "extends": "none",
-  "date": "March 26th 2023",
-  "signature": "ba7816bf8f01cfda484940de5dae2184c10161a696577a0ce410fe93f30013ad",
+  "date": "June 3rd 2023",
+  "signature": "ba7816bf4f01cfda484940de5dae2184c10161a696577a0ce410fe93f30013ad",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -29,7 +29,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "Write-Output nohelper",
+        "target": "$result = if ((Get-Service -Name edamame_helper -ErrorAction SilentlyContinue).Status -eq 'Running') { \"\" } else { \"no helper\" }; $result\n",
         "education": []
       },
       "remediation": {
