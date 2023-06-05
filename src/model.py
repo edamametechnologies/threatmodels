@@ -36,6 +36,11 @@ class Model(object):
         self.errors = 0
         self.invalid_remediations = 0
 
+        # Save functions run status
+        self.implementations_have_been_run = False
+        self.remediations_have_been_run = False
+        self.rollbacks_have_been_run = False
+
     def run_implementations(self):
         '''Run implementation for each metric'''
         for metric in self.metrics:
@@ -43,6 +48,8 @@ class Model(object):
                 metric.implementation()
             except ImplementationTargetError:
                 self.errors += 1
+
+        self.implementations_have_been_run = True
 
     def run_remediations(self, force=False):
         '''
@@ -59,11 +66,19 @@ class Model(object):
                 self.errors += 1
             except RemediationFixInvalid:
                 self.invalid_remediations += 1
+            except ImplementationTargetError:
+                # Count implementation errors if those tests were not run
+                if not self.implementations_have_been_run:
+                    self.errors += 1
+
+        self.remediations_have_been_run = True
 
     def run_rollbacks(self):
         '''Run rollback for each metric'''
         for metric in self.metrics:
             metric.rollback()
+
+        self.rollbacks_have_been_run = True
 
     def get_results(self):
         '''Returns the results of the tests'''
