@@ -17,7 +17,7 @@ class Model(object):
             self.source = "Linux"
         elif platform == "darwin":
             # OS X
-            self.source = "macOS"
+            self.source = "MacOS"
         elif platform == "win32":
             # Windows...
             self.source = "Windows"
