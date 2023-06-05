@@ -77,7 +77,7 @@ class Metric(object):
             result = subprocess.run(
                     ["powershell.exe", "-Command", target],
                     stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        elif self.source == "Linux" or self.source == "MacOs":
+        elif self.source == "Linux" or self.source == "MacOS":
             result = subprocess.run(
                     target,
                     shell=True,
