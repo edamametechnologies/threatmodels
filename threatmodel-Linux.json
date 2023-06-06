@@ -1,7 +1,7 @@
 {
   "name": "threat model Linux",
   "extends": "none",
-  "date": "May 23th 2023",
+  "date": "",
   "signature": "ba7816bf8f01cfda484940de5dae2184c10161a606577a0ce410de93f30013ad",
   "metrics": [
     {
