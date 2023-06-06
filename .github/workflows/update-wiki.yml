@@ -36,14 +36,12 @@ jobs:
           run: |
             python3 update-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
 
-        - name: GitHub Push
-          
-            # Commit and Push wiki and modified models
-          - name: Commit & Push changes
-            uses: actions-js/push@master
-            with:
-              github_token: ${{ secrets.GITHUB_TOKEN }}
-              
+          # Commit and Push wiki and modified models
+        - name: Commit & Push changes
+          uses: actions-js/push@master
+          with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+
               
           
           
