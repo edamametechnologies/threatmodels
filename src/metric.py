@@ -39,21 +39,24 @@ class Metric(object):
             if result is not None:
                 self.logger.error(result)
 
-    def is_target_cli(self, target_type):
+    def is_target_cli(self, target_type, enable_log=True):
         '''Check if the given target type has a cli target'''
         if self.info[target_type]['class'] != 'cli':
-            self.logger.info(f"target {target_type} is not a CLI")
+            if enable_log:
+                self.logger.error(
+                    f"target {target_type} is not a CLI or not implemented yet"
+                )
             return False
         else:
             return True
 
-    def implementation(self):
+    def implementation(self, enable_log=False):
         '''
         Execute the implementation and returns a boolean indicating if it needs
         remediation. Return None if an error occured.
         '''
         target_type = "implementation"
-        if not self.is_target_cli(target_type):
+        if not self.is_target_cli(target_type, enable_log=enable_log):
             return None
 
         # Execute the target
@@ -71,20 +74,20 @@ class Metric(object):
 
         return self.need_remediation
 
-    def remediation(self, force=False):
+    def remediation(self, force=False, enable_log=False):
         '''
         Execute the remediation and return a boolen indicating if the
         implementation has been fixed. Return None if an error occured.
         '''
         target_type = "remediation"
-        if not self.is_target_cli(target_type):
+        if not self.is_target_cli(target_type, enable_log=enable_log):
             return None
 
         if self.need_remediation or force:
             # Execute the target
             result = self.exec(target_type)
 
-            need_remediation = self.implementation()
+            need_remediation = self.implementation(enable_log=False)
 
             if self.check_error_standard(result):
                 self.metric_log("error", target_type,
@@ -95,25 +98,28 @@ class Metric(object):
             else:
                 return not need_remediation
 
-    def rollback(self):
+    def rollback(self, enable_log=False):
         '''
         Execute the rollback
         '''
         target_type = "rollback"
-        if not self.is_target_cli(target_type):
+        if not self.is_target_cli(target_type, enable_log=enable_log):
             return None
 
         for i in range(0, 10):
             result = self.exec(target_type)
 
             if self.check_error_standard(result):
-                self.metric_log("error", target_type,
-                                "target returned an error", result)
+                if enable_log:
+                    self.metric_log("error", target_type,
+                                    "target returned an error", result)
                 return None
 
-            if not self.implementation():
-                self.metric_log("error", target_type,
-                                "rollback did not revert the change", result)
+            if not self.implementation(enable_log=False):
+                if enable_log:
+                    self.metric_log("error", target_type,
+                                    "rollback did not revert the change",
+                                    result)
                 return None
                 # Not normal!!!
                 break
