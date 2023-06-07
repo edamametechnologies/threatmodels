@@ -21,9 +21,11 @@ class Metric(object):
     def metric_log(self, log_type, target_type, message, result=None):
         if log_type == "error":
             self.logger.error(f"[{target_type}] {message}")
+        elif log_type == "warning":
+            self.logger.error(f"[{target_type}] {message}")
 
-            if result is not None:
-                self.logger.error(result)
+        if result is not None:
+            self.logger.error(result)
 
     def is_target_cli(self, target_type, enable_log=True):
         '''Check if the given target type has a cli target'''
@@ -124,13 +126,13 @@ class Metric(object):
                 if self.info[target_type]["elevation"] == "user":
                     # TODO: Optionally modify the permissions automatically
 
-                    self.metric_log("error", target_type,
+                    self.metric_log("warning", target_type,
                                     "target permissions too low")
             else:
                 if self.info[target_type]["elevation"] != "user":
                     # TODO: Optionally modify the permissions automatically
 
-                    self.metric_log("error", target_type,
+                    self.metric_log("warning", target_type,
                                     "target permissions too high")
 
     def exec(self, target_type):
