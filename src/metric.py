@@ -22,7 +22,7 @@ class Metric(object):
         if log_type == "error":
             self.logger.error(f"[{target_type}] {message}")
         elif log_type == "warning":
-            self.logger.error(f"[{target_type}] {message}")
+            self.logger.warning(f"[{target_type}] {message}")
 
         if result is not None:
             self.logger.error(result)
