@@ -1,20 +1,6 @@
 import subprocess
 
 
-def is_error(result):
-        '''
-        Return a boolean indicating if the provided result was an error.
-        In this project we consider a command result as an error when the
-        returncode is different than 0 and the stderr is not empty.
-
-        Parameter:
-            result: subprocess result
-        Return:
-            the error status of the result
-        '''
-        return result.returncode != 0 and result.stderr != ""
-
-
 class Metric(object):
     '''Representation of a metric with associated functions to perform tests'''
 
@@ -45,19 +31,16 @@ class Metric(object):
             if enable_log:
                 self.logger.error(
                     f"target {target_type} is not a CLI or not implemented yet"
-                )
-            return False
-        else:
-            return True
+                    )
+            raise TargetIsNotACLIException
 
-    def implementation(self, enable_log=False):
+    def implementation(self, enable_log=True):
         '''
         Execute the implementation and returns a boolean indicating if it needs
         remediation. Return None if an error occured.
         '''
         target_type = "implementation"
-        if not self.is_target_cli(target_type, enable_log=enable_log):
-            return None
+        self.is_target_cli(target_type, enable_log=enable_log)
 
         # Execute the target
         result = self.exec(target_type)
@@ -65,7 +48,7 @@ class Metric(object):
         # stdout with data means that a remediation is needed
         self.need_remediation = result.stdout != ""
 
-        if is_error(result):
+        if is_error(result) and enable_log:
             self.metric_log(
                     "error", target_type, "target returned an error", result)
             return None
@@ -74,14 +57,13 @@ class Metric(object):
 
         return self.need_remediation
 
-    def remediation(self, force=False, enable_log=False):
+    def remediation(self, force=False, enable_log=True):
         '''
         Execute the remediation and return a boolen indicating if the
         implementation has been fixed. Return None if an error occured.
         '''
         target_type = "remediation"
-        if not self.is_target_cli(target_type, enable_log=enable_log):
-            return None
+        self.is_target_cli(target_type, enable_log=enable_log)
 
         if self.need_remediation or force:
             # Execute the target
@@ -89,7 +71,7 @@ class Metric(object):
 
             need_remediation = self.implementation(enable_log=False)
 
-            if is_error(result):
+            if is_error(result) and enable_log:
                 self.metric_log("error", target_type,
                                 "target returned an error", result)
                 return None
@@ -98,18 +80,17 @@ class Metric(object):
             else:
                 return not need_remediation
 
-    def rollback(self, enable_log=False):
+    def rollback(self, enable_log=True):
         '''
         Execute the rollback
         '''
         target_type = "rollback"
-        if not self.is_target_cli(target_type, enable_log=enable_log):
-            return None
+        self.is_target_cli(target_type, enable_log=enable_log)
 
         for i in range(0, 10):
             result = self.exec(target_type)
 
-            if is_error(result):
+            if is_error(result) and enable_log:
                 if enable_log:
                     self.metric_log("error", target_type,
                                     "target returned an error", result)
@@ -223,6 +204,29 @@ class Metric(object):
 
     def run_all_tests(self):
         self.logger.info(f"Running `{self.info['name']}` tests")
-        self.implementation()
-        self.remediation()
-        self.rollback()
+        try:
+            self.implementation()
+            self.remediation()
+            self.rollback()
+        except TargetIsNotACLIException:
+            # Ignore other targets when this execption is triggered
+            pass
+
+
+class TargetIsNotACLIException(Exception):
+    '''Raised when a target is not a CLI'''
+    pass
+
+
+def is_error(result):
+    '''
+    Return a boolean indicating if the provided result was an error.
+    In this project we consider a command result as an error when the
+    returncode is different than 0 and the stderr is not empty.
+
+    Parameter:
+        result: subprocess result
+    Return:
+        the error status of the result
+    '''
+    return result.returncode != 0 and result.stderr != ""
