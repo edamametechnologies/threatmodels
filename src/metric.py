@@ -1,6 +1,20 @@
 import subprocess
 
 
+def is_error(result):
+        '''
+        Return a boolean indicating if the provided result was an error.
+        In this project we consider a command result as an error when the
+        returncode is different than 0 and the stderr is not empty.
+
+        Parameter:
+            result: subprocess result
+        Return:
+            the error status of the result
+        '''
+        return result.returncode != 0 and result.stderr != ""
+
+
 class Metric(object):
     '''Representation of a metric with associated functions to perform tests'''
 
@@ -13,24 +27,10 @@ class Metric(object):
         self.need_remediation = None
 
         self.report = {
-                "implementation": {},
-                "remediation": {},
-                "rollback": {}
+                "implementation": {"elevation_checked": False},
+                "remediation": {"elevation_checked": False},
+                "rollback": {"elevation_checked": False}
         }
-
-    @staticmethod
-    def check_error_standard(result):
-        '''
-        Return a boolean indicating if the provided result was an error.
-        In this project we consider a command result as an error when the
-        returncode is not 0 and the stderr is not empty.
-
-        Parameter:
-            result: subprocess result
-        Return:
-            the error status of the result
-        '''
-        return result.returncode != 0 and result.stderr != ""
 
     def metric_log(self, log_type, target_type, message, result=None):
         if log_type == "error":
@@ -65,7 +65,7 @@ class Metric(object):
         # stdout with data means that a remediation is needed
         self.need_remediation = result.stdout != ""
 
-        if self.check_error_standard(result):
+        if is_error(result):
             self.metric_log(
                     "error", target_type, "target returned an error", result)
             return None
@@ -89,7 +89,7 @@ class Metric(object):
 
             need_remediation = self.implementation(enable_log=False)
 
-            if self.check_error_standard(result):
+            if is_error(result):
                 self.metric_log("error", target_type,
                                 "target returned an error", result)
                 return None
@@ -109,7 +109,7 @@ class Metric(object):
         for i in range(0, 10):
             result = self.exec(target_type)
 
-            if self.check_error_standard(result):
+            if is_error(result):
                 if enable_log:
                     self.metric_log("error", target_type,
                                     "target returned an error", result)
@@ -134,19 +134,23 @@ class Metric(object):
         if "need-perms" in self.report[target_type].keys():
             need_perms = self.report[target_type]["need-perms"]
 
-            if need_perms is not None:
-                if need_perms:
-                    if self.info[target_type]["elevation"] == "user":
-                        # TODO: Optionally modify the permissions automatically
+            self.report[target_type]["elevation_checked"] = True
 
-                        self.metric_log("error", target_type,
-                                        "target permissions too low")
-                else:
-                    if self.info[target_type]["elevation"] != "user":
-                        # TODO: Optionally modify the permissions automatically
+            if need_perms is None:
+                return
 
-                        self.metric_log("error", target_type,
-                                        "target permissions too high")
+            if need_perms:
+                if self.info[target_type]["elevation"] == "user":
+                    # TODO: Optionally modify the permissions automatically
+
+                    self.metric_log("error", target_type,
+                                    "target permissions too low")
+            else:
+                if self.info[target_type]["elevation"] != "user":
+                    # TODO: Optionally modify the permissions automatically
+
+                    self.metric_log("error", target_type,
+                                    "target permissions too high")
 
     def exec(self, target_type):
         '''
@@ -170,14 +174,14 @@ class Metric(object):
         )
 
         # If there is an error, try to run as root
-        if self.check_error_standard(result):
+        if is_error(result):
             result = self.exec_as_root(target_type, command)
         else:
             self.report[target_type]["need-perms"] = False
             self.report[target_type]["causes-error"] = False
             self.report[target_type]["result"] = result
 
-        if "need-perms" not in self.report[target_type].keys():
+        if not self.report[target_type]["elevation_checked"]:
             self.check_elevations(target_type)
 
         return result
@@ -204,7 +208,7 @@ class Metric(object):
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
         )
 
-        if self.check_error_standard(result):
+        if is_error(result):
             # Error probably not related to permissions
             self.report[target_type]["need-perms"] = None
             self.report[target_type]["causes-error"] = True
@@ -218,7 +222,7 @@ class Metric(object):
         return result
 
     def run_all_tests(self):
-        self.logger.info(f"Running `{self.info['name']} tests`")
+        self.logger.info(f"Running `{self.info['name']}` tests")
         self.implementation()
         self.remediation()
         self.rollback()
