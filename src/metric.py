@@ -171,7 +171,8 @@ class Metric(object):
             self.report[target_type]["causes-error"] = False
             self.report[target_type]["result"] = result
 
-        self.check_elevations(target_type)
+        if "need-perms" not in self.report[target_type].keys():
+            self.check_elevations(target_type)
 
         return result
 
