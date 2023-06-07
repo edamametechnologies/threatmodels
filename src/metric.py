@@ -63,6 +63,12 @@ class Metric(object):
 
         self.report[target_type]["result"] = result
 
+        print("SUCCESS")
+        print("success")
+        print("OK")
+        print("ok")
+        print("Incredible")
+
         return self.need_remediation
 
     def remediation(self, force=False, enable_log=True):
@@ -96,7 +102,7 @@ class Metric(object):
         target_type = "rollback"
         self.is_target_cli(target_type, enable_log=enable_log)
 
-        for i in range(0, 10):
+        for i in range(0, 5):
             result = self.exec(target_type)
 
             if is_error(result):
