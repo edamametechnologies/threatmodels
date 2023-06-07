@@ -113,6 +113,7 @@ class Metric(object):
                     "info", target_type,
                     "rollback cannot be tested as the implementation is not working",
                     enable_log=enable_log)
+                return None
 
             elif not implementation_fixed:
                 # Rollback executed well but did not fixed the implementation
