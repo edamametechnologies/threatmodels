@@ -1,7 +1,7 @@
 from model import Model
 import logging
 
-logging.basicConfig(format='[%(asctime)s][%(levelname)s] %(message)s', level=logging.INFO)
+logging.basicConfig(format='[%(asctime)s] %(message)s', level=logging.INFO)
 
 logger = logging.getLogger('logger')
 
