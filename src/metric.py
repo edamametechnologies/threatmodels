@@ -198,7 +198,7 @@ class Metric(object):
             subprocess result
         '''
         if self.source == "Windows":
-            command = f"elevate -w {command}"
+            command = f"runas /noprofile /user:Administrator {command}"
         else:
             command = f"sudo -- sh -c '{command}'"
 
