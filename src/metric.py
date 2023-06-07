@@ -18,11 +18,16 @@ class Metric(object):
                 "rollback": {"elevation_checked": False}
         }
 
-    def metric_log(self, log_type, target_type, message, result=None):
+    def metric_log(self, log_type, target_type, message,
+                   enable_log=True, result=None):
+        log = f"[{target_type}] {message}"
+
         if log_type == "error":
-            self.logger.error(f"[{target_type}] {message}")
+            self.logger.error(log)
         elif log_type == "warning":
-            self.logger.warning(f"[{target_type}] {message}")
+            self.logger.warning(log)
+        elif log_type == "info":
+            self.logger.info(log)
 
         if result is not None:
             self.logger.error(result)
@@ -30,10 +35,11 @@ class Metric(object):
     def is_target_cli(self, target_type, enable_log=True):
         '''Check if the given target type has a cli target'''
         if self.info[target_type]['class'] != 'cli':
-            if enable_log:
-                self.logger.error(
-                    f"target {target_type} is not a CLI or not implemented yet"
-                    )
+            self.metric_log("warning", target_type,
+                            "target  is not a CLI or not implemented yet",
+                            enable_log=enable_log
+                            )
+
             raise TargetIsNotACLIException
 
     def implementation(self, enable_log=True):
@@ -50,9 +56,9 @@ class Metric(object):
         # stdout with data means that a remediation is needed
         self.need_remediation = result.stdout != ""
 
-        if is_error(result) and enable_log:
-            self.metric_log(
-                    "error", target_type, "target returned an error", result)
+        if is_error(result):
+            self.metric_log("error", target_type, "target returned an error",
+                            result=result, enable_log=enable_log)
             return None
 
         self.report[target_type]["result"] = result
@@ -73,9 +79,10 @@ class Metric(object):
 
             need_remediation = self.implementation(enable_log=False)
 
-            if is_error(result) and enable_log:
+            if is_error(result):
                 self.metric_log("error", target_type,
-                                "target returned an error", result)
+                                "target returned an error",
+                                result=result, enable_log=enable_log)
                 return None
             elif need_remediation is None:
                 return False
@@ -92,22 +99,29 @@ class Metric(object):
         for i in range(0, 10):
             result = self.exec(target_type)
 
-            if is_error(result) and enable_log:
-                if enable_log:
-                    self.metric_log("error", target_type,
-                                    "target returned an error", result)
+            if is_error(result):
+                self.metric_log("error", target_type,
+                                "target returned an error",
+                                result=result, enable_log=enable_log)
                 return None
 
-            if not self.implementation(enable_log=False):
-                if enable_log:
-                    self.metric_log("error", target_type,
-                                    "rollback did not revert the change",
-                                    result)
+            implementation_fixed = not self.implementation(enable_log=False)
+            if implementation_fixed is None:
+                # The implementation itself is not working
+                self.metric_log(
+                    "info", target_type,
+                    "rollback cannot be tested as the implementation is not working",
+                    enable_log=enable_log)
+
+            elif not implementation_fixed:
+                # Rollback executed well but did not fixed the implementation
+                self.metric_log("error", target_type,
+                                f"rollback attempt {i} did not revert the change",
+                                result=result, enable_log=enable_log)
                 return None
-                # Not normal!!!
                 break
 
-            self.remediation()
+            self.remediation(enable_log=False)
 
     def check_elevations(self, target_type):
         '''
