@@ -1,16 +1,12 @@
 import json
 from sys import platform
 from metric import Metric
-from custom_exceptions import (
-        ImplementationTargetError, RemediationTargetError,
-        RemediationFixInvalid
-)
 
 
 class Model(object):
     '''Perform tests over a threat model'''
 
-    def __init__(self, dir_path):
+    def __init__(self, logger, dir_path):
         # Detect platform
         if platform == "linux" or platform == "linux2":
             # linux
@@ -30,55 +26,18 @@ class Model(object):
 
         # Instanciating metrics
         for metric_info in self.model['metrics']:
-            self.metrics.append(Metric(metric_info, self.source))
+            self.metrics.append(Metric(metric_info, self.source, logger))
 
         # Errors count
         self.errors = 0
         self.invalid_remediations = 0
 
-        # Save functions run status
-        self.implementations_have_been_run = False
-        self.remediations_have_been_run = False
-        self.rollbacks_have_been_run = False
+        self.logger = logger
 
-    def run_implementations(self):
-        '''Run implementation for each metric'''
+    def run_metrics_sequentially(self):
         for metric in self.metrics:
-            try:
-                metric.implementation()
-            except ImplementationTargetError:
-                self.errors += 1
-
-        self.implementations_have_been_run = True
-
-    def run_remediations(self, force=False):
-        '''
-        Run remediation for each metric
-
-        paraameter:
-            force: Force the execution of remediations even if the
-                   corresponding implementations did not failed
-        '''
-        for metric in self.metrics:
-            try:
-                metric.remediation(force=force)
-            except RemediationTargetError:
-                self.errors += 1
-            except RemediationFixInvalid:
-                self.invalid_remediations += 1
-            except ImplementationTargetError:
-                # Count implementation errors if those tests were not run
-                if not self.implementations_have_been_run:
-                    self.errors += 1
-
-        self.remediations_have_been_run = True
-
-    def run_rollbacks(self):
-        '''Run rollback for each metric'''
-        for metric in self.metrics:
-            metric.rollback()
-
-        self.rollbacks_have_been_run = True
+            self.logger.info("\n")
+            metric.run_all_tests()
 
     def get_results(self):
         '''Returns the results of the tests'''
