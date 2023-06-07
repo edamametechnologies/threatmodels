@@ -105,7 +105,8 @@ class Metric(object):
                                 result=result, enable_log=enable_log)
                 return None
 
-            implementation_fixed = not self.implementation(enable_log=False)
+            implementation_fixed = self.implementation(enable_log=False)
+
             if implementation_fixed is None:
                 # The implementation itself is not working
                 self.metric_log(
@@ -119,7 +120,6 @@ class Metric(object):
                                 f"rollback attempt {i} did not revert the change",
                                 result=result, enable_log=enable_log)
                 return None
-                break
 
             self.remediation(enable_log=False)
 
