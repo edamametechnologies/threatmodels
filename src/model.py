@@ -36,7 +36,6 @@ class Model(object):
 
     def run_metrics_sequentially(self):
         for metric in self.metrics:
-            self.logger.info("\n")
             metric.run_all_tests()
 
     def get_results(self):
