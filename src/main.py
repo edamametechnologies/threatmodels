@@ -19,12 +19,11 @@ logger = logging.getLogger('logger')
 logger.setLevel(logging.DEBUG)
 
 model = Model(logger, dir_path=".")
-model.run_metrics_sequentially()
-results = model.get_results()
+results = model.run_metrics_sequentially()
 
 print(results)
 
-if results["errors"] > 0 or results["invalid_remediations"] > 0:
+if results["error_count"] > 0 or results["warning_count"] > 0:
     exit(1)
 else:
     exit(0)

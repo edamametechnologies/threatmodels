@@ -12,8 +12,14 @@ class Metric(object):
         self.report = {
                 "implementation": {"elevation_checked": False},
                 "remediation": {"elevation_checked": False},
-                "rollback": {"elevation_checked": False}
+                "rollback": {"elevation_checked": False},
+                "error_count": 0,
+                "warning_count": 0,
+                "ok_count": 0
         }
+
+    def get_report(self):
+        return self.report
 
     def metric_log(self, log_type, target_type, message,
                    enable_log=True, result=None):
@@ -24,11 +30,14 @@ class Metric(object):
 
         if log_type == "error":
             self.logger.error(log)
+            self.report["error_count"] += 1
         elif log_type == "warning":
             self.logger.warning(log)
+            self.report["warning_count"] += 1
         elif log_type == "info":
             self.logger.info(log)
         elif log_type == "ok":
+            self.report["ok_count"] += 1
             self.logger.ok(log)
 
         if result is not None:
@@ -266,7 +275,7 @@ class Metric(object):
             pass
 
     def run_all_tests(self):
-        '''Run all the tests for this metric'''
+        '''Run all the tests for this metric and returns the report'''
         self.logger.info(f"Running `{self.info['name']}` tests")
         try:
             need_remediation = self.implementation()
@@ -288,6 +297,8 @@ class Metric(object):
 
             # Execute remediation even if rollback is not a CLI
             self.try_execute("remediation")
+
+        return self.get_report()
 
 
 class TargetIsNotACLIException(Exception):
