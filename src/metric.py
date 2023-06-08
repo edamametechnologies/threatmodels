@@ -317,4 +317,20 @@ def is_error(result):
     Return:
         the error status of the result
     '''
-    return result.returncode != 0 and result.stderr != ""
+    elevation_keyword_count = 0
+
+    for k in ["administrator", "permissions", "privileges", "root",
+              "allowed", "allow"]:
+        if k in result.stdout.lower() or k in result.stderr.lower():
+            elevation_keyword_count += 1
+
+    verb_keyword_count = 0
+
+    for k in ["need", "are", "run", "not"]:
+        if k in result.stdout.lower() or k in result.stderr.lower():
+            verb_keyword_count += 1
+
+    if elevation_keyword_count > 0 and verb_keyword_count > 0:
+        return True
+    else:
+        return result.returncode != 0 and result.stderr != ""
