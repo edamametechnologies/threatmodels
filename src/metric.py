@@ -9,9 +9,6 @@ class Metric(object):
         self.source = source
         self.logger = logger
 
-        # None: not run yet, False: no remediation, True: need remediation
-        self.need_remediation = None
-
         self.report = {
                 "implementation": {"elevation_checked": False},
                 "remediation": {"elevation_checked": False},
@@ -20,6 +17,9 @@ class Metric(object):
 
     def metric_log(self, log_type, target_type, message,
                    enable_log=True, result=None):
+        if not enable_log:
+            return
+
         log = f"{target_type} {message}"
 
         if log_type == "error":
@@ -57,17 +57,19 @@ class Metric(object):
         result = self.exec(target_type)
 
         # stdout with data means that a remediation is needed
-        self.need_remediation = result.stdout != ""
+        need_remediation = result.stdout != ""
 
         if is_error(result):
             self.metric_log("error", target_type, "target returned an error",
                             result=result, enable_log=enable_log)
             return None
         else:
-            self.metric_log("ok", target_type, "target passed tests",
+            self.metric_log("ok", target_type,
+                            "target passed tests. "
+                            f"Need remediation: {need_remediation}",
                             enable_log=enable_log)
 
-            return self.need_remediation
+            return need_remediation
 
     def remediation(self, enable_log=True):
         '''
@@ -131,7 +133,7 @@ class Metric(object):
                 # The implementation itself is not working
                 self.metric_log(
                     "warning", target_type,
-                    "rollback cannot be tested as the implementation returned "
+                    "target cannot be tested as the implementation returned "
                     "an error",
                     enable_log=enable_log)
                 return None
