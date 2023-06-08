@@ -257,7 +257,16 @@ class Metric(object):
 
         return result
 
+    def try_execute(self, function_name):
+        '''try executing a function, ignoring certain exceptions'''
+        function = self.__getattribute__(function_name)
+        try:
+            return function()
+        except TargetIsNotACLIException:
+            pass
+
     def run_all_tests(self):
+        '''Run all the tests for this metric'''
         self.logger.info(f"Running `{self.info['name']}` tests")
         try:
             need_remediation = self.implementation()
@@ -269,22 +278,16 @@ class Metric(object):
 
         if need_remediation:
             # If remediation needed, remediation first
-            try:
-                self.remediation()
-            except TargetIsNotACLIException:
-                pass
+            self.try_execute("remediation")
 
             # Execute rollback even if remediation is not a CLI
-            self.rollback()
+            self.try_execute("rollback")
         else:
             # If remediation not needed, rollback first
-            try:
-                self.rollback()
-            except TargetIsNotACLIException:
-                pass
+            self.try_execute("rollback")
 
             # Execute remediation even if rollback is not a CLI
-            self.remediation()
+            self.try_execute("remediation")
 
 
 class TargetIsNotACLIException(Exception):
