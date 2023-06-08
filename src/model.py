@@ -28,17 +28,27 @@ class Model(object):
         for metric_info in self.model['metrics']:
             self.metrics.append(Metric(metric_info, self.source, logger))
 
-        # Errors count
-        self.errors = 0
-        self.invalid_remediations = 0
+        # Saving reports in an array
+        self.reports = []
 
         self.logger = logger
 
     def run_metrics_sequentially(self):
+        '''
+        Run all tests sequentially and returns the results.
+        '''
         for metric in self.metrics:
-            metric.run_all_tests()
+            report = metric.run_all_tests()
+            self.reports.append(report)
+
+        return self.get_results()
 
     def get_results(self):
         '''Returns the results of the tests'''
-        return {"errors": self.errors,
-                "invalid_remediations": self.invalid_remediations}
+        res = {"error_count": 0, "warning_count": 0, "ok_count": 0}
+
+        for report in self.reports:
+            for key in res.keys():
+                res[key] += report[key]
+
+        return res
