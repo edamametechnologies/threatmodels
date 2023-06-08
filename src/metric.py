@@ -20,7 +20,7 @@ class Metric(object):
 
     def metric_log(self, log_type, target_type, message,
                    enable_log=True, result=None):
-        log = f"[{target_type}] {message}"
+        log = f"{target_type} {message}"
 
         if log_type == "error":
             self.logger.error(log)
@@ -28,6 +28,8 @@ class Metric(object):
             self.logger.warning(log)
         elif log_type == "info":
             self.logger.info(log)
+        elif log_type == "ok":
+            self.logger.ok(log)
 
         if result is not None:
             self.logger.error(result)
@@ -37,8 +39,7 @@ class Metric(object):
         if self.info[target_type]['class'] != 'cli':
             self.metric_log("warning", target_type,
                             "target  is not a CLI or not implemented yet",
-                            enable_log=enable_log
-                            )
+                            enable_log=enable_log)
 
             raise TargetIsNotACLIException
 
@@ -48,6 +49,8 @@ class Metric(object):
         remediation. Return None if an error occured.
         '''
         target_type = "implementation"
+
+        # Check if cli else raises exception
         self.is_target_cli(target_type, enable_log=enable_log)
 
         # Execute the target
@@ -60,40 +63,49 @@ class Metric(object):
             self.metric_log("error", target_type, "target returned an error",
                             result=result, enable_log=enable_log)
             return None
+        else:
+            self.metric_log("ok", target_type, "target passed tests",
+                            enable_log=enable_log)
 
-        self.report[target_type]["result"] = result
+            return self.need_remediation
 
-        print("SUCCESS")
-        print("success")
-        print("OK")
-        print("ok")
-        print("Incredible")
-
-        return self.need_remediation
-
-    def remediation(self, force=False, enable_log=True):
+    def remediation(self, enable_log=True):
         '''
         Execute the remediation and return a boolen indicating if the
         implementation has been fixed. Return None if an error occured.
         '''
         target_type = "remediation"
+
+        # Check if cli else raises exception
         self.is_target_cli(target_type, enable_log=enable_log)
 
-        if self.need_remediation or force:
-            # Execute the target
-            result = self.exec(target_type)
+        # Execute the target
+        result = self.exec(target_type)
 
-            need_remediation = self.implementation(enable_log=False)
+        need_remediation = self.implementation(enable_log=False)
 
-            if is_error(result):
-                self.metric_log("error", target_type,
-                                "target returned an error",
-                                result=result, enable_log=enable_log)
-                return None
-            elif need_remediation is None:
-                return False
-            else:
-                return not need_remediation
+        if is_error(result):
+            self.metric_log("error", target_type,
+                            "target returned an error",
+                            result=result, enable_log=enable_log)
+            return None
+        elif need_remediation is None:
+            self.metric_log("warning", target_type,
+                            "target result could not be verified as the "
+                            "implementation returned an error",
+                            enable_log=enable_log)
+            return False
+        elif need_remediation:
+            self.metric_log("error", target_type,
+                            "target ran flawlessly but did not "
+                            "resolve the metric",
+                            enable_log=enable_log)
+            return False
+        else:
+            self.metric_log("ok", target_type,
+                            "target successfuly resolved the metric",
+                            enable_log=enable_log)
+            return True
 
     def rollback(self, enable_log=True):
         '''
@@ -102,7 +114,9 @@ class Metric(object):
         target_type = "rollback"
         self.is_target_cli(target_type, enable_log=enable_log)
 
-        for i in range(0, 5):
+        n_attempts = 3
+
+        for i in range(0, n_attempts):
             result = self.exec(target_type)
 
             if is_error(result):
@@ -116,19 +130,35 @@ class Metric(object):
             if implementation_fixed is None:
                 # The implementation itself is not working
                 self.metric_log(
-                    "info", target_type,
-                    "rollback cannot be tested as the implementation is not working",
+                    "warning", target_type,
+                    "rollback cannot be tested as the implementation returned "
+                    "an error",
                     enable_log=enable_log)
                 return None
 
             elif not implementation_fixed:
                 # Rollback executed well but did not fixed the implementation
                 self.metric_log("error", target_type,
-                                f"rollback attempt {i} did not revert the change",
+                                f"attempt {i} did not revert the "
+                                "change",
                                 result=result, enable_log=enable_log)
                 return None
+            else:
+                self.metric_log("ok", target_type,
+                                f"attempt {i} successfuly reverted changes",
+                                enable_log=enable_log)
 
-            self.remediation(enable_log=False)
+            if not self.remediation(enable_log=False):
+                self.metric_log("warning", "remediation",
+                                "target is not working properly, cannot test "
+                                "the rollback", enable_log=enable_log)
+                return None
+
+        self.metric_log("ok", target_type,
+                        f"successfuly reverted the changes over {n_attempts}",
+                        enable_log=enable_log)
+
+        return True
 
     def check_elevations(self, target_type):
         '''
@@ -197,7 +227,7 @@ class Metric(object):
 
         Parameters:
             target_type: implementation / remediation / rollback
-            command: the command that couldn't be run without root privileges
+            command: the command that could not be run without root privileges
         Returns:
             subprocess result
         '''
@@ -228,11 +258,18 @@ class Metric(object):
     def run_all_tests(self):
         self.logger.info(f"Running `{self.info['name']}` tests")
         try:
-            self.implementation()
-            self.remediation()
-            self.rollback()
+            # First testing implementation
+            if self.implementation():
+                # If remediation needed, remediation first
+                self.remediation()
+                self.rollback()
+            else:
+                # If remediation not needed, rollback first
+                self.rollback()
+                self.remediation()
+
         except TargetIsNotACLIException:
-            # Ignore other targets when this execption is triggered
+            # Ignore other targets when this exception is triggered
             pass
 
 
