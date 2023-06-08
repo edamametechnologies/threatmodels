@@ -260,19 +260,31 @@ class Metric(object):
     def run_all_tests(self):
         self.logger.info(f"Running `{self.info['name']}` tests")
         try:
-            # First testing implementation
-            if self.implementation():
-                # If remediation needed, remediation first
-                self.remediation()
-                self.rollback()
-            else:
-                # If remediation not needed, rollback first
-                self.rollback()
-                self.remediation()
-
+            need_remediation = self.implementation()
         except TargetIsNotACLIException:
-            # Ignore other targets when this exception is triggered
-            pass
+            self.metric_log("error", "metric",
+                            "cancelling tests as implementation is not a "
+                            "CLI")
+            return None
+
+        if need_remediation:
+            # If remediation needed, remediation first
+            try:
+                self.remediation()
+            except TargetIsNotACLIException:
+                pass
+
+            # Execute rollback even if remediation is not a CLI
+            self.rollback()
+        else:
+            # If remediation not needed, rollback first
+            try:
+                self.rollback()
+            except TargetIsNotACLIException:
+                pass
+
+            # Execute remediation even if rollback is not a CLI
+            self.remediation()
 
 
 class TargetIsNotACLIException(Exception):
