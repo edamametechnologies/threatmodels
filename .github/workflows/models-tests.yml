@@ -33,19 +33,35 @@ jobs:
           run: |
             pip install -r requirements.txt
             python3 src/main.py
+        - name: Print Operating System
+          run: echo "Running on ${{ matrix.os }}"
+      
+        - name: Set job output
+          id: output
+          run: echo "${{ matrix.os }}=$(cat report-results.txt)"
+
+        outputs:
+          windows-report: ${{ steps.output.outputs.windows-latest }}
+          macos-report: ${{ steps.output.outputs.macos-latest }}
+          ubuntu-report: ${{ steps.output.outputs.ubuntu-latest }}
     slack:
         # Wait test job to finish
         needs: tests
         if: ${{ always() }}
         runs-on: ubuntu-latest
         steps:
-        - name: slack-send
-          uses: slackapi/slack-github-action@v1.24.0
-          with:
-            # Slack channel ID where message will be posted. Needed if using bot token
-            channel-id: 'C057RHL9RTL'
-            # Message to post into Slack. Needed if using bot token
-            slack-message: "GitHub tests result: ${{ job.status }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            # ${{ github.event.pull_request.html_url || github.event.head_commit.url }
-          env:
-              SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          - env:
+              WINDOWS_REPORT: ${{needs.job1.outputs.winodws-report}}
+              MACOS_REPORT: ${{needs.job1.outputs.macos-report}}
+              UBUNTU_REPORT: ${{needs.job1.outputs.ubuntu-report}}
+            run: echo "$WINDOWS_REPORT $MACOS_REPORT $UBUNTU_REPORT"
+          - name: slack-send
+            uses: slackapi/slack-github-action@v1.24.0
+            with:
+              # Slack channel ID where message will be posted. Needed if using bot token
+              channel-id: 'C057RHL9RTL'
+              # Message to post into Slack. Needed if using bot token
+              slack-message: "GitHub tests result: ${{ job.status }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              # ${{ github.event.pull_request.html_url || github.event.head_commit.url }
+            env:
+                SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
