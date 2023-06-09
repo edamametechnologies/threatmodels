@@ -1,5 +1,8 @@
 import subprocess
 
+# Command timeout in seconds
+CMD_TIMEOUT = 30
+
 
 class Metric(object):
     '''Representation of a metric with associated functions to perform tests'''
@@ -65,14 +68,14 @@ class Metric(object):
         # Execute the target
         result = self.exec(target_type)
 
-        # stdout with data means that a remediation is needed
-        need_remediation = result.stdout != ""
-
         if is_error(result):
             self.metric_log("error", target_type, "target returned an error",
                             result=result, enable_log=enable_log)
             return None
         else:
+            # stdout with data means that a remediation is needed
+            need_remediation = result.stdout != ""
+
             self.metric_log("ok", target_type,
                             "target passed tests. "
                             f"Need remediation: {need_remediation}",
@@ -166,7 +169,8 @@ class Metric(object):
                 return None
 
         self.metric_log("ok", target_type,
-                        f"successfuly reverted the changes over {n_attempts}",
+                        f"successfuly reverted the changes over {n_attempts} "
+                        "attempts",
                         enable_log=enable_log)
 
         return True
@@ -204,7 +208,7 @@ class Metric(object):
         Parameters:
             target_type: implementation / remediation / rollback
         Returns:
-            subprocess result
+            subprocess result or None if timeout
         '''
         # Gets the corresponding target command
         command = self.info[target_type]["target"]
@@ -212,15 +216,21 @@ class Metric(object):
         if self.source == "Windows":
             command = f"powershell.exe -Command {command}"
 
-        result = subprocess.run(
-                command,
-                shell=True,
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-        )
+        try:
+            result = subprocess.run(
+                    command,
+                    shell=True,
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+                    timeout=CMD_TIMEOUT
+            )
+        except subprocess.TimeoutExpired as e:
+            self.metric_log("error", target_type, e)
+            result = None
+            # Not returning here, we want to try the command with permissions
 
         # If there is an error, try to run as root
         if is_error(result):
-            result = self.exec_as_root(target_type, command)
+            result = self.exec_with_permissions(target_type, command)
         else:
             self.report[target_type]["need-perms"] = False
             self.report[target_type]["causes-error"] = False
@@ -231,7 +241,7 @@ class Metric(object):
 
         return result
 
-    def exec_as_root(self, target_type, command):
+    def exec_with_permissions(self, target_type, command):
         '''
         Execute a target on the corresponding platform as root and returns the
         result.
@@ -240,18 +250,23 @@ class Metric(object):
             target_type: implementation / remediation / rollback
             command: the command that could not be run without root privileges
         Returns:
-            subprocess result
+            subprocess result or None if timeout
         '''
         if self.source == "Windows":
             command = f"runas /noprofile /user:Administrator {command}"
         else:
             command = f"sudo -- sh -c '{command}'"
 
-        result = subprocess.run(
-            command,
-            shell=True,
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-        )
+        try:
+            result = subprocess.run(
+                command,
+                shell=True,
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+                timeout=CMD_TIMEOUT
+            )
+        except subprocess.TimeoutExpired as e:
+            self.metric_log("error", target_type, e)
+            return None
 
         if is_error(result):
             # Error probably not related to permissions
@@ -317,6 +332,9 @@ def is_error(result):
     Return:
         the error status of the result
     '''
+    if result is None:
+        return True
+
     elevation_keyword_count = 0
 
     for k in ["administrator", "permissions", "privileges", "root",
