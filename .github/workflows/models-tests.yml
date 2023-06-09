@@ -44,4 +44,4 @@ jobs:
             # Slack channel ID where message will be posted. Needed if using bot token
             channel-id: 'C057RHL9RTL'
             # Message to post into Slack. Needed if using bot token
-            slack-message: "GitHub tests result: ${{ tests.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+            slack-message: "GitHub tests result: ${{ jobs.tests.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
