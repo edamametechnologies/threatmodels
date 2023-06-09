@@ -36,6 +36,7 @@ jobs:
     slack:
         # Wait test job to finish
         needs: tests
+        if: ${{ always() }}
         runs-on: ubuntu-latest
         steps:
         - name: slack-send
