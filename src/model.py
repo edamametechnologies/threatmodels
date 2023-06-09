@@ -52,6 +52,6 @@ class Model(object):
                 res[key] += report[key]
 
         with open('report-results.txt', 'w') as file:
-            file.write(res)
+            file.write(str(res))
 
         return res
