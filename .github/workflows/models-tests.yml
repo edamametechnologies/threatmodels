@@ -4,20 +4,22 @@ name: Models tests
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
     build:
+        # Runs in parallel on specified os in the strategy bellow.
         runs-on: ${{ matrix.os }}
 
         strategy:
             matrix:
                 os: [macos-latest, windows-latest, ubuntu-latest]
+            # Prevent one job from cancelling the others if it fails
             fail-fast: false
 
         steps:
@@ -31,4 +33,3 @@ jobs:
           run: |
             pip install -r requirements.txt
             python3 src/main.py
-        
