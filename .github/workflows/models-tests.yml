@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 jobs:
-    build:
+    tests:
         # Runs in parallel on specified os in the strategy bellow.
         runs-on: ${{ matrix.os }}
 
@@ -33,3 +33,15 @@ jobs:
           run: |
             pip install -r requirements.txt
             python3 src/main.py
+    slack:
+        # Wait test job to finish
+        needs: tests
+        runs-on: ubuntu-latest
+        steps:
+        - name: slack-send
+          uses: slackapi/slack-github-action@v1.24.0
+          with:
+            # Slack channel ID where message will be posted. Needed if using bot token
+            channel-id: 'C057RHL9RTL'
+            # Message to post into Slack. Needed if using bot token
+            slack-message: "GitHub tests result: ${{ tests.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
