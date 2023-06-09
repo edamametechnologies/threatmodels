@@ -1,7 +1,7 @@
 import subprocess
 
 # Command timeout in seconds
-CMD_TIMEOUT = 30
+CMD_TIMEOUT = 10
 
 
 class Metric(object):
@@ -298,7 +298,7 @@ class Metric(object):
             self.metric_log("error", "metric",
                             "cancelling tests as implementation is not a "
                             "CLI")
-            return None
+            return self.get_report()
 
         if need_remediation:
             # If remediation needed, remediation first
