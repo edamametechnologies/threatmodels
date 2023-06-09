@@ -6,7 +6,21 @@ import json
 import datetime
 
 
-def hash_file(filename):
+def open_threat_model(filename: str) -> None:
+    '''Open the file in read mode and return the JSON'''
+    with open(filename, 'r') as file:
+        data = json.load(file)
+    return data
+
+
+def save_threat_model(filename: str, data: dict) -> None:
+    '''Open the file in write mode and save the JSON'''
+    with open(filename, 'w') as file:
+        json.dump(data, file, indent=2)
+
+
+def hash_file(filename: str) -> str:
+    '''Compute and returns the sha256 hash of the JSON'''
     h = hashlib.sha256()
 
     # Open the file in binary mode
@@ -22,21 +36,27 @@ def hash_file(filename):
     return h.hexdigest()
 
 
-def update_json_file(filename):
-    # Open the file in read mode and load the JSON
-    with open(filename, 'r') as file:
-        data = json.load(file)
+def update_threat_model_header(filename):
+    '''Update the hash and date in the header of the threat model'''
+    data = open_threat_model(filename)
 
-    # Update the date and hash
+    # Update the date
     data["date"] = datetime.datetime.now().strftime("%B %dth %Y")
+    # Remove the signature to prepare hash computation
+    data["signature"] = ""
+
+    save_threat_model(filename, data)
+
+    data = open_threat_model(filename)
+
+    # Update with the new signature
     data["signature"] = hash_file(filename)
 
-    # Open the file in write mode and save the updated JSON
-    with open(filename, 'w') as file:
-        json.dump(data, file, indent=4)
+    save_threat_model(filename, data)
 
 
-for arg in sys.argv:
-    if arg.endswith(".json"):
-        print(f"updating {arg}")
-        update_json_file(arg)
+if __name__ == "__main__":
+    for arg in sys.argv:
+        if arg.endswith(".json"):
+            print(f"updating {arg}")
+            update_threat_model_header(arg)
