@@ -40,7 +40,7 @@ jobs:
         - name: Set job output
           if: always()
           id: output
-          run: echo "${{ matrix.os }}=$(cat report-results.txt)"
+          run: echo "${{ matrix.os }}=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
 
         outputs:
           windows-report: ${{ steps.output.outputs.windows-latest }}
