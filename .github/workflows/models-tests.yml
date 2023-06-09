@@ -34,9 +34,11 @@ jobs:
             pip install -r requirements.txt
             python3 src/main.py
         - name: Print Operating System
+          if: always()
           run: echo "Running on ${{ matrix.os }}"
       
         - name: Set job output
+          if: always()
           id: output
           run: echo "${{ matrix.os }}=$(cat report-results.txt)"
 
@@ -47,7 +49,7 @@ jobs:
     slack:
         # Wait test job to finish
         needs: tests
-        if: ${{ always() }}
+        if: always()
         runs-on: ubuntu-latest
         steps:
           - env:
