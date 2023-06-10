@@ -18,12 +18,6 @@ jobs:
           with:
             python-version: 3.11.3
         
-        - name: Checkout wiki repo
-          uses: actions/checkout@v3
-          with:
-            repository: edamametechnologies/threatmodels.wiki
-            token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-        
         - name: Checkout threatmodel repo to get the python script
           uses: actions/checkout@v3
           with:
@@ -34,7 +28,17 @@ jobs:
             pip install mdutils
             python3 build-wiki.py
             pwd
-            mv *.md ../threatmodel.wiki
+            mv *.md ../
+            
+        - name: Checkout wiki repo
+          uses: actions/checkout@v3
+          with:
+            repository: edamametechnologies/threatmodels.wiki
+            token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+          
+        - name: Move files to the wiki repo
+          run: |
+            mv ../*.md .
             
         - name: GitHub Commit & Push
           uses: actions-js/push@v1.4
