@@ -1,8 +1,8 @@
 {
   "name": "threat model iOS",
   "extends": "none",
-  "date": "May 9th 2023",
-  "signature": "ba7816bf8f01dfca424240de6dae2178c19161a606577a0ce410fe93f30013ad",
+  "date": "May 22th 2023",
+  "signature": "ba7816bf8f01dfca424240de6dae2178c19161a706577a9ce410fe93f30013ad",
   "metrics": [
     {
       "name": "MDM profiles",
@@ -15,12 +15,12 @@
         {
           "locale": "EN",
           "title": "MDM profiles installed",
-          "summary": "You have one or more Mobile Device Management (MDM) profiles installed on your computer. This means that your computer is or can be remotely administered by a 3rd party. If this is your personal computer, this is a grave threat and the profiles should be removed."
+          "summary": "You have one or more Mobile Device Management (MDM) profiles installed on your computer. This means that your device is or can be remotely administered by a 3rd party. If this is your personal device, this is a grave threat and the profiles should be removed."
         },
         {
           "locale": "FR",
           "title": "Profils MDM installés",
-          "summary": "Un ou plusieurs profils de gestion des appareils mobiles (MDM) sont installés sur votre ordinateur. Cela signifie que votre ordinateur est, ou peut être, administré à distance par un tiers. S'il s'agit de votre ordinateur personnel, il s'agit d'une grave menace et les profils doivent être supprimés."
+          "summary": "Un ou plusieurs profils de gestion des appareils mobiles (MDM) sont installés sur votre ordinateur. Cela signifie que votre appareil est, ou peut être, administré à distance par un tiers. S'il s'agit de votre appareil personnel, il s'agit d'une grave menace et les profils doivent être supprimés."
         }
       ],
       "implementation": {
@@ -43,7 +43,7 @@
           {
             "locale": "EN",
             "class": "link",
-            "target": "https://en.wikipedia.org/wiki/Mobile_device_management"
+            "target": "https://en.wikipedia.org/wiki/Mobile_device_managements"
           },
           {
             "locale": "FR",
@@ -63,7 +63,7 @@
           {
             "locale": "EN",
             "class": "link",
-            "target": "https://en.wikipedia.org/wiki/Mobile_device_management"
+            "target": "https://en.wikipedia.org/wiki/Mobile_device_managements"
           },
           {
             "locale": "FR",
@@ -74,126 +74,22 @@
       }
     },
     {
-      "name": "manual store application updates",
-      "metrictype": "bool",
-      "dimension": "applications",
-      "severity": 3,
-      "scope": "generic",
-      "tags": [
-        "CIS Benchmark Level 1",
-        "iOS_security/sysprefs_software_update_app_update_enforce"
-      ],
-      "description": [
-        {
-          "locale": "EN",
-          "title": "Manual Appstore updates",
-          "summary": "Applications are constantly updated to fix potential security issues. It's your best interest to get updates as soon as you can through automatic updates."
-        },
-        {
-          "locale": "FR",
-          "title": "Mises à jour Appstore manuelles",
-          "summary": "Les applications sont constamment mises à jour pour résoudre les problèmes de sécurité potentiels. Il est dans votre intérêt d'obtenir les mises à jour dès que possible grâce aux mises à jour automatiques."
-        }
-      ],
-      "implementation": {
-        "system": "iOS",
-        "minversion": 15,
-        "maxversion": 0,
-        "class": "internal",
-        "elevation": "user",
-        "target": "update_appstore_check",
-        "education": []
-      },
-      "remediation": {
-        "system": "iOS",
-        "minversion": 15,
-        "maxversion": 0,
-        "class": "internal",
-        "elevation": "user",
-        "target": "update_appstore_remediation",
-        "education": []
-      },
-      "rollback": {
-        "system": "iOS",
-        "minversion": 15,
-        "maxversion": 0,
-        "class": "internal",
-        "elevation": "user",
-        "target": "update_appstore_rollback",
-        "education": []
-      }
-    },
-    {
-      "name": "manual system updates",
-      "metrictype": "bool",
-      "dimension": "system integrity",
-      "severity": 4,
-      "scope": "generic",
-      "tags": [
-        "CIS Benchmark Level 1",
-        "iOS_security/sysprefs_install_iOS_updates_enforce",
-        "iOS_security/sysprefs_software_update_download_enforce"
-      ],
-      "description": [
-        {
-          "locale": "EN",
-          "title": "Manual system updates",
-          "summary": "System updates are manual. Your really should turn on automatic system updates to get the latest security fixes for your computer."
-        },
-        {
-          "locale": "FR",
-          "title": "Mises à jour système manuelles",
-          "summary": "Les mises à jour du système sont manuelles. Vous devriez vraiment activer les mises à jour automatiques du système pour obtenir les derniers correctifs de sécurité pour votre ordinateur."
-        }
-      ],
-      "implementation": {
-        "system": "iOS",
-        "minversion": 15,
-        "maxversion": 0,
-        "class": "internal",
-        "elevation": "user",
-        "target": "update_system_check",
-        "education": []
-      },
-      "remediation": {
-        "system": "iOS",
-        "minversion": 15,
-        "maxversion": 0,
-        "class": "internal",
-        "elevation": "user",
-        "target": "update_system_remediation",
-        "education": []
-      },
-      "rollback": {
-        "system": "iOS",
-        "minversion": 15,
-        "maxversion": 0,
-        "class": "internal",
-        "elevation": "user",
-        "target": "update_system_rollback",
-        "education": []
-      }
-    },
-    {
       "name": "too slow or disabled screensaver lock",
       "metrictype": "bool",
       "dimension": "credentials",
       "severity": 3,
       "scope": "generic",
-      "tags": [
-        "CIS Benchmark Level 1",
-        "iOS_security/sysprefs_screensaver_ask_for_password_delay_enforce"
-      ],
+      "tags": [],
       "description": [
         {
           "locale": "EN",
           "title": "Screen lock disabled",
-          "summary": "Your computer doesn't have a screensaver enabled with a password. It leaves it open for phsyical access by anyone. This is very dangerous!"
+          "summary": "Your device doesn't have a screensaver enabled with a password. It leaves it open for phsyical access by anyone. This is very dangerous!"
         },
         {
           "locale": "FR",
           "title": "Ecran protégé désactivé",
-          "summary": "Votre ordinateur n'a pas d'économiseur d'écran activé avec un mot de passe. Il le laisse ouvert à l'accès physique par n'importe qui. C'est très dangereux !"
+          "summary": "Votre appareil n'a pas d'économiseur d'écran activé avec un mot de passe. Il le laisse ouvert à l'accès physique par n'importe qui. C'est très dangereux !"
         }
       ],
       "implementation": {
@@ -216,12 +112,12 @@
           {
             "locale": "EN",
             "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=C6of13nZTpM"
+            "target": "https://www.youtube.com/watch?v=2t0NrqIwI2s"
           },
           {
             "locale": "FR",
             "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=C6of13nZTpM"
+            "target": "https://www.youtube.com/watch?v=55lKpx3SCK0"
           }
         ]
       },
@@ -236,12 +132,12 @@
           {
             "locale": "EN",
             "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=C6of13nZTpM"
+            "target": "https://www.youtube.com/watch?v=2t0NrqIwI2s"
           },
           {
             "locale": "FR",
             "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=C6of13nZTpM"
+            "target": "https://www.youtube.com/watch?v=55lKpx3SCK0"
           }
         ]
       }
@@ -252,17 +148,17 @@
       "dimension": "system integrity",
       "severity": 5,
       "scope": "iOS",
-      "tags": ["CIS Benchmark Level 1", "iOS_security/os_sip_enable"],
+      "tags": [],
       "description": [
         {
           "locale": "EN",
           "title": "Your device is jailbroken",
-          "summary": "Your device is jailbroken. Either you did it yourself or a bad actor did it to access your personal data. This is very dangerous!"
+          "summary": "Your device is jailbroken. Either you did it yourself or a bad actor did it to access your personal data. This is very dangerous! You need to restore your device to factory settings."
         },
         {
           "locale": "FR",
           "title": "Votre appareil est jailbreaké",
-          "summary": "Votre appareil est jailbreaké. Soit vous l'avez fait vous-même, soit un acteur malveillant l'a fait pour accéder à vos données personnel. C'est très dangereux !"
+          "summary": "Votre appareil est jailbreaké. Soit vous l'avez fait vous-même, soit un acteur malveillant l'a fait pour accéder à vos données personnel. C'est très dangereux ! Vous devez restaurer votre appareil aux paramètres d'usine."
         }
       ],
       "implementation": {
@@ -285,12 +181,12 @@
           {
             "locale": "EN",
             "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=Fx_1OPFzu88"
+            "target": "https://www.youtube.com/watch?v=_VNsH_OWmRw"
           },
           {
             "locale": "FR",
             "class": "link",
-            "target": "https://www.remosoftware.com/info/fr/comment-activer-ou-desactiver-la-protection-de-lintegrite-du-systeme-mac/"
+            "target": "https://www.youtube.com/watch?v=jdIrJ2ex0gE"
           }
         ]
       },
@@ -305,7 +201,12 @@
           {
             "locale": "EN",
             "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=StAn0ZHiXTc"
+            "target": "https://www.youtube.com/watch?v=_VNsH_OWmRw"
+          },
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://www.youtube.com/watch?v=jdIrJ2ex0gE"
           }
         ]
       }
@@ -369,12 +270,81 @@
           {
             "locale": "EN",
             "class": "link",
-            "target": "https://haveibeenpwned.com/"
+            "target": "https://en.wikipedia.org/wiki/Have_I_Been_Pwned"
           },
           {
             "locale": "FR",
             "class": "link",
-            "target": "https://haveibeenpwned.com/"
+            "target": "https://www.futura-sciences.com/tech/actualites/internet-voici-savoir-si-vos-donnees-personnelles-internet-ont-ete-piratees-103095/"
+          }
+        ]
+      }
+    },
+    {
+      "name": "app not up to date",
+      "metrictype": "bool",
+      "dimension": "applications",
+      "severity": 3,
+      "scope": "generic",
+      "tags": [],
+      "description": [
+        {
+          "locale": "EN",
+          "title": "App is not up to date",
+          "summary": "This app is not up to date. Applications are constantly updated to fix potential security issues. It's your best interest to get updates as soon as you can through automatic updates."
+        },
+        {
+          "locale": "FR",
+          "title": "Application pas à jour",
+          "summary": "Cette application n'est pas à jour. Les applications sont constamment mises à jour pour résoudre les problèmes de sécurité potentiels. Il est dans votre intérêt d'obtenir les mises à jour dès que possible grâce aux mises à jour automatiques."
+        }
+      ],
+      "implementation": {
+        "system": "iOS",
+        "minversion": 15,
+        "maxversion": 0,
+        "class": "internal",
+        "elevation": "user",
+        "target": "latestapp_check",
+        "education": []
+      },
+      "remediation": {
+        "system": "iOS",
+        "minversion": 15,
+        "maxversion": 0,
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=ebUrdg2vFNk"
+          },
+          {
+            "locale": "FR",
+            "class": "youtube",
+            "target": "https://www.youtube.com/shorts/ALRMvPnUTt0"
+          }
+        ]
+      },
+      "rollback": {
+        "system": "iOS",
+        "minversion": 15,
+        "maxversion": 0,
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=FG2DXkPA93g&t=124s"
+          },
+          {
+            "locale": "FR",
+            "class": "youtube",
+            "target": "https://www.youtube.com/watch?v=FG2DXkPA93g&t=124s"
           }
         ]
       }
@@ -418,12 +388,12 @@
           {
             "locale": "EN",
             "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=FG2DXkPA93g&t=124s"
+            "target": "https://www.youtube.com/watch?v=1FcE86kwODQ"
           },
           {
             "locale": "FR",
             "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=FG2DXkPA93g&t=124s"
+            "target": "https://www.youtube.com/watch?v=02UHT0OBGlo"
           }
         ]
       },
@@ -438,12 +408,12 @@
           {
             "locale": "EN",
             "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=FG2DXkPA93g&t=124s"
+            "target": "https://www.youtube.com/watch?v=1FcE86kwODQ"
           },
           {
             "locale": "FR",
             "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=FG2DXkPA93g&t=124s"
+            "target": "https://www.youtube.com/watch?v=02UHT0OBGlo"
           }
         ]
       }

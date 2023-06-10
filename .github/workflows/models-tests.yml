@@ -1,0 +1,69 @@
+name: Models tests
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+    tests:
+        # Runs in parallel on specified os in the strategy bellow.
+        runs-on: ${{ matrix.os }}
+
+        strategy:
+            matrix:
+                os: [macos-latest, windows-latest, ubuntu-latest]
+            # Prevent one job from cancelling the others if it fails
+            fail-fast: false
+
+        steps:
+        - uses: actions/checkout@v3
+        - name: Setup Python
+          uses: actions/setup-python@v3.1.4
+          with:
+            # Version range or exact version of a Python version to use, using SemVer's version range syntax.
+            python-version: 3.11.3
+        - name: Run tests
+          run: |
+            pip install -r requirements.txt
+            python3 src/main.py
+        - name: Print Operating System
+          if: always()
+          run: echo "Running on ${{ matrix.os }}"
+      
+        - name: Set job output
+          if: always()
+          id: output
+          run: echo "${{ matrix.os }}=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
+
+        outputs:
+          windows-report: ${{ steps.output.outputs.windows-latest }}
+          macos-report: ${{ steps.output.outputs.macos-latest }}
+          ubuntu-report: ${{ steps.output.outputs.ubuntu-latest }}
+    slack:
+        # Wait test job to finish
+        needs: tests
+        if: always()
+        runs-on: ubuntu-latest
+        steps:
+          - env:
+              WINDOWS_REPORT: ${{needs.job1.outputs.winodws-report}}
+              MACOS_REPORT: ${{needs.job1.outputs.macos-report}}
+              UBUNTU_REPORT: ${{needs.job1.outputs.ubuntu-report}}
+            run: echo "$WINDOWS_REPORT $MACOS_REPORT $UBUNTU_REPORT"
+          - name: slack-send
+            uses: slackapi/slack-github-action@v1.24.0
+            with:
+              # Slack channel ID where message will be posted. Needed if using bot token
+              channel-id: 'C057RHL9RTL'
+              # Message to post into Slack. Needed if using bot token
+              slack-message: "GitHub tests result: ${{ job.status }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              # ${{ github.event.pull_request.html_url || github.event.head_commit.url }
+            env:
+                SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
