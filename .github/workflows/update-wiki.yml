@@ -33,9 +33,8 @@ jobs:
           run: |
             pip install mdutils
             python3 build-wiki.py
-
-        - name: Generate wiki files
-          run: git pull --rebase
+            pwd
+            mv *.md ../threatmodel.wiki
             
         - name: GitHub Commit & Push
           uses: actions-js/push@v1.4
