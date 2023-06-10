@@ -24,8 +24,14 @@ jobs:
             repository: edamametechnologies/threatmodels.wiki
             token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
         
+        - name: Checkout threatmodel repo to get the python script
+          uses: actions/checkout@v3
+          with:
+            repository: edamametechnologies/threatmodels
+        
         - name: Generate wiki files
           run: |
+            pwd
             pip install mdutils
             python3 build-wiki.py
 
