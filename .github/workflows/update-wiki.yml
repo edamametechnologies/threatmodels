@@ -23,7 +23,6 @@ jobs:
           with:
             repository: edamametechnologies/threatmodels.wiki
             token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-            branch: masterc
         
         - name: Checkout threatmodel repo to get the python script
           uses: actions/checkout@v3
@@ -39,7 +38,7 @@ jobs:
           uses: actions-js/push@v1.4
           with:
             # Token for the repo. Can be passed in using $\{{ secrets.GITHUB_TOKEN }}
-            github_token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+            github_token: ${{ secrets.GITHUB_TOKEN }}
             # Email used to configure user.email in `git config`.
             repository: edamametechnologies/threatmodels.wiki
             branch: master
