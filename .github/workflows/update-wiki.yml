@@ -23,6 +23,7 @@ jobs:
           with:
             repository: edamametechnologies/threatmodels.wiki
             token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+            branch: masterc
         
         - name: Checkout threatmodel repo to get the python script
           uses: actions/checkout@v3
@@ -31,7 +32,6 @@ jobs:
         
         - name: Generate wiki files
           run: |
-            pwd
             pip install mdutils
             python3 build-wiki.py
 
@@ -42,3 +42,4 @@ jobs:
             github_token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
             # Email used to configure user.email in `git config`.
             repository: edamametechnologies/threatmodels.wiki
+            branch: master
