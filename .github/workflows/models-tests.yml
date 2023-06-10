@@ -83,7 +83,7 @@ jobs:
         steps:
           - env:
               MACOS_REPORT: ${{needs.tests-macos.outputs.macos-report}}
-              WINDOWS_REPORT: ${{needs.tests-windows.outputs.winodws-report}}
+              WINDOWS_REPORT: ${{needs.tests-windows.outputs.windows-report}}
               UBUNTU_REPORT: ${{needs.tests-ubuntu.outputs.ubuntu-report}}
             run: echo "Reports $WINDOWS_REPORT $MACOS_REPORT $UBUNTU_REPORT"
           #- name: slack-send
