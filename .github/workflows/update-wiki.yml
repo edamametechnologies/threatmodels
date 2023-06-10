@@ -4,8 +4,8 @@ name: Update wiki
 on:
   # Triggers the workflow on push events but only for the "dev" branch
   push:
-    branches: [ "dev" ]
-
+    branches: [ "dev", "workflow-tests" ]
+    
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
