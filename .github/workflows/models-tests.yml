@@ -30,6 +30,7 @@ jobs:
             pip install -r requirements.txt
             python3 src/main.py
         - id: read_output
+          if: always()
           run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
             
     tests-windows:
@@ -50,6 +51,7 @@ jobs:
             pip install -r requirements.txt
             python3 src/main.py
         - id: read_output
+          if: always()
           run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
             
     tests-ubuntu:
@@ -70,6 +72,7 @@ jobs:
             pip install -r requirements.txt
             python3 src/main.py
         - id: read_output
+          if: always()
           run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
             
     slack:
@@ -82,7 +85,7 @@ jobs:
               MACOS_REPORT: ${{needs.tests-macos.outputs.macos-report}}
               WINDOWS_REPORT: ${{needs.tests-windows.outputs.winodws-report}}
               UBUNTU_REPORT: ${{needs.tests-ubuntu.outputs.ubuntu-report}}
-            run: echo "$WINDOWS_REPORT $MACOS_REPORT $UBUNTU_REPORT"
+            run: echo "Reports: $WINDOWS_REPORT $MACOS_REPORT $UBUNTU_REPORT"
           #- name: slack-send
           #  uses: slackapi/slack-github-action@v1.24.0
           #  with:
