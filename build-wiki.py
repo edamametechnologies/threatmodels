@@ -21,7 +21,7 @@ def print_action(loc, elevation, target, osName, osVersion):
 sources = ['Windows', 'macOS', 'iOS', 'Linux']
 for source in sources:
     for loc in ("EN", "FR"):
-        mdFile = MdUtils(file_name='./wiki/threatmodel-' + source + '-' + loc, title=source + ' Threat Model ' + '('+ loc + ')')
+        mdFile = MdUtils(file_name='threatmodel-' + source + '-' + loc, title=source + ' Threat Model ' + '('+ loc + ')')
 
         with open('threatmodel-' + source + '.json', 'r') as json_file:
             model = json.load(json_file)
