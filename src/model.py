@@ -38,11 +38,7 @@ class Model(object):
         Run all tests sequentially and returns the results.
         '''
         for metric in self.metrics:
-            try:
-                metric.run_all_tests()
-            except Exception as e:
-                pass
-
+            metric.run_all_tests()
             self.reports.append(metric.get_report())
 
         return self.get_results()

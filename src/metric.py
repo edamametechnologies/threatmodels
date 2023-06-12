@@ -13,9 +13,9 @@ class Metric(object):
         self.logger = logger
 
         self.report = {
-                "implementation": {"elevation_checked": False},
-                "remediation": {"elevation_checked": False},
-                "rollback": {"elevation_checked": False},
+                "implementation": {},
+                "remediation": {},
+                "rollback": {},
                 "error_count": 0,
                 "warning_count": 0,
                 "ok_count": 0
@@ -24,20 +24,18 @@ class Metric(object):
     def get_report(self):
         return self.report
 
-    def log(self, log_type, target_type, message, result=None):
-        log = f"{target_type} {message}"
-
+    def log(self, log_type, message, result=None):
         if log_type == "error":
-            self.logger.error(log)
+            self.logger.error(message)
             self.report["error_count"] += 1
         elif log_type == "warning":
-            self.logger.warning(log)
+            self.logger.warning(message)
             self.report["warning_count"] += 1
         elif log_type == "info":
-            self.logger.info(log)
+            self.logger.info(message)
         elif log_type == "ok":
             self.report["ok_count"] += 1
-            self.logger.ok(log)
+            self.logger.ok(message)
 
         if result is not None:
             self.logger.error(result)
@@ -45,31 +43,49 @@ class Metric(object):
     def is_target_cli(self, target_type):
         '''Check if the given target type has a cli target'''
         if self.info[target_type]['class'] != 'cli':
-            self.log("warning", target_type, "target  is not a CLI or not "
-                     "implemented yet")
+            self.log("warning", f"{target_type} target  is not a `cli` or not "
+                     "implemented yet. "
+                     f"Class: `{self.info[target_type]['class']}`")
+            return False
+        else:
+            return True
 
-            raise TargetIsNotACLIException
+    def fetch_need_remediation(self):
+        return need_remediation_logic(self.execute_target("implementation"))
+
+    def common_target_tests(self, target_type):
+        # Check if cli
+        if not self.is_target_cli(target_type):
+            return False
+
+        try:
+            # Execute the elevation test
+            self.elevation_test(target_type)
+
+            # Execute the target itself
+            self.execute_target(target_type)
+        except (subprocess.TimeoutExpired, TargetExecutionException) as e:
+            self.log("error", f"{target_type}: {e}")
+            return False
+
+        return True
 
     def implementation_tests(self):
         '''
-        Execute the implementation and returns a boolean indicating if it needs
-        remediation.
+        Execute implementation tests and returns True if the tests passed
         '''
         target_type = "implementation"
 
-        # Check if cli else raises exception
-        self.is_target_cli(target_type)
-
-        # Execute the elevation test and get the result
-        result = self.elevation_test(target_type)
+        if not self.common_target_tests(target_type):
+            return False
 
         # stdout with data means that a remediation is needed
-        need_remediation = result.stdout != ""
+        need_remediation = self.fetch_need_remediation()
 
-        self.log("ok", target_type, "target passed tests. "
+        self.log("ok", f"{target_type} target passed tests. "
                  f"Need remediation: {need_remediation}")
 
-        return need_remediation
+        return True
 
     def remediation_tests(self, enable_log=True):
         '''
@@ -78,19 +94,16 @@ class Metric(object):
         '''
         target_type = "remediation"
 
-        # Check if cli else raises exception
-        self.is_target_cli(target_type)
+        if not self.common_target_tests(target_type):
+            return False
 
-        # Execute the elevation test and get the result
-        self.elevation_test(target_type)
-
-        need_remediation = self.execute_target("implementation").stdout != ""
+        need_remediation = self.fetch_need_remediation()
 
         if need_remediation:
-            self.log("error", target_type, "target ran flawlessly but did not "
+            self.log("error", f"{target_type} target ran flawlessly but did not "
                      "resolve the metric")
         else:
-            self.log("ok", target_type, "target successfuly resolved the "
+            self.log("ok", f"{target_type} target successfuly resolved the "
                      "metric")
 
         return not need_remediation
@@ -102,18 +115,15 @@ class Metric(object):
         '''
         target_type = "rollback"
 
-        # Check if cli else raises exception
-        self.is_target_cli(target_type)
+        if not self.common_target_tests(target_type):
+            return False
 
-        # Execute the elevation test and get the result
-        self.elevation_test(target_type)
-
-        need_remediation = self.execute_target("implementation").stdout != ""
+        need_remediation = self.fetch_need_remediation()
 
         if not need_remediation:
-            self.log("error", target_type, "dit not revert the changes")
+            self.log("error", f"{target_type} dit not revert the changes")
         else:
-            self.log("ok", target_type, "successfuly reverted the changes")
+            self.log("ok", f"{target_type} successfuly reverted the changes")
 
         return need_remediation
 
@@ -158,52 +168,51 @@ class Metric(object):
 
         # Raise an exception if the execution failed
         if is_error(result):
-            #self.log("error", target_type, "returned an error", result=result)
-            raise TargetExecutionException
+            raise TargetExecutionException(result)
 
         return result
 
     def elevation_test(self, target_type):
         '''
         Perform an elevation test on a specific target.
-        Returns the result of the command if it did not fail.
         Raise exceptions
 
         Parameters:
             target_type: implementation / remediation / rollback
-        Returns:
-            the result of the target execution
         '''
         try:
-            result = self.execute_target(target_type, permissions=False)
+            self.execute_target(target_type, permissions=False)
             need_permissions = False
         except subprocess.TimeoutExpired or TargetExecutionException as e:
-            self.log("error", target_type, "Execution failed during "
+            self.log("error", f"{target_type} target failed during "
                      f"elevation test: {e}")
-            self.log("info", target_type, "retrying with permissions")
+            self.log("info", f"{target_type} retrying with permissions")
 
             # This call will be able to raise exceptions
-            result = self.execute_target(target_type, permissions=True)
+            self.execute_target(target_type, permissions=True)
             need_permissions = True
 
         if need_permissions:
             # If execution required permissions and the elevation is set to
             # user, the elevation is too low
             if self.info[target_type]["elevation"] == "user":
-                self.log("warning", target_type, "target elevation too low")
+                self.log("warning", f"{target_type} target elevation too low. "
+                         "Needed: `Admin`, current: `user`")
             else:
-                self.log("ok", target_type, "elevation is at a correct level")
+                self.log("ok",
+                         f"{target_type} elevation is at a correct level")
         else:
             # If execution did not require permissions and the elevation is set
             # to something else than user, the elevation is too high
             if self.info[target_type]["elevation"] != "user":
-                self.log("warning", target_type, "target elevation too high")
+                self.log("warning", f"{target_type} target elevation too high."
+                         " Needed: `user`, current: "
+                         f"`{self.info[target_type]['elevation']}`")
             else:
-                self.log("ok", target_type, "elevation is at a correct level")
+                self.log("ok",
+                         f"{target_type} elevation is at a correct level")
 
         self.report[target_type]["need_permissions"] = need_permissions
-
-        return result
 
     def degradation_tests(self):
         for i in range(3):
@@ -211,52 +220,60 @@ class Metric(object):
 
             # If no need remediation
             if not self.execute_target("implementation").stdout != "":
-                self.log("error", "rollback", f"dit not revert the "
-                         f"changes at the attempt {i}")
-                raise DegradationTestException
+                self.log("error", "rollback dit not revert the changes at the "
+                         f"attempt {i}")
+                return False
             else:
-                self.log("ok", "rollback", "reverted the changes "
-                         f"successfuly at the attempt {i}")
+                self.log("ok", "rollback reverted the changes successfuly at "
+                         f"the attempt {i}")
 
             self.execute_target("remediation")
 
             # If need remediation
             if self.execute_target("implementation").stdout != "":
-                self.log("error", "remediation", f"dit not resolve the "
+                self.log("error", "remediation dit not resolve the "
                          f"implementation at attempt {i}")
-                raise DegradationTestException
+                return False
             else:
-                self.log("ok", "remediation", "resolved the "
-                         f"implementation successfuly at the attempt {i}")
+                self.log("ok", "remediation resolved the implementation "
+                         f"successfuly at the attempt {i}")
 
     def run_all_tests(self):
         '''Run all the tests for this metric'''
         self.logger.info(f"Running `{self.info['name']}` tests")
 
-        need_remediation = self.implementation_tests()
+        if not self.implementation_tests():
+            self.log("info", "Skipping remediation")
+            return False
 
-        if need_remediation:
-            self.remediation_tests()
-            self.rollback_test()
+        if self.fetch_need_remediation():
+            self.log("info", "Running remediations first")
+            if not self.remediation_tests():
+                self.log("info", "Skipping rollback")
+                return False
+
+            if not self.rollback_test():
+                self.log("info", "Skipping degradation")
+                return False
+
+            self.degradation_tests()
         else:
-            self.rollback_test()
-            self.remediation_tests()
+            self.log("info", "Running rollback first")
+            if not self.rollback_test():
+                self.log("info", "Skipping remediation")
+                return False
 
-        self.degradation_tests()
+            if not self.remediation_tests():
+                self.log("info", "Skipping degradation")
+                return False
 
+            self.degradation_tests()
 
-class TargetIsNotACLIException(Exception):
-    '''Raised when a target is not a CLI'''
-    pass
+        return True
 
 
 class TargetExecutionException(Exception):
     '''Raised when a target execution fails'''
-    pass
-
-
-class DegradationTestException(Exception):
-    '''Raised when a degradation test fails'''
     pass
 
 
@@ -272,3 +289,7 @@ def is_error(result):
         the error status of the result
     '''
     return result.returncode != 0 and result.stderr != ""
+
+
+def need_remediation_logic(result):
+    return result.stdout != ""
