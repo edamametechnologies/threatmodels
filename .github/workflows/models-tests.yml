@@ -52,6 +52,7 @@ jobs:
             python3 src/main.py
         - id: read_output
           if: always()
+          shell: pwsh
           run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
             
     tests-ubuntu:
