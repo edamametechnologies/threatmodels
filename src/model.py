@@ -38,8 +38,8 @@ class Model(object):
         Run all tests sequentially and returns the results.
         '''
         for metric in self.metrics:
-            report = metric.run_all_tests()
-            self.reports.append(report)
+            metric.run_all_tests()
+            self.reports.append(metric.get_report())
 
         return self.get_results()
 
@@ -51,7 +51,11 @@ class Model(object):
             for key in res.keys():
                 res[key] += report[key]
 
-        with open('report-results.txt', 'w') as file:
-            file.write(str(res))
+        report_results = f"{self.source}: ❌ {res['error_count']}"\
+                         f" ⚠️ {res['warning_count']}"\
+                         f" ✅ {res['ok_count']}"
+
+        with open('report-results.txt', 'w', encoding='utf-8') as file:
+            file.write(report_results)
 
         return res
