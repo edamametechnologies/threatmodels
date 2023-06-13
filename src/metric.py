@@ -64,7 +64,7 @@ class Metric(object):
 
             # Execute the target itself
             self.execute_target(target_type)
-        except (subprocess.TimeoutExpired, TargetExecutionException) as e:
+        except (subprocess.TimeoutExpired, TargetExecutionError) as e:
             self.log("error", f"{target_type}: {e}")
             return False
 
@@ -168,7 +168,7 @@ class Metric(object):
 
         # Raise an exception if the execution failed
         if is_error(result):
-            raise TargetExecutionException(result)
+            raise TargetExecutionError(result)
 
         return result
 
@@ -183,7 +183,7 @@ class Metric(object):
         try:
             self.execute_target(target_type, permissions=False)
             need_permissions = False
-        except subprocess.TimeoutExpired or TargetExecutionException as e:
+        except subprocess.TimeoutExpired or TargetExecutionError as e:
             self.log("error", f"{target_type} target failed during "
                      f"elevation test: {e}")
             self.log("info", f"{target_type} retrying with permissions")
@@ -243,28 +243,33 @@ class Metric(object):
         self.logger.info(f"Running `{self.info['name']}` tests")
 
         if not self.implementation_tests():
-            self.log("info", "Skipping remediation")
+            self.log("info", "Skipping other tests because implementation "
+                     "failed")
             return False
 
         if self.fetch_need_remediation():
-            self.log("info", "Running remediations first")
+            self.log("info", "Testing remediations first")
             if not self.remediation_tests():
-                self.log("info", "Skipping rollback")
+                self.log("info", "Skipping other tests because remediation "
+                         "failed")
                 return False
 
             if not self.rollback_test():
-                self.log("info", "Skipping degradation")
+                self.log("info", "Skipping degradation tests because rollback "
+                         "failed")
                 return False
 
             self.degradation_tests()
         else:
-            self.log("info", "Running rollback first")
+            self.log("info", "Testing rollback first")
             if not self.rollback_test():
-                self.log("info", "Skipping remediation")
+                self.log("info", "Skipping other tests because rollback "
+                         "failed")
                 return False
 
             if not self.remediation_tests():
-                self.log("info", "Skipping degradation")
+                self.log("info", "Skipping degradation because remediation "
+                         "failed")
                 return False
 
             self.degradation_tests()
@@ -272,7 +277,7 @@ class Metric(object):
         return True
 
 
-class TargetExecutionException(Exception):
+class TargetExecutionError(Exception):
     '''Raised when a target execution fails'''
     pass
 
