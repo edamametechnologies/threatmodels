@@ -13,9 +13,9 @@ class Metric(object):
         self.logger = logger
 
         self.report = {
-                "implementation": {"elevation_checked": False},
-                "remediation": {"elevation_checked": False},
-                "rollback": {"elevation_checked": False},
+                "implementation": {},
+                "remediation": {},
+                "rollback": {},
                 "error_count": 0,
                 "warning_count": 0,
                 "ok_count": 0
@@ -24,300 +24,261 @@ class Metric(object):
     def get_report(self):
         return self.report
 
-    def metric_log(self, log_type, target_type, message,
-                   enable_log=True, result=None):
-        if not enable_log:
-            return
-
-        log = f"{target_type} {message}"
-
+    def log(self, log_type, message, result=None):
         if log_type == "error":
-            self.logger.error(log)
+            self.logger.error(message)
             self.report["error_count"] += 1
         elif log_type == "warning":
-            self.logger.warning(log)
+            self.logger.warning(message)
             self.report["warning_count"] += 1
         elif log_type == "info":
-            self.logger.info(log)
+            self.logger.info(message)
         elif log_type == "ok":
             self.report["ok_count"] += 1
-            self.logger.ok(log)
+            self.logger.ok(message)
 
         if result is not None:
             self.logger.error(result)
 
-    def is_target_cli(self, target_type, enable_log=True):
+    def is_target_cli(self, target_type):
         '''Check if the given target type has a cli target'''
         if self.info[target_type]['class'] != 'cli':
-            self.metric_log("warning", target_type,
-                            "target  is not a CLI or not implemented yet",
-                            enable_log=enable_log)
-
-            raise TargetIsNotACLIException
-
-    def implementation(self, enable_log=True):
-        '''
-        Execute the implementation and returns a boolean indicating if it needs
-        remediation. Return None if an error occured.
-        '''
-        target_type = "implementation"
-
-        # Check if cli else raises exception
-        self.is_target_cli(target_type, enable_log=enable_log)
-
-        # Execute the target
-        result = self.exec(target_type)
-
-        if is_error(result):
-            self.metric_log("error", target_type, "target returned an error",
-                            result=result, enable_log=enable_log)
-            return None
-        else:
-            # stdout with data means that a remediation is needed
-            need_remediation = result.stdout != ""
-
-            self.metric_log("ok", target_type,
-                            "target passed tests. "
-                            f"Need remediation: {need_remediation}",
-                            enable_log=enable_log)
-
-            return need_remediation
-
-    def remediation(self, enable_log=True):
-        '''
-        Execute the remediation and return a boolen indicating if the
-        implementation has been fixed. Return None if an error occured.
-        '''
-        target_type = "remediation"
-
-        # Check if cli else raises exception
-        self.is_target_cli(target_type, enable_log=enable_log)
-
-        # Execute the target
-        result = self.exec(target_type)
-
-        need_remediation = self.implementation(enable_log=False)
-
-        if is_error(result):
-            self.metric_log("error", target_type,
-                            "target returned an error",
-                            result=result, enable_log=enable_log)
-            return None
-        elif need_remediation is None:
-            self.metric_log("warning", target_type,
-                            "target result could not be verified as the "
-                            "implementation returned an error",
-                            enable_log=enable_log)
-            return False
-        elif need_remediation:
-            self.metric_log("error", target_type,
-                            "target ran flawlessly but did not "
-                            "resolve the metric",
-                            enable_log=enable_log)
+            self.log("warning", f"{target_type} target  is not a `cli` or not "
+                     "implemented yet. "
+                     f"Class: `{self.info[target_type]['class']}`")
             return False
         else:
-            self.metric_log("ok", target_type,
-                            "target successfuly resolved the metric",
-                            enable_log=enable_log)
             return True
 
-    def rollback(self, enable_log=True):
-        '''
-        Execute the rollback
-        '''
-        target_type = "rollback"
-        self.is_target_cli(target_type, enable_log=enable_log)
+    def fetch_need_remediation(self):
+        return need_remediation_logic(self.execute_target("implementation"))
 
-        n_attempts = 3
+    def common_target_tests(self, target_type):
+        # Check if cli
+        if not self.is_target_cli(target_type):
+            return False
 
-        for i in range(0, n_attempts):
-            result = self.exec(target_type)
+        try:
+            # Execute the elevation test
+            self.elevation_test(target_type)
 
-            if is_error(result):
-                self.metric_log("error", target_type,
-                                "target returned an error",
-                                result=result, enable_log=enable_log)
-                return None
-
-            implementation_fixed = self.implementation(enable_log=False)
-
-            if implementation_fixed is None:
-                # The implementation itself is not working
-                self.metric_log(
-                    "warning", target_type,
-                    "target cannot be tested as the implementation returned "
-                    "an error",
-                    enable_log=enable_log)
-                return None
-
-            elif not implementation_fixed:
-                # Rollback executed well but did not fixed the implementation
-                self.metric_log("error", target_type,
-                                f"attempt {i} did not revert the "
-                                "change",
-                                result=result, enable_log=enable_log)
-                return None
-            else:
-                self.metric_log("ok", target_type,
-                                f"attempt {i} successfuly reverted changes",
-                                enable_log=enable_log)
-
-            if not self.remediation(enable_log=False):
-                self.metric_log("warning", "remediation",
-                                "target is not working properly, cannot test "
-                                "the rollback", enable_log=enable_log)
-                return None
-
-        self.metric_log("ok", target_type,
-                        f"successfuly reverted the changes over {n_attempts} "
-                        "attempts",
-                        enable_log=enable_log)
+            # Execute the target itself
+            self.execute_target(target_type)
+        except (subprocess.TimeoutExpired, TargetExecutionError) as e:
+            self.log("error", f"{target_type}: {e}")
+            return False
 
         return True
 
-    def check_elevations(self, target_type):
+    def implementation_tests(self):
         '''
-        Checks if the elevations of each targets are not to high or too low.
-        Must run targets functions before
+        Execute implementation tests and returns True if the tests passed
         '''
-        if "need-perms" in self.report[target_type].keys():
-            need_perms = self.report[target_type]["need-perms"]
+        target_type = "implementation"
 
-            self.report[target_type]["elevation_checked"] = True
+        if not self.common_target_tests(target_type):
+            return False
 
-            if need_perms is None:
-                return
+        # stdout with data means that a remediation is needed
+        need_remediation = self.fetch_need_remediation()
 
-            if need_perms:
-                if self.info[target_type]["elevation"] == "user":
-                    # TODO: Optionally modify the permissions automatically
+        self.log("ok", f"{target_type} target passed tests. "
+                 f"Need remediation: {need_remediation}")
 
-                    self.metric_log("warning", target_type,
-                                    "target permissions too low")
-            else:
-                if self.info[target_type]["elevation"] != "user":
-                    # TODO: Optionally modify the permissions automatically
+        return True
 
-                    self.metric_log("warning", target_type,
-                                    "target permissions too high")
+    def remediation_tests(self, enable_log=True):
+        '''
+        Execute the remediation and return a boolean indicating if it fixed
+        the implementation.
+        '''
+        target_type = "remediation"
 
-    def exec(self, target_type):
+        if not self.common_target_tests(target_type):
+            return False
+
+        need_remediation = self.fetch_need_remediation()
+
+        if need_remediation:
+            self.log("error", f"{target_type} target ran flawlessly but did not "
+                     "resolve the metric")
+        else:
+            self.log("ok", f"{target_type} target successfuly resolved the "
+                     "metric")
+
+        return not need_remediation
+
+    def rollback_test(self):
+        '''
+        Execute the rollback and return a boolean indicating if the changes
+        made by the remediation have been rolled back.
+        '''
+        target_type = "rollback"
+
+        if not self.common_target_tests(target_type):
+            return False
+
+        need_remediation = self.fetch_need_remediation()
+
+        if not need_remediation:
+            self.log("error", f"{target_type} dit not revert the changes")
+        else:
+            self.log("ok", f"{target_type} successfuly reverted the changes")
+
+        return need_remediation
+
+    def execute_target(self, target_type, permissions=None):
         '''
         Execute a target on the corresponding platform and returns the result
+        Raises subprocess.TimeoutExpired and TargetExecutionException
 
         Parameters:
             target_type: implementation / remediation / rollback
+            permissions: set to True to run the target with permissions
         Returns:
             subprocess result or None if timeout
         '''
+        # Try to load target permissions if permissions argument is not
+        # specified
+        if permissions is None\
+                and "need_permissions" in self.report[target_type]:
+            permissions = self.report[target_type]["need_permissions"]
+
         # Gets the corresponding target command
         command = self.info[target_type]["target"]
 
+        # Add powershell call on windows
         if self.source == "Windows":
             command = f"powershell.exe -Command {command}"
 
-        try:
-            result = subprocess.run(
-                    command,
-                    shell=True,
-                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
-                    timeout=CMD_TIMEOUT
-            )
-        except subprocess.TimeoutExpired as e:
-            self.metric_log("error", target_type, e)
-            result = None
-            # Not returning here, we want to try the command with permissions
+        # Add sudo or runas when permissions argument is True
+        if permissions:
+            if self.source == "Windows":
+                command = f"runas /noprofile /user:Administrator {command}"
+            else:
+                command = f"sudo -- sh -c '{command}'"
 
-        # If there is an error, try to run as root
-        if is_error(result):
-            result = self.exec_with_permissions(target_type, command)
-        else:
-            self.report[target_type]["need-perms"] = False
-            self.report[target_type]["causes-error"] = False
-            self.report[target_type]["result"] = result
-
-        if not self.report[target_type]["elevation_checked"]:
-            self.check_elevations(target_type)
-
-        return result
-
-    def exec_with_permissions(self, target_type, command):
-        '''
-        Execute a target on the corresponding platform as root and returns the
-        result.
-
-        Parameters:
-            target_type: implementation / remediation / rollback
-            command: the command that could not be run without root privileges
-        Returns:
-            subprocess result or None if timeout
-        '''
-        if self.source == "Windows":
-            command = f"runas /noprofile /user:Administrator {command}"
-        else:
-            command = f"sudo -- sh -c '{command}'"
-
-        try:
-            result = subprocess.run(
+        # Run the command
+        result = subprocess.run(
                 command,
                 shell=True,
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
                 timeout=CMD_TIMEOUT
-            )
-        except subprocess.TimeoutExpired as e:
-            self.metric_log("error", target_type, e)
-            return None
+        )
 
+        # Raise an exception if the execution failed
         if is_error(result):
-            # Error probably not related to permissions
-            self.report[target_type]["need-perms"] = None
-            self.report[target_type]["causes-error"] = True
-        else:
-            # Target need permissions
-            self.report[target_type]["need-perms"] = True
-            self.report[target_type]["causes-error"] = False
-
-        self.report[target_type]["result"] = result
+            raise TargetExecutionError(result)
 
         return result
 
-    def try_execute(self, function_name):
-        '''try executing a function, ignoring certain exceptions'''
-        function = self.__getattribute__(function_name)
+    def elevation_test(self, target_type):
+        '''
+        Perform an elevation test on a specific target.
+        Raise exceptions
+
+        Parameters:
+            target_type: implementation / remediation / rollback
+        '''
         try:
-            return function()
-        except TargetIsNotACLIException:
-            pass
+            self.execute_target(target_type, permissions=False)
+            need_permissions = False
+        except subprocess.TimeoutExpired or TargetExecutionError as e:
+            self.log("error", f"{target_type} target failed during "
+                     f"elevation test: {e}")
+            self.log("info", f"{target_type} retrying with permissions")
+
+            # This call will be able to raise exceptions
+            self.execute_target(target_type, permissions=True)
+            need_permissions = True
+
+        if need_permissions:
+            # If execution required permissions and the elevation is set to
+            # user, the elevation is too low
+            if self.info[target_type]["elevation"] == "user":
+                self.log("warning", f"{target_type} target elevation too low. "
+                         "Needed: `Admin`, current: `user`")
+            else:
+                self.log("ok",
+                         f"{target_type} elevation is at a correct level")
+        else:
+            # If execution did not require permissions and the elevation is set
+            # to something else than user, the elevation is too high
+            if self.info[target_type]["elevation"] != "user":
+                self.log("warning", f"{target_type} target elevation too high."
+                         " Needed: `user`, current: "
+                         f"`{self.info[target_type]['elevation']}`")
+            else:
+                self.log("ok",
+                         f"{target_type} elevation is at a correct level")
+
+        self.report[target_type]["need_permissions"] = need_permissions
+
+    def degradation_tests(self):
+        for i in range(3):
+            self.execute_target("rollback")
+
+            # If no need remediation
+            if not self.execute_target("implementation").stdout != "":
+                self.log("error", "rollback dit not revert the changes at the "
+                         f"attempt {i}")
+                return False
+            else:
+                self.log("ok", "rollback reverted the changes successfuly at "
+                         f"the attempt {i}")
+
+            self.execute_target("remediation")
+
+            # If need remediation
+            if self.execute_target("implementation").stdout != "":
+                self.log("error", "remediation dit not resolve the "
+                         f"implementation at attempt {i}")
+                return False
+            else:
+                self.log("ok", "remediation resolved the implementation "
+                         f"successfuly at the attempt {i}")
 
     def run_all_tests(self):
-        '''Run all the tests for this metric and returns the report'''
+        '''Run all the tests for this metric'''
         self.logger.info(f"Running `{self.info['name']}` tests")
-        try:
-            need_remediation = self.implementation()
-        except TargetIsNotACLIException:
-            self.metric_log("error", "metric",
-                            "cancelling tests as implementation is not a "
-                            "CLI")
-            return self.get_report()
 
-        if need_remediation:
-            # If remediation needed, remediation first
-            self.try_execute("remediation")
+        if not self.implementation_tests():
+            self.log("info", "Skipping other tests because implementation "
+                     "failed")
+            return False
 
-            # Execute rollback even if remediation is not a CLI
-            self.try_execute("rollback")
+        if self.fetch_need_remediation():
+            self.log("info", "Testing remediations first")
+            if not self.remediation_tests():
+                self.log("info", "Skipping other tests because remediation "
+                         "failed")
+                return False
+
+            if not self.rollback_test():
+                self.log("info", "Skipping degradation tests because rollback "
+                         "failed")
+                return False
+
+            self.degradation_tests()
         else:
-            # If remediation not needed, rollback first
-            self.try_execute("rollback")
+            self.log("info", "Testing rollback first")
+            if not self.rollback_test():
+                self.log("info", "Skipping other tests because rollback "
+                         "failed")
+                return False
 
-            # Execute remediation even if rollback is not a CLI
-            self.try_execute("remediation")
+            if not self.remediation_tests():
+                self.log("info", "Skipping degradation because remediation "
+                         "failed")
+                return False
 
-        return self.get_report()
+            self.degradation_tests()
+
+        return True
 
 
-class TargetIsNotACLIException(Exception):
-    '''Raised when a target is not a CLI'''
+class TargetExecutionError(Exception):
+    '''Raised when a target execution fails'''
     pass
 
 
@@ -332,23 +293,8 @@ def is_error(result):
     Return:
         the error status of the result
     '''
-    if result is None:
-        return True
+    return result.returncode != 0 and result.stderr != ""
 
-    elevation_keyword_count = 0
 
-    for k in ["administrator", "permissions", "privileges", "root",
-              "allowed", "allow"]:
-        if k in result.stdout.lower() or k in result.stderr.lower():
-            elevation_keyword_count += 1
-
-    verb_keyword_count = 0
-
-    for k in ["need", "are", "run", "not"]:
-        if k in result.stdout.lower() or k in result.stderr.lower():
-            verb_keyword_count += 1
-
-    if elevation_keyword_count > 0 and verb_keyword_count > 0:
-        return True
-    else:
-        return result.returncode != 0 and result.stderr != ""
+def need_remediation_logic(result):
+    return result.stdout != ""
