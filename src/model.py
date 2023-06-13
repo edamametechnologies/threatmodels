@@ -45,17 +45,17 @@ class Model(object):
 
     def get_results(self):
         '''Returns the results of the tests'''
-        report = {"error_count": 0, "warning_count": 0, "ok_count": 0}
+        count = {"error_count": 0, "warning_count": 0, "ok_count": 0}
 
         for report in self.reports:
             for key in report.keys():
-                report[key] += report[key]
+                count[key] += report[key]
 
-        res = f"{self.source}: ❌ {report['error_count']} "\
-              f" ⚠️ {report['warning_count']}"\
-              f" ✅ {report['ok_count']}"
+        res = f"{self.source}: ❌ {count['error_count']} "\
+              f" ⚠️ {count['warning_count']}"\
+              f" ✅ {count['ok_count']}"
 
         with open('report-results.txt', 'w') as file:
             file.write(res)
 
-        return report
+        return res
