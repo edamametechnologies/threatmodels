@@ -1,8 +1,8 @@
 {
   "name": "threat model Windows",
   "extends": "none",
-  "date": "June 3rd 2023",
-  "signature": "ba7816bf4f01cfda484940de5dae2184c10161a696597a0ce410fe93f30013ad",
+  "date": "June 13th 2023",
+  "signature": "d3c82d042efab8e4337317ce7c4071029243f4f4fbad63db13e76347fec487f1",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -20,7 +20,7 @@
         {
           "locale": "FR",
           "title": "Edamame Helper inactif",
-          "summary": "Le logiciel d'assistance d'Edamame n'est pas en cours d'exécution ou a besoin d'être mis à jour. Il est requis pour une analyse complète du score de sécurité."
+          "summary": "Le logiciel d'assistance d'Edamame n'est pas en cours d'ex\u00e9cution ou a besoin d'\u00eatre mis \u00e0 jour. Il est requis pour une analyse compl\u00e8te du score de s\u00e9curit\u00e9."
         }
       ],
       "implementation": {
@@ -99,7 +99,10 @@
       "dimension": "applications",
       "severity": 5,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "windows_security/wd_disabled"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "windows_security/wd_disabled"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -108,8 +111,8 @@
         },
         {
           "locale": "FR",
-          "title": "Windows Defender désactivé",
-          "summary": "Windows Defender est un logiciel antivirus et antimalware intégré à Windows. Le désactiver peut laisser votre système vulnérable à diverses menaces, telles que des virus, des chevaux de Troie et des logiciels espions."
+          "title": "Windows Defender d\u00e9sactiv\u00e9",
+          "summary": "Windows Defender est un logiciel antivirus et antimalware int\u00e9gr\u00e9 \u00e0 Windows. Le d\u00e9sactiver peut laisser votre syst\u00e8me vuln\u00e9rable \u00e0 diverses menaces, telles que des virus, des chevaux de Troie et des logiciels espions."
         }
       ],
       "implementation": {
@@ -146,7 +149,10 @@
       "dimension": "system services",
       "severity": 3,
       "scope": "windows",
-      "tags": ["CIS Benchmark Level 1", "windows_10_1709"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "windows_10_1709"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -155,8 +161,8 @@
         },
         {
           "locale": "FR",
-          "title": "Mises à jour automatiques des applications du Windows Store désactivées",
-          "summary": "Les mises à jour automatiques des applications du Windows Store sont désactivées, ce qui peut entraîner des applications obsolètes et représenter un risque pour la sécurité. Il est recommandé d'activer les mises à jour automatiques des applications du Windows Store."
+          "title": "Mises \u00e0 jour automatiques des applications du Windows Store d\u00e9sactiv\u00e9es",
+          "summary": "Les mises \u00e0 jour automatiques des applications du Windows Store sont d\u00e9sactiv\u00e9es, ce qui peut entra\u00eener des applications obsol\u00e8tes et repr\u00e9senter un risque pour la s\u00e9curit\u00e9. Il est recommand\u00e9 d'activer les mises \u00e0 jour automatiques des applications du Windows Store."
         }
       ],
       "implementation": {
@@ -193,7 +199,10 @@
       "dimension": "system integrity",
       "severity": 5,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 2", "windows_security/uac_enable"],
+      "tags": [
+        "CIS Benchmark Level 2",
+        "windows_security/uac_enable"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -202,8 +211,8 @@
         },
         {
           "locale": "FR",
-          "title": "Contrôle de compte d'utilisateur désactivé",
-          "summary": "Le Contrôle de compte d'utilisateur (UAC) est une fonctionnalité de sécurité dans Windows qui aide à prévenir les modifications non autorisées sur votre ordinateur. Si UAC est désactivé, il est plus facile pour les logiciels malveillants de faire des changements sur votre système sans votre connaissance. Vous devez activer UAC pour protéger votre système contre de telles attaques."
+          "title": "Contr\u00f4le de compte d'utilisateur d\u00e9sactiv\u00e9",
+          "summary": "Le Contr\u00f4le de compte d'utilisateur (UAC) est une fonctionnalit\u00e9 de s\u00e9curit\u00e9 dans Windows qui aide \u00e0 pr\u00e9venir les modifications non autoris\u00e9es sur votre ordinateur. Si UAC est d\u00e9sactiv\u00e9, il est plus facile pour les logiciels malveillants de faire des changements sur votre syst\u00e8me sans votre connaissance. Vous devez activer UAC pour prot\u00e9ger votre syst\u00e8me contre de telles attaques."
         }
       ],
       "implementation": {
@@ -240,7 +249,10 @@
       "dimension": "network",
       "severity": 5,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "windows_security/smb1_protocol_disabled"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "windows_security/smb1_protocol_disabled"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -249,8 +261,8 @@
         },
         {
           "locale": "FR",
-          "title": "Protocole SMBv1 activé",
-          "summary": "Le protocole SMBv1 est activé sur votre système. Ce protocole est obsolète et présente des vulnérabilités connues qui peuvent permettre aux attaquants de prendre le contrôle de votre système. Il devrait être désactivé pour améliorer la sécurité de votre système."
+          "title": "Protocole SMBv1 activ\u00e9",
+          "summary": "Le protocole SMBv1 est activ\u00e9 sur votre syst\u00e8me. Ce protocole est obsol\u00e8te et pr\u00e9sente des vuln\u00e9rabilit\u00e9s connues qui peuvent permettre aux attaquants de prendre le contr\u00f4le de votre syst\u00e8me. Il devrait \u00eatre d\u00e9sactiv\u00e9 pour am\u00e9liorer la s\u00e9curit\u00e9 de votre syst\u00e8me."
         }
       ],
       "implementation": {
@@ -296,8 +308,8 @@
         },
         {
           "locale": "FR",
-          "title": "Connexion automatique activée",
-          "summary": "La connexion automatique permet au système de connecter automatiquement un utilisateur après le démarrage. Cela peut être un risque pour la sécurité si le système n'est pas physiquement sécurisé car n'importe qui peut accéder au système sans fournir de credentials. Il est recommandé de désactiver la connexion automatique."
+          "title": "Connexion automatique activ\u00e9e",
+          "summary": "La connexion automatique permet au syst\u00e8me de connecter automatiquement un utilisateur apr\u00e8s le d\u00e9marrage. Cela peut \u00eatre un risque pour la s\u00e9curit\u00e9 si le syst\u00e8me n'est pas physiquement s\u00e9curis\u00e9 car n'importe qui peut acc\u00e9der au syst\u00e8me sans fournir de credentials. Il est recommand\u00e9 de d\u00e9sactiver la connexion automatique."
         }
       ],
       "implementation": {
@@ -334,7 +346,10 @@
       "dimension": "system integrity",
       "severity": 4,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "windows_security/disable_wscript_host"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "windows_security/disable_wscript_host"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -343,8 +358,8 @@
         },
         {
           "locale": "FR",
-          "title": "Windows Script Host activé",
-          "summary": "Windows Script Host est un environnement de script Windows intégré qui permet l'exécution de VBScript, JScript et d'autres langages de script. Le désactiver peut aider à atténuer certains types d'attaques de logiciels malveillants."
+          "title": "Windows Script Host activ\u00e9",
+          "summary": "Windows Script Host est un environnement de script Windows int\u00e9gr\u00e9 qui permet l'ex\u00e9cution de VBScript, JScript et d'autres langages de script. Le d\u00e9sactiver peut aider \u00e0 att\u00e9nuer certains types d'attaques de logiciels malveillants."
         }
       ],
       "implementation": {
@@ -393,8 +408,8 @@
         },
         {
           "locale": "FR",
-          "title": "Protocole de Bureau à distance (RDP) activé",
-          "summary": "RDP permet aux utilisateurs d'accéder à distance et de contrôler un ordinateur Windows à partir d'un autre emplacement. Bien que cela puisse être pratique, cela présente également un risque de sécurité important s'il est laissé activé et non protégé. Un attaquant pourrait potentiellement accéder à votre ordinateur et compromettre vos données sensibles ou même prendre le contrôle de votre système."
+          "title": "Protocole de Bureau \u00e0 distance (RDP) activ\u00e9",
+          "summary": "RDP permet aux utilisateurs d'acc\u00e9der \u00e0 distance et de contr\u00f4ler un ordinateur Windows \u00e0 partir d'un autre emplacement. Bien que cela puisse \u00eatre pratique, cela pr\u00e9sente \u00e9galement un risque de s\u00e9curit\u00e9 important s'il est laiss\u00e9 activ\u00e9 et non prot\u00e9g\u00e9. Un attaquant pourrait potentiellement acc\u00e9der \u00e0 votre ordinateur et compromettre vos donn\u00e9es sensibles ou m\u00eame prendre le contr\u00f4le de votre syst\u00e8me."
         }
       ],
       "implementation": {
@@ -431,7 +446,10 @@
       "dimension": "system integrity",
       "severity": 5,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "windows_security/update_automatic_updates"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "windows_security/update_automatic_updates"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -440,8 +458,8 @@
         },
         {
           "locale": "FR",
-          "title": "Mise à jour Windows désactivée",
-          "summary": "La désactivation de la mise à jour de Windows empêche l'installation des correctifs et des mises à jour de sécurité critiques sur votre système, laissant votre système vulnérable aux exploits et menaces connus. Il est fortement recommandé d'activer la mise à jour de Windows pour garantir que votre système est à jour avec les derniers correctifs de sécurité."
+          "title": "Mise \u00e0 jour Windows d\u00e9sactiv\u00e9e",
+          "summary": "La d\u00e9sactivation de la mise \u00e0 jour de Windows emp\u00eache l'installation des correctifs et des mises \u00e0 jour de s\u00e9curit\u00e9 critiques sur votre syst\u00e8me, laissant votre syst\u00e8me vuln\u00e9rable aux exploits et menaces connus. Il est fortement recommand\u00e9 d'activer la mise \u00e0 jour de Windows pour garantir que votre syst\u00e8me est \u00e0 jour avec les derniers correctifs de s\u00e9curit\u00e9."
         }
       ],
       "implementation": {
@@ -479,7 +497,8 @@
       "severity": 4,
       "scope": "generic",
       "tags": [
-        "CIS Benchmark Level 1", "windows_security/accounts_guest_account"
+        "CIS Benchmark Level 1",
+        "windows_security/accounts_guest_account"
       ],
       "description": [
         {
@@ -489,8 +508,8 @@
         },
         {
           "locale": "FR",
-          "title": "Compte Invité activé",
-          "summary": "Le compte Invité est un compte par défaut dans Windows, qui permet aux utilisateurs d'accéder au système avec des privilèges limités. Il est recommandé de désactiver ce compte pour empêcher tout accès non autorisé à votre système et à vos données."
+          "title": "Compte Invit\u00e9 activ\u00e9",
+          "summary": "Le compte Invit\u00e9 est un compte par d\u00e9faut dans Windows, qui permet aux utilisateurs d'acc\u00e9der au syst\u00e8me avec des privil\u00e8ges limit\u00e9s. Il est recommand\u00e9 de d\u00e9sactiver ce compte pour emp\u00eacher tout acc\u00e8s non autoris\u00e9 \u00e0 votre syst\u00e8me et \u00e0 vos donn\u00e9es."
         }
       ],
       "implementation": {
@@ -527,7 +546,10 @@
       "dimension": "system services",
       "severity": 3,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "windows_security/windows_autoplay_disable"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "windows_security/windows_autoplay_disable"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -536,8 +558,8 @@
         },
         {
           "locale": "FR",
-          "title": "Lecture automatique activée",
-          "summary": "La lecture automatique est une fonctionnalité de Windows qui peut lancer automatiquement une application lorsque vous branchez une clé USB, un CD ou un DVD. Cela peut être utilisé par des attaquants pour exécuter un code malveillant sans votre consentement ni votre connaissance."
+          "title": "Lecture automatique activ\u00e9e",
+          "summary": "La lecture automatique est une fonctionnalit\u00e9 de Windows qui peut lancer automatiquement une application lorsque vous branchez une cl\u00e9 USB, un CD ou un DVD. Cela peut \u00eatre utilis\u00e9 par des attaquants pour ex\u00e9cuter un code malveillant sans votre consentement ni votre connaissance."
         }
       ],
       "implementation": {
@@ -574,7 +596,10 @@
       "dimension": "credentials",
       "severity": 5,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "windows_security/wi_accounts_enableadmin"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "windows_security/wi_accounts_enableadmin"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -583,8 +608,8 @@
         },
         {
           "locale": "FR",
-          "title": "Compte administrateur intégré activé",
-          "summary": "Le compte administrateur intégré est un compte puissant qui a un accès complet au système. Avoir ce compte activé représente un risque de sécurité car c'est une cible courante pour les attaquants. Il devrait être désactivé sauf s'il est absolument nécessaire de l'activer."
+          "title": "Compte administrateur int\u00e9gr\u00e9 activ\u00e9",
+          "summary": "Le compte administrateur int\u00e9gr\u00e9 est un compte puissant qui a un acc\u00e8s complet au syst\u00e8me. Avoir ce compte activ\u00e9 repr\u00e9sente un risque de s\u00e9curit\u00e9 car c'est une cible courante pour les attaquants. Il devrait \u00eatre d\u00e9sactiv\u00e9 sauf s'il est absolument n\u00e9cessaire de l'activer."
         }
       ],
       "implementation": {
@@ -621,7 +646,10 @@
       "dimension": "network",
       "severity": 5,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "windows_security/win_fw_enable"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "windows_security/win_fw_enable"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -630,8 +658,8 @@
         },
         {
           "locale": "FR",
-          "title": "Pare-feu Windows désactivé",
-          "summary": "Le pare-feu Windows est une fonctionnalité intégrée de Windows qui aide à protéger votre ordinateur contre les accès non autorisés. Lorsqu'il est désactivé, votre ordinateur est vulnérable aux attaques en provenance du réseau. Nous vous recommandons de l'activer."
+          "title": "Pare-feu Windows d\u00e9sactiv\u00e9",
+          "summary": "Le pare-feu Windows est une fonctionnalit\u00e9 int\u00e9gr\u00e9e de Windows qui aide \u00e0 prot\u00e9ger votre ordinateur contre les acc\u00e8s non autoris\u00e9s. Lorsqu'il est d\u00e9sactiv\u00e9, votre ordinateur est vuln\u00e9rable aux attaques en provenance du r\u00e9seau. Nous vous recommandons de l'activer."
         }
       ],
       "implementation": {
@@ -668,7 +696,10 @@
       "dimension": "system services",
       "severity": 3,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "windows_security/registry_remote_access"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "windows_security/registry_remote_access"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -677,8 +708,8 @@
         },
         {
           "locale": "FR",
-          "title": "Service Registre distant activé",
-          "summary": "Le Service Registre distant permet l'accès distant au Registre de Windows. Cela peut être un risque de sécurité si cela n'est pas correctement sécurisé."
+          "title": "Service Registre distant activ\u00e9",
+          "summary": "Le Service Registre distant permet l'acc\u00e8s distant au Registre de Windows. Cela peut \u00eatre un risque de s\u00e9curit\u00e9 si cela n'est pas correctement s\u00e9curis\u00e9."
         }
       ],
       "implementation": {
@@ -715,7 +746,10 @@
       "dimension": "credentials",
       "severity": 5,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "windows_security/cred_lm_ntlmv1"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "windows_security/cred_lm_ntlmv1"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -757,7 +791,10 @@
       "dimension": "system integrity",
       "severity": 4,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "windows_security/os_lsass_protection"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "windows_security/os_lsass_protection"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -766,8 +803,8 @@
         },
         {
           "locale": "FR",
-          "title": "Protection du processus Lsass.exe désactivée",
-          "summary": "Lsass.exe est un processus système essentiel qui gère l'authentification de l'utilisateur. Il contient des informations sensibles telles que des mots de passe et des jetons de sécurité. Si ce processus est compromis, cela peut entraîner une violation de sécurité. L'activation de la protection du processus Lsass.exe aide à prévenir les attaques contre ce processus. Ce contenu vous montrera comment activer la protection du processus Lsass.exe."
+          "title": "Protection du processus Lsass.exe d\u00e9sactiv\u00e9e",
+          "summary": "Lsass.exe est un processus syst\u00e8me essentiel qui g\u00e8re l'authentification de l'utilisateur. Il contient des informations sensibles telles que des mots de passe et des jetons de s\u00e9curit\u00e9. Si ce processus est compromis, cela peut entra\u00eener une violation de s\u00e9curit\u00e9. L'activation de la protection du processus Lsass.exe aide \u00e0 pr\u00e9venir les attaques contre ce processus. Ce contenu vous montrera comment activer la protection du processus Lsass.exe."
         }
       ],
       "implementation": {
@@ -804,7 +841,10 @@
       "dimension": "system integrity",
       "severity": 4,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "windows_security/powershell/executionpolicy"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "windows_security/powershell/executionpolicy"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -813,8 +853,8 @@
         },
         {
           "locale": "FR",
-          "title": "La stratégie d'exécution de PowerShell n'est pas définie sur RemoteSigned",
-          "summary": "PowerShell est un outil en ligne de commande puissant intégré à Windows, souvent utilisé par des attaquants pour effectuer des activités malveillantes. La stratégie d'exécution détermine les scripts autorisés à s'exécuter sur un système Windows. Si la stratégie d'exécution n'est pas définie sur RemoteSigned, cela pourrait permettre à un attaquant d'exécuter des scripts malveillants sur votre système."
+          "title": "La strat\u00e9gie d'ex\u00e9cution de PowerShell n'est pas d\u00e9finie sur RemoteSigned",
+          "summary": "PowerShell est un outil en ligne de commande puissant int\u00e9gr\u00e9 \u00e0 Windows, souvent utilis\u00e9 par des attaquants pour effectuer des activit\u00e9s malveillantes. La strat\u00e9gie d'ex\u00e9cution d\u00e9termine les scripts autoris\u00e9s \u00e0 s'ex\u00e9cuter sur un syst\u00e8me Windows. Si la strat\u00e9gie d'ex\u00e9cution n'est pas d\u00e9finie sur RemoteSigned, cela pourrait permettre \u00e0 un attaquant d'ex\u00e9cuter des scripts malveillants sur votre syst\u00e8me."
         }
       ],
       "implementation": {
