@@ -54,6 +54,7 @@ jobs:
           if: always()
           shell: pwsh
           run: echo "::set-output report=$(cat report-results.txt)"
+
             
     tests-ubuntu:
         if: always()
