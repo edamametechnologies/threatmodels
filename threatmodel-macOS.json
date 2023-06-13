@@ -38,7 +38,7 @@
         "maxversion": 0,
         "class": "installer",
         "elevation": "user",
-        "target": "https://edamamecompany.sharepoint.com/:u:/s/Anyone/EW70U3YGjwdFryyIzVo3maMBNE6XAb0ZabQ0Bi0uAw5vsQ?e=7kVnf4",
+        "target": "https://edamame-helper.s3.eu-west-1.amazonaws.com/macos/",
         "education": []
       },
       "rollback": {
