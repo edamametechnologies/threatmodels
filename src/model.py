@@ -48,7 +48,7 @@ class Model(object):
         count = {"error_count": 0, "warning_count": 0, "ok_count": 0}
 
         for report in self.reports:
-            for key in report.keys():
+            for key in count.keys():
                 count[key] += report[key]
 
         res = f"{self.source}: ❌ {count['error_count']} "\
