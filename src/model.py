@@ -55,7 +55,7 @@ class Model(object):
                          f" ⚠️ {res['warning_count']}"\
                          f" ✅ {res['ok_count']}"
 
-        with open('report-results.txt', 'w') as file:
+        with open('report-results.txt', 'w', encoding='utf-8') as file:
             file.write(report_results)
 
         return res
