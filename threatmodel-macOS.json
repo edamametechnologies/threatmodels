@@ -76,7 +76,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "profiles list | grep profileIdentifier",
+        "target": "profiles -P | grep profileIdentifier",
         "education": []
       },
       "remediation": {
@@ -85,7 +85,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "profiles remove -all",
+        "target": "profiles remove -all -forced",
         "education": []
       },
       "rollback": {
@@ -397,7 +397,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "system",
+        "elevation": "user",
         "target": "systemsetup -getremotelogin | grep On",
         "education": []
       },
@@ -541,7 +541,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "system",
+        "elevation": "user",
         "target": "launchctl print-disabled system | grep com.apple.AEServer | grep false",
         "education": []
       },
@@ -588,7 +588,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "system",
+        "elevation": "admin",
         "target": "fdesetup hasinstitutionalrecoverykey | grep true",
         "education": []
       },
@@ -660,7 +660,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "fdesetup isactive | grep false",
         "education": []
       },
@@ -729,7 +729,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "admin",
+        "elevation": "user",
         "target": "spctl --status | grep disabled",
         "education": []
       },
