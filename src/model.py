@@ -1,6 +1,6 @@
 import json
 from sys import platform
-from metric import Metric
+from metric import Metric, TargetIsNotACLI
 
 
 class Model(object):
@@ -41,7 +41,10 @@ class Model(object):
         nb_metrics_ok = 0
 
         for metric in self.metrics:
-            if metric.run_all_tests():
+            try:
+                if metric.run_all_tests():
+                    nb_metrics_ok += 1
+            except TargetIsNotACLI:
                 nb_metrics_ok += 1
 
             self.reports.append(metric.get_report())
@@ -59,7 +62,7 @@ class Model(object):
         report_results = f"{self.source}: {res['error_count']} ❌"\
                          f" {res['warning_count']} ⚠️"\
                          f" {res['ok_count']} ✅"\
-                         "| Good and complete metrics: "\
+                         "| Good metrics: "\
                          f"{nb_metrics_ok}/{nb_metrics}"
 
         with open('report-results.txt', 'w', encoding='utf-8') as file:
