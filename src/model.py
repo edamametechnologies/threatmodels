@@ -37,13 +37,18 @@ class Model(object):
         '''
         Run all tests sequentially and returns the results.
         '''
+        nb_metrics = len(self.metrics)
+        nb_metrics_ok = 0
+
         for metric in self.metrics:
-            metric.run_all_tests()
+            if metric.run_all_tests():
+                nb_metrics_ok += 1
+
             self.reports.append(metric.get_report())
 
-        return self.get_results()
+        return self.compute_results(nb_metrics, nb_metrics_ok)
 
-    def get_results(self):
+    def compute_results(self, nb_metrics, nb_metrics_ok):
         '''Returns the results of the tests'''
         res = {"error_count": 0, "warning_count": 0, "ok_count": 0}
 
@@ -51,9 +56,11 @@ class Model(object):
             for key in res.keys():
                 res[key] += report[key]
 
-        report_results = f"{self.source}: ❌ {res['error_count']}"\
-                         f" ⚠️ {res['warning_count']}"\
-                         f" ✅ {res['ok_count']}"
+        report_results = f"{self.source}: {res['error_count']} ❌"\
+                         f" {res['warning_count']} ⚠️"\
+                         f" {res['ok_count']} ✅"\
+                         "| Good and complete metrics: "\
+                         f"{nb_metrics_ok}/{nb_metrics}"
 
         with open('report-results.txt', 'w', encoding='utf-8') as file:
             file.write(report_results)
