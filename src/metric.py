@@ -46,7 +46,7 @@ class Metric(object):
             self.log("warning", f"{target_type} target  is not a `cli` or not "
                      "implemented yet. "
                      f"Class: `{self.info[target_type]['class']}`")
-            return False
+            raise TargetIsNotACLI
         else:
             return True
 
@@ -279,6 +279,11 @@ class Metric(object):
 
 class TargetExecutionError(Exception):
     '''Raised when a target execution fails'''
+    pass
+
+
+class TargetIsNotACLI(Exception):
+    '''Raised when a target is not a CLI'''
     pass
 
 
