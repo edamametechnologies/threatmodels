@@ -53,7 +53,7 @@ jobs:
         - id: read_output
           if: always()
           shell: pwsh
-          run: echo "::set-output report=$(cat report-results.txt)"
+          run: echo "::set-output name=report::$(cat report-results.txt)"
             
     tests-ubuntu:
         if: always()
@@ -94,6 +94,7 @@ jobs:
               channel-id: 'C05BY6YNDFF'
               # Message to post into Slack. Needed if using bot token
               slack-message: "GitHub tests result: \n${{ needs.tests-macos.outputs.macos-report }}\n${{ needs.tests-windows.outputs.windows-report }}\n${{ needs.tests-ubuntu.outputs.ubuntu-report }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
               # ${{ github.event.pull_request.html_url || github.event.head_commit.url }
             env:
                 SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
