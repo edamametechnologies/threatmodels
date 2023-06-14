@@ -726,7 +726,7 @@
           "locale": "FR",
           "title": "Protocoles LM et NTLMv1 activés",
           "summary": "Les protocoles LM et NTLMv1 sont des protocoles d'authentification obsolètes et peu sûrs. Ils doivent être désactivés pour prévenir les menaces potentielles à la sécurité. Le fait de laisser ces protocoles activés peut permettre à des attaquants de déchiffrer des mots de passe et d'obtenir un accès non autorisé à des informations sensibles."
-        },
+        }
       ],
       "implementation": {
         "system": "Windows",
