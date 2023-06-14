@@ -1,8 +1,8 @@
 {
   "name": "threat model macOS",
   "extends": "none",
-  "date": "June 13th 2023",
-  "signature": "ba7816bf8f01cfda484940de5dae2184c19161a606577a01e410de93f30013ad",
+  "date": "June 14th 2023",
+  "signature": "1281887ecad50ca8e7c5c29f8cf528bb33c0a7bae4d3c57ef2f8d2dd081814f9",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -20,7 +20,7 @@
         {
           "locale": "FR",
           "title": "Edamame Helper inactif",
-          "summary": "Le logiciel d'assistance d'Edamame n'est pas en cours d'exécution ou a besoin d'être mis à jour. Il est requis pour une analyse complète du score de sécurité."
+          "summary": "Le logiciel d'assistance d'Edamame n'est pas en cours d'ex\u00e9cution ou a besoin d'\u00eatre mis \u00e0 jour. Il est requis pour une analyse compl\u00e8te du score de s\u00e9curit\u00e9."
         }
       ],
       "implementation": {
@@ -66,8 +66,8 @@
         },
         {
           "locale": "FR",
-          "title": "Profils MDM installés",
-          "summary": "Un ou plusieurs profils de gestion des appareils mobiles (MDM) sont installés sur votre ordinateur. Cela signifie que votre ordinateur est, ou peut être, administré à distance par un tiers. S'il s'agit de votre ordinateur personnel, il s'agit d'une grave menace et les profils doivent être supprimés."
+          "title": "Profils MDM install\u00e9s",
+          "summary": "Un ou plusieurs profils de gestion des appareils mobiles (MDM) sont install\u00e9s sur votre ordinateur. Cela signifie que votre ordinateur est, ou peut \u00eatre, administr\u00e9 \u00e0 distance par un tiers. S'il s'agit de votre ordinateur personnel, il s'agit d'une grave menace et les profils doivent \u00eatre supprim\u00e9s."
         }
       ],
       "implementation": {
@@ -124,8 +124,8 @@
         },
         {
           "locale": "FR",
-          "title": "Administration à distance JAMF installée",
-          "summary": "Votre ordinateur est, ou peut être, administré à distance par un tiers à l'aide du framework JAMF MDM. S'il s'agit de votre ordinateur personnel, il s'agit d'une grave menace et JAMF doit être supprimé."
+          "title": "Administration \u00e0 distance JAMF install\u00e9e",
+          "summary": "Votre ordinateur est, ou peut \u00eatre, administr\u00e9 \u00e0 distance par un tiers \u00e0 l'aide du framework JAMF MDM. S'il s'agit de votre ordinateur personnel, il s'agit d'une grave menace et JAMF doit \u00eatre supprim\u00e9."
         }
       ],
       "implementation": {
@@ -185,8 +185,8 @@
         },
         {
           "locale": "FR",
-          "title": "Wake On LAN activé",
-          "summary": "Wake on LAN est une fonctionnalité qui peut réveiller automatiquement votre ordinateur lorsque quelque chose tente de s'y connecter. Ce n'est pas quelque chose dont vous avez besoin dans la plupart des cas et cela peut permettre à un malfrat de se connecter à votre ordinateur à tout moment."
+          "title": "Wake On LAN activ\u00e9",
+          "summary": "Wake on LAN est une fonctionnalit\u00e9 qui peut r\u00e9veiller automatiquement votre ordinateur lorsque quelque chose tente de s'y connecter. Ce n'est pas quelque chose dont vous avez besoin dans la plupart des cas et cela peut permettre \u00e0 un malfrat de se connecter \u00e0 votre ordinateur \u00e0 tout moment."
         }
       ],
       "implementation": {
@@ -235,8 +235,8 @@
         },
         {
           "locale": "FR",
-          "title": "Mises à jour Appstore manuelles",
-          "summary": "Les applications sont constamment mises à jour pour résoudre les problèmes de sécurité potentiels. Il est dans votre intérêt d'obtenir les mises à jour dès que possible grâce aux mises à jour automatiques."
+          "title": "Mises \u00e0 jour Appstore manuelles",
+          "summary": "Les applications sont constamment mises \u00e0 jour pour r\u00e9soudre les probl\u00e8mes de s\u00e9curit\u00e9 potentiels. Il est dans votre int\u00e9r\u00eat d'obtenir les mises \u00e0 jour d\u00e8s que possible gr\u00e2ce aux mises \u00e0 jour automatiques."
         }
       ],
       "implementation": {
@@ -285,8 +285,8 @@
         },
         {
           "locale": "FR",
-          "title": "Pare-feu local désactivé",
-          "summary": "Votre pare-feu local est désactivé. C'est bien dans un environnement de confiance mais dangereux si vous vous connectez à des réseaux publics. Vous devriez l'activer par défaut."
+          "title": "Pare-feu local d\u00e9sactiv\u00e9",
+          "summary": "Votre pare-feu local est d\u00e9sactiv\u00e9. C'est bien dans un environnement de confiance mais dangereux si vous vous connectez \u00e0 des r\u00e9seaux publics. Vous devriez l'activer par d\u00e9faut."
         }
       ],
       "implementation": {
@@ -335,8 +335,8 @@
         },
         {
           "locale": "FR",
-          "title": "Login automatique activé",
-          "summary": "La connexion automatique peut sembler très pratique mais en fait c'est une menace majeure pour la sécurité : elle permet à n'importe qui d'accéder à vos données sans connaître votre mot de passe."
+          "title": "Login automatique activ\u00e9",
+          "summary": "La connexion automatique peut sembler tr\u00e8s pratique mais en fait c'est une menace majeure pour la s\u00e9curit\u00e9 : elle permet \u00e0 n'importe qui d'acc\u00e9der \u00e0 vos donn\u00e9es sans conna\u00eetre votre mot de passe."
         }
       ],
       "implementation": {
@@ -379,7 +379,10 @@
       "dimension": "system integrity",
       "severity": 4,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_ssh_disable"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "macos_security/sysprefs_ssh_disable"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -388,8 +391,8 @@
         },
         {
           "locale": "FR",
-          "title": "Accès à distance activé",
-          "summary": "L'accès à distance est activée. Ce n'est pas nécessaire sauf si vous êtes un professionnel de l'informatique. Ceci est inhabituel et dangereux pour la plupart des utilisateurs."
+          "title": "Acc\u00e8s \u00e0 distance activ\u00e9",
+          "summary": "L'acc\u00e8s \u00e0 distance est activ\u00e9e. Ce n'est pas n\u00e9cessaire sauf si vous \u00eates un professionnel de l'informatique. Ceci est inhabituel et dangereux pour la plupart des utilisateurs."
         }
       ],
       "implementation": {
@@ -438,8 +441,8 @@
         },
         {
           "locale": "FR",
-          "title": "Bureau à distance activé",
-          "summary": "La connexion au bureau à distance est activée. Ce n'est pas nécessaire sauf si vous êtes un professionnel de l'informatique. Ceci est inhabituel et dangereux pour la plupart des utilisateurs."
+          "title": "Bureau \u00e0 distance activ\u00e9",
+          "summary": "La connexion au bureau \u00e0 distance est activ\u00e9e. Ce n'est pas n\u00e9cessaire sauf si vous \u00eates un professionnel de l'informatique. Ceci est inhabituel et dangereux pour la plupart des utilisateurs."
         }
       ],
       "implementation": {
@@ -476,7 +479,10 @@
       "dimension": "system services",
       "severity": 4,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_smbd_disable"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "macos_security/sysprefs_smbd_disable"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -485,8 +491,8 @@
         },
         {
           "locale": "FR",
-          "title": "Partage de fichiers activé",
-          "summary": "Le partage de fichiers est activé. Bien que cela puisse être intentionnel, nous vous recommandons fortement de le désactiver. Ce n'est pas si facile à configurer et cela peut exposer vos données à des personnes indésirables."
+          "title": "Partage de fichiers activ\u00e9",
+          "summary": "Le partage de fichiers est activ\u00e9. Bien que cela puisse \u00eatre intentionnel, nous vous recommandons fortement de le d\u00e9sactiver. Ce n'est pas si facile \u00e0 configurer et cela peut exposer vos donn\u00e9es \u00e0 des personnes ind\u00e9sirables."
         }
       ],
       "implementation": {
@@ -523,7 +529,10 @@
       "dimension": "system integrity",
       "severity": 4,
       "scope": "macOS",
-      "tags": ["CIS Benchmark Level 1", "macos_security/sysprefs_rae_disable"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "macos_security/sysprefs_rae_disable"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -532,8 +541,8 @@
         },
         {
           "locale": "FR",
-          "title": "Événements à distance activés",
-          "summary": "Les événements à distance sont activés. Bien que cela puisse être intentionnel, nous vous recommandons fortement de les désactiver. C'est inutile pour la plupart des utilisateurs et cela a été une cible d'attaques dans un passé récent."
+          "title": "\u00c9v\u00e9nements \u00e0 distance activ\u00e9s",
+          "summary": "Les \u00e9v\u00e9nements \u00e0 distance sont activ\u00e9s. Bien que cela puisse \u00eatre intentionnel, nous vous recommandons fortement de les d\u00e9sactiver. C'est inutile pour la plupart des utilisateurs et cela a \u00e9t\u00e9 une cible d'attaques dans un pass\u00e9 r\u00e9cent."
         }
       ],
       "implementation": {
@@ -579,8 +588,8 @@
         },
         {
           "locale": "FR",
-          "title": "Clé d'entreprise de récupération de disque",
-          "summary": "Il semble que le disque dur de votre ordinateur ait été crypté par votre employeur. Cela signifie qu'ils pourraient potentiellement le déchiffrer si vous leur rendez l'ordinateur. Vous devriez supprimer cette possibilité."
+          "title": "Cl\u00e9 d'entreprise de r\u00e9cup\u00e9ration de disque",
+          "summary": "Il semble que le disque dur de votre ordinateur ait \u00e9t\u00e9 crypt\u00e9 par votre employeur. Cela signifie qu'ils pourraient potentiellement le d\u00e9chiffrer si vous leur rendez l'ordinateur. Vous devriez supprimer cette possibilit\u00e9."
         }
       ],
       "implementation": {
@@ -651,8 +660,8 @@
         },
         {
           "locale": "FR",
-          "title": "Encryption du disque désactivée",
-          "summary": "Votre stockage principal n'est pas crypté. Bien qu'il y ait un petit impact sur les performances en l'activant, nous vous invitons vraiment à le configurer. Sans cela, toute personne accédant physiquement à votre ordinateur peut accéder à vos données."
+          "title": "Encryption du disque d\u00e9sactiv\u00e9e",
+          "summary": "Votre stockage principal n'est pas crypt\u00e9. Bien qu'il y ait un petit impact sur les performances en l'activant, nous vous invitons vraiment \u00e0 le configurer. Sans cela, toute personne acc\u00e9dant physiquement \u00e0 votre ordinateur peut acc\u00e9der \u00e0 vos donn\u00e9es."
         }
       ],
       "implementation": {
@@ -711,7 +720,10 @@
       "dimension": "applications",
       "severity": 4,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1", "macos_security/os_gatekeeper_enable"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "macos_security/os_gatekeeper_enable"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -720,8 +732,8 @@
         },
         {
           "locale": "FR",
-          "title": "Applications non signées autorisées",
-          "summary": "Votre ordinateur a été configuré pour autoriser l'exécution d'applications non signées. C'est inhabituel et dangereux. Vous devriez désactiver cette option."
+          "title": "Applications non sign\u00e9es autoris\u00e9es",
+          "summary": "Votre ordinateur a \u00e9t\u00e9 configur\u00e9 pour autoriser l'ex\u00e9cution d'applications non sign\u00e9es. C'est inhabituel et dangereux. Vous devriez d\u00e9sactiver cette option."
         }
       ],
       "implementation": {
@@ -771,8 +783,8 @@
         },
         {
           "locale": "FR",
-          "title": "Mises à jour système manuelles",
-          "summary": "Les mises à jour du système sont manuelles. Vous devriez vraiment activer les mises à jour automatiques du système pour obtenir les derniers correctifs de sécurité pour votre ordinateur."
+          "title": "Mises \u00e0 jour syst\u00e8me manuelles",
+          "summary": "Les mises \u00e0 jour du syst\u00e8me sont manuelles. Vous devriez vraiment activer les mises \u00e0 jour automatiques du syst\u00e8me pour obtenir les derniers correctifs de s\u00e9curit\u00e9 pour votre ordinateur."
         }
       ],
       "implementation": {
@@ -821,8 +833,8 @@
         },
         {
           "locale": "FR",
-          "title": "Réponse au ping activée",
-          "summary": "Votre ordinateur répondra si quelque chose essaie de vérifier sa présence. Cela peut être très mauvais et permettre à quiconque de vérifier votre présence sur un réseau et éventuellement d'attaquer votre ordinateur...."
+          "title": "R\u00e9ponse au ping activ\u00e9e",
+          "summary": "Votre ordinateur r\u00e9pondra si quelque chose essaie de v\u00e9rifier sa pr\u00e9sence. Cela peut \u00eatre tr\u00e8s mauvais et permettre \u00e0 quiconque de v\u00e9rifier votre pr\u00e9sence sur un r\u00e9seau et \u00e9ventuellement d'attaquer votre ordinateur...."
         }
       ],
       "implementation": {
@@ -871,8 +883,8 @@
         },
         {
           "locale": "FR",
-          "title": "Ecran protégé désactivé",
-          "summary": "Votre ordinateur n'a pas d'économiseur d'écran activé avec un mot de passe. Il le laisse ouvert à l'accès physique par n'importe qui. C'est très dangereux !"
+          "title": "Ecran prot\u00e9g\u00e9 d\u00e9sactiv\u00e9",
+          "summary": "Votre ordinateur n'a pas d'\u00e9conomiseur d'\u00e9cran activ\u00e9 avec un mot de passe. Il le laisse ouvert \u00e0 l'acc\u00e8s physique par n'importe qui. C'est tr\u00e8s dangereux !"
         }
       ],
       "implementation": {
@@ -940,8 +952,8 @@
         },
         {
           "locale": "FR",
-          "title": "Pas d'antivirus installé",
-          "summary": "Vous n'avez pas d'antivirus installé. Nous vous recommandons d'en installer un."
+          "title": "Pas d'antivirus install\u00e9",
+          "summary": "Vous n'avez pas d'antivirus install\u00e9. Nous vous recommandons d'en installer un."
         }
       ],
       "implementation": {
@@ -1000,7 +1012,10 @@
       "dimension": "system integrity",
       "severity": 5,
       "scope": "macOS",
-      "tags": ["CIS Benchmark Level 1", "macos_security/os_sip_enable"],
+      "tags": [
+        "CIS Benchmark Level 1",
+        "macos_security/os_sip_enable"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -1009,8 +1024,8 @@
         },
         {
           "locale": "FR",
-          "title": "Protection d'intégrité système désactivée",
-          "summary": "La Protection de l'Intégrité du Système est une capacité clé de macOS qui empêche tous logiciels de modifier les fichiers et les composants du système. Dans une certaine mesure, c'est un antivirus \"assez bon\" pour votre Mac. Le désactiver est... inhabituel et dangereux. Il devrait être activé par défaut sur votre Mac. Ce contenu vous expliquera comment l'activer à nouveau. Soyez courageux... c'est un peu difficile à réaliser !"
+          "title": "Protection d'int\u00e9grit\u00e9 syst\u00e8me d\u00e9sactiv\u00e9e",
+          "summary": "La Protection de l'Int\u00e9grit\u00e9 du Syst\u00e8me est une capacit\u00e9 cl\u00e9 de macOS qui emp\u00eache tous logiciels de modifier les fichiers et les composants du syst\u00e8me. Dans une certaine mesure, c'est un antivirus \"assez bon\" pour votre Mac. Le d\u00e9sactiver est... inhabituel et dangereux. Il devrait \u00eatre activ\u00e9 par d\u00e9faut sur votre Mac. Ce contenu vous expliquera comment l'activer \u00e0 nouveau. Soyez courageux... c'est un peu difficile \u00e0 r\u00e9aliser !"
         }
       ],
       "implementation": {
@@ -1076,8 +1091,8 @@
         },
         {
           "locale": "FR",
-          "title": "Compte invité activé",
-          "summary": "Le compte invité est activé. C'est généralement bien, mais il n'est pas si facile de limiter l'accès à vos données. Vous devriez le désactiver."
+          "title": "Compte invit\u00e9 activ\u00e9",
+          "summary": "Le compte invit\u00e9 est activ\u00e9. C'est g\u00e9n\u00e9ralement bien, mais il n'est pas si facile de limiter l'acc\u00e8s \u00e0 vos donn\u00e9es. Vous devriez le d\u00e9sactiver."
         }
       ],
       "implementation": {
@@ -1123,8 +1138,8 @@
         },
         {
           "locale": "FR",
-          "title": "Utilisateur root activé",
-          "summary": "Un utilisateur système spécial a été configuré sur votre ordinateur. Ceci est inhabituel et doit être désactivé immédiatement."
+          "title": "Utilisateur root activ\u00e9",
+          "summary": "Un utilisateur syst\u00e8me sp\u00e9cial a \u00e9t\u00e9 configur\u00e9 sur votre ordinateur. Ceci est inhabituel et doit \u00eatre d\u00e9sactiv\u00e9 imm\u00e9diatement."
         }
       ],
       "implementation": {
@@ -1195,8 +1210,8 @@
         },
         {
           "locale": "FR",
-          "title": "Changement de paramètres système non protégés",
-          "summary": "Les paramètres de votre système informatique peuvent être modifiés par tous les utilisateurs. Vous devriez le restreindre."
+          "title": "Changement de param\u00e8tres syst\u00e8me non prot\u00e9g\u00e9s",
+          "summary": "Les param\u00e8tres de votre syst\u00e8me informatique peuvent \u00eatre modifi\u00e9s par tous les utilisateurs. Vous devriez le restreindre."
         }
       ],
       "implementation": {
@@ -1243,7 +1258,7 @@
         {
           "locale": "FR",
           "title": "Apple ID compromise",
-          "summary": "Votre e-mail Apple ID est apparue récemment dans une fuite de données, veuillez examiner la fuite et modifier vos mots de passe en conséquence."
+          "summary": "Votre e-mail Apple ID est apparue r\u00e9cemment dans une fuite de donn\u00e9es, veuillez examiner la fuite et modifier vos mots de passe en cons\u00e9quence."
         }
       ],
       "implementation": {
@@ -1300,8 +1315,8 @@
         },
         {
           "locale": "FR",
-          "title": "Votre OS n'est pas à jour",
-          "summary": "Votre système d'exploitation n'est pas à jour, veuillez procéder à sa mise à niveau afin d'obtenir les derniers correctifs de sécurité."
+          "title": "Votre OS n'est pas \u00e0 jour",
+          "summary": "Votre syst\u00e8me d'exploitation n'est pas \u00e0 jour, veuillez proc\u00e9der \u00e0 sa mise \u00e0 niveau afin d'obtenir les derniers correctifs de s\u00e9curit\u00e9."
         }
       ],
       "implementation": {
