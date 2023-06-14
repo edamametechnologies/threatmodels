@@ -53,8 +53,7 @@ jobs:
         - id: read_output
           if: always()
           shell: pwsh
-          run: echo "::set-output report=$(cat report-results.txt)"
-
+          run: echo "::set-output name=report::$(cat report-results.txt)"
             
     tests-ubuntu:
         if: always()
