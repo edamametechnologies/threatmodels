@@ -8,15 +8,15 @@ import datetime
 
 def open_threat_model(filename: str) -> None:
     '''Open the file in read mode and return the JSON'''
-    with open(filename, 'r') as file:
+    with open(filename, 'r', encoding="utf-8") as file:
         data = json.load(file)
     return data
 
 
 def save_threat_model(filename: str, data: dict) -> None:
     '''Open the file in write mode and save the JSON'''
-    with open(filename, 'w') as file:
-        json.dump(data, file, indent=2)
+    with open(filename, 'w', encoding="utf-8") as file:
+        json.dump(data, file, indent=2, ensure_ascii=False)
 
 
 def hash_file(filename: str) -> str:
