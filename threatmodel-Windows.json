@@ -74,6 +74,11 @@
           "locale": "EN",
           "title": "Cached logon credentials enabled",
           "summary": "Cached logon credentials are a security risk as they can be used by attackers to gain access to your system. They are stored on your system and can be retrieved by attackers who gain access to your computer or network. We recommend disabling cached logon credentials to increase the security of your system."
+        },
+        {
+          "locale": "FR",
+          "title": "Activation de la mise en cache des identifiants de connexion",
+          "summary": "Les identifiants de connexion mis en cache représentent un risque pour la sécurité car ils peuvent être utilisés par des pirates pour accéder à votre système. Ils sont stockés sur votre système et peuvent être récupérés par des pirates qui accèdent à votre ordinateur ou à votre réseau. Nous vous recommandons de désactiver les identifiants de connexion mis en cache afin de renforcer la sécurité de votre système."
         }
       ],
       "implementation": {
