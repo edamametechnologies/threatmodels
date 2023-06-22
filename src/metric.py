@@ -51,7 +51,8 @@ class Metric(object):
             return True
 
     def fetch_need_remediation(self):
-        return need_remediation_logic(self.execute_target("implementation"))
+        result = self.execute_target("implementation")
+        return (need_remediation_logic(result), result)
 
     def common_target_tests(self, target_type):
         # Check if cli
@@ -59,10 +60,7 @@ class Metric(object):
             return False
 
         try:
-            # Execute the elevation test
-            self.elevation_test(target_type)
-
-            # Execute the target itself
+            # Execute the target
             self.execute_target(target_type)
         except (subprocess.TimeoutExpired, TargetExecutionError) as e:
             self.log("error", f"{target_type}: {e}")
@@ -80,7 +78,7 @@ class Metric(object):
             return False
 
         # stdout with data means that a remediation is needed
-        need_remediation = self.fetch_need_remediation()
+        need_remediation, _ = self.fetch_need_remediation()
 
         self.log("ok", f"{target_type} target passed tests. "
                  f"Need remediation: {need_remediation}")
@@ -97,11 +95,11 @@ class Metric(object):
         if not self.common_target_tests(target_type):
             return False
 
-        need_remediation = self.fetch_need_remediation()
+        need_remediation, result = self.fetch_need_remediation()
 
         if need_remediation:
             self.log("error", f"{target_type} target ran flawlessly but did not "
-                     "resolve the metric")
+                     "resolve the metric", result=result)
         else:
             self.log("ok", f"{target_type} target successfuly resolved the "
                      "metric")
@@ -118,10 +116,11 @@ class Metric(object):
         if not self.common_target_tests(target_type):
             return False
 
-        need_remediation = self.fetch_need_remediation()
+        need_remediation, result = self.fetch_need_remediation()
 
         if not need_remediation:
-            self.log("error", f"{target_type} dit not revert the changes")
+            self.log("error", f"{target_type} dit not revert the changes",
+                     result=result)
         else:
             self.log("ok", f"{target_type} successfuly reverted the changes")
 
@@ -140,9 +139,8 @@ class Metric(object):
         '''
         # Try to load target permissions if permissions argument is not
         # specified
-        if permissions is None\
-                and "need_permissions" in self.report[target_type]:
-            permissions = self.report[target_type]["need_permissions"]
+        if permissions is None:
+            permissions = self.info[target_type]["elevation"] != "user"
 
         # Gets the corresponding target command
         command = self.info[target_type]["target"]
@@ -247,8 +245,7 @@ class Metric(object):
                      "failed")
             return False
 
-        if self.fetch_need_remediation():
-            self.log("info", "Testing remediations first")
+        if self.fetch_need_remediation()[0]:
             if not self.remediation_tests():
                 self.log("info", "Skipping other tests because remediation "
                          "failed")
@@ -261,7 +258,6 @@ class Metric(object):
 
             self.degradation_tests()
         else:
-            self.log("info", "Testing rollback first")
             if not self.rollback_test():
                 self.log("info", "Skipping other tests because rollback "
                          "failed")
