@@ -152,7 +152,9 @@ class Metric(object):
         # Add sudo or runas when permissions argument is True
         if permissions:
             if self.source == "Windows":
-                command = f"runas /noprofile /user:Administrator {command}"
+                # In the github actions Windows virnual machines the python
+                # script is already ran with privileges.
+                pass
             else:
                 command = f"sudo -- sh -c '{command}'"
 
