@@ -267,7 +267,8 @@
       "scope": "generic",
       "tags": [
         "CIS Benchmark Level 1",
-        "windows_security/smb1_protocol_disabled"
+        "windows_security/smb1_protocol_disabled",
+        "need_restart"
       ],
       "description": [
         {
@@ -296,7 +297,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "Disable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol",
+        "target": "Disable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -norestart",
         "education": []
       },
       "rollback": {
@@ -305,7 +306,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "Enable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol",
+        "target": "Enable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -norestart",
         "education": []
       }
     },
