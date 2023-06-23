@@ -741,8 +741,8 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
-        "target": "EDAMAME_SPCTL_STATUS_TARGET=$(spctl --status); echo $EDAMAME_SPCTL_STATUS_TARGET",
+        "elevation": "system",
+        "target": "spctl --status | grep disabled",
         "education": []
       },
       "remediation": {
