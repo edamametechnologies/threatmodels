@@ -534,7 +534,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "if((Get-WmiObject -Class Win32_UserAccount | Where-Object {$_.Name -eq 'Guest'} | Select-Object -Property Name).Name -eq 'Guest') { 'Guest account exists' } else { '' }",
+        "target": "if(net user guest | findstr /c:'active' | findstr /c:'Yes') { 'Guest account active' } else { '' }",
         "education": []
       },
       "remediation": {
