@@ -741,8 +741,8 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "system",
-        "target": "spctl --status | grep disabled",
+        "elevation": "user",
+        "target": "spctl --status >/dev/null 2>&1 || echo enabled",
         "education": []
       },
       "remediation": {
