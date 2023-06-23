@@ -742,7 +742,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "spctl --status | tr -d ' '",
+        "target": "spctl --status | grep disabled",
         "education": []
       },
       "remediation": {
