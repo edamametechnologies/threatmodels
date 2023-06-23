@@ -742,7 +742,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "spctl --status",
+        "target": "! spctl --status 1>/dev/null",
         "education": []
       },
       "remediation": {
