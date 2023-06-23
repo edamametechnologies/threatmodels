@@ -843,7 +843,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa' /v 'RunAsPPL /t REG_DWORD /d 1 /f",
+        "target": "reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa /v 'RunAsPPL' /t REG_DWORD /d 1 /f",
         "education": []
       },
       "rollback": {
@@ -852,7 +852,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "reg add 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa' /v 'RunAsPPL' /t REG_DWORD /d 0 /f",
+        "target": "reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa /v 'RunAsPPL' /t REG_DWORD /d 0 /f",
         "education": []
       }
     },
