@@ -87,7 +87,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "if(((Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI' -Name 'DisablePasswordCaching' -ErrorAction SilentlyContinue).DisablePasswordCaching) -eq 1) { 'Password caching is disabled' } else { '' }",
+        "target": "if(((Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI' -Name 'DisablePasswordCaching' -ErrorAction SilentlyContinue).DisablePasswordCaching) -ne 1) { 'Password caching is not disabled' } else { '' }",
         "education": []
       },
       "remediation": {
