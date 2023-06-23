@@ -96,7 +96,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI' /v DisablePasswordCaching /t REG_DWORD /d 1 /f",
+        "target": "reg add HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI /v DisablePasswordCaching /t REG_DWORD /d 1 /f",
         "education": []
       },
       "rollback": {
@@ -105,7 +105,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI' /v DisablePasswordCaching /t REG_DWORD /d 0 /f",
+        "target": "reg add HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI /v DisablePasswordCaching /t REG_DWORD /d 0 /f",
         "education": []
       }
     },
@@ -196,7 +196,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore' /v AutoDownload /t REG_DWORD /d 4 /f",
+        "target": "reg add HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore /v AutoDownload /t REG_DWORD /d 4 /f",
         "education": []
       },
       "rollback": {
@@ -205,7 +205,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore' /v AutoDownload /t REG_DWORD /d 2 /f",
+        "target": "reg add HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore /v AutoDownload /t REG_DWORD /d 2 /f",
         "education": []
       }
     },
@@ -393,7 +393,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows Script Host\\Settings' /v Enabled /t REG_DWORD /d 0 /f",
+        "target": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows Script Host\\Settings\" /v Enabled /t REG_DWORD /d 0 /f",
         "education": []
       },
       "rollback": {
@@ -402,7 +402,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows Script Host\\Settings' /v Enabled /t REG_DWORD /d 1 /f",
+        "target": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows Script Host\\Settings\" /v Enabled /t REG_DWORD /d 1 /f",
         "education": []
       }
     },
@@ -493,7 +493,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' /v NoAutoUpdate /t REG_DWORD /d 0 /f",
+        "target": "reg add HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU /v NoAutoUpdate /t REG_DWORD /d 0 /f",
         "education": []
       },
       "rollback": {
@@ -502,7 +502,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "reg add 'HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' /v NoAutoUpdate /t REG_DWORD /d 1 /f",
+        "target": "reg add HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU /v NoAutoUpdate /t REG_DWORD /d 1 /f",
         "education": []
       }
     },
@@ -843,7 +843,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "reg add 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa' /v 'RunAsPPL' /t REG_DWORD /d 1 /f",
+        "target": "reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa' /v 'RunAsPPL /t REG_DWORD /d 1 /f",
         "education": []
       },
       "rollback": {
