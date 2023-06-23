@@ -742,7 +742,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "spctl --status 1>/dev/null",
+        "target": "EDAMAME_SPCTL_STATUS_TARGET=$(spctl --status); echo $EDAMAME_SPCTL_STATUS_TARGET | grep disabled",
         "education": []
       },
       "remediation": {
