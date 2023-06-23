@@ -742,7 +742,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "spctl --status | /usr/bin/grep '^assessments disabled$'",
+        "target": "spctl --status | tr -d ' ' | grep 'disabled'",
         "education": []
       },
       "remediation": {
