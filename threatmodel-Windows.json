@@ -743,7 +743,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "sc config RemoteRegistry start= disabled && sc stop RemoteRegistry",
+        "target": "(sc.exe config RemoteRegistry start= disabled) -and (sc.exe stop RemoteRegistry)",
         "education": []
       },
       "rollback": {
@@ -752,7 +752,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "sc config RemoteRegistry start= auto && sc start RemoteRegistry",
+        "target": "(sc.exe config RemoteRegistry start= auto) -and (sc.exe start RemoteRegistry)",
         "education": []
       }
     },
