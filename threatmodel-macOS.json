@@ -742,7 +742,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "spctl --status | tr -d ' ' | grep 'disabled'",
+        "target": "spctl --status | tr -d ' ' | /usr/bin/grep 'disabled'",
         "education": []
       },
       "remediation": {
