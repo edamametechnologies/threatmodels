@@ -435,7 +435,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "if((Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name fDenyTSConnections -ErrorAction SilentlyContinue) -eq 0) { 'Terminal Services connections allowed' } else { '' }",
+        "target": "if((Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name fDenyTSConnections -ErrorAction SilentlyContinue).fDenyTSConnections -eq 0) { 'Terminal Services connections allowed' } else { '' }",
         "education": []
       },
       "remediation": {
