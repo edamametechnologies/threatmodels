@@ -393,7 +393,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows Script Host\\Settings\" /v Enabled /t REG_DWORD /d 0 /f",
+        "target": "reg add HKLM\\SOFTWARE\\Microsoft\\'Windows Script Host'\\Settings /v Enabled /t REG_DWORD /d 0 /f",
         "education": []
       },
       "rollback": {
@@ -402,7 +402,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows Script Host\\Settings\" /v Enabled /t REG_DWORD /d 1 /f",
+        "target": "reg add HKLM\\SOFTWARE\\Microsoft\\'Windows Script Host'\\Settings /v Enabled /t REG_DWORD /d 1 /f",
         "education": []
       }
     },
