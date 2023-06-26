@@ -485,7 +485,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "if((Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' -Name NoAutoUpdate -ErrorAction SilentlyContinue) -ne $null) { 'NoAutoUpdate is set' } else { '' }",
+        "target": "if((Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' -Name NoAutoUpdate -ErrorAction SilentlyContinue).NoAutoUpdate -ne 0) { 'NoAutoUpdate is set' } else { '' }",
         "education": []
       },
       "remediation": {
