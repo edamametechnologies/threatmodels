@@ -147,7 +147,7 @@ class Metric(object):
 
         # Add powershell call on windows
         if self.source == "Windows":
-            command = f"powershell.exe -Command \"{command}\""
+            command = f"powershell.exe -Command '{command}'"
 
         # Add sudo or runas when permissions argument is True
         if permissions:
