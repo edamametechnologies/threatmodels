@@ -52,7 +52,7 @@ class Metric(object):
 
     def fetch_need_remediation(self):
         result = self.execute_target("implementation")
-        return (need_remediation_logic(result), result)
+        return (need_remediation_logic(result, self.source), result)
 
     def common_target_tests(self, target_type):
         # Check if cli
@@ -299,5 +299,8 @@ def is_error(result):
     return result.returncode != 0 and result.stderr != ""
 
 
-def need_remediation_logic(result):
-    return result.stdout != ""
+def need_remediation_logic(result, platform):
+    if platform == "Windows":
+        return result.stdout != "" or result.stdout != "\n"
+    else:
+        return result.stdout != ""
