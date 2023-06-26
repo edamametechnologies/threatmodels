@@ -218,10 +218,11 @@ class Metric(object):
         for i in range(3):
             self.execute_target("rollback")
 
+            need_remediation, result = self.fetch_need_remediation()
             # If no need remediation
-            if not self.execute_target("implementation").stdout != "":
+            if not need_remediation:
                 self.log("error", "rollback dit not revert the changes at the "
-                         f"attempt {i}")
+                         f"attempt {i}", result=result)
                 return False
             else:
                 self.log("ok", "rollback reverted the changes successfuly at "
@@ -229,10 +230,11 @@ class Metric(object):
 
             self.execute_target("remediation")
 
+            need_remediation, result = self.fetch_need_remediation()
             # If need remediation
-            if self.execute_target("implementation").stdout != "":
+            if need_remediation:
                 self.log("error", "remediation dit not resolve the "
-                         f"implementation at attempt {i}")
+                         f"implementation at attempt {i}", result=result)
                 return False
             else:
                 self.log("ok", "remediation resolved the implementation "
