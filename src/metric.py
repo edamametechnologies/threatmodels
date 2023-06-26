@@ -242,6 +242,11 @@ class Metric(object):
 
     def run_all_tests(self):
         '''Run all the tests for this metric'''
+        if "test_bypass" in self.info["tags"]:
+            self.log("info", f"Skipping `{self.info['name']}` "
+                     "because test_bypass flag is on")
+            return True
+
         self.logger.info(f"Running `{self.info['name']}` tests")
 
         if not self.implementation_tests():
