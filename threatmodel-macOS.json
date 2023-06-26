@@ -52,6 +52,56 @@
       }
     },
     {
+      "name": "response to ping enabled",
+      "metrictype": "bool",
+      "dimension": "network",
+      "severity": 3,
+      "scope": "generic",
+      "tags": [
+        "CIS Benchmark Level 1",
+        "macos_security/sysprefs_firewall_stealth_mode_enable"
+      ],
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Response to ping enabled",
+          "summary": "Your computer will respond if anything on the network is trying to check its presence. This can be very bad and allow anyone to check your presence and possibly attack your computer."
+        },
+        {
+          "locale": "FR",
+          "title": "Réponse au ping activée",
+          "summary": "Votre ordinateur répondra si quelque chose essaie de vérifier sa présence. Cela peut être très mauvais et permettre à quiconque de vérifier votre présence sur un réseau et éventuellement d'attaquer votre ordinateur...."
+        }
+      ],
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "target": "/usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode | grep disabled",
+        "education": []
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "target": "/usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on",
+        "education": []
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "target": "/usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode off",
+        "education": []
+      }
+    },
+    {
       "name": "MDM profiles",
       "metrictype": "bool",
       "dimension": "system integrity",
@@ -812,56 +862,6 @@
         "class": "cli",
         "elevation": "system",
         "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall -bool false; softwareupdate --schedule off",
-        "education": []
-      }
-    },
-    {
-      "name": "response to ping enabled",
-      "metrictype": "bool",
-      "dimension": "network",
-      "severity": 3,
-      "scope": "generic",
-      "tags": [
-        "CIS Benchmark Level 1",
-        "macos_security/sysprefs_firewall_stealth_mode_enable"
-      ],
-      "description": [
-        {
-          "locale": "EN",
-          "title": "Response to ping enabled",
-          "summary": "Your computer will respond if anything on the network is trying to check its presence. This can be very bad and allow anyone to check your presence and possibly attack your computer."
-        },
-        {
-          "locale": "FR",
-          "title": "Réponse au ping activée",
-          "summary": "Votre ordinateur répondra si quelque chose essaie de vérifier sa présence. Cela peut être très mauvais et permettre à quiconque de vérifier votre présence sur un réseau et éventuellement d'attaquer votre ordinateur...."
-        }
-      ],
-      "implementation": {
-        "system": "macOS",
-        "minversion": 12,
-        "maxversion": 0,
-        "class": "cli",
-        "elevation": "admin",
-        "target": "/usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode | grep disabled",
-        "education": []
-      },
-      "remediation": {
-        "system": "macOS",
-        "minversion": 12,
-        "maxversion": 0,
-        "class": "cli",
-        "elevation": "system",
-        "target": "/usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on",
-        "education": []
-      },
-      "rollback": {
-        "system": "macOS",
-        "minversion": 12,
-        "maxversion": 0,
-        "class": "cli",
-        "elevation": "system",
-        "target": "/usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode off",
         "education": []
       }
     },
