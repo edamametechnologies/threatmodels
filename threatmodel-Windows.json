@@ -2,7 +2,7 @@
   "name": "threat model Windows",
   "extends": "none",
   "date": "June 26th 2023",
-  "signature": "6e790e52eefd9ac05d519ec7a8ade5977e6b107792cb28051f0541e013d86f36",
+  "signature": "573415b3e47326beed94a23ea89cf8883bcb08d127719b935f30a72b6a67492f",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -258,7 +258,7 @@
         "target": "Set-ItemProperty -Path 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name EnableLUA -Value 0 -Type DWord",
         "education": []
       }
-    }, 
+    },
     {
       "name": "Automatic logon enabled",
       "metrictype": "bool",
