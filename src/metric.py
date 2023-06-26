@@ -1,7 +1,7 @@
 import subprocess
 
 # Command timeout in seconds
-CMD_TIMEOUT = 10
+CMD_TIMEOUT = 30
 
 
 class Metric(object):
