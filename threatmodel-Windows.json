@@ -593,7 +593,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "if (net user Administrator 2>&1) { net user Administrator /active:no } # deactivate only if the user exists",
+        "target": "net user Administrator *>$null; if($?) { net user Administrator /active:no } # deactivate only if the user exists",
         "education": []
       },
       "rollback": {
@@ -602,7 +602,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "if (net user Administrator 2>&1) { net user Administrator /active:yes } # activate only if the user exists",
+        "target": "net user Administrator *>$null; if($?) { net user Administrator /active:yes } # activate only if the user exists",
         "education": []
       }
     },
