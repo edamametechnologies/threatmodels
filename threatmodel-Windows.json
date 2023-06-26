@@ -584,7 +584,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "net user Administrator *>$null; if($?) { if((net user Administrator | findstr /C:'Account active') -match 'Yes') { 'Administrator account is active' } else { '' } } else { '' }",
+        "target": "net user Administrator *>$null; if($?) { if((net user Administrator | findstr /C:'Account active') -match 'Yes') { 'Administrator account is active' } else { '' } } else { 'built-in administrator does not exists, this should only be triggered on Windows Server' }",
         "education": []
       },
       "remediation": {
