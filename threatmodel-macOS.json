@@ -551,7 +551,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "launchctl print-disabled system | grep com.apple.AEServer | grep -E 'disabled|false'",
+        "target": "launchctl print-disabled system | grep com.apple.AEServer | grep -E 'enabled|false'",
         "education": []
       },
       "remediation": {
