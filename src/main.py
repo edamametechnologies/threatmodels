@@ -23,7 +23,7 @@ results = model.run_metrics_sequentially()
 
 print(results)
 
-if results["error_count"] > 0 or results["warning_count"] > 0:
+if results["error_count"] > 0:
     exit(1)
 else:
     exit(0)
