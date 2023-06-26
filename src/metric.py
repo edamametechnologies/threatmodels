@@ -301,6 +301,7 @@ def is_error(result):
 
 def need_remediation_logic(result, platform):
     if platform == "Windows":
-        return result.stdout != "" or result.stdout != "\n"
+        # Windows returns \n when the command succeed
+        return result.stdout != "\n"
     else:
         return result.stdout != ""
