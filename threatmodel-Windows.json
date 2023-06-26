@@ -29,7 +29,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "$result = if ((Get-Service -Name edamame_helper -ErrorAction SilentlyContinue).Status -eq 'Running') { \'\' } else { \'no helper\' }; $result\n",
+        "target": "$result = if ((Get-Service -Name edamame_helper -ErrorAction SilentlyContinue).Status -eq 'Running') { '' } else { 'no helper' }; $result\n",
         "education": []
       },
       "remediation": {
