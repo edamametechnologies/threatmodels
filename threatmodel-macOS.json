@@ -460,7 +460,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -configure -access -off",
+        "target": "/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -stop",
         "education": []
       },
       "rollback": {
@@ -469,7 +469,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent",
+        "target": "sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate",
         "education": []
       }
     },
