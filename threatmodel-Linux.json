@@ -27,9 +27,9 @@
         "system": "Linux",
         "minversion": 6,
         "maxversion": 0,
-        "class": "cli",
-        "elevation": "admin",
-        "target": "ps -ef | grep edamame_helper | grep -v grep > /dev/null || echo nohelper",
+        "class": "internal",
+        "elevation": "user",
+        "target": "helper_check",
         "education": []
       },
       "remediation": {
