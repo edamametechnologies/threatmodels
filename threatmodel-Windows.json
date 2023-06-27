@@ -27,9 +27,9 @@
         "system": "Windows",
         "minversion": 12,
         "maxversion": 0,
-        "class": "cli",
+        "class": "internal",
         "elevation": "user",
-        "target": "$result = if ((Get-Service -Name edamame_helper -ErrorAction SilentlyContinue).Status -eq 'Running') { '' } else { 'no helper' }; $result\n",
+        "target": "helper_check",
         "education": []
       },
       "remediation": {
