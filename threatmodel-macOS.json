@@ -450,7 +450,7 @@
         "minversion": 12,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "admin",
         "target": "systemsetup -getremotelogin | grep On",
         "education": []
       },
