@@ -792,7 +792,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "spdctl --status | grep disabled",
+        "target": "spctl --status | grep disabled",
         "education": []
       },
       "remediation": {
@@ -801,7 +801,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "spctl --global-enable",
+        "target": "spdctl --global-enable",
         "education": []
       },
       "rollback": {
