@@ -793,7 +793,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
+        "elevation": "system",
         "target": "reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa /v RunAsPPL /t REG_DWORD /d 1 /f",
         "education": []
       },
