@@ -1,8 +1,8 @@
 {
   "name": "threat model Windows",
   "extends": "none",
-  "date": "June 26th 2023",
-  "signature": "b1a7c7d211bcfd5abf442c6550d52debb62dfefe2722f1002053d3df0288851b",
+  "date": "June 28th 2023",
+  "signature": "60b5ca46ddac27869e65e0fd215a8965569d59fdfe4433325b2bbfeb7d5d06e4",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -785,7 +785,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "if((Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa' -ErrorAction SilentlyContinue).RunAsPPL -eq 0) { 'RunAsPPL is a REG_DWORD with value 0' } else { '' }",
+        "target": "if((Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa' -Name 'RunAsPPL' -ErrorAction SilentlyContinue).RunAsPPL -eq 0) { 'RunAsPPL is a REG_DWORD with value 0' } else { '' }",
         "education": []
       },
       "remediation": {
@@ -793,8 +793,8 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "user",
-        "target": "reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa /v 'RunAsPPL' /t REG_DWORD /d 1 /f",
+        "elevation": "system",
+        "target": "reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa /v RunAsPPL /t REG_DWORD /d 1 /f",
         "education": []
       },
       "rollback": {
@@ -803,7 +803,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa /v 'RunAsPPL' /t REG_DWORD /d 0 /f",
+        "target": "reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa /v RunAsPPL /t REG_DWORD /d 0 /f",
         "education": []
       }
     },
