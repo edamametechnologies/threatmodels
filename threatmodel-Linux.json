@@ -38,7 +38,7 @@
         "maxversion": 0,
         "class": "installer",
         "elevation": "user",
-        "target": "https://edamame-helper.s3.eu-west-1.amazonaws.com/linux",
+        "target": "https://edamame-helper.s3.eu-west-1.amazonaws.com",
         "education": []
       },
       "rollback": {
