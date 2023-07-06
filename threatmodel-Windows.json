@@ -1,8 +1,8 @@
 {
   "name": "threat model Windows",
   "extends": "none",
-  "date": "June 28th 2023",
-  "signature": "60b5ca46ddac27869e65e0fd215a8965569d59fdfe4433325b2bbfeb7d5d06e4",
+  "date": "June 30th 2023",
+  "signature": "6aab4ae19f003704e855a0bd8ddc4d69e52c496ec01e5da0128fe27839910b68",
   "metrics": [
     {
       "name": "edamame helper disabled",
