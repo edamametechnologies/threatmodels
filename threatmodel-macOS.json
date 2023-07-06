@@ -1,8 +1,8 @@
 {
   "name": "threat model macOS",
   "extends": "none",
-  "date": "June 30th 2023",
-  "signature": "415917feccd9f4ee52acdbf08087868406c9093109f2fed270b173d117992bc9",
+  "date": "July 06th 2023",
+  "signature": "5acf30f846e613bfd2fce0310ac70ea13d29a2fcb91ced4abdb8e275c7683b2d",
   "metrics": [
     {
       "name": "edamame helper disabled",
