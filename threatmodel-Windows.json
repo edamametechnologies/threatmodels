@@ -756,6 +756,56 @@
         "target": "Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Force",
         "education": []
       }
+    },
+    {
+      "name": "Automatic updates of App store apps disabled",
+      "metrictype": "bool",
+      "dimension": "system services",
+      "severity": 3,
+      "scope": "windows",
+      "tags": [
+        "CIS Benchmark Level 1",
+        "windows_10_1709"
+      ],
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Automatic updates of App store apps disabled",
+          "summary": "Automatic updates of App store apps is disabled which may result in outdated apps and pose a risk to security. It is recommended to enable automatic updates of App store apps."
+        },
+        {
+          "locale": "FR",
+          "title": "Mises à jour automatiques des applications du Windows Store désactivées",
+          "summary": "Les mises à jour automatiques des applications du Windows Store sont désactivées, ce qui peut entraîner des applications obsolètes et représenter un risque pour la sécurité. Il est recommandé d'activer les mises à jour automatiques des applications du Windows Store."
+        }
+      ],
+      "implementation": {
+        "system": "windows",
+        "minversion": 10,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "user",
+        "target": "if((Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\WindowsStore' -ErrorAction SilentlyContinue).AutoDownload -ne 4) { 'Automatic updates of App store apps disabled' } else { '' }",
+        "education": []
+      },
+      "remediation": {
+        "system": "windows",
+        "minversion": 10,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "target": "reg add HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore /v AutoDownload /t REG_DWORD /d 4 /f",
+        "education": []
+      },
+      "rollback": {
+        "system": "windows",
+        "minversion": 10,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "target": "reg add HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsStore /v AutoDownload /t REG_DWORD /d 2 /f",
+        "education": []
+      }
     }
   ]
 }
