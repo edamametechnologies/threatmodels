@@ -430,7 +430,7 @@
     {
       "name": "password duration",
       "metrictype": "bool",
-      "dimension": "Credentials",
+      "dimension": "credentials",
       "severity": 3,
       "scope": "generic",
       "tags": [],
