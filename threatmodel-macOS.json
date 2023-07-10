@@ -363,7 +363,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "defaults write /Library/Preferences/com.apple.alf globalstate -int 0 && killall socketfilterfw",
+        "target": "defaults write /Library/Preferences/com.apple.alf globalstate -int 0 && killall socketfilterfw || true",
         "education": []
       }
     },
