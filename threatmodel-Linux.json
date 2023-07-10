@@ -75,8 +75,8 @@
         "minversion": 6,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "system",
-        "target": "stat /etc/passwd | grep '(0644/-rw-r--r--)' | grep -v grep > /dev/null || echo bad_permissions",
+        "elevation": "user",
+        "target": "stat /etc/passwd --format \"%a\" | grep 644 > /dev/null || echo bad_permissions",
         "education": []
       },
       "remediation": {
@@ -85,16 +85,16 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "chmod 664 /etc/passwd",
+        "target": "stat /etc/passwd --format \"%a\" > /etc/passwd_permissions.edamame && chmod 644 /etc/passwd",
         "education": []
       },
       "rollback": {
         "system": "Linux",
         "minversion": 6,
         "maxversion": 0,
-        "class": "",
-        "elevation": "",
-        "target": "",
+        "class": "cli",
+        "elevation": "system",
+        "target": "chmod (cat /etc/passwd_permissions.edamame) /etc/passwd",
         "education": []
       }
     },
@@ -123,7 +123,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "stat /etc/shadow | grep '(0600/-rw-------)' | grep -v grep > /dev/null || echo bad_permissions",
+        "target": "stat /etc/shadow | grep \"(0600/-rw-------)\" | grep -v grep > /dev/null || echo bad_permissions",
         "education": []
       },
       "remediation": {
@@ -170,7 +170,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "stat /etc/fstab | grep '(0644/-rw-r--r--)' | grep -v grep > /dev/null || echo bad_permissions",
+        "target": "stat /etc/fstab | grep \"(0644/-rw-r--r--)\" | grep -v grep > /dev/null || echo bad_permissions",
         "education": []
       },
       "remediation": {
@@ -217,7 +217,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "stat /etc/group | grep '(0644/-rw-r--r--)' | grep -v grep > /dev/null || echo bad_permissions",
+        "target": "stat /etc/group | grep \"(0644/-rw-r--r--)\" | grep -v grep > /dev/null || echo bad_permissions",
         "education": []
       },
       "remediation": {
@@ -311,7 +311,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "ls -l /etc/shadow | grep 'root root' | grep -v grep > /dev/null || echo bad_group",
+        "target": "ls -l /etc/shadow | grep \"root root\" | grep -v grep > /dev/null || echo bad_group",
         "education": []
       },
       "remediation": {
