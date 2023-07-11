@@ -94,7 +94,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "chmod (cat /etc/passwd_permissions.edamame) /etc/passwd",
+        "target": "chmod $(cat /etc/passwd_permissions.edamame) /etc/passwd",
         "education": []
       }
     },
@@ -141,7 +141,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "chmod (cat /etc/shadow_permissions.edamame) /etc/shadow",
+        "target": "chmod $(cat /etc/shadow_permissions.edamame) /etc/shadow",
         "education": []
       }
     },
@@ -188,7 +188,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "chmod (cat /etc/fstab_permissions.edamame) /etc/fstab",
+        "target": "chmod $(cat /etc/fstab_permissions.edamame) /etc/fstab",
         "education": []
       }
     },
@@ -235,7 +235,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "chmod (cat /etc/group_permissions.edamame) /etc/group",
+        "target": "chmod $(cat /etc/group_permissions.edamame) /etc/group",
         "education": []
       }
     },
@@ -282,7 +282,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "chown (cat /etc/group_owner.edamame) /etc/group",
+        "target": "chown $(cat /etc/group_owner.edamame) /etc/group",
         "education": []
       }
     },
@@ -329,7 +329,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "chown (cat /etc/shadow_owner.edamame) /etc/shadow",
+        "target": "chown $(cat /etc/shadow_owner.edamame) /etc/shadow",
         "education": []
       }
     },
