@@ -20,7 +20,6 @@ logger.setLevel(logging.DEBUG)
 
 model = Model(logger, dir_path=".")
 model.pre_run_script()
-'''
 results = model.run_metrics_sequentially()
 
 print(results)
@@ -29,4 +28,3 @@ if results["error_count"] > 0:
     exit(1)
 else:
     exit(0)
-'''
