@@ -452,7 +452,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "[ $(grep '^PASS_MAX_DAYS' /etc/login.defs | awk '{print $NF}') -lt 90 ] || echo pass_max_days_too_long",
+        "target": "[ $(grep \'^PASS_MAX_DAYS\' /etc/login.defs | awk \'{print $NF}\') -lt 90 ] || echo pass_max_days_too_long",
         "education": []
       },
       "remediation": {
