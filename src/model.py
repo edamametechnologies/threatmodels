@@ -36,15 +36,24 @@ class Model(object):
         self.logger = logger
 
     def pre_run_script(self):
-        script_path = f"./src/pre_run/{self.source}"
+        '''
+        Running pre-run script based on the platform this script
+        is executed on.
+        '''
+        ext = "sh" if self.source in ("Linux", "macOs") else "ps1"
 
+        script_path = f"./src/pre_run/{self.source}.{ext}"
+
+        # Execute only if the file exists
         if os.path.isfile(script_path):
             self.logger.info(f"Running pre-run script: {script_path}")
 
-            if self.source == "Linux" or self.source == "macOS":
-                subprocess.run(f"sudo {script_path}")
-            elif self.source == "Windows":
-                subprocess.run(script_path)
+            command = script_path
+            if self.source in ("Linux", "macOS"):
+                # Adding sudo on macOS and Linux
+                command = f"sudo {command}"
+
+            subprocess.run(command)
 
     def run_metrics_sequentially(self):
         '''
