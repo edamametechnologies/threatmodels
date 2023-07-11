@@ -405,16 +405,16 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "checkupdates; [ $? -eq 0 ] && echo updates_required",
+        "target": "apt -qq update | grep \"can be upgraded\" ",
         "education": []
       },
       "remediation": {
         "system": "Linux",
         "minversion": 6,
         "maxversion": 0,
-        "class": "cli",
-        "elevation": "system",
-        "target": "pacman -Syu --noconfirm",
+        "class": "",
+        "elevation": "",
+        "target": "",
         "education": []
       },
       "rollback": {
@@ -499,7 +499,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "pacman -Qi ufw > /dev/null || echo not_found",
+        "target": "apt list ufw | grep ufw",
         "education": []
       },
       "remediation": {
@@ -508,14 +508,8 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "pacman -S ufw; ufw enable; ufw default deny; ufw allow from 192.168.0.0/24; ufw allow Deluge; ufw limit ssh",
-        "education": [
-          {
-            "locale": "EN",
-            "class": "link",
-            "target": "https://wiki.archlinux.org/title/Uncomplicated_Firewall"
-          }
-        ]
+        "target": "apt install ufw --yes",
+        "education": []
       },
       "rollback": {
         "system": "Linux",
@@ -523,7 +517,7 @@
         "maxversion": 0,
         "class": "",
         "elevation": "",
-        "target": "pacman -R ufw",
+        "target": "apt remove ufw --yes",
         "education": []
       }
     }
