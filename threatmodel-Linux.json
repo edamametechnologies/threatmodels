@@ -123,7 +123,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "stat /etc/shadow | grep \"(0600/-rw-------)\" | grep -v grep > /dev/null || echo bad_permissions",
+        "target": "stat /etc/shadow --format \"%a\" | grep 600 > /dev/null || echo bad_permissions",
         "education": []
       },
       "remediation": {
@@ -132,16 +132,16 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "chmod 600 /etc/shadow",
+        "target": "stat /etc/shadow --format \"%a\" > /etc/shadow_permissions.edamame && chmod 600 /etc/shadow",
         "education": []
       },
       "rollback": {
         "system": "Linux",
         "minversion": 6,
         "maxversion": 0,
-        "class": "",
-        "elevation": "",
-        "target": "",
+        "class": "cli",
+        "elevation": "system",
+        "target": "chmod (cat /etc/shadow_permissions.edamame) /etc/shadow",
         "education": []
       }
     },
@@ -170,7 +170,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "stat /etc/fstab | grep \"(0644/-rw-r--r--)\" | grep -v grep > /dev/null || echo bad_permissions",
+        "target": "stat /etc/fstab --format \"%a\" | grep 644 > /dev/null || echo bad_permissions",
         "education": []
       },
       "remediation": {
@@ -179,16 +179,16 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "chmod 644 /etc/fstab",
+        "target": "stat /etc/fstab --format \"%a\" > /etc/fstab_permissions.edamame && chmod 644 /etc/fstab",
         "education": []
       },
       "rollback": {
         "system": "Linux",
         "minversion": 6,
         "maxversion": 0,
-        "class": "",
-        "elevation": "",
-        "target": "",
+        "class": "cli",
+        "elevation": "system",
+        "target": "chmod (cat /etc/fstab_permissions.edamame) /etc/fstab",
         "education": []
       }
     },
@@ -217,7 +217,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "stat /etc/group | grep \"(0644/-rw-r--r--)\" | grep -v grep > /dev/null || echo bad_permissions",
+        "target": "stat /etc/group --format \"%a\" | grep 644 > /dev/null || echo bad_permissions",
         "education": []
       },
       "remediation": {
@@ -226,16 +226,16 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "chmod 644 /etc/group",
+        "target": "stat /etc/group --format \"%a\" > /etc/group_permissions.edamame && chmod 644 /etc/group",
         "education": []
       },
       "rollback": {
         "system": "Linux",
         "minversion": 6,
         "maxversion": 0,
-        "class": "",
-        "elevation": "",
-        "target": "",
+        "class": "cli",
+        "elevation": "system",
+        "target": "chmod (cat /etc/group_permissions.edamame) /etc/group",
         "education": []
       }
     },
@@ -264,7 +264,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "ls -l /etc/group | grep 'root root' | grep -v grep > /dev/null || echo bad_group",
+        "target": "stat /etc/group --format \"%G\" | grep root > /dev/null || echo bad_group",
         "education": []
       },
       "remediation": {
@@ -273,16 +273,16 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "chown root /etc/group",
+        "target": "stat /etc/group --format \"%G\" > /etc/group_owner.edamame && chown root /etc/group",
         "education": []
       },
       "rollback": {
         "system": "Linux",
         "minversion": 6,
         "maxversion": 0,
-        "class": "",
-        "elevation": "",
-        "target": "",
+        "class": "cli",
+        "elevation": "system",
+        "target": "chown (cat /etc/group_owner.edamame) /etc/group",
         "education": []
       }
     },
@@ -311,7 +311,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "ls -l /etc/shadow | grep \"root root\" | grep -v grep > /dev/null || echo bad_group",
+        "target": "stat /etc/shadow --format \"%G\" | grep root > /dev/null || echo bad_group",
         "education": []
       },
       "remediation": {
@@ -320,16 +320,16 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "chown root /etc/shadow",
+        "target": "stat /etc/shadow --format \"%G\" > /etc/shadow_owner.edamame && chown root /etc/shadow",
         "education": []
       },
       "rollback": {
         "system": "Linux",
         "minversion": 6,
         "maxversion": 0,
-        "class": "",
-        "elevation": "",
-        "target": "",
+        "class": "cli",
+        "elevation": "system",
+        "target": "chown (cat /etc/shadow_owner.edamame) /etc/shadow",
         "education": []
       }
     },
@@ -367,16 +367,16 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "cd /etc ; [ -f cron.deny ] && mv cron.deny cron.deny.edamame_save ; [ -f cron.allow ] && mv cron.allow cron.allow.edamame_save ; echo root > cron.allow ; chown root cron.allow ; chmod 400 cron.allow",
+        "target": "cd /etc ; [ -f cron.deny ] && mv cron.deny cron.deny_save.edamame ; [ -f cron.allow ] && mv cron.allow cron.allow_save.edamame ; echo root > cron.allow ; chown root cron.allow ; chmod 400 cron.allow",
         "education": []
       },
       "rollback": {
         "system": "Linux",
         "minversion": 6,
         "maxversion": 0,
-        "class": "",
-        "elevation": "",
-        "target": "",
+        "class": "cli",
+        "elevation": "system",
+        "target": "cd /etc ; [ -f cron.deny_save.edamame ] && mv cron.deny_save.edamame cron.deny ; [ -f cron.allow_save.edamame ] && mv cron.deny_save.edamame cron.allow",
         "education": []
       }
     },
