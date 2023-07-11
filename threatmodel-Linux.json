@@ -273,7 +273,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "stat /etc/group --format \"%G\" > /etc/group_owner.edamame && chown root /etc/group",
+        "target": "stat /etc/group --format \"%G\" > /etc/group_owner.edamame && chown root:root /etc/group",
         "education": []
       },
       "rollback": {
@@ -282,7 +282,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "chown $(cat /etc/group_owner.edamame) /etc/group",
+        "target": "chown root:$(cat /etc/group_owner.edamame) /etc/group",
         "education": []
       }
     },
@@ -320,7 +320,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "stat /etc/shadow --format \"%G\" > /etc/shadow_owner.edamame && chown root /etc/shadow",
+        "target": "stat /etc/shadow --format \"%G\" > /etc/shadow_owner.edamame && chown root:root /etc/shadow",
         "education": []
       },
       "rollback": {
@@ -329,7 +329,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "chown $(cat /etc/shadow_owner.edamame) /etc/shadow",
+        "target": "chown root:$(cat /etc/shadow_owner.edamame) /etc/shadow",
         "education": []
       }
     },
