@@ -358,7 +358,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "cd /etc ; [ -f cron.deny ] && echo bad_config ; grep -v root cron.allow",
+        "target": "cd /etc ; [ -f cron.deny ] && echo bad_config ; [ -f cron.allow ] && grep -v root cron.allow",
         "education": []
       },
       "remediation": {
