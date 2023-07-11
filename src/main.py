@@ -19,6 +19,7 @@ logger = logging.getLogger('logger')
 logger.setLevel(logging.DEBUG)
 
 model = Model(logger, dir_path=".")
+model.pre_run_script()
 results = model.run_metrics_sequentially()
 
 print(results)

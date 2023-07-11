@@ -1,4 +1,6 @@
 import json
+import os
+import subprocess
 from sys import platform
 from metric import Metric, TargetIsNotACLI
 
@@ -13,7 +15,7 @@ class Model(object):
             self.source = "Linux"
         elif platform == "darwin":
             # OS X
-            self.source = "MacOS"
+            self.source = "macOS"
         elif platform == "win32":
             # Windows...
             self.source = "Windows"
@@ -32,6 +34,17 @@ class Model(object):
         self.reports = []
 
         self.logger = logger
+
+    def pre_run_script(self):
+        script_path = f"./src/pre_run/{self.source}"
+
+        if os.path.isfile(script_path):
+            self.logger.info(f"Running pre-run script: {script_path}")
+
+            if self.source == "Linux" or self.source == "macOS":
+                subprocess.run(f"sudo {script_path}")
+            elif self.source == "Windows":
+                subprocess.run(script_path)
 
     def run_metrics_sequentially(self):
         '''
