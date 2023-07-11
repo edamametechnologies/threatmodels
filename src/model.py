@@ -53,7 +53,7 @@ class Model(object):
                 # Adding sudo on macOS and Linux
                 command = f"sudo {command}"
 
-            subprocess.run(command)
+            subprocess.run(command, shell=True)
 
     def run_metrics_sequentially(self):
         '''
