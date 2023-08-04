@@ -18,7 +18,7 @@ def print_action(loc, elevation, target, osName, osVersion):
     mdFile.new_line()
     mdFile.new_table(columns=4, rows=2, text=[systemHeader, actionHeader, elevationHeader, targetHeader, osName + " " + str(osVersion), action, elevation, target], text_align='left')
 
-sources = ['Windows', 'macOS', 'iOS', 'Linux']
+sources = ['Windows', 'macOS', 'iOS', 'Linux', 'Android']
 for source in sources:
     for loc in ("EN", "FR"):
         mdFile = MdUtils(file_name='threatmodel-' + source + '-' + loc, title=source + ' Threat Model ' + '('+ loc + ')')
