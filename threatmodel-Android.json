@@ -2,7 +2,7 @@
   "name": "threat model Android",
   "extends": "none",
   "date": "October 15th 2023",
-  "signature": "18062614015e4610d2bc6d3c9581fb495cd095b860293ef3dd51cd0de1c59a8a",
+  "signature": "6026ed0b4940a920bb73ec64f17cf49a5ff579c7db4fc8869c50d8f4ff26611b",
   "metrics": [
     {
       "name": "MDM profiles",
@@ -10,7 +10,9 @@
       "dimension": "system integrity",
       "severity": 5,
       "scope": "generic",
-      "tags": ["Personal Posture"],
+      "tags": [
+        "Personal Posture"
+      ],
       "description": [
         {
           "locale": "EN",
