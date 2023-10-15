@@ -2,7 +2,7 @@
   "name": "threat model Windows",
   "extends": "none",
   "date": "October 15th 2023",
-  "signature": "fcfce4e503ddd9b06c497d7c4249ff08dbba241eb0a22eb437fa60242d994bae",
+  "signature": "c3d4bbd4387851d0938d5d7b667935038afa037eb09b1c11ea2084d4a8b36bcc",
   "metrics": [
     {
       "name": "edamame helper disabled",
