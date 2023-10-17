@@ -99,8 +99,8 @@ for source in sources:
                     mdFile.new_paragraph(localized['summary'])
 
                     # Privacy policy
-                    privacyPolicyD += "\n**" + localized['title'] + "**"
-                    privacyPolicyDFR += "\n**" + localized['title'] + "**"
+                    privacyPolicyD += "\n * " + localized['title']
+                    privacyPolicyDFR += "\n * " + localized['title']
 
                     break
 
