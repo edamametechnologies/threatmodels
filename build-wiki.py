@@ -126,9 +126,9 @@ for source in sources:
                         break
 
         # Privacy policy
-        privacyPolicyD += "\nThis information is used solely by EDAMAME and is not shared with any third party."
+        privacyPolicyD += "\n\nThis information is used solely by EDAMAME and is not shared with any third party."
         privacyPolicyD += "\nIf you do not agree with this policy, please do not report your detailed score."
-        privacyPolicyDFR += "\nCes informations sont utilisées uniquement par EDAMAME et ne sont pas partagées avec des tiers."
+        privacyPolicyDFR += "\n\nCes informations sont utilisées uniquement par EDAMAME et ne sont pas partagées avec des tiers."
         privacyPolicyDFR += "\nSi vous n'êtes pas d'accord avec cette politique, veuillez ne pas rapporter votre score détaillé."
 
         if loc == "FR":
