@@ -2,7 +2,7 @@
   "name": "threat model iOS",
   "extends": "none",
   "date": "October 15th 2023",
-  "signature": "ba7816bf8f01dfca424240de6dae2178c19161a706577a9ce410fe93f30013ad",
+  "signature": "0edabe402952ca151729bc19f5d5922db2213690482da4842c427def4f68eae4",
   "metrics": [
     {
       "name": "MDM profiles",
@@ -10,7 +10,9 @@
       "dimension": "system integrity",
       "severity": 5,
       "scope": "generic",
-      "tags": ["Personal Posture"],
+      "tags": [
+        "Personal Posture"
+      ],
       "description": [
         {
           "locale": "EN",
