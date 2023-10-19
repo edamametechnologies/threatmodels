@@ -24,8 +24,8 @@ for source in sources:
         mdFileP = MdUtils(file_name='privacy-' + source + '-' + loc, title=source + ' Score Privacy Policy ' + '('+ loc + ')')
         mdFilePD = MdUtils(file_name='privacy-detailed-' + source + '-' + loc, title=source + ' Detailed Score Privacy Policy ' + '('+ loc + ')')
 
-        modelname = 'threatmodel-' + source + '.json'
-        with open(modelname, 'r') as json_file:
+        modelname = 'threatmodel-' + source
+        with open(modelname + '.json', 'r') as json_file:
             model = json.load(json_file)
 
         # Common header
@@ -44,15 +44,18 @@ for source in sources:
         privacyHeaderFR += "\n* Votre score sous forme d'une valeur numérique"
 
         # Common trailer
-        modelurl = "https://github.com/edamametechnologies/threatmodels/blob/main/" + modelname
+        modelurl = "https://github.com/edamametechnologies/threatmodels/blob/main/" + modelname + '.json'
+        wikiurl = "https://github.com/edamametechnologies/threatmodels/wiki/" + modelname + "-" + loc
         privacyTrailer = "\n\nThis information is used solely by EDAMAME and is not shared with any third party."
         privacyTrailer += "\n\nThis information is gathered using a public \"threat model\" that is guaranteed not to violate your privacy."
         privacyTrailer += "\n\nThe threat model can be seen at [" + modelurl + "](" + modelurl + ")."
+        privacyTrailer += "\n\nThe threat model wiki can be seen at [" + wikiurl + "](" + wikiurl + ")."
         privacyTrailer += "\n\nIf you do not agree with this policy, please do not report your score."
 
         privacyTrailerFR = "\n\nCes informations sont utilisées uniquement par EDAMAME et ne sont pas partagées avec des tiers."
         privacyTrailerFR += "\n\nCes informations sont collectées à l'aide d'un \"modèle de menace\" public qui garantit de ne pas violer votre vie privée."
         privacyTrailerFR += "\n\nLe modèle de menace peut être consulté à l'adresse [" + modelurl + "](" + modelurl + ")."
+        privacyTrailerFR += "\n\nLe wiki du modèle de menace peut être consulté à l'adresse [" + wikiurl + "](" + wikiurl + ")."
         privacyTrailerFR += "\n\nSi vous n'êtes pas d'accord avec cette politique, veuillez ne pas rapporter votre score."
 
         # Write the Score Privacy policy (machine UUID, OS name, OS version IPv4, IPv6, domain, username, score as a single numerical value)
