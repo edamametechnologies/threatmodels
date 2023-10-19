@@ -3,7 +3,6 @@
 from mdutils.mdutils import MdUtils
 import json
 
-
 def print_action(loc, elevation, target, osName, osVersion):
 
     systemHeader = "Tested for"
@@ -25,50 +24,55 @@ for source in sources:
         mdFileP = MdUtils(file_name='privacy-' + source + '-' + loc, title=source + ' Score Privacy Policy ' + '('+ loc + ')')
         mdFilePD = MdUtils(file_name='privacy-detailed-' + source + '-' + loc, title=source + ' Detailed Score Privacy Policy ' + '('+ loc + ')')
 
-        with open('threatmodel-' + source + '.json', 'r') as json_file:
+        modelname = 'threatmodel-' + source + '.json'
+        with open(modelname, 'r') as json_file:
             model = json.load(json_file)
+
+        # Common header
+        privacyHeader = "\n* Your machine unique identifier"
+        privacyHeader += "\n* Your operating system name and version"
+        privacyHeader += "\n* Your public IPv4 address and/or IPv6 address"
+        privacyHeader += "\n* The domain you are connected to"
+        privacyHeader += "\n* Your username in that domain"
+        privacyHeader += "\n* Your score as a single numerical value"
+
+        privacyHeaderFR = "\n* L'identifiant unique de votre machine"
+        privacyHeaderFR += "\n* Le nom et la version de votre système d'exploitation"
+        privacyHeaderFR += "\n* Votre adresse IPv4 et/ou IPv6 publique"
+        privacyHeaderFR += "\n* Le domaine auquel vous êtes connecté"
+        privacyHeaderFR += "\n* Votre nom d'utilisateur dans ce domaine"
+        privacyHeaderFR += "\n* Votre score sous forme d'une valeur numérique"
+
+        # Common trailer
+        privacyTrailer = "\n\nThis information is used solely by EDAMAME and is not shared with any third party."
+        privacyTrailer += "\n\nThis information is gathered using a public \"threat model\" that is guaranteed not to violate your privacy."
+        privacyTrailer += "\n\nThe threat model can be seen at [Link text Here](https://github.com/edamametechnologies/threatmodels/blob/main/" + modelname + ")."
+        privacyTrailer += "\n\nIf you do not agree with this policy, please do not report your score."
+
+        privacyTrailerFR = "\n\nCes informations sont utilisées uniquement par EDAMAME et ne sont pas partagées avec des tiers."
+        privacyTrailerFR += "\n\nCes informations sont collectées à l'aide d'un \"modèle de menace\" public qui garantit de ne pas violer votre vie privée."
+        privacyTrailerFR += "\n\nLe modèle de menace peut être consulté à l'adresse [Link text Here](https://github.com/edamametechnologies/threatmodels/blob/main/" + modelname + ")."
+        privacyTrailerFR += "\n\nSi vous n'êtes pas d'accord avec cette politique, veuillez ne pas rapporter votre score."
 
         # Write the Score Privacy policy (machine UUID, OS name, OS version IPv4, IPv6, domain, username, score as a single numerical value)
         privacyPolicy = "By reporting a score, you agree to share the following information with EDAMAME:"
-        privacyPolicy += "\n* Your machine UUID"
-        privacyPolicy += "\n* Your operating system name and version"
-        privacyPolicy += "\n* Your IP address and/or IPv6 address"
-        privacyPolicy += "\n* The domain you are connected to"
-        privacyPolicy += "\n* Your username"
-        privacyPolicy += "\n* Your score as a single numerical value"
-        privacyPolicy += "\n\nThis information is used solely by EDAMAME and is not shared with any third party."
-        privacyPolicy += "\n\nIf you do not agree with this policy, please do not report your score."
+        privacyPolicy += privacyHeader
+        privacyPolicy += privacyTrailer
         
         # French version
         privacyPolicyFR = "En rapportant un score, vous acceptez de partager les informations suivantes avec EDAMAME :"
-        privacyPolicyFR += "\n* L'identifiant unique de votre machine"
-        privacyPolicyFR += "\n* Le nom et la version de votre système d'exploitation"
-        privacyPolicyFR += "\n* Votre adresse IP et/ou IPv6"
-        privacyPolicyFR += "\n* Le domaine auquel vous êtes connecté"
-        privacyPolicyFR += "\n* Votre nom d'utilisateur"
-        privacyPolicyFR += "\n* Votre score sous forme d'une valeur numérique"
-        privacyPolicyFR += "\n\nCes informations sont utilisées uniquement par EDAMAME et ne sont pas partagées avec des tiers."
-        privacyPolicyFR += "\n\nSi vous n'êtes pas d'accord avec cette politique, veuillez ne pas rapporter votre score."
+        privacyPolicyFR += privacyHeaderFR
+        privacyPolicyFR += privacyTrailerFR
         
 
         # Write the Detailed Score Privacy policy (machine UUID, OS name, OS version IPv4, IPv6, domain, username, geo location, score as detailed vector of boolean values resulting on the following security checks)
         privacyPolicyD = "By reporting a detailed score, you agree to share the following information with EDAMAME:"
-        privacyPolicyD += "\n* Your machine UUID"
-        privacyPolicyD += "\n* Your operating system name and version"
-        privacyPolicyD += "\n* Your IP address and/or IPv6 address"
-        privacyPolicyD += "\n* The domain you are connected to"
-        privacyPolicyD += "\n* Your username"
-        privacyPolicyD += "\n* Your geo location"
+        privacyPolicyD += privacyHeader
         privacyPolicyD += "\n* Your score as a detailed vector of boolean values resulting on the following security checks:"
         
         # French version
         privacyPolicyDFR = "En rapportant un score détaillé, vous acceptez de partager les informations suivantes avec EDAMAME :"
-        privacyPolicyDFR += "\n* L'identifiant unique de votre machine"
-        privacyPolicyDFR += "\n* Le nom et la version de votre système d'exploitation"
-        privacyPolicyDFR += "\n* Votre adresse IP et/ou IPv6"
-        privacyPolicyDFR += "\n* Le domaine auquel vous êtes connecté"
-        privacyPolicyDFR += "\n* Votre nom d'utilisateur"
-        privacyPolicyDFR += "\n* Votre localisation géographique"
+        privacyPolicyDFR += privacyHeaderFR
         privacyPolicyDFR += "\n* Votre score sous forme d'un vecteur de valeurs booléennes résultant des tests de sécurité suivants :"
         
         for metric in model['metrics']:
@@ -126,10 +130,9 @@ for source in sources:
                         break
 
         # Privacy policy
-        privacyPolicyD += "\n\nThis information is used solely by EDAMAME and is not shared with any third party."
-        privacyPolicyD += "\nIf you do not agree with this policy, please do not report your detailed score."
-        privacyPolicyDFR += "\n\nCes informations sont utilisées uniquement par EDAMAME et ne sont pas partagées avec des tiers."
-        privacyPolicyDFR += "\nSi vous n'êtes pas d'accord avec cette politique, veuillez ne pas rapporter votre score détaillé."
+
+        privacyPolicyD += privacyTrailer
+        privacyPolicyDFR += privacyTrailerFR
 
         if loc == "FR":
             mdFileP.new_paragraph(privacyPolicyFR)
