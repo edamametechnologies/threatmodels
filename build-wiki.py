@@ -44,14 +44,15 @@ for source in sources:
         privacyHeaderFR += "\n* Votre score sous forme d'une valeur numérique"
 
         # Common trailer
+        modelurl = "https://github.com/edamametechnologies/threatmodels/blob/main/" + modelname
         privacyTrailer = "\n\nThis information is used solely by EDAMAME and is not shared with any third party."
         privacyTrailer += "\n\nThis information is gathered using a public \"threat model\" that is guaranteed not to violate your privacy."
-        privacyTrailer += "\n\nThe threat model can be seen at [Link text Here](https://github.com/edamametechnologies/threatmodels/blob/main/" + modelname + ")."
+        privacyTrailer += "\n\nThe threat model can be seen at [" + modelurl + "](" + modelurl + ")."
         privacyTrailer += "\n\nIf you do not agree with this policy, please do not report your score."
 
         privacyTrailerFR = "\n\nCes informations sont utilisées uniquement par EDAMAME et ne sont pas partagées avec des tiers."
         privacyTrailerFR += "\n\nCes informations sont collectées à l'aide d'un \"modèle de menace\" public qui garantit de ne pas violer votre vie privée."
-        privacyTrailerFR += "\n\nLe modèle de menace peut être consulté à l'adresse [Link text Here](https://github.com/edamametechnologies/threatmodels/blob/main/" + modelname + ")."
+        privacyTrailerFR += "\n\nLe modèle de menace peut être consulté à l'adresse [" + modelurl + "](" + modelurl + ")."
         privacyTrailerFR += "\n\nSi vous n'êtes pas d'accord avec cette politique, veuillez ne pas rapporter votre score."
 
         # Write the Score Privacy policy (machine UUID, OS name, OS version IPv4, IPv6, domain, username, score as a single numerical value)
