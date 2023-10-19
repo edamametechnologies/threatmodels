@@ -14,13 +14,13 @@
       "description": [
         {
           "locale": "EN",
-          "title": "Edamame helper inactive",
-          "summary": "Edamame's Helper software is not running or requires an update. It's required for maximum Security Score analysis."
+          "title": "EDAMAME helper inactive",
+          "summary": "EDAMAME's Helper software is not running or requires an update. It's required for maximum Security Score analysis."
         },
         {
           "locale": "FR",
-          "title": "Edamame Helper inactif",
-          "summary": "Le logiciel d'assistance d'Edamame n'est pas en cours d'exécution ou a besoin d'être mis à jour. Il est requis pour une analyse complète du score de sécurité."
+          "title": "EDAMAME Helper inactif",
+          "summary": "Le logiciel d'assistance d'EDAMAME n'est pas en cours d'exécution ou a besoin d'être mis à jour. Il est requis pour une analyse complète du score de sécurité."
         }
       ],
       "implementation": {
