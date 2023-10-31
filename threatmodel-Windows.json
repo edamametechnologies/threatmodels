@@ -120,7 +120,7 @@
       "severity": 5,
       "scope": "generic",
       "tags": [
-        "CIS Benchmark,Security Configuration Benchmarks",
+        "CIS Benchmark Level 1,Security Configuration Benchmarks",
         "ISO 27001/2,Malware Protection",
         "PCI-DSS,Requirement-5",
         "SOC 2,CC-Malware Protection"
