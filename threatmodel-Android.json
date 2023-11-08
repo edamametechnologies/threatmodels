@@ -1,8 +1,8 @@
 {
-  "name": "threat model iOS",
+  "name": "threat model Android",
   "extends": "none",
   "date": "October 15th 2023",
-  "signature": "0edabe402952ca151729bc19f5d5922db2213690482da4842c427def4f68eae4",
+  "signature": "6026ed0b4940a920bb73ec64f17cf49a5ff579c7db4fc8869c50d8f4ff26611b",
   "metrics": [
     {
       "name": "MDM profiles",
@@ -26,8 +26,8 @@
         }
       ],
       "implementation": {
-        "system": "iOS",
-        "minversion": 15,
+        "system": "Android",
+        "minversion": 13,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -35,8 +35,8 @@
         "education": []
       },
       "remediation": {
-        "system": "iOS",
-        "minversion": 15,
+        "system": "Android",
+        "minversion": 13,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -55,8 +55,8 @@
         ]
       },
       "rollback": {
-        "system": "iOS",
-        "minversion": 15,
+        "system": "Android",
+        "minversion": 13,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -100,8 +100,8 @@
         }
       ],
       "implementation": {
-        "system": "iOS",
-        "minversion": 15,
+        "system": "Android",
+        "minversion": 13,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -109,8 +109,8 @@
         "education": []
       },
       "remediation": {
-        "system": "iOS",
-        "minversion": 15,
+        "system": "Android",
+        "minversion": 13,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -129,8 +129,8 @@
         ]
       },
       "rollback": {
-        "system": "iOS",
-        "minversion": 15,
+        "system": "Android",
+        "minversion": 13,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -154,7 +154,7 @@
       "metrictype": "bool",
       "dimension": "system integrity",
       "severity": 5,
-      "scope": "iOS",
+      "scope": "Android",
       "tags": [
         "CIS Benchmark Level 1",
         "ISO 27001/2,Mobile Device Policy",
@@ -174,8 +174,8 @@
         }
       ],
       "implementation": {
-        "system": "iOS",
-        "minversion": 15,
+        "system": "Android",
+        "minversion": 13,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -183,8 +183,8 @@
         "education": []
       },
       "remediation": {
-        "system": "iOS",
-        "minversion": 15,
+        "system": "Android",
+        "minversion": 13,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -203,8 +203,8 @@
         ]
       },
       "rollback": {
-        "system": "iOS",
-        "minversion": 15,
+        "system": "Android",
+        "minversion": 13,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -238,18 +238,18 @@
       "description": [
         {
           "locale": "EN",
-          "title": "Compromised Apple ID",
-          "summary": "Your Apple ID email has recently appeared in a data breach referenced on haveibeenpwned.com, please review the breach and change your passwords accordingly."
+          "title": "Compromised Google ID",
+          "summary": "Your Google ID email has recently appeared in a data breach referenced on haveibeenpwned.com, please review the breach and change your passwords accordingly."
         },
         {
           "locale": "FR",
-          "title": "Apple ID compromise",
-          "summary": "Votre e-mail Apple ID est apparue récemment dans une fuite de données référencée sur haveibeenpwned.com, veuillez examiner la fuite et modifier vos mots de passe en conséquence."
+          "title": "Google ID compromise",
+          "summary": "Votre e-mail Google ID est apparue récemment dans une fuite de données référencée sur haveibeenpwned.com, veuillez examiner la fuite et modifier vos mots de passe en conséquence."
         }
       ],
       "implementation": {
-        "system": "iOS",
-        "minversion": 15,
+        "system": "Android",
+        "minversion": 13,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -257,8 +257,8 @@
         "education": []
       },
       "remediation": {
-        "system": "iOS",
-        "minversion": 15,
+        "system": "Android",
+        "minversion": 13,
         "maxversion": 0,
         "class": "internal",
         "elevation": "",
@@ -277,8 +277,8 @@
         ]
       },
       "rollback": {
-        "system": "iOS",
-        "minversion": 15,
+        "system": "Android",
+        "minversion": 13,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -317,8 +317,8 @@
         }
       ],
       "implementation": {
-        "system": "iOS",
-        "minversion": 15,
+        "system": "Android",
+        "minversion": 13,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -326,8 +326,8 @@
         "education": []
       },
       "remediation": {
-        "system": "iOS",
-        "minversion": 15,
+        "system": "Android",
+        "minversion": 13,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -346,8 +346,8 @@
         ]
       },
       "rollback": {
-        "system": "iOS",
-        "minversion": 15,
+        "system": "Android",
+        "minversion": 13,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -391,8 +391,8 @@
         }
       ],
       "implementation": {
-        "system": "iOS",
-        "minversion": 15,
+        "system": "Android",
+        "minversion": 13,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -400,8 +400,8 @@
         "education": []
       },
       "remediation": {
-        "system": "iOS",
-        "minversion": 15,
+        "system": "Android",
+        "minversion": 13,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -420,8 +420,8 @@
         ]
       },
       "rollback": {
-        "system": "iOS",
-        "minversion": 15,
+        "system": "Android",
+        "minversion": 13,
         "maxversion": 0,
         "class": "",
         "elevation": "",

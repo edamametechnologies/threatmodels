@@ -1,8 +1,8 @@
 {
   "name": "threat model macOS",
   "extends": "none",
-  "date": "June 27th 2023",
-  "signature": "83fba24fb813d240430e94933c4b10b006fa67be12049dedc5a7e6af55e77d33",
+  "date": "October 19th 2023",
+  "signature": "52825c2266d862fb7cee6c7f707abb3f55c8c782a4b890d3e147c70d1ccd1acb",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -14,13 +14,13 @@
       "description": [
         {
           "locale": "EN",
-          "title": "Edamame helper inactive",
-          "summary": "Edamame's Helper software is not running or requires an update. It's required for maximum Security Score analysis."
+          "title": "EDAMAME helper inactive",
+          "summary": "EDAMAME's Helper software is not running or requires an update. It's required for maximum Security Score analysis."
         },
         {
           "locale": "FR",
-          "title": "Edamame Helper inactif",
-          "summary": "Le logiciel d'assistance d'Edamame n'est pas en cours d'exécution ou a besoin d'être mis à jour. Il est requis pour une analyse complète du score de sécurité."
+          "title": "EDAMAME Helper inactif",
+          "summary": "Le logiciel d'assistance d'EDAMAME n'est pas en cours d'exécution ou a besoin d'être mis à jour. Il est requis pour une analyse complète du score de sécurité."
         }
       ],
       "implementation": {
@@ -38,7 +38,7 @@
         "maxversion": 0,
         "class": "installer",
         "elevation": "user",
-        "target": "https://edamame-helper.s3.eu-west-1.amazonaws.com/macos",
+        "target": "https://edamame-helper.s3.eu-west-1.amazonaws.com",
         "education": []
       },
       "rollback": {
@@ -58,8 +58,10 @@
       "severity": 3,
       "scope": "generic",
       "tags": [
-        "CIS Benchmark Level 1",
-        "macos_security/sysprefs_firewall_stealth_mode_enable"
+        "CIS Benchmark Level 1,macos_security/sysprefs_firewall_stealth_mode_enable",
+        "ISO 27001/2,Communications Security",
+        "PCI-DSS,Requirement-1",
+        "SOC 2,CC-System Operations"
       ],
       "description": [
         {
@@ -107,7 +109,9 @@
       "dimension": "system integrity",
       "severity": 5,
       "scope": "generic",
-      "tags": [],
+      "tags": [
+        "Personal Posture"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -160,12 +164,14 @@
       }
     },
     {
-      "name": "JAMF remote admin",
+      "name": "MDM remote admin",
       "metrictype": "bool",
       "dimension": "system integrity",
       "severity": 5,
       "scope": "macOS",
-      "tags": [],
+      "tags": [
+        "Personal Posture"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -224,8 +230,10 @@
       "severity": 1,
       "scope": "generic",
       "tags": [
-        "CIS Benchmark Level 1",
-        "macos_security/sysprefs_wake_network_access_disable"
+        "CIS Benchmark Level 1,macos_security/sysprefs_wake_network_access_disable",
+        "ISO 27001/2,Communications Security",
+        "PCI-DSS,Requirement-1",
+        "SOC 2,CC-System Operations"
       ],
       "description": [
         {
@@ -274,8 +282,10 @@
       "severity": 3,
       "scope": "generic",
       "tags": [
-        "CIS Benchmark Level 1",
-        "macos_security/sysprefs_software_update_app_update_enforce"
+        "CIS Benchmark Level 1,macos_security/sysprefs_software_update_app_update_enforce",
+        "ISO 27001/2,Information Systems Acquisition, Development, and Maintenance",
+        "PCI-DSS,Requirement-6",
+        "SOC 2,CC-System Development and Maintenance"
       ],
       "description": [
         {
@@ -324,8 +334,10 @@
       "severity": 2,
       "scope": "generic",
       "tags": [
-        "CIS Benchmark Level 1",
-        "macos_security/sysprefs_firewall_enable"
+        "CIS Benchmark Level 1,macos_security/sysprefs_firewall_enable",
+        "ISO 27001/2,Communications Security",
+        "PCI-DSS,Requirement-1",
+        "SOC 2,CC-Network Protection"
       ],
       "description": [
         {
@@ -363,7 +375,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "defaults write /Library/Preferences/com.apple.alf globalstate -int 0",
+        "target": "defaults write /Library/Preferences/com.apple.alf globalstate -int 0 && launchctl unload /System/Library/LaunchDaemons/com.apple.alf.agent.plist && launchctl load /System/Library/LaunchDaemons/com.apple.alf.agent.plist&& killall socketfilterfw || true",
         "education": []
       }
     },
@@ -374,8 +386,10 @@
       "severity": 4,
       "scope": "generic",
       "tags": [
-        "CIS Benchmark Level 1",
-        "macos_security/sysprefs_automatic_login_disable"
+        "CIS Benchmark Level 1,macos_security/sysprefs_automatic_login_disable",
+        "ISO 27001/2,Access Control",
+        "PCI-DSS,Requirement-8",
+        "SOC 2,CC-Logical Access"
       ],
       "description": [
         {
@@ -430,8 +444,10 @@
       "severity": 4,
       "scope": "generic",
       "tags": [
-        "CIS Benchmark Level 1",
-        "macos_security/sysprefs_ssh_disable"
+        "CIS Benchmark Level 1,macos_security/sysprefs_ssh_disable",
+        "ISO 27001/2,Access Control",
+        "PCI-DSS,Requirement-8",
+        "SOC 2,CC-System Integrity"
       ],
       "description": [
         {
@@ -480,8 +496,10 @@
       "severity": 4,
       "scope": "generic",
       "tags": [
-        "CIS Benchmark Level 1",
-        "macos_security/sysprefs_remote_management_disable"
+        "CIS Benchmark Level 1,macos_security/sysprefs_remote_management_disable",
+        "ISO 27001/2,Access Control",
+        "PCI-DSS,Requirement-8",
+        "SOC 2,CC-System Integrity"
       ],
       "description": [
         {
@@ -530,8 +548,10 @@
       "severity": 4,
       "scope": "generic",
       "tags": [
-        "CIS Benchmark Level 1",
-        "macos_security/sysprefs_smbd_disable"
+        "CIS Benchmark Level 1,macos_security/sysprefs_smbd_disable",
+        "ISO 27001/2,Information Security Policies",
+        "PCI-DSS,Requirement-9",
+        "SOC 2,CC-System Services"
       ],
       "description": [
         {
@@ -569,7 +589,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist",
+        "target": "launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist && defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server.plist EnabledServices -array disk",
         "education": []
       }
     },
@@ -580,8 +600,10 @@
       "severity": 4,
       "scope": "macOS",
       "tags": [
-        "CIS Benchmark Level 1",
-        "macos_security/sysprefs_rae_disable"
+        "CIS Benchmark Level 1,macos_security/sysprefs_rae_disable",
+        "ISO 27001/2,Access Control",
+        "PCI-DSS,Requirement-6.5",
+        "SOC 2,CC-System Integrity"
       ],
       "description": [
         {
@@ -629,7 +651,9 @@
       "dimension": "system integrity",
       "severity": 4,
       "scope": "generic",
-      "tags": [],
+      "tags": [
+        "Personal Posture"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -699,8 +723,10 @@
       "severity": 4,
       "scope": "generic",
       "tags": [
-        "CIS Benchmark Level 1",
-        "macos_security/sysprefs_filevault_enforce"
+        "CIS Benchmark Level 1,macos_security/sysprefs_filevault_enforce",
+        "ISO 27001/2,Information Security Incident Management",
+        "PCI-DSS,Requirement-3.4",
+        "SOC 2,CC-Data Protection"
       ],
       "description": [
         {
@@ -771,8 +797,10 @@
       "severity": 4,
       "scope": "generic",
       "tags": [
-        "CIS Benchmark Level 1",
-        "macos_security/os_gatekeeper_enable"
+        "CIS Benchmark Level 1,macos_security/os_gatekeeper_enable",
+        "ISO 27001/2,Information Systems Acquisition, Development, and Maintenance",
+        "PCI-DSS,Requirement-6.6",
+        "SOC 2,CC-Application Security"
       ],
       "description": [
         {
@@ -821,9 +849,11 @@
       "severity": 4,
       "scope": "generic",
       "tags": [
-        "CIS Benchmark Level 1",
-        "macos_security/sysprefs_install_macos_updates_enforce",
-        "macos_security/sysprefs_software_update_download_enforce"
+        "CIS Benchmark Level 1,macos_security/sysprefs_install_macos_updates_enforce",
+        "CIS Benchmark Level 1,macos_security/sysprefs_software_update_download_enforce",
+        "ISO 27001/2,Information Systems Acquisition, Development, and Maintenance",
+        "PCI-DSS,Requirement-6.1",
+        "SOC 2,CC-System Maintenance"
       ],
       "description": [
         {
@@ -872,8 +902,10 @@
       "severity": 3,
       "scope": "generic",
       "tags": [
-        "CIS Benchmark Level 1",
-        "macos_security/sysprefs_screensaver_ask_for_password_delay_enforce"
+        "CIS Benchmark Level 1,macos_security/sysprefs_screensaver_ask_for_password_delay_enforce",
+        "ISO 27001/2,Access Control",
+        "PCI-DSS,Requirement-8.1.8",
+        "SOC 2,CC-Access Control"
       ],
       "description": [
         {
@@ -938,12 +970,16 @@
       }
     },
     {
-      "name": "installed EPP",
+      "name": "no EPP",
       "metrictype": "bool",
       "dimension": "applications",
       "severity": 4,
       "scope": "generic",
-      "tags": [],
+      "tags": [
+        "ISO 27001/2,Malware Protection",
+        "PCI-DSS,Requirement-5",
+        "SOC 2,CC-Malware Protection"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -1013,8 +1049,10 @@
       "severity": 5,
       "scope": "macOS",
       "tags": [
-        "CIS Benchmark Level 1",
-        "macos_security/os_sip_enable"
+        "CIS Benchmark Level 1,macos_security/os_sip_enable",
+        "ISO 27001/2,System Acquisition, Development and Maintenance",
+        "PCI-DSS,Requirement-6.1",
+        "SOC 2,CC-System Integrity"
       ],
       "description": [
         {
@@ -1080,8 +1118,10 @@
       "severity": 2,
       "scope": "macOS",
       "tags": [
-        "CIS Benchmark Level 1",
-        "macos_security/sysprefs_guest_account_disable"
+        "CIS Benchmark Level 1,macos_security/sysprefs_guest_account_disable",
+        "ISO 27001/2,Access Control",
+        "PCI-DSS,Requirement-8.1.6",
+        "SOC 2,CC-Access Control"
       ],
       "description": [
         {
@@ -1129,7 +1169,11 @@
       "dimension": "system integrity",
       "severity": 3,
       "scope": "macOS",
-      "tags": [],
+      "tags": [
+        "ISO 27001/2,Access Control",
+        "PCI-DSS,Requirement-2.3",
+        "SOC 2,CC-Access Control"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -1199,8 +1243,10 @@
       "severity": 3,
       "scope": "macOS",
       "tags": [
-        "CIS Benchmark Level 1",
-        "macos_security/sysprefs_system_wide_preferences_configure"
+        "CIS Benchmark Level 1,macos_security/sysprefs_system_wide_preferences_configure",
+        "ISO 27001/2,Access Control",
+        "PCI-DSS,Requirement-2.2",
+        "SOC 2,CC-Access Control"
       ],
       "description": [
         {
@@ -1248,7 +1294,12 @@
       "dimension": "credentials",
       "severity": 1,
       "scope": "generic",
-      "tags": [],
+      "tags": [
+        "ISO 27001/2,Information Security Incident Management",
+        "PCI-DSS,Requirement-12.10",
+        "SOC 2,CC-Incident Response",
+        "Personal Posture"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -1306,7 +1357,11 @@
       "dimension": "system integrity",
       "severity": 2,
       "scope": "generic",
-      "tags": [],
+      "tags": [
+        "ISO 27001/2,System Acquisition, Development and Maintenance",
+        "PCI-DSS,Requirement-6.2",
+        "SOC 2,CC-System Maintenance"
+      ],
       "description": [
         {
           "locale": "EN",

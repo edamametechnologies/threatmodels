@@ -149,10 +149,10 @@ class Metric(object):
         if self.source == "Windows":
             command = f"powershell.exe -Command \"{command}\""
 
-        # Add sudo or runas when permissions argument is True
+        # Add sudo when permissions argument is True
         if permissions:
             if self.source == "Windows":
-                # In the github actions Windows virnual machines the python
+                # In the github actions Windows virtual machines the python
                 # script is already ran with privileges.
                 pass
             else:
