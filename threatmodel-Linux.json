@@ -80,7 +80,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "sentinelctl version 2>/dev/null | grep -q 'Agent version' || echo noepp",
+        "target": "sentinelctl version 2>/dev/null | grep -q \"Agent version\" || echo noepp",
         "education": []
       },
       "remediation": {
