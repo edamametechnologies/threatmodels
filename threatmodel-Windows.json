@@ -309,7 +309,18 @@
         "class": "internal",
         "elevation": "",
         "target": "digitalidentity_manager",
-        "education": []
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://en.wikipedia.org/wiki/Have_I_Been_Pwned"
+          },
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://www.futura-sciences.com/tech/actualites/internet-voici-savoir-si-vos-donnees-personnelles-internet-ont-ete-piratees-103095/"
+          }
+        ]
       },
       "rollback": {
         "system": "Windows",
