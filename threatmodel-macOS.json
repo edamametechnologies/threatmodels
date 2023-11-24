@@ -1341,12 +1341,12 @@
           {
             "locale": "EN",
             "class": "link",
-            "target": "https://haveibeenpwned.com/"
+            "target": "https://en.wikipedia.org/wiki/Have_I_Been_Pwned"
           },
           {
             "locale": "FR",
             "class": "link",
-            "target": "https://haveibeenpwned.com/"
+            "target": "https://www.futura-sciences.com/tech/actualites/internet-voici-savoir-si-vos-donnees-personnelles-internet-ont-ete-piratees-103095/"
           }
         ]
       }
