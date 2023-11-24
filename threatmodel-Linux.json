@@ -140,12 +140,12 @@
         {
           "locale": "EN",
           "title": "Compromised email address",
-          "summary": "Your email address has recently appeared in a data breach, please review the breach and change your passwords accordingly."
+          "summary": "Your email address might have recently appeared in a data breach. Please set your email in the Identity tab, review the breaches if any and follow instructions."
         },
         {
           "locale": "FR",
           "title": "Adresse e-mail compromise",
-          "summary": "Votre adresse e-mail est apparue récemment dans une fuite de données, veuillez examiner la fuite et modifier vos mots de passe en conséquence."
+          "summary": "Votre adresse e-mail est peut-être apparue récemment dans une fuite de données. Renseignez votre email dans le tab Identité, examinez les fuites éventuelles et suivez les instructions."
         }
       ],
       "implementation": {
