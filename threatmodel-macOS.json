@@ -1365,7 +1365,7 @@
     {
       "name": "lanscan",
       "metrictype": "bool",
-      "dimension": "credentials",
+      "dimension": "network",
       "severity": 1,
       "scope": "generic",
       "tags": [
