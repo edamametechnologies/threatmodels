@@ -209,8 +209,16 @@
         "toshiba"
       ],
       "os_list": [
-        "Linux",
-        "Android"
+      ]
+    },
+    {
+      "device_type": "SmartTV",
+      "open_ports": [7676, 8001, 8080],
+      "mdns_services": [
+      ],
+      "vendors": [
+      ],
+      "os_list": [
       ]
     },
     {
