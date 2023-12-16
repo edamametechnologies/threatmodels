@@ -105,7 +105,7 @@
         1883,
         8883
       ],
-      "mdns_services": [],
+      "mdns_services": ["_hue._tcp.local", "_hap._tcp.local"],
       "vendors": [
         "wemo",
         "lifx",
