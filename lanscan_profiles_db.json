@@ -206,8 +206,6 @@
       "device_type": "NetworkDevice",
       "open_ports": [],
       "mdns_services": [
-        "_ssh._tcp.local",
-        "_telnet._tcp.local"
       ],
       "vendors": [
         "cisco",
