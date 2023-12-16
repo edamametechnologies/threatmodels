@@ -1,0 +1,318 @@
+{
+  "date": "December 16th 2023",
+  "signature": "5db5e1aa85360e5fc945e2cc03dedbd0e5570ac0840d4a1b67072767c2813e21",
+  "profiles": [
+    {
+      "device_type": "Printer",
+      "open_ports": [],
+      "mdns_services": [
+        "_ipp._tcp.local",
+        "_printer._tcp.local",
+        "_ippusb._tcp.local",
+        "_ipps._tcp.local"
+      ],
+      "vendors": [
+        "hp",
+        "canon",
+        "epson",
+        "brother",
+        "lexmark",
+        "xerox",
+        "ricoh",
+        "kodak",
+        "samsung",
+        "sharp"
+      ],
+      "os_list": [
+        "Linux",
+        "FreeBSD"
+      ]
+    },
+    {
+      "device_type": "iPhone",
+      "open_ports": [
+        62078
+      ],
+      "mdns_services": [
+        "_apple-mobdev2._tcp.local"
+      ],
+      "vendors": [],
+      "os_list": [
+        "iOS"
+      ]
+    },
+    {
+      "device_type": "Smartphone",
+      "open_ports": [],
+      "mdns_services": [],
+      "vendors": [
+        "samsung",
+        "huawei",
+        "oneplus",
+        "lg",
+        "motorola",
+        "google",
+        "nokia",
+        "sony",
+        "htc"
+      ],
+      "os_list": [
+        "Android"
+      ]
+    },
+    {
+      "device_type": "Apple PC",
+      "open_ports": [],
+      "mdns_services": [],
+      "vendors": [
+        "apple"
+      ],
+      "os_list": [
+        "macOS"
+      ]
+    },
+    {
+      "device_type": "Windows PC",
+      "open_ports": [
+        139
+      ],
+      "mdns_services": [],
+      "vendors": [],
+      "os_list": [
+        "Windows"
+      ]
+    },
+    {
+      "device_type": "PC",
+      "open_ports": [],
+      "mdns_services": [],
+      "vendors": [
+        "dell",
+        "hp",
+        "lenovo",
+        "acer",
+        "asus",
+        "msi",
+        "microsoft",
+        "toshiba",
+        "sony",
+        "fujitsu"
+      ],
+      "os_list": [
+        "Linux",
+        "FreeBSD",
+        "Windows"
+      ]
+    },
+    {
+      "device_type": "Router",
+      "open_ports": [
+        53
+      ],
+      "mdns_services": [],
+      "vendors": [
+        "netgear",
+        "cisco",
+        "d-link",
+        "asus",
+        "tplink",
+        "linksys",
+        "ubiquiti",
+        "belkin",
+        "aruba",
+        "juniper",
+        "freebox"
+      ],
+      "os_list": [
+        "Linux",
+        "FreeBSD"
+      ]
+    },
+    {
+      "device_type": "IoT",
+      "open_ports": [
+        8883
+      ],
+      "mdns_services": [],
+      "vendors": [
+        "philips",
+        "belkin",
+        "samsung",
+        "lg",
+        "xiaomi",
+        "google",
+        "tplink",
+        "wemo",
+        "lifx",
+        "tuya"
+      ],
+      "os_list": [
+        "Linux",
+        "FreeBSD"
+      ]
+    },
+    {
+      "device_type": "NAS",
+      "open_ports": [],
+      "mdns_services": [
+        "_afpovertcp._tcp.local",
+        "_smb._tcp.local",
+        "_smb2._tcp.local",
+        "_nfs._tcp.local."
+      ],
+      "vendors": [
+        "synology",
+        "qnap",
+        "netgear",
+        "buffalo",
+        "dell",
+        "hp",
+        "asustor",
+        "drobo",
+        "wd",
+        "seagate"
+      ],
+      "os_list": [
+        "Linux",
+        "FreeBSD"
+      ]
+    },
+    {
+      "device_type": "RaspberryPi",
+      "open_ports": [],
+      "mdns_services": [],
+      "vendors": [
+        "raspberry pi"
+      ],
+      "os_list": [
+        "Linux"
+      ]
+    },
+    {
+      "device_type": "GameConsole",
+      "open_ports": [],
+      "mdns_services": [],
+      "vendors": [
+        "sony",
+        "microsoft",
+        "nintendo"
+      ],
+      "os_list": [
+        "FreeBSD",
+        "Linux"
+      ]
+    },
+    {
+      "device_type": "NetworkDevice",
+      "open_ports": [],
+      "mdns_services": [
+        "_ssh._tcp.local",
+        "_telnet._tcp.local"
+      ],
+      "vendors": [
+        "cisco",
+        "juniper",
+        "arista",
+        "extremenetworks",
+        "alliedtelesis",
+        "alcatel-lucent",
+        "mikrotik",
+        "ubiquiti",
+        "hpe",
+        "dell",
+        "freebox"
+      ],
+      "os_list": [
+        "Linux",
+        "FreeBSD"
+      ]
+    },
+    {
+      "device_type": "SmartTV",
+      "open_ports": [],
+      "mdns_services": [
+        "_googlecast._tcp.local",
+        "_airplay._tcp.local",
+        "_raop._tcp.local"
+      ],
+      "vendors": [
+        "samsung",
+        "lg",
+        "sony",
+        "panasonic",
+        "tcl",
+        "hisense",
+        "vizio",
+        "sharp",
+        "toshiba"
+      ],
+      "os_list": [
+        "Linux",
+        "Android"
+      ]
+    },
+    {
+      "device_type": "SmartSpeaker",
+      "open_ports": [],
+      "mdns_services": [
+        "_sonos._tcp.local",
+        "_spotify-connect._tcp.local"
+      ],
+      "vendors": [
+        "amazon",
+        "google",
+        "sonos",
+        "bose",
+        "jbl",
+        "harman kardon"
+      ],
+      "os_list": [
+        "Linux",
+        "FreeBSD"
+      ]
+    },
+    {
+      "device_type": "Camera",
+      "open_ports": [],
+      "mdns_services": [
+        "_axis-video._tcp.local",
+        "_axis-camera._tcp.local",
+        "_axis-https._tcp.local",
+        "_axis-video-discover._tcp.local",
+        "_axis-acap._tcp.local",
+        "_axis-mediacontrol._tcp.local",
+        "_axis-rtsp._tcp.local",
+        "_axis-rtsp-http._tcp.local",
+        "_axis-rtsp-https._tcp.local",
+        "_axis-rtsp-rtp-udp._tcp.local",
+        "_axis-rtsp-rtp-tcp._tcp.local",
+        "_axis-search._tcp.local",
+        "_axis-update._tcp.local",
+        "_axis-remotecontrol._tcp.local",
+        "_axis-remotecontrol-discover._tcp.local",
+        "_axis-remotecontrol-https._tcp.local",
+        "_axis-remotecontrol-http._tcp.local",
+        "_axis-remotecontrol-rtp-udp._tcp.local",
+        "_axis-remotecontrol-rtp-tcp._tcp.local",
+        "_axis-remotecontrol-rtsp._tcp.local",
+        "_axis-remotecontrol-rtsp-http._tcp.local",
+        "_axis-remotecontrol-rtsp-https._tcp.local",
+        "_axis-remotecontrol-rtsp-rtp-udp._tcp.local",
+        "_axis-remotecontrol-rtsp-rtp-tcp._tcp.local"
+      ],
+      "vendors": [
+        "hikvision",
+        "dahua",
+        "axis",
+        "vivotek",
+        "flir",
+        "nest",
+        "arlo"
+      ],
+      "os_list": [
+        "Linux",
+        "FreeBSD"
+      ]
+    }
+  ]
+}
