@@ -1,6 +1,6 @@
 {
   "date": "December 16th 2023",
-  "signature": "15cc6ee88624752d22254e796d8eb41de9d75ace4da9b7ce83ff3b063ae80777",
+  "signature": "db967706aac2e679490e1e7a381d2090d6ee8efdd14663157961aea76152fc98",
   "profiles": [
     {
       "device_type": "Printer",
@@ -205,18 +205,18 @@
         "sharp",
         "toshiba"
       ],
-      "os_list": [
-      ]
+      "os_list": []
     },
     {
       "device_type": "SmartTV",
-      "open_ports": [7676, 8001, 8080],
-      "mdns_services": [
+      "open_ports": [
+        7676,
+        8001,
+        8080
       ],
-      "vendors": [
-      ],
-      "os_list": [
-      ]
+      "mdns_services": [],
+      "vendors": [],
+      "os_list": []
     },
     {
       "device_type": "SmartSpeaker",
