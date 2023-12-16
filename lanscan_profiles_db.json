@@ -12,7 +12,6 @@
         "_ipps._tcp.local"
       ],
       "vendors": [
-        "hp",
         "canon",
         "epson",
         "brother",
@@ -20,12 +19,9 @@
         "xerox",
         "ricoh",
         "kodak",
-        "samsung",
         "sharp"
       ],
       "os_list": [
-        "Linux",
-        "FreeBSD"
       ]
     },
     {
@@ -46,18 +42,12 @@
       "open_ports": [],
       "mdns_services": [],
       "vendors": [
-        "samsung",
-        "huawei",
         "oneplus",
-        "lg",
         "motorola",
-        "google",
         "nokia",
-        "sony",
         "htc"
       ],
       "os_list": [
-        "Android"
       ]
     },
     {
@@ -88,15 +78,10 @@
       "mdns_services": [],
       "vendors": [
         "dell",
-        "hp",
         "lenovo",
         "acer",
         "asus",
-        "msi",
-        "microsoft",
-        "toshiba",
-        "sony",
-        "fujitsu"
+        "msi"
       ],
       "os_list": [
         "Linux",
@@ -111,17 +96,6 @@
       ],
       "mdns_services": [],
       "vendors": [
-        "netgear",
-        "cisco",
-        "d-link",
-        "asus",
-        "tplink",
-        "linksys",
-        "ubiquiti",
-        "belkin",
-        "aruba",
-        "juniper",
-        "freebox"
       ],
       "os_list": [
         "Linux",
@@ -131,20 +105,15 @@
     {
       "device_type": "IoT",
       "open_ports": [
+        1883,
         8883
       ],
       "mdns_services": [],
       "vendors": [
-        "philips",
-        "belkin",
-        "samsung",
-        "lg",
-        "xiaomi",
-        "google",
-        "tplink",
         "wemo",
         "lifx",
-        "tuya"
+        "tuya",
+        "dyson"
       ],
       "os_list": [
         "Linux",
@@ -163,10 +132,6 @@
       "vendors": [
         "synology",
         "qnap",
-        "netgear",
-        "buffalo",
-        "dell",
-        "hp",
         "asustor",
         "drobo",
         "wd",
@@ -198,8 +163,6 @@
         "nintendo"
       ],
       "os_list": [
-        "FreeBSD",
-        "Linux"
       ]
     },
     {
@@ -208,21 +171,27 @@
       "mdns_services": [
       ],
       "vendors": [
-        "cisco",
-        "juniper",
-        "arista",
-        "extremenetworks",
         "alliedtelesis",
         "alcatel-lucent",
-        "mikrotik",
-        "ubiquiti",
-        "hpe",
+        "arista",
+        "aruba",
+        "belkin",
+        "buffalo",
+        "cisco",
+        "d-link",
         "dell",
-        "freebox"
+        "extremenetworks",
+        "freebox",
+        "hpe",
+        "juniper",
+        "linksys",
+        "mikrotik",
+        "netgear",
+        "tplink",
+        "ubiquiti",
+        "zyxel"
       ],
       "os_list": [
-        "Linux",
-        "FreeBSD"
       ]
     },
     {
@@ -234,10 +203,6 @@
         "_raop._tcp.local"
       ],
       "vendors": [
-        "samsung",
-        "lg",
-        "sony",
-        "panasonic",
         "tcl",
         "hisense",
         "vizio",
@@ -258,7 +223,6 @@
       ],
       "vendors": [
         "amazon",
-        "google",
         "sonos",
         "bose",
         "jbl",
@@ -308,8 +272,6 @@
         "arlo"
       ],
       "os_list": [
-        "Linux",
-        "FreeBSD"
       ]
     }
   ]
