@@ -1,6 +1,6 @@
 {
   "date": "December 16th 2023",
-  "signature": "6fe7f9f3c2866fd2a972a8f923359fb630c23a5a957f680577cde933dc538381",
+  "signature": "cd6d239315cd82264626d0a60f916b3734b40380737c9318942eddb6751264e6",
   "profiles": [
     {
       "device_type": "Printer",
@@ -168,8 +168,7 @@
     {
       "device_type": "NetworkDevice",
       "open_ports": [],
-      "mdns_services": [
-      ],
+      "mdns_services": [],
       "vendors": [
         "alliedtelesis",
         "alcatel-lucent",
