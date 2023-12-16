@@ -1,6 +1,6 @@
 {
   "date": "December 16th 2023",
-  "signature": "cd6d239315cd82264626d0a60f916b3734b40380737c9318942eddb6751264e6",
+  "signature": "15cc6ee88624752d22254e796d8eb41de9d75ace4da9b7ce83ff3b063ae80777",
   "profiles": [
     {
       "device_type": "Printer",
@@ -21,8 +21,7 @@
         "kodak",
         "sharp"
       ],
-      "os_list": [
-      ]
+      "os_list": []
     },
     {
       "device_type": "iPhone",
@@ -47,8 +46,7 @@
         "nokia",
         "htc"
       ],
-      "os_list": [
-      ]
+      "os_list": []
     },
     {
       "device_type": "Apple PC",
@@ -95,8 +93,7 @@
         53
       ],
       "mdns_services": [],
-      "vendors": [
-      ],
+      "vendors": [],
       "os_list": [
         "Linux",
         "FreeBSD"
@@ -162,8 +159,7 @@
         "microsoft",
         "nintendo"
       ],
-      "os_list": [
-      ]
+      "os_list": []
     },
     {
       "device_type": "NetworkDevice",
@@ -190,8 +186,7 @@
         "ubiquiti",
         "zyxel"
       ],
-      "os_list": [
-      ]
+      "os_list": []
     },
     {
       "device_type": "SmartTV",
@@ -270,8 +265,7 @@
         "nest",
         "arlo"
       ],
-      "os_list": [
-      ]
+      "os_list": []
     }
   ]
 }
