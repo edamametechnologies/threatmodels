@@ -110,7 +110,9 @@
         "wemo",
         "lifx",
         "tuya",
-        "dyson"
+        "dyson",
+        "physical graph corporation",
+        "philips lighting bv"
       ],
       "os_list": [
         "Linux",
