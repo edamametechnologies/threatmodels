@@ -1,6 +1,6 @@
 {
-  "date": "December 16th 2023",
-  "signature": "5644ec8111623f67dbfb5d7f20e03a5e3f08e4ae42438b1d76de863c9fb6a09a",
+  "date": "December 17th 2023",
+  "signature": "a0d8d4c8d4209f157d46cec9a0602f16e2ad66313975f29d1e13fa430ab4778a",
   "profiles": [
     {
       "device_type": "Printer",
@@ -125,8 +125,7 @@
     {
       "device_type": "NAS",
       "open_ports": [],
-      "mdns_services": [
-      ],
+      "mdns_services": [],
       "vendors": [
         "synology",
         "qnap",
