@@ -192,7 +192,7 @@
       "device_type": "SmartSpeaker",
       "open_ports": [],
       "mdns_services": [
-        "_sonos._tcp.local",
+        "_sonos._tcp.local"
       ],
       "vendors": [
         "amazon",
@@ -208,18 +208,12 @@
     },
     {
       "device_type": "SmartTV",
-      "open_ports": [],
+      "open_ports": [
+      ],
       "mdns_services": [
-        "_googlecast._tcp.local",
-        "_airplay._tcp.local",
+        "_androidtvremote2._tcp.local"
       ],
-      "vendors": [
-        "tcl",
-        "hisense",
-        "vizio",
-        "sharp",
-        "toshiba"
-      ],
+      "vendors": [],
       "os_list": []
     },
     {
@@ -234,10 +228,26 @@
       "os_list": []
     },
     {
+      "device_type": "SmartTV",
+      "open_ports": [],
+      "mdns_services": [
+        "_googlecast._tcp.local",
+        "_airplay._tcp.local"
+      ],
+      "vendors": [
+        "tcl",
+        "hisense",
+        "vizio",
+        "sharp",
+        "toshiba"
+      ],
+      "os_list": []
+    },
+    {
       "device_type": "Camera",
       "open_ports": [],
       "mdns_services": [
-        "_axis-video._tcp.local",
+        "_axis-video._tcp.local"
       ],
       "vendors": [
         "hikvision",
