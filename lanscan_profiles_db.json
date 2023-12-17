@@ -189,12 +189,29 @@
       "os_list": []
     },
     {
+      "device_type": "SmartSpeaker",
+      "open_ports": [],
+      "mdns_services": [
+        "_sonos._tcp.local",
+      ],
+      "vendors": [
+        "amazon",
+        "sonos",
+        "bose",
+        "jbl",
+        "harman kardon"
+      ],
+      "os_list": [
+        "Linux",
+        "FreeBSD"
+      ]
+    },
+    {
       "device_type": "SmartTV",
       "open_ports": [],
       "mdns_services": [
         "_googlecast._tcp.local",
         "_airplay._tcp.local",
-        "_raop._tcp.local"
       ],
       "vendors": [
         "tcl",
@@ -217,52 +234,10 @@
       "os_list": []
     },
     {
-      "device_type": "SmartSpeaker",
-      "open_ports": [],
-      "mdns_services": [
-        "_sonos._tcp.local",
-        "_spotify-connect._tcp.local"
-      ],
-      "vendors": [
-        "amazon",
-        "sonos",
-        "bose",
-        "jbl",
-        "harman kardon"
-      ],
-      "os_list": [
-        "Linux",
-        "FreeBSD"
-      ]
-    },
-    {
       "device_type": "Camera",
       "open_ports": [],
       "mdns_services": [
         "_axis-video._tcp.local",
-        "_axis-camera._tcp.local",
-        "_axis-https._tcp.local",
-        "_axis-video-discover._tcp.local",
-        "_axis-acap._tcp.local",
-        "_axis-mediacontrol._tcp.local",
-        "_axis-rtsp._tcp.local",
-        "_axis-rtsp-http._tcp.local",
-        "_axis-rtsp-https._tcp.local",
-        "_axis-rtsp-rtp-udp._tcp.local",
-        "_axis-rtsp-rtp-tcp._tcp.local",
-        "_axis-search._tcp.local",
-        "_axis-update._tcp.local",
-        "_axis-remotecontrol._tcp.local",
-        "_axis-remotecontrol-discover._tcp.local",
-        "_axis-remotecontrol-https._tcp.local",
-        "_axis-remotecontrol-http._tcp.local",
-        "_axis-remotecontrol-rtp-udp._tcp.local",
-        "_axis-remotecontrol-rtp-tcp._tcp.local",
-        "_axis-remotecontrol-rtsp._tcp.local",
-        "_axis-remotecontrol-rtsp-http._tcp.local",
-        "_axis-remotecontrol-rtsp-https._tcp.local",
-        "_axis-remotecontrol-rtsp-rtp-udp._tcp.local",
-        "_axis-remotecontrol-rtsp-rtp-tcp._tcp.local"
       ],
       "vendors": [
         "hikvision",
