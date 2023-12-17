@@ -105,7 +105,10 @@
         1883,
         8883
       ],
-      "mdns_services": ["_hue._tcp.local", "_hap._tcp.local"],
+      "mdns_services": [
+        "_hue._tcp.local",
+        "_hap._tcp.local"
+      ],
       "vendors": [
         "wemo",
         "lifx",
@@ -123,10 +126,6 @@
       "device_type": "NAS",
       "open_ports": [],
       "mdns_services": [
-        "_afpovertcp._tcp.local",
-        "_smb._tcp.local",
-        "_smb2._tcp.local",
-        "_nfs._tcp.local."
       ],
       "vendors": [
         "synology",
