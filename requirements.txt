@@ -1,0 +1,2 @@
+colorama==0.4.6
+mdutils==1.5.1
