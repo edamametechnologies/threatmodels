@@ -24,6 +24,16 @@
       "os_list": []
     },
     {
+      "device_type": "Router",
+      "open_ports": [
+        53
+      ],
+      "mdns_services": [],
+      "vendors": [],
+      "os_list": [
+      ]
+    },
+    {
       "device_type": "iPhone",
       "open_ports": [
         62078
@@ -88,26 +98,15 @@
       ]
     },
     {
-      "device_type": "Router",
-      "open_ports": [
-        53
-      ],
-      "mdns_services": [],
-      "vendors": [],
-      "os_list": [
-        "Linux",
-        "FreeBSD"
-      ]
-    },
-    {
       "device_type": "IoT",
       "open_ports": [
         1883,
         8883
       ],
       "mdns_services": [
-        "_hue._tcp.local",
-        "_hap._tcp.local"
+        "_mqtt._tcp.local",
+        "_hap._tcp.local",
+        "_hue._tcp.local"
       ],
       "vendors": [
         "wemo",
