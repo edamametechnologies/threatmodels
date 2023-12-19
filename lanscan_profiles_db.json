@@ -161,33 +161,6 @@
       "os_list": []
     },
     {
-      "device_type": "NetworkDevice",
-      "open_ports": [],
-      "mdns_services": [],
-      "vendors": [
-        "alliedtelesis",
-        "alcatel-lucent",
-        "arista",
-        "aruba",
-        "belkin",
-        "buffalo",
-        "cisco",
-        "d-link",
-        "dell",
-        "extremenetworks",
-        "freebox",
-        "hpe",
-        "juniper",
-        "linksys",
-        "mikrotik",
-        "netgear",
-        "tplink",
-        "ubiquiti",
-        "zyxel"
-      ],
-      "os_list": []
-    },
-    {
       "device_type": "SmartSpeaker",
       "open_ports": [],
       "mdns_services": [
@@ -256,6 +229,33 @@
         "flir",
         "nest",
         "arlo"
+      ],
+      "os_list": []
+    },
+    {
+      "device_type": "NetworkDevice",
+      "open_ports": [],
+      "mdns_services": [],
+      "vendors": [
+        "alliedtelesis",
+        "alcatel-lucent",
+        "arista",
+        "aruba",
+        "belkin",
+        "buffalo",
+        "cisco",
+        "d-link",
+        "dell",
+        "extremenetworks",
+        "freebox",
+        "hpe",
+        "juniper",
+        "linksys",
+        "mikrotik",
+        "netgear",
+        "tplink",
+        "ubiquiti",
+        "zyxel"
       ],
       "os_list": []
     }
