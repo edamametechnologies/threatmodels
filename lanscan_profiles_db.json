@@ -71,7 +71,7 @@
     {
       "device_type": "Windows PC",
       "open_ports": [
-        139
+        7860
       ],
       "mdns_services": [],
       "vendors": [],
