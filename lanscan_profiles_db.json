@@ -67,7 +67,7 @@
               },
               {
                 "Leaf": {
-                  "mdns": [
+                  "mdns_services": [
                     "sonos",
                     "bose",
                     "jbl",
