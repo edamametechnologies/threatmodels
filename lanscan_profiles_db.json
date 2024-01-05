@@ -40,9 +40,23 @@
       "device_type": "RaspberryPi",
       "conditions": [
         {
-          "Leaf": {
-            "vendors": [
-              "raspberry"
+          "Node": {
+            "type": "OR",
+            "sub_conditions": [
+              {
+                "Leaf": {
+                  "vendors": [
+                    "raspberry"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "banner": [
+                    "raspbian"
+                  ]
+                }
+              }
             ]
           }
         }
