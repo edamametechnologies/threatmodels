@@ -137,7 +137,8 @@
                     {
                       "Leaf": {
                         "vendors": [
-                          "apple"
+                          "apple",
+                          ""
                         ]
                       }
                     }
