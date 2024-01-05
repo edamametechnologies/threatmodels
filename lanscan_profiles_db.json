@@ -52,7 +52,7 @@
               },
               {
                 "Leaf": {
-                  "banner": [
+                  "banners": [
                     "raspbian"
                   ]
                 }
