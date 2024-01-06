@@ -82,7 +82,7 @@
               {
                 "Leaf": {
                   "mdns_services": [
-                    "sonos",
+                    "_sonos",
                     "bose",
                     "jbl",
                     "harman"
@@ -315,7 +315,7 @@
                   "mdns_services": [
                     "mqtt",
                     "hap",
-                    "hue",
+                    "_hue",
                     "yeelink"
                   ]
                 }
