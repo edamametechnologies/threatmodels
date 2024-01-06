@@ -58,5 +58,5 @@ def update_threat_model_header(filename):
 if __name__ == "__main__":
     for arg in sys.argv:
         if arg.endswith(".json"):
-            print(f"updating {arg}")
+            print(f"Updating {arg}")
             update_threat_model_header(arg)

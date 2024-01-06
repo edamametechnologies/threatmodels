@@ -28,11 +28,16 @@ jobs:
           uses: tj-actions/changed-files@v36
           with:
             files: ./*.json
+
         - name: Update models hash and date
           run: |
-            python3 update-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
+            python3 src/publish/update-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
 
-          # Commit and Push wiki and modified models
+        - name: Validate models
+          run: |
+            cd src/publish
+            python3 src/publish/validate-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
+
         - name: Commit & Push changes
           uses: actions-js/push@master
           with:
