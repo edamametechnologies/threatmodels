@@ -1,4 +1,4 @@
-name: Models tests
+name: Test models
 
 # Controls when the workflow will run
 on:
@@ -28,7 +28,8 @@ jobs:
         - name: Run tests
           run: |
             pip install -r requirements.txt
-            python3 src/main.py
+            cd src/test
+            python3 main.py
         - id: read_output
           if: always()
           run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
@@ -49,7 +50,8 @@ jobs:
         - name: Run tests
           run: |
             pip install -r requirements.txt
-            python3 src/main.py
+            cd src/test
+            python3 main.py
         - id: read_output
           if: always()
           shell: pwsh
@@ -71,7 +73,8 @@ jobs:
         - name: Run tests
           run: |
             pip install -r requirements.txt
-            python3 src/main.py
+            cd src/test
+            python3 main.py
         - id: read_output
           if: always()
           run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
