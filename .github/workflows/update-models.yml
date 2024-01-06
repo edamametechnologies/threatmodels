@@ -35,7 +35,6 @@ jobs:
 
         - name: Validate models
           run: |
-            cd src/publish
             python3 src/publish/validate-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
 
         - name: Commit & Push changes
