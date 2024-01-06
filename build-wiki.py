@@ -20,9 +20,20 @@ def print_action(loc, elevation, target, osName, osVersion):
 sources = ['Windows', 'macOS', 'iOS', 'Linux', 'Android']
 for source in sources:
     for loc in ("EN", "FR"):
-        mdFile = MdUtils(file_name='threatmodel-' + source + '-' + loc, title=source + ' Threat Model ' + '('+ loc + ')')
-        mdFileP = MdUtils(file_name='privacy-' + source + '-' + loc, title=source + ' Score Privacy Policy ' + '('+ loc + ')')
-        mdFilePD = MdUtils(file_name='privacy-detailed-' + source + '-' + loc, title=source + ' Detailed Score Privacy Policy ' + '('+ loc + ')')
+        if loc == "FR":
+            title = source + ' Modèle de Menace ' + '('+ loc + ')'
+            titleP = source + ' Politique de Confidentialité du Score ' + '('+ loc + ')'
+            titlePD = source + ' Politique de Confidentialité du Score Détaillé ' + '('+ loc + ')'
+        else:
+            title = source + ' Threat Model ' + '('+ loc + ')'
+            titleP = source + ' Score Privacy Policy ' + '('+ loc + ')'
+            titlePD = source + ' Detailed Score Privacy Policy ' + '('+ loc + ')'
+
+        mdFile = MdUtils(file_name='threatmodel-' + source + '-' + loc, title=source + title)
+        mdFileP = MdUtils(file_name='privacy-' + source + '-' + loc, title=source + titleP)
+        mdFilePD = MdUtils(file_name='privacy-detailed-' + source + '-' + loc, title=source + titlePD)
+
+
 
         modelname = 'threatmodel-' + source
         with open(modelname + '.json', 'r') as json_file:
