@@ -37,6 +37,7 @@ jobs:
       - name: Revert last commit if validation fails
         if: steps.validate.outcome == 'failure'
         run: |
+          git stash
           git revert HEAD --no-edit
           git push origin ${{ github.ref_name }}
 
