@@ -1,8 +1,8 @@
 {
   "name": "threat model Android",
   "extends": "none",
-  "date": "December 13th 2023",
-  "signature": "336c981803d8a59383af2f64324456fe9a3583e6bf90f97d7c328441794ade15",
+  "date": "January 07th 2024",
+  "signature": "de390fb28da778d3b17b692516a8f28c00a4af6b7ec5477ac85ad4348fc4e09a",
   "metrics": [
     {
       "name": "MDM profiles",
