@@ -26,9 +26,6 @@ jobs:
         with:
           files: ./*.json
 
-      - name: Update models hash and date
-        run: python3 src/publish/update-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
-
       - name: Validate models
         id: validate
         run: python3 src/publish/validate-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
@@ -37,7 +34,6 @@ jobs:
       - name: Revert last commit if validation fails
         if: steps.validate.outcome == 'failure'
         run: |
-          git stash
           git revert HEAD --no-edit
           git push origin ${{ github.ref_name }}
 
@@ -51,6 +47,10 @@ jobs:
           slack-message: "GitHub threat models validation on branch ${{ github.ref }} failed, commit has been reverted"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Update models hash and date
+        if: steps.validate.outcome == 'success'
+        run: python3 src/publish/update-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
 
       - name: Commit & Push changes
         if: steps.validate.outcome == 'success'
