@@ -3,7 +3,7 @@
   "extends": "none",
   "date": "January 07th 2024",
   "signature": "de390fb28da778d3b17b692516a8f28c00a4af6b7ec5477ac85ad4348fc4e09a",
-  "testmetrics": [
+  "metrics": [
     {
       "name": "MDM profiles",
       "metrictype": "bool",
