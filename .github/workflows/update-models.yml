@@ -34,7 +34,7 @@ jobs:
       - name: Revert last commit if validation fails
         if: steps.validate.outcome == 'failure'
         run: |
-          git revert -m 1 HEAD --no-edit --no-commit
+          git revert -m 2 HEAD --no-edit --no-commit
 
       - name: slack-send
         if: steps.validate.outcome == 'failure'
