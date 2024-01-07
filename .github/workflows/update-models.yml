@@ -34,7 +34,7 @@ jobs:
       - name: Revert last commit if validation fails
         if: steps.validate.outcome == 'failure'
         run: |
-          git revert HEAD --no-edit
+          git revert HEAD --no-edit -m "Failed validation"
           git push origin ${{ github.ref_name }}
 
       - name: slack-send
