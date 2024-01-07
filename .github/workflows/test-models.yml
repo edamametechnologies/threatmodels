@@ -2,9 +2,9 @@ name: Test models
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
+  # Triggers the workflow on push or pull request events for main and dev branches
   push:
-    branches: [ "main", "dev", "workflow-tests" ]
+    branches: [ "main", "dev" ]
   pull_request:
     branches: [ "main", "dev" ]
 
@@ -93,8 +93,6 @@ jobs:
               # Slack channel ID where message will be posted. Needed if using bot token
               channel-id: 'C05BY6YNDFF'
               # Message to post into Slack. Needed if using bot token
-              slack-message: "GitHub tests result on branch ${{ github.ref }}: \n${{ needs.tests-macos.outputs.macos-report }}\n${{ needs.tests-windows.outputs.windows-report }}\n${{ needs.tests-ubuntu.outputs.ubuntu-report }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-
-              # ${{ github.event.pull_request.html_url || github.event.head_commit.url }
+              slack-message: "GitHub threat models tests result on branch ${{ github.ref }}: \n${{ needs.tests-macos.outputs.macos-report }}\n${{ needs.tests-windows.outputs.windows-report }}\n${{ needs.tests-ubuntu.outputs.ubuntu-report }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             env:
                 SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
