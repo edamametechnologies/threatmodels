@@ -3,7 +3,7 @@
   "extends": "none",
   "date": "December 13th 2023",
   "signature": "336c981803d8a59383af2f64324456fe9a3583e6bf90f97d7c328441794ade15",
-  "test4metrics": [
+  "metrics": [
     {
       "name": "MDM profiles",
       "metrictype": "bool",
