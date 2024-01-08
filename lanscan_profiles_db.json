@@ -81,6 +81,15 @@
               },
               {
                 "Leaf": {
+                  "open_ports": [
+                    1400,
+                    1410,
+                    1443
+                  ]
+                }
+              },
+              {
+                "Leaf": {
                   "mdns_services": [
                     "_sonos",
                     "bose",
@@ -312,11 +321,21 @@
               },
               {
                 "Leaf": {
+                  "open_ports": [
+                    8008,
+                    8009,
+                    8443,
+                    9000
+                  ]
+                }
+              },
+              {
+                "Leaf": {
                   "mdns_services": [
                     "mqtt",
                     "hap",
                     "_hue",
-                    "yeelink"
+                    "miio"
                   ]
                 }
               },
@@ -349,8 +368,7 @@
                   "open_ports": [
                     8001,
                     8002,
-                    8080,
-                    9080
+                    8080
                   ]
                 }
               },
