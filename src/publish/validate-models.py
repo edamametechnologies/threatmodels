@@ -2,6 +2,7 @@
 
 import sys
 import json
+import requests
 
 # Validate validate_lanscan_port_vulns against this VulnerabilityInfoList Rust structure
 # #[derive(Serialize, Deserialize, Debug, Clone, Ord, Eq, PartialEq, PartialOrd)]
@@ -46,15 +47,15 @@ def validate_lanscan_port_vulns(filename: str) -> None:
         raise ValueError("Data is not a valid JSON object")
 
     if set(data.keys()) != allowed_keys_vulnerability_info_list:
-        raise ValueError("Unexpected keys in JSON data at root")
+        raise ValueError(f"Unexpected keys [{data.keys()}] in JSON data at root")
 
     for i, vuln in enumerate(data['vulnerabilities']):
         if not isinstance(vuln, dict) or set(vuln.keys()) != allowed_keys_vulnerability_port_info:
-            raise ValueError(f"Unexpected keys in VulnerabilityPortInfo at 'vulnerabilities[{i}]'")
+            raise ValueError(f"Unexpected keys [{vuln.keys()}] in VulnerabilityPortInfo at 'vulnerabilities[{i}]'")
 
         for j, v in enumerate(vuln['vulnerabilities']):
             if not isinstance(v, dict) or set(v.keys()) != allowed_keys_vulnerability_info:
-                raise ValueError(f"Unexpected keys in VulnerabilityInfo at 'vulnerabilities[{i}] -> vulnerabilities[{j}]'")
+                raise ValueError(f"Unexpected keys [{v.keys()}] in VulnerabilityInfo at 'vulnerabilities[{i}] -> vulnerabilities[{j}]'")
 
     print("Validation successful")
 
@@ -141,7 +142,7 @@ def validate_lanscan_profiles(filename: str) -> None:
     if actual_keys != allowed_keys_device_type_list:
         unexpected_keys = actual_keys - allowed_keys_device_type_list
         missing_keys = allowed_keys_device_type_list - actual_keys
-        raise ValueError(f"Unexpected keys {unexpected_keys} or missing keys {missing_keys} in JSON data")
+        raise ValueError(f"Unexpected keys [{unexpected_keys}] or missing keys [{missing_keys}] in JSON data")
 
     for i, profile in enumerate(data['profiles']):
         if not isinstance(profile, dict):
@@ -150,7 +151,7 @@ def validate_lanscan_profiles(filename: str) -> None:
         if actual_keys != allowed_keys_device_type_rule:
             unexpected_keys = actual_keys - allowed_keys_device_type_rule
             missing_keys = allowed_keys_device_type_rule - actual_keys
-            raise ValueError(f"Unexpected keys {unexpected_keys} or missing keys {missing_keys} in DeviceTypeRule at profiles[{i}]")
+            raise ValueError(f"Unexpected keys [{unexpected_keys}] or missing keys [{missing_keys}] in DeviceTypeRule at profiles[{i}]")
 
         for j, condition in enumerate(profile['conditions']):
             validate_condition(condition, f"profiles[{i}] -> conditions[{j}]")
@@ -255,22 +256,28 @@ def validate_threat_model(filename: str) -> None:
         raise ValueError("Data is not a valid JSON object")
 
     if set(data.keys()) != allowed_keys_threat_metrics_json:
-        raise ValueError("Unexpected keys in JSON data at root")
+        raise ValueError(f"Unexpected keys [{data.keys()}] in JSON data at root")
 
     for i, metric in enumerate(data['metrics']):
         if set(metric.keys()) != allowed_keys_threat_metric_json:
-            raise ValueError(f"Unexpected keys in ThreatMetricJSON at 'metrics[{i}]'")
+            raise ValueError(f"Unexpected keys [{metric.keys()}] in ThreatMetricJSON at 'metrics[{i}]'")
 
         # Validate description
         for j, description in enumerate(metric['description']):
             if set(description.keys()) != allowed_keys_description:
-                raise ValueError(f"Unexpected keys in description at 'metrics[{i}] -> description[{j}]'")
+                raise ValueError(f"Unexpected keys [{description.keys()}] in description at 'metrics[{i}] -> description[{j}]'")
 
         # Validate implementation, remediation, and rollback
         for key in ['implementation', 'remediation', 'rollback']:
             impl = metric[key]
             if set(impl.keys()) != allowed_keys_implementation:
-                raise ValueError(f"Unexpected keys in {key} at 'metrics[{i}] -> {key}'")
+                raise ValueError(f"Unexpected keys [{impl.keys()}] in {key} at 'metrics[{i}] -> {key}'")
+
+            # If we have a class "link" or "youtube" or "installer" check the url is valid and try to access it to check if we have a 404
+            # We make and exception for the edamame_helper class as the url is a prefix
+            if impl['class'] in ['link', 'youtube', 'installer'] and metric['name'] != 'edamame helper disabled':
+                if not requests.head(impl['target']).ok:
+                    raise ValueError(f"Invalid URL '{impl['target']}' in target field at 'metrics[{i}] -> {key}'")
 
             # Validate 'education' in 'implementation'
             for k, education in enumerate(impl['education']):
@@ -280,6 +287,11 @@ def validate_threat_model(filename: str) -> None:
                 # Type checks for fields in 'education'
                 if not all(isinstance(education[field], str) for field in allowed_keys_education):
                     raise ValueError(f"Invalid data type in education fields at 'metrics[{i}] -> {key} -> education[{k}]'")
+
+                # If we have a class "link" or "youtube" or "installer" check the url is valid and try to access it to check if we have a 404
+                if education['class'] in ['link', 'youtube', 'installer']:
+                    if not requests.head(education['target']).ok:
+                        raise ValueError(f"Invalid URL '{education['target']}' in target field at 'metrics[{i}] -> {key} -> education[{k}]'")
 
             # Type checks for other fields in implementation/remediation/rollback
             if not isinstance(impl['system'], str) or \
