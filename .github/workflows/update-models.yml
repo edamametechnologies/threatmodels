@@ -28,7 +28,9 @@ jobs:
 
       - name: Validate models
         id: validate
-        run: python3 src/publish/validate-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
+        run: |
+          pip install -r requirements.txt
+          python3 src/publish/validate-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
         continue-on-error: true
 
       - name: Revert last commit if validation fails
