@@ -1,8 +1,8 @@
 {
   "name": "threat model macOS",
   "extends": "none",
-  "date": "December 12th 2023",
-  "signature": "b44266f387c48766f0fc50f46bd07e179068931e4aeb36a6a7232f581e027cfa",
+  "date": "January 18th 2024",
+  "signature": "acb04cdb16af6dcbe670918654cd1c830b5c791393701a6e7fc12843d1efdb75",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -984,12 +984,12 @@
         {
           "locale": "EN",
           "title": "No antivirus enabled",
-          "summary": "You don't have any antivirus installed (MalwareBytes, Sentinel One...). We recommend you to enable one."
+          "summary": "You don't have any antivirus installed (MalwareBytes, Sentinel One, BitDefender...). We recommend you to enable one."
         },
         {
           "locale": "FR",
           "title": "Pas d'antivirus activé",
-          "summary": "Vous n'avez pas d'antivirus installé (MalwareBytes, Sentinel One...). Nous vous recommandons d'en activer un."
+          "summary": "Vous n'avez pas d'antivirus installé (MalwareBytes, Sentinel One, BitDefender...). Nous vous recommandons d'en activer un."
         }
       ],
       "implementation": {
@@ -998,7 +998,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "if ! { pgrep RTProtectionDaemon >/dev/null || sentinelctl version 2>/dev/null | grep -q \"Agent version\"; }; then echo noepp; fi",
+        "target": "if ! { pgrep BDLDaemon >/dev/null || pgrep RTProtectionDaemon >/dev/null || sentinelctl version 2>/dev/null | grep -q \"Agent version\"; }; then echo noepp; fi",
         "education": []
       },
       "remediation": {
