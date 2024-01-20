@@ -30,6 +30,13 @@
                     "sharp"
                   ]
                 }
+              },
+              {
+                "Leaf": {
+                  "banners": [
+                    "hp http server"
+                  ]
+                }
               }
             ]
           }
