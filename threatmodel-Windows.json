@@ -823,8 +823,8 @@
         },
         {
           "locale": "FR",
-          "title": "Service Registre distant activé",
-          "summary": "Le Service Registre distant permet l'accès distant au Registre de Windows. Cela peut être un risque de sécurité si cela n'est pas correctement sécurisé."
+          "title": "Service Registre Distant activé",
+          "summary": "Le Service Registre Distant permet l'accès distant au Registre de Windows. Cela peut être un risque de sécurité si cela n'est pas correctement sécurisé."
         }
       ],
       "implementation": {
