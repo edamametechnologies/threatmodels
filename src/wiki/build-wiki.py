@@ -29,9 +29,9 @@ for source in sources:
             titleP = source + ' Score Privacy Policy ' + '('+ loc + ')'
             titlePD = source + ' Detailed Score Privacy Policy ' + '('+ loc + ')'
 
-        mdFile = MdUtils(file_name='threatmodel-' + source + '-' + loc, title=source + title)
-        mdFileP = MdUtils(file_name='privacy-' + source + '-' + loc, title=source + titleP)
-        mdFilePD = MdUtils(file_name='privacy-detailed-' + source + '-' + loc, title=source + titlePD)
+        mdFile = MdUtils(file_name='threatmodel-' + source + '-' + loc, title=title)
+        mdFileP = MdUtils(file_name='privacy-' + source + '-' + loc, title=titleP)
+        mdFilePD = MdUtils(file_name='privacy-detailed-' + source + '-' + loc, title=titlePD)
 
 
 
