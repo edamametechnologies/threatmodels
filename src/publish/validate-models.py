@@ -4,7 +4,7 @@ import sys
 import json
 import requests
 
-# Validate validate_lanscan_port_vulns against this VulnerabilityInfoList Rust structure
+# Validate validate_lanscan-port-vulns against this VulnerabilityInfoList Rust structure
 # #[derive(Serialize, Deserialize, Debug, Clone, Ord, Eq, PartialEq, PartialOrd)]
 # pub struct VulnerabilityInfo {
 #     pub name: String,
@@ -307,7 +307,7 @@ def validate_threat_model(filename: str) -> None:
 
 if __name__ == "__main__":
     for arg in sys.argv:
-        if arg.startswith("lanscan_port_vulns"):
+        if arg.startswith("lanscan-port-vulns"):
             print(f"Validating {arg}")
             validate_lanscan_port_vulns(arg)
         elif arg.startswith("lanscan_profiles"):
