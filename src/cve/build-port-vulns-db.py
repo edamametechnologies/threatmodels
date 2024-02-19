@@ -62,6 +62,8 @@ async def fetch_and_update_cve_data(semaphore, data_semaphore, session, tcp_port
                                 cve_name, cve_description = cols[0].text.strip(), cols[1].text.strip()
                                 # Check if the description contains the port number (port xxxx or tcp/xxxx)
                                 if re.search(rf"\b(port |tcp\/){tcp_port}\b", cve_description, re.IGNORECASE):
+                                    # Make sure the cve description will be encodable in a JSON string by removing illegal characters like quotes
+                                    cve_description = cve_description.replace('"', "'")
                                     await update_cve_data(data_semaphore, cve_name, cve_description, tcp_port, port_descriptions, existing_data)
                                 else:
                                     log(f"Skipping CVE {cve_name} for port {tcp_port} because it does not mention the port number.", 2)
@@ -133,6 +135,19 @@ if __name__ == "__main__":
         existing_data = {"date": datetime.now().strftime("%Y-%m-%d"), "vulnerabilities": []}
 
     asyncio.run(main(existing_data))
+
+    # Add a counter for the number of vulnerabilities for each port
+    for port in existing_data["vulnerabilities"]:
+        port["count"] = len(port["vulnerabilities"])
+
+    # Check if the description contains HTTP or HTTPS and set the protocol accordingly
+    for port in existing_data["vulnerabilities"]:
+        if re.search(r"\bhttp\b", port["description"], re.IGNORECASE):
+            port["protocol"] = "http"
+        elif re.search(r"\bhttps\b", port["description"], re.IGNORECASE):
+            port["protocol"] = "https"
+        else:
+            port["protocol"] = "tcp"
 
     # Sort the vulnerabilities by port number
     existing_data["vulnerabilities"].sort(key=lambda x: int(x['port']))
