@@ -47,6 +47,8 @@ async def purge_old_entries(vendor_entry, data_semaphore, vendor):
         current_year = datetime.now().year
         for vulnerability in vendor_entry["vulnerabilities"]:
             if current_year - int(re.search(r"\d{4}", vulnerability["name"]).group()) > 5:
+                # Make sure the cve description will be encodable in a JSON string by removing illegal characters like quotes
+                cve_description = cve_description.replace('"', "'")
                 log(f"Removing old CVE {vulnerability['name']} from vendor {vendor}.", 1)
                 vendor_entry["vulnerabilities"].remove(vulnerability)
 
@@ -145,6 +147,10 @@ if __name__ == "__main__":
         existing_data = {"date": datetime.now().strftime("%Y-%m-%d"), "vulnerabilities": []}
 
     asyncio.run(main(existing_data))
+
+    # Add a counter for the number of vulnerabilities for each port
+    for port in existing_data["vulnerabilities"]:
+        port["count"] = len(port["vulnerabilities"])
 
     # Sort the vulnerabilities by vendor
     existing_data["vulnerabilities"] = sorted(existing_data["vulnerabilities"], key=lambda x: x["vendor"].lower())
