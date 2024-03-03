@@ -298,6 +298,15 @@
         "class": "cli",
         "elevation": "system",
         "target": "systemsetup getwakeonnetworkaccess | grep -v Off",
+        "education": []
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "target": "systemsetup -setwakeonnetworkaccess off",
         "education": [
           {
             "locale": "EN",
@@ -310,15 +319,6 @@
             "target": "<p>Désactiver le Wake On LAN (WOL) empêche votre ordinateur d'être activé à distance, ce qui peut représenter un risque de sécurité. Utilisez la commande <code>systemsetup -setwakeonnetworkaccess off</code> pour désactiver le WOL et améliorer la sécurité de votre appareil.</p>"
           }
         ]
-      },
-      "remediation": {
-        "system": "macOS",
-        "minversion": 12,
-        "maxversion": 0,
-        "class": "cli",
-        "elevation": "system",
-        "target": "systemsetup -setwakeonnetworkaccess off",
-        "education": []
       },
       "rollback": {
         "system": "macOS",
@@ -724,7 +724,18 @@
         "class": "cli",
         "elevation": "system",
         "target": "launchctl unload -w /System/Library/LaunchDaemons/com.apple.smbd.plist",
-        "education": []
+        "education": [
+          {
+            "locale": "EN",
+            "class": "html",
+            "target": "<p>Disabling file sharing on your macOS system can significantly enhance your data security. Use the CLI command <code>launchctl unload -w /System/Library/LaunchDaemons/com.apple.smbd.plist</code> to turn off SMB file sharing. This action ensures that your files are not inadvertently shared across the network, reducing the risk of unauthorized access.</p>"
+          },
+          {
+            "locale": "FR",
+            "class": "html",
+            "target": "<p>Désactiver le partage de fichiers sur votre système macOS peut considérablement renforcer la sécurité de vos données. Utilisez la commande CLI <code>launchctl unload -w /System/Library/LaunchDaemons/com.apple.smbd.plist</code> pour désactiver le partage de fichiers SMB. Cette action garantit que vos fichiers ne sont pas partagés par inadvertance sur le réseau, réduisant ainsi le risque d'accès non autorisé.</p>"
+          }
+        ]
       },
       "rollback": {
         "system": "macOS",
@@ -733,7 +744,18 @@
         "class": "cli",
         "elevation": "system",
         "target": "launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist && defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server.plist EnabledServices -array disk",
-        "education": []
+        "education": [
+          {
+            "locale": "EN",
+            "class": "html",
+            "target": "<p>Re-enabling file sharing on macOS allows for easy file access and sharing within a network. To enable SMB file sharing, use the CLI command <code>launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist && defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server.plist EnabledServices -array disk</code>. Ensure proper security measures are in place to protect shared data.</p>"
+          },
+          {
+            "locale": "FR",
+            "class": "html",
+            "target": "<p>Réactiver le partage de fichiers sur macOS permet un accès et un partage de fichiers faciles au sein d'un réseau. Pour activer le partage de fichiers SMB, utilisez la commande CLI <code>launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist && defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server.plist EnabledServices -array disk</code>. Assurez-vous que des mesures de sécurité appropriées sont en place pour protéger les données partagées.</p>"
+          }
+        ]
       }
     },
     {
