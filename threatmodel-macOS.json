@@ -48,7 +48,18 @@
         "class": "cli",
         "elevation": "system",
         "target": "/Library/Application\\ Support/Edamame/Edamame-Helper/uninstall.sh",
-        "education": []
+        "education": [
+          {
+            "locale": "EN",
+            "class": "html",
+            "target": "<p>If you need to uninstall the EDAMAME Helper software for any reason, you can use the provided shell script command. Note that uninstalling may affect the Security Score analysis of your system.</p>"
+          },
+          {
+            "locale": "FR",
+            "class": "html",
+            "target": "<p>Si vous devez désinstaller le logiciel d'assistance EDAMAME pour une raison quelconque, vous pouvez utiliser la commande de script shell fournie. Notez que la désinstallation peut affecter l'analyse du score de sécurité de votre système.</p>"
+          }
+        ]
       }
     },
     {
@@ -1349,7 +1360,18 @@
         "class": "cli",
         "elevation": "system",
         "target": "sysadminctl -guestAccount off",
-        "education": []
+        "education": [
+          {
+            "locale": "EN",
+            "class": "html",
+            "target": "<p>Disabling the guest account on your macOS system is an important step in securing your computer against unauthorized access. To disable the guest account, open Terminal and execute the following command: <code>sudo sysadminctl -guestAccount off</code>. This command requires administrator privileges, so you may need to enter your administrator password to proceed.</p>"
+          },
+          {
+            "locale": "FR",
+            "class": "html",
+            "target": "<p>Désactiver le compte invité sur votre système macOS est une étape importante pour sécuriser votre ordinateur contre les accès non autorisés. Pour désactiver le compte invité, ouvrez le Terminal et exécutez la commande suivante : <code>sudo sysadminctl -guestAccount off</code>. Cette commande nécessite des privilèges d'administrateur, donc vous devrez peut-être entrer votre mot de passe administrateur pour continuer.</p>"
+          }
+        ]
       },
       "rollback": {
         "system": "macOS",
@@ -1358,7 +1380,18 @@
         "class": "cli",
         "elevation": "system",
         "target": "sysadminctl -guestAccount on",
-        "education": []
+        "education": [
+          {
+            "locale": "EN",
+            "class": "html",
+            "target": "<p>If you need to enable the guest account on your macOS for any specific reason, such as providing temporary access to your computer, you can do so safely by opening Terminal and executing the command: <code>sudo sysadminctl -guestAccount on</code>. Remember to disable the guest account again once it's no longer needed to maintain the security of your system.</p>"
+          },
+          {
+            "locale": "FR",
+            "class": "html",
+            "target": "<p>Si vous devez activer le compte invité sur votre macOS pour une raison spécifique, comme fournir un accès temporaire à votre ordinateur, vous pouvez le faire en toute sécurité en ouvrant le Terminal et en exécutant la commande : <code>sudo sysadminctl -guestAccount on</code>. N'oubliez pas de désactiver à nouveau le compte invité une fois qu'il n'est plus nécessaire pour maintenir la sécurité de votre système.</p>"
+          }
+        ]
       }
     },
     {
