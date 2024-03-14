@@ -128,7 +128,7 @@ for source in sources:
             mdFile.new_header(level=2, title=implemationHeader)
             print_action(loc, metric["implementation"]["elevation"], metric["implementation"]["target"], metric["implementation"]["system"], metric["implementation"]["minversion"])
 
-            mdFile.new_header(level=2, title=remedediationHeader)
+            mdFile.new_header(level=2, title=rollbackHeader)
             if metric["remediation"]["target"] != "":
                 print_action(loc, metric["remediation"]["elevation"], metric["remediation"]["target"], metric["remediation"]["system"], metric["remediation"]["minversion"])
             else:
@@ -137,7 +137,7 @@ for source in sources:
                         mdFile.new_paragraph(localized["target"])
                         break
 
-            mdFile.new_header(level=2, title=rollbackHeader)
+            mdFile.new_header(level=2, title=remedediationHeader)
             if metric["rollback"]["target"] != "":
                 print_action(loc, metric["rollback"]["elevation"], metric["rollback"]["target"], metric["rollback"]["system"], metric["rollback"]["minversion"])
             else:
