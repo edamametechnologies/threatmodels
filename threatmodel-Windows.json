@@ -143,7 +143,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "if ((-not (Get-Command SentinelCtl.exe -ErrorAction SilentlyContinue)) -or (-not (SentinelCtl.exe version 2>&1 | Select-String -Pattern \"Agent version\")) -and ((Get-MpPreference | Select-Object -ExpandProperty DisableRealtimeMonitoring) -eq $true)) { Write-Output \"noepp\" }",
+        "target": "Function Get-AVStatus { [cmdletbinding()] Param() Process { $AV = Get-CimInstance -Namespace 'root/SecurityCenter2' -ClassName 'AntivirusProduct'; $enabledAVs = $AV | Where-Object { $productState = '0x{0:x}' -f $_.ProductState; $enabled = $productState.Substring(3, 2) -match '10|11'; return $enabled }; if (-not $enabledAVs) { Write-Output 'no epp' } } }; Get-AVStatus",
         "education": []
       },
       "remediation": {
