@@ -905,7 +905,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "if((net user Administrator | findstr /C:'Account active') -match 'Yes') { 'Administrator account is active' } else { '' }",
+        "target": "$adminName = (Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -like \"*-500\"} | Select-Object -ExpandProperty Name); if(((net user $adminName) | findstr /C:\"Account active\") -match \"Yes\") { Write-Output \"$adminName account is active\" } else { Write-Output \"\" }",
         "education": []
       },
       "remediation": {
@@ -914,7 +914,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "net user Administrator /active:no",
+        "target": "$adminName = (Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -like \"*-500\"} | Select-Object -ExpandProperty Name); net user $adminName /active:no",
         "education": [
           {
             "locale": "EN",
@@ -934,7 +934,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "net user Administrator /active:yes",
+        "target": "$adminName = (Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -like \"*-500\"} | Select-Object -ExpandProperty Name); net user $adminName /active:yes",
         "education": [
           {
             "locale": "EN",
