@@ -1,0 +1,98 @@
+name: Test models
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events for main and dev branches
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+    tests-macos:
+        if: always()
+        runs-on: macos-latest
+        outputs:
+          macos-report: ${{ steps.read_output.outputs.report }}
+
+        steps:
+        - uses: actions/checkout@v3
+        - name: Setup Python
+          uses: actions/setup-python@v3.1.4
+          with:
+            # Version range or exact version of a Python version to use, using SemVer's version range syntax.
+            python-version: 3.11.3
+        - name: Run tests
+          run: |
+            pip install -r requirements.txt
+            python3 src/test/main.py
+        - id: read_output
+          if: always()
+          run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
+            
+    tests-windows:
+        if: always()
+        runs-on: windows-latest
+        outputs:
+          windows-report: ${{ steps.read_output.outputs.report }}
+          
+        steps:
+        - uses: actions/checkout@v3
+        - name: Setup Python
+          uses: actions/setup-python@v3.1.4
+          with:
+            # Version range or exact version of a Python version to use, using SemVer's version range syntax.
+            python-version: 3.11.3
+        - name: Run tests
+          run: |
+            pip install -r requirements.txt
+            python3 src/test/main.py
+        - id: read_output
+          if: always()
+          shell: pwsh
+          run: echo "::set-output name=report::$(cat report-results.txt)"
+            
+    tests-ubuntu:
+        if: always()
+        runs-on: ubuntu-latest
+        outputs:
+          ubuntu-report: ${{ steps.read_output.outputs.report }}
+
+        steps:
+        - uses: actions/checkout@v3
+        - name: Setup Python
+          uses: actions/setup-python@v3.1.4
+          with:
+            # Version range or exact version of a Python version to use, using SemVer's version range syntax.
+            python-version: 3.11.3
+        - name: Run tests
+          run: |
+            pip install -r requirements.txt
+            python3 src/test/main.py
+        - id: read_output
+          if: always()
+          run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
+            
+    slack:
+        # Wait test job to finish
+        needs: [tests-macos, tests-windows, tests-ubuntu]
+        if: always()
+        runs-on: ubuntu-latest
+        steps:
+          - env:
+              MACOS_REPORT: ${{needs.tests-macos.outputs.macos-report}}
+              WINDOWS_REPORT: ${{needs.tests-windows.outputs.windows-report}}
+              UBUNTU_REPORT: ${{needs.tests-ubuntu.outputs.ubuntu-report}}
+            run: echo "Reports $WINDOWS_REPORT $MACOS_REPORT $UBUNTU_REPORT"
+          - name: slack-send
+            uses: slackapi/slack-github-action@v1.24.0
+            with:
+              # Slack channel ID where message will be posted. Needed if using bot token
+              channel-id: 'C05BY6YNDFF'
+              # Message to post into Slack. Needed if using bot token
+              slack-message: "GitHub threat models tests result on branch ${{ github.ref }}: \n${{ needs.tests-macos.outputs.macos-report }}\n${{ needs.tests-windows.outputs.windows-report }}\n${{ needs.tests-ubuntu.outputs.ubuntu-report }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            env:
+                SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

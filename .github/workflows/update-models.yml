@@ -2,39 +2,59 @@ name: Update models
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push events but only for the "dev" branch
+  # Triggers the workflow on push events for main and dev branches
   push:
-    branches: [ "dev", "workflow-tests" ]
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches: [ "main", "dev" ]
   workflow_dispatch:
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@v3
-          with:
-            # Fetch all last commits
-            fetch-depth: 0 
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-        - name: Setup Python
-          uses: actions/setup-python@v3.1.4
-          with:
-            python-version: 3.11.3
-            
-        - name: Get changed threat models 
-          id: changed-files-specific
-          uses: tj-actions/changed-files@v36
-          with:
-            files: ./*.json
-        - name: Update models hash and date
-          run: |
-            python3 update-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
+      - name: Setup Python
+        uses: actions/setup-python@v3.1.4
+        with:
+          python-version: 3.11.3
 
-          # Commit and Push wiki and modified models
-        - name: Commit & Push changes
-          uses: actions-js/push@master
-          with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            branch: dev
+      - name: Get changed threat models
+        id: changed-files-specific
+        uses: tj-actions/changed-files@v36
+        with:
+          files: ./*.json
+
+      - name: Validate models
+        id: validate
+        run: |
+          pip install -r requirements.txt
+          python3 src/publish/validate-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
+        continue-on-error: true
+
+      - name: Revert last commit if validation fails
+        if: steps.validate.outcome == 'failure'
+        run: |
+          git revert -m 1 HEAD --no-edit --no-commit
+
+      - name: slack-send
+        if: steps.validate.outcome == 'failure'
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          # Slack channel ID where message will be posted. Needed if using bot token
+          channel-id: 'C05BY6YNDFF'
+          # Message to post into Slack. Needed if using bot token
+          slack-message: "GitHub threat models validation on branch ${{ github.ref }} failed, commit has been reverted"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Update models hash and date
+        if: steps.validate.outcome == 'success'
+        run: python3 src/publish/update-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
+
+      - name: Commit & Push changes
+        uses: actions-js/push@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref_name }}

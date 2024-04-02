@@ -2,9 +2,9 @@ name: Update wiki
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push events but only for the "dev" branch
+  # Triggers the workflow on push events but only for the "main" branch
   push:
-    branches: [ "dev", "workflow-tests" ]
+    branches: [ "main" ]
     
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -25,8 +25,8 @@ jobs:
         
         - name: Generate wiki files
           run: |
-            pip install mdutils
-            python3 build-wiki.py
+            pip install -r requirements.txt
+            python3 src/wiki/build-wiki.py
             pwd
             mv *.md ../
             
@@ -42,8 +42,6 @@ jobs:
         - name: GitHub Commit & Push
           uses: actions-js/push@v1.4
           with:
-            # Token for the repo. Can be passed in using $\{{ secrets.GITHUB_TOKEN }}
             github_token: ${{ secrets.GITHUB_TOKEN }}
-            # Email used to configure user.email in `git config`.
             repository: edamametechnologies/threatmodels.wiki
             branch: master
