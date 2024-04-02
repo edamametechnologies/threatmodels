@@ -1358,7 +1358,18 @@
         "class": "cli",
         "elevation": "system",
         "target": "Disable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -norestart",
-        "education": []
+        "education": [
+          {
+            "locale": "EN",
+            "class": "html",
+            "target": "<p>Following the automatic changes, a system restart is required to activate the remediation.</p>"
+          },
+          {
+            "locale": "FR",
+            "class": "html",
+            "target": "<p>Après les modifications automatiques, un redémarrage du système est requis pour activer la remédiation.</p>"
+          }
+        ]
       },
       "rollback": {
         "system": "Windows",
@@ -1367,7 +1378,18 @@
         "class": "cli",
         "elevation": "system",
         "target": "Enable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -norestart",
-        "education": []
+        "education": [
+          {
+            "locale": "EN",
+            "class": "html",
+            "target": "<p>Following the automatic changes, a system restart is required to activate the rollback.</p>"
+          },
+          {
+            "locale": "FR",
+            "class": "html",
+            "target": "<p>Après les modifications automatiques, un redémarrage du système est requis pour activer le retour en arrière.</p>"
+          }
+        ]
       }
     }
   ]
