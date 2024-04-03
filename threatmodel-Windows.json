@@ -831,7 +831,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "if(net user guest | findstr /c:'active' | findstr /c:'Yes') { 'Guest account active' } else { '' }",
+        "target": "$guestName = (Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -like '*-501'} | Select-Object -ExpandProperty Name); if(net user $guestName | findstr /c:'active' | findstr /c:'Yes') { 'Guest account active' } else { '' }",
         "education": []
       },
       "remediation": {
@@ -840,7 +840,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "Disable-LocalUser -Name Guest",
+        "target": "$guestName = (Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -like '*-501'} | Select-Object -ExpandProperty Name); Disable-LocalUser -Name $guestName",
         "education": [
           {
             "locale": "EN",
@@ -860,7 +860,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "Enable-LocalUser -Name Guest",
+        "target": "$guestName = (Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -like '*-501'} | Select-Object -ExpandProperty Name); Enable-LocalUser -Name $guestName",
         "education": [
           {
             "locale": "EN",
