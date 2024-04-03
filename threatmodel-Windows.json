@@ -165,26 +165,26 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "if ((-not (Get-Command SentinelCtl.exe -ErrorAction SilentlyContinue)) -or (-not (SentinelCtl.exe version 2>&1 | Select-String -Pattern \"Agent version\")) -and ((Get-MpPreference | Select-Object -ExpandProperty DisableRealtimeMonitoring) -eq $true)) { Write-Output \"noepp\" }",
+        "target": "Function Get-AVStatus { [cmdletbinding()] Param() Process { $AV = Get-CimInstance -Namespace 'root/SecurityCenter2' -ClassName 'AntivirusProduct'; $enabledAVs = $AV | Where-Object { $productState = '0x{0:x}' -f $_.ProductState; $enabled = $productState.Substring(3, 2) -match '10|11'; return $enabled }; if (-not $enabledAVs) { Write-Output 'no epp' } } }; Get-AVStatus",
         "education": []
       },
       "remediation": {
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "cli",
-        "elevation": "system",
-        "target": "Set-MpPreference -DisableRealtimeMonitoring $false",
+        "class": "",
+        "elevation": "",
+        "target": "",
         "education": [
           {
             "locale": "EN",
-            "class": "html",
-            "target": "<p>Enabling real-time monitoring through Windows Defender or installing a reliable third-party antivirus software like Sentinel One is essential for protecting your Windows system against viruses, malware, and other security threats. Use the command <code>Set-MpPreference -DisableRealtimeMonitoring $false</code> to enable real-time monitoring and ensure your system is safeguarded against potential threats.</p>"
+            "class": "link",
+            "target": "https://support.microsoft.com/en-us/windows/stay-protected-with-windows-security-2ae0363d-0ada-c064-8b56-6a39afb6a963"
           },
           {
             "locale": "FR",
-            "class": "html",
-            "target": "<p>Activer la surveillance en temps réel via Windows Defender ou installer un logiciel antivirus tiers fiable tel que Sentinel One est essentiel pour protéger votre système Windows contre les virus, les logiciels malveillants et autres menaces de sécurité. Utilisez la commande <code>Set-MpPreference -DisableRealtimeMonitoring $false</code> pour activer la surveillance en temps réel et garantir que votre système est protégé contre les menaces potentielles.</p>"
+            "class": "link",
+            "target": "https://support.microsoft.com/fr-fr/windows/rester-prot%C3%A9g%C3%A9-avec-s%C3%A9curit%C3%A9-windows-2ae0363d-0ada-c064-8b56-6a39afb6a963"
           }
         ]
       },
@@ -192,19 +192,19 @@
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "cli",
-        "elevation": "system",
-        "target": "Set-MpPreference -DisableRealtimeMonitoring $true",
+        "class": "",
+        "elevation": "",
+        "target": "",
         "education": [
           {
             "locale": "EN",
-            "class": "html",
-            "target": "<p>Disabling real-time monitoring may be necessary for troubleshooting or specific operational requirements, but it significantly lowers your system's defenses against malware and other cyber threats. If you must disable it, ensure to take additional security measures and re-enable real-time monitoring as soon as possible using <code>Set-MpPreference -DisableRealtimeMonitoring $true</code>.</p>"
+            "class": "link",
+            "target": "https://support.microsoft.com/en-us/windows/stay-protected-with-windows-security-2ae0363d-0ada-c064-8b56-6a39afb6a963"
           },
           {
             "locale": "FR",
-            "class": "html",
-            "target": "<p>Désactiver la surveillance en temps réel peut être nécessaire pour le dépannage ou des exigences opérationnelles spécifiques, mais cela réduit considérablement les défenses de votre système contre les logiciels malveillants et autres cybermenaces. Si vous devez le désactiver, assurez-vous de prendre des mesures de sécurité supplémentaires et de réactiver la surveillance en temps réel dès que possible en utilisant <code>Set-MpPreference -DisableRealtimeMonitoring $true</code>.</p>"
+            "class": "link",
+            "target": "https://support.microsoft.com/fr-fr/windows/rester-prot%C3%A9g%C3%A9-avec-s%C3%A9curit%C3%A9-windows-2ae0363d-0ada-c064-8b56-6a39afb6a963"
           }
         ]
       }
@@ -905,7 +905,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "if((net user Administrator | findstr /C:'Account active') -match 'Yes') { 'Administrator account is active' } else { '' }",
+        "target": "$adminName = (Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -like '*-500'} | Select-Object -ExpandProperty Name); if(((net user $adminName) | findstr /C:'Account active') -match 'Yes') { Write-Output 'Built-in Administrator account enabled' } else { Write-Output '' }",
         "education": []
       },
       "remediation": {
@@ -914,7 +914,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "net user Administrator /active:no",
+        "target": "$adminName = (Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -like '*-500'} | Select-Object -ExpandProperty Name); net user $adminName /active:no",
         "education": [
           {
             "locale": "EN",
@@ -934,7 +934,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "net user Administrator /active:yes",
+        "target": "$adminName = (Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -like '*-500'} | Select-Object -ExpandProperty Name); net user $adminName /active:yes",
         "education": [
           {
             "locale": "EN",
