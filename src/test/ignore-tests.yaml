@@ -1,6 +1,6 @@
 ignore:
   Windows:
-    - metric_name: "PS execution policy unrestricted"
+    - metric_name: "ps not RemoteSigned"
       tests: ["all"]
 
 
