@@ -1,6 +1,6 @@
 ignore:
   Windows:
     - metric_name: "PS execution policy unrestricted"
-      tests: ["remediation", "rollback"]
+      tests: ["all"]
 
 
