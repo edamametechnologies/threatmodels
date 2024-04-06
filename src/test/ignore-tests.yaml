@@ -15,7 +15,7 @@ ignore:
       tests: ["remediation", "rollback"]
     - metric_name: "/etc/shadow group"
       tests: ["remediation", "rollback"]
-    - metric_name: "restrict cron to roo"
+    - metric_name: "restrict cron to root"
       tests: ["all"]
     - metric_name: "manual system updates"
       tests: ["all"]

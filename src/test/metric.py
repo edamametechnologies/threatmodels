@@ -249,7 +249,8 @@ class Metric(object):
 
     def run_all_tests(self):
         '''Run all the tests for this metric'''
-        if self.should_ignore(self.info['name'], 'all') or self.should_ignore(self.info['name'], 'implementation'):
+
+        if self.should_ignore(self.info['name'], 'implementation'):
                 self.logger.info(f"Skipping `{self.info['name']}` due to ignore list.")
                 return True
 
@@ -295,7 +296,8 @@ class Metric(object):
             else:
                 self.logger.info(f"Skipping `{self.info['name']}` remediation due to ignore list.")
 
-            self.degradation_tests()
+            if not self.should_ignore(self.info['name'], 'remediation') and not self.should_ignore(self.info['name'], 'rollback'):
+                self.degradation_tests()
 
         return True
 
