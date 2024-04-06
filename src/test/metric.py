@@ -278,7 +278,6 @@ class Metric(object):
             else:
                 self.logger.info(f"Skipping `{self.info['name']}` rollback due to ignore list.")
 
-            self.degradation_tests()
         else:
             if not self.should_ignore(self.info['name'], 'rollback'):
                 if not self.rollback_test():
@@ -295,9 +294,9 @@ class Metric(object):
                     return False
             else:
                 self.logger.info(f"Skipping `{self.info['name']}` remediation due to ignore list.")
-
-            if not self.should_ignore(self.info['name'], 'remediation') and not self.should_ignore(self.info['name'], 'rollback'):
-                self.degradation_tests()
+            
+        if not self.should_ignore(self.info['name'], 'remediation') and not self.should_ignore(self.info['name'], 'rollback'):
+            self.degradation_tests()
 
         return True
 
