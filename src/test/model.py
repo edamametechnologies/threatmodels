@@ -1,4 +1,5 @@
 import json
+import yaml
 from sys import platform
 from metric import Metric, TargetIsNotACLI
 
@@ -6,32 +7,37 @@ from metric import Metric, TargetIsNotACLI
 class Model(object):
     '''Perform tests over a threat model'''
 
-    def __init__(self, logger, dir_path):
+    def __init__(self, logger, dir_path, ignore_tests_path):
+        self.logger = logger
         # Detect platform
-        if platform == "linux" or platform == "linux2":
-            # linux
-            self.source = "Linux"
-        elif platform == "darwin":
-            # OS X
-            self.source = "MacOS"
-        elif platform == "win32":
-            # Windows...
-            self.source = "Windows"
-
-        # Opening the json model of the platform
-        with open(f'{dir_path}/threatmodel-{self.source}.json', 'r') as file:
-            self.model = json.load(file)
-
-        self.metrics: list[Metric] = []
-
-        # Instanciating metrics
-        for metric_info in self.model['metrics']:
-            self.metrics.append(Metric(metric_info, self.source, logger))
-
-        # Saving reports in an array
+        self.source = self.detect_platform()
+        # Load the model based on the detected platform
+        self.model = self.load_model(dir_path)
+        # Loading a list of the tests that should be ignored
+        self.ignore_list = self.load_ignore_list(ignore_tests_path)
+        # Instantiate metrics
+        self.metrics = [Metric(metric_info, self.source, logger, self.ignore_list) for metric_info in self.model['metrics']]
+        # Initialize an empty array for reports
         self.reports = []
 
-        self.logger = logger
+    def detect_platform(self):
+        if platform == "linux" or platform == "linux2":
+            return "Linux"
+        elif platform == "darwin":
+            return "MacOS"
+        elif platform == "win32":
+            return "Windows"
+        else:
+            return "Unknown"
+
+    def load_model(self, dir_path):
+        with open(f'{dir_path}/threatmodel-{self.source}.json', 'r') as file:
+            return json.load(file)
+
+    def load_ignore_list(self, ignore_tests_path):
+        with open(ignore_tests_path, 'r') as file:
+            config = yaml.safe_load(file)
+            return config.get('ignore', {}).get(self.source, [])
 
     def run_metrics_sequentially(self):
         '''
