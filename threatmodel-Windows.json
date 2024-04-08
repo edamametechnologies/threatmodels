@@ -1,8 +1,8 @@
 {
   "name": "threat model Windows",
   "extends": "none",
-  "date": "March 03th 2024",
-  "signature": "f47f2ff7eed86b2ee0e748176e628d8650f0f8264736c117e1d7ef0e1ecbe8d9",
+  "date": "April 02th 2024",
+  "signature": "a218d17e40ef022c5630dc88fed2f32e260922a4da38e1400f8c9500b494ab88",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -1391,6 +1391,79 @@
           }
         ]
       }
-    }    
+    },
+    {
+      "name": "SMBv1 enabled",
+      "metrictype": "bool",
+      "dimension": "network",
+      "severity": 5,
+      "scope": "generic",
+      "tags": [
+        "CIS Benchmark Level 1",
+        "windows_security/smb1_protocol_disabled",
+        "need_restart"
+      ],
+      "description": [
+        {
+          "locale": "EN",
+          "title": "SMBv1 Protocol Enabled",
+          "summary": "The SMBv1 protocol is enabled on your system. This protocol is outdated and has known vulnerabilities that can allow attackers to take over your system. It should be disabled to improve your system's security."
+        },
+        {
+          "locale": "FR",
+          "title": "Protocole SMBv1 activé",
+          "summary": "Le protocole SMBv1 est activé sur votre système. Ce protocole est obsolète et présente des vulnérabilités connues qui peuvent permettre aux attaquants de prendre le contrôle de votre système. Il devrait être désactivé pour améliorer la sécurité de votre système."
+        }
+      ],
+      "implementation": {
+        "system": "Windows",
+        "minversion": 10,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "user",
+        "target": "if((Get-SmbServerConfiguration).EnableSMB1Protocol -eq $true) { 'SMBv1 enabled' } else { '' }",
+        "education": []
+      },
+      "remediation": {
+        "system": "Windows",
+        "minversion": 10,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "target": "Disable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -norestart",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "html",
+            "target": "<p>Following the automatic changes, a system restart is required to activate the remediation.</p>"
+          },
+          {
+            "locale": "FR",
+            "class": "html",
+            "target": "<p>Après les modifications automatiques, un redémarrage du système est requis pour activer la remédiation.</p>"
+          }
+        ]
+      },
+      "rollback": {
+        "system": "Windows",
+        "minversion": 10,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "system",
+        "target": "Enable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -norestart",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "html",
+            "target": "<p>Following the automatic changes, a system restart is required to activate the rollback.</p>"
+          },
+          {
+            "locale": "FR",
+            "class": "html",
+            "target": "<p>Après les modifications automatiques, un redémarrage du système est requis pour activer le retour en arrière.</p>"
+          }
+        ]
+      }
+    }
   ]
 }
