@@ -21,3 +21,8 @@ ignore:
       tests: ["all"]
     - metric_name: "local firewall disabled"
       tests: ["remediation", "rollback"]
+  MacOS:
+    - metric_name: "WOL enabled"
+      tests: ["remediation", "rollback"]
+    - metric_name: "automatic login enabled"
+      tests: ["remediation", "rollback"]
