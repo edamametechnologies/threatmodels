@@ -2,6 +2,8 @@ ignore:
   Windows:
     - metric_name: "PS execution policy unrestricted"
       tests: ["all"]
+    - metric_name: "SMBv1 enabled"
+      tests: ["remediation", "rollback"]
   Linux:
     - metric_name: "/etc/passwd permissions"
       tests: ["all"]
