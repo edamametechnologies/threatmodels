@@ -8,8 +8,9 @@ The threats are categorized along 5 dimensions:
 - System Integrity: includes installed MDM and other 3rd party admin / tampering threats
 - System Services: threats linked to system services
 The threats naming convention is as follows:
-- No 'dash' in the name
+- The threat name is in the format shall describe the threat in a concise manner (and not its remediation)
+- No '-' in the name
 - Space is allowed in favor of the _ character
 - No special characters
 - No capital letters except for acronyms and the first letter of a commercial name
-- E.g. 'latest Chrome'
+- E.g. 'Chrome not uptodate'
