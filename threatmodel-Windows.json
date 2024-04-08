@@ -1320,7 +1320,7 @@
       }
     },
     {
-      "name": "Chrome not up-to-date",
+      "name": "Chrome not uptodate",
       "metrictype": "bool",
       "dimension": "applications",
       "severity": 3,
