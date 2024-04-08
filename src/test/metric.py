@@ -7,10 +7,11 @@ CMD_TIMEOUT = 30
 class Metric(object):
     '''Representation of a metric with associated functions to perform tests'''
 
-    def __init__(self, info, source, logger):
+    def __init__(self, info, source, logger, ignore_list):
         self.info = info
         self.source = source
         self.logger = logger
+        self.ignore_list = ignore_list
 
         self.report = {
                 "implementation": {},
@@ -240,12 +241,18 @@ class Metric(object):
                 self.log("ok", "remediation resolved the implementation "
                          f"successfuly at the attempt {i}")
 
+    def should_ignore(self, metric_name, test_type):
+        for item in self.ignore_list:
+            if item['metric_name'] == metric_name and (test_type in item['tests'] or 'all' in item['tests']):
+                return True
+        return False
+
     def run_all_tests(self):
         '''Run all the tests for this metric'''
-        if "test_bypass" in self.info["tags"]:
-            self.log("info", f"Skipping `{self.info['name']}` "
-                     "because test_bypass flag is on")
-            return True
+
+        if self.should_ignore(self.info['name'], 'implementation'):
+                self.logger.info(f"Skipping `{self.info['name']}` due to ignore list.")
+                return True
 
         self.logger.info(f"Running `{self.info['name']}` tests")
 
@@ -255,28 +262,40 @@ class Metric(object):
             return False
 
         if self.fetch_need_remediation()[0]:
-            if not self.remediation_tests():
-                self.log("info", "Skipping other tests because remediation "
-                         "failed")
-                return False
+            if not self.should_ignore(self.info['name'], 'remediation'):
+                if not self.remediation_tests():
+                    self.log("info", "Skipping other tests because remediation "
+                            "failed")
+                    return False
+            else:
+                self.logger.info(f"Skipping `{self.info['name']}` remediation due to ignore list.")
 
-            if not self.rollback_test():
-                self.log("info", "Skipping degradation tests because rollback "
-                         "failed")
-                return False
+            if not self.should_ignore(self.info['name'], 'rollback'):
+                if not self.rollback_test():
+                    self.log("info", "Skipping degradation tests because rollback "
+                            "failed")
+                    return False
+            else:
+                self.logger.info(f"Skipping `{self.info['name']}` rollback due to ignore list.")
 
-            self.degradation_tests()
         else:
-            if not self.rollback_test():
-                self.log("info", "Skipping other tests because rollback "
-                         "failed")
-                return False
+            if not self.should_ignore(self.info['name'], 'rollback'):
+                if not self.rollback_test():
+                    self.log("info", "Skipping other tests because rollback "
+                            "failed")
+                    return False
+            else:
+                self.logger.info(f"Skipping `{self.info['name']}` rollback due to ignore list.")
 
-            if not self.remediation_tests():
-                self.log("info", "Skipping degradation because remediation "
-                         "failed")
-                return False
-
+            if not self.should_ignore(self.info['name'], 'remediation'):
+                if not self.remediation_tests():
+                    self.log("info", "Skipping degradation because remediation "
+                            "failed")
+                    return False
+            else:
+                self.logger.info(f"Skipping `{self.info['name']}` remediation due to ignore list.")
+            
+        if not self.should_ignore(self.info['name'], 'remediation') and not self.should_ignore(self.info['name'], 'rollback'):
             self.degradation_tests()
 
         return True
