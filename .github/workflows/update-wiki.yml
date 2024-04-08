@@ -20,28 +20,26 @@ jobs:
         
         - name: Checkout threatmodel repo to get the python script
           uses: actions/checkout@v3
-          with:
-            repository: edamametechnologies/threatmodels
         
         - name: Generate wiki files
           run: |
             pip install -r requirements.txt
             python3 src/wiki/build-wiki.py
-            pwd
-            mv *.md ../
-            
-        - name: Checkout wiki repo
-          uses: actions/checkout@v3
-          with:
-            repository: edamametechnologies/threatmodels.wiki
+
+        - name: Clone wiki
+          run: |
+            mkdir -p /tmp/wiki/
+            git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/edamamedev/threatmodels.wiki.git /tmp/wiki
           
         - name: Move files to the wiki repo
           run: |
-            mv ../*.md .
+            cp *.md /tmp/wiki/
             
-        - name: GitHub Commit & Push
-          uses: actions-js/push@v1.4
-          with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            repository: edamametechnologies/threatmodels.wiki
-            branch: master
+        - name: Push to wiki
+          run: |
+            cd /tmp/wiki
+            git config user.email "dev@edamame.tech"
+            git config user.name "Edamame Dev"
+            git add .
+            git commit -m "docs: Updated wiki files"
+            git push
