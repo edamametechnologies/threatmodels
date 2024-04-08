@@ -26,10 +26,15 @@ jobs:
             pip install -r requirements.txt
             python3 src/wiki/build-wiki.py
 
+        - uses: actions/checkout@v3
+          with:
+            repository: ${{ github.repository }}.wiki
+            path: wiki
+
         - name: Clone wiki
           run: |
             mkdir -p /tmp/wiki/
-            git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/edamamedev/threatmodels.wiki.git /tmp/wiki
+            git clone https://${{ secrets.DEV_GITHUB_TOKEN }}@github.com/edamametechnologies/threatmodels.wiki.git /tmp/wiki
           
         - name: Move files to the wiki repo
           run: |
