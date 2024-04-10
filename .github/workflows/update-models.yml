@@ -3,6 +3,7 @@ name: Update models
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push events for main and dev branches
+  # Exclude
   push:
     branches: [ "main", "dev" ]
   workflow_dispatch:
@@ -30,6 +31,7 @@ jobs:
       - name: Validate models
         id: validate
         run: |
+          echo "Changed files: ${{ steps.changed-files-specific.outputs.all_changed_files }}"
           pip install -r requirements.txt
           python3 src/publish/validate-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
         continue-on-error: true
@@ -37,7 +39,7 @@ jobs:
       - name: Revert last commit if validation fails
         if: steps.validate.outcome == 'failure'
         run: |
-          git revert -m 1 HEAD --no-edit --no-commit
+          git revert -m 1 HEAD -m "Reverted after threat models validation failed [skip ci]"
 
       - name: slack-send
         if: steps.validate.outcome == 'failure'
