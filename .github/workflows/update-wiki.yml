@@ -18,18 +18,13 @@ jobs:
           with:
             python-version: 3.11.3
         
-        - name: Checkout threatmodel repo to get the python script
+        - name: Checkout threatmodel repo
           uses: actions/checkout@v3
         
         - name: Generate wiki files
           run: |
             pip install -r requirements.txt
             python3 src/wiki/build-wiki.py
-
-        - uses: actions/checkout@v3
-          with:
-            repository: ${{ github.repository }}.wiki
-            path: wiki
 
         - name: Clone wiki
           run: |

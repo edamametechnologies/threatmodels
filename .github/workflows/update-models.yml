@@ -11,14 +11,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
       - name: Setup Python
         uses: actions/setup-python@v3.1.4
         with:
           python-version: 3.11.3
+
+      - name: Checkout threatmodel repo
+        uses: actions/checkout@v3
+        with:
+         token: ${{ secrets.DEV_GITHUB_TOKEN }}
 
       - name: Get changed threat models
         id: changed-files-specific
