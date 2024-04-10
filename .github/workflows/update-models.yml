@@ -39,7 +39,9 @@ jobs:
       - name: Revert last commit if validation fails
         if: steps.validate.outcome == 'failure'
         run: |
-          # As we are using a non standard token, we need to use [skip ci] to avoid infinite loop
+          # As we are using a non standard token, we need to set our name and use [skip ci] to avoid infinite loop
+          git config user.email "dev@edamame.tech"
+          git config user.name "Edamame Dev"
           git revert -m 1 HEAD --no-edit --no-commit
           git commit -m "Reverted after threat models validation failed [skip ci]"
 
