@@ -260,38 +260,48 @@ def validate_threat_model(filename: str) -> None:
 
     for i, metric in enumerate(data['metrics']):
         if set(metric.keys()) != allowed_keys_threat_metric_json:
-            raise ValueError(f"Unexpected keys [{metric.keys()}] in ThreatMetricJSON at 'metrics[{i}]'")
+            raise ValueError(f"Unexpected keys [{metric.keys()}] in ThreatMetricJSON at '{metric['name']}'")
 
         # Validate description
         for j, description in enumerate(metric['description']):
             if set(description.keys()) != allowed_keys_description:
-                raise ValueError(f"Unexpected keys [{description.keys()}] in description at 'metrics[{i}] -> description[{j}]'")
+                raise ValueError(f"Unexpected keys [{description.keys()}] in description at '{metric['name']} -> description[{j}]'")
 
         # Validate implementation, remediation, and rollback
         for key in ['implementation', 'remediation', 'rollback']:
             impl = metric[key]
             if set(impl.keys()) != allowed_keys_implementation:
-                raise ValueError(f"Unexpected keys [{impl.keys()}] in {key} at 'metrics[{i}] -> {key}'")
+                raise ValueError(f"Unexpected keys [{impl.keys()}] in {key} at '{metric['name']} -> {key}'")
 
             # If we have a class "link" or "youtube" or "installer" check the url is valid and try to access it to check if we have a 404
             # We make and exception for the edamame_helper class as the url is a prefix
             if impl['class'] in ['link', 'youtube', 'installer'] and metric['name'] != 'edamame helper disabled':
-                if not requests.head(impl['target']).ok:
-                    raise ValueError(f"Invalid URL '{impl['target']}' in target field at 'metrics[{i}] -> {key}'")
+                response = requests.head(education['target'])
+                if not response.ok:
+                    # Sometime head request is not allowed, try with get
+                    response = requests.get(education['target'])
+                    if not response.ok:
+                        raise ValueError(f"Invalid URL '{education['target']}' in target field at '{metric['name']} -> {key} -> education[{k}]'. "
+                                         f"Reason: {response.status_code} {response.reason}")
 
             # Validate 'education' in 'implementation'
             for k, education in enumerate(impl['education']):
                 if set(education.keys()) != allowed_keys_education:
-                    raise ValueError(f"Unexpected keys in education at 'metrics[{i}] -> {key} -> education[{k}]'")
+                    raise ValueError(f"Unexpected keys in education at '{metric['name']} -> {key} -> education[{k}]'")
 
                 # Type checks for fields in 'education'
                 if not all(isinstance(education[field], str) for field in allowed_keys_education):
-                    raise ValueError(f"Invalid data type in education fields at 'metrics[{i}] -> {key} -> education[{k}]'")
+                    raise ValueError(f"Invalid data type in education fields at '{metric['name']} -> {key} -> education[{k}]'")
 
                 # If we have a class "link" or "youtube" or "installer" check the url is valid and try to access it to check if we have a 404
                 if education['class'] in ['link', 'youtube', 'installer']:
-                    if not requests.head(education['target']).ok:
-                        raise ValueError(f"Invalid URL '{education['target']}' in target field at 'metrics[{i}] -> {key} -> education[{k}]'")
+                    response = requests.head(education['target'])
+                    if not response.ok:
+                        # Sometime head request is not allowed, try with get
+                        response = requests.get(education['target'])
+                        if not response.ok:
+                            raise ValueError(f"Invalid URL '{education['target']}' in target field at '{metric['name']} -> {key} -> education[{k}]'. "
+                                         f"Reason: {response.status_code} {response.reason}")
 
             # Type checks for other fields in implementation/remediation/rollback
             if not isinstance(impl['system'], str) or \
@@ -300,7 +310,7 @@ def validate_threat_model(filename: str) -> None:
                     not isinstance(impl['class'], str) or \
                     not isinstance(impl['elevation'], str) or \
                     not isinstance(impl['target'], str):
-                raise ValueError(f"Invalid data type in {key} fields at 'metrics[{i}] -> {key}'")
+                raise ValueError(f"Invalid data type in {key} fields at '{metric['name']} -> {key}'")
 
     print("Validation successful")
 
