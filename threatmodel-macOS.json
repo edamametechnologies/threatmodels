@@ -1,8 +1,8 @@
 {
   "name": "threat model macOS",
   "extends": "none",
-  "date": "March 03th 2024",
-  "signature": "a8f82e30153a34debe02d9a3f5b9db5f0f715a6c83090423af4d1c9b7b1da16d",
+  "date": "April 10th 2024",
+  "signature": "27f2c1a1e308163567e1802e81d316f76c53c59ae434d3f1c5494cbfa6d98b6e",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -142,7 +142,9 @@
       "dimension": "system integrity",
       "severity": 5,
       "scope": "generic",
-      "tags": ["Personal Posture"],
+      "tags": [
+        "Personal Posture"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -211,7 +213,9 @@
       "dimension": "system integrity",
       "severity": 5,
       "scope": "macOS",
-      "tags": ["Personal Posture"],
+      "tags": [
+        "Personal Posture"
+      ],
       "description": [
         {
           "locale": "EN",
@@ -834,7 +838,9 @@
       "dimension": "system integrity",
       "severity": 4,
       "scope": "generic",
-      "tags": ["Personal Posture"],
+      "tags": [
+        "Personal Posture"
+      ],
       "description": [
         {
           "locale": "EN",
