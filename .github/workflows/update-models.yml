@@ -39,6 +39,7 @@ jobs:
       - name: Revert last commit if validation fails
         if: steps.validate.outcome == 'failure'
         run: |
+          # As we are using a non standard token, we need to use [skip ci] to avoid infinite loop
           git revert -m 1 HEAD -m "Reverted after threat models validation failed [skip ci]"
 
       - name: slack-send
