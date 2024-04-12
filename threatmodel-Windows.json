@@ -1400,8 +1400,7 @@
       "scope": "generic",
       "tags": [
         "CIS Benchmark Level 1",
-        "windows_security/smb1_protocol_disabled",
-        "need_restart"
+        "windows_security/smb1_protocol_disabled"
       ],
       "description": [
         {
