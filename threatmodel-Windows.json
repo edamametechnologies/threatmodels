@@ -2,7 +2,7 @@
   "name": "threat model Windows",
   "extends": "none",
   "date": "April 18th 2024",
-  "signature": "c3023dc195ec4a538ca4651534a72ee506c331e2391ef32adfd7a6e58369f452",
+  "signature": "aa2ea7ea0e72ad085c7c665fbb5d13b21463e236822f045383285c7659616709",
   "metrics": [
     {
       "name": "edamame helper disabled",
@@ -1398,7 +1398,9 @@
       "dimension": "network",
       "severity": 5,
       "scope": "generic",
-      "tags": ["CIS Benchmark Level 1,windows_security/smb1_protocol_disabled"],
+      "tags": [
+        "CIS Benchmark Level 1,windows_security/smb1_protocol_disabled"
+      ],
       "description": [
         {
           "locale": "EN",
