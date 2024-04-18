@@ -1284,7 +1284,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "Set-ExecutionPolicy -ExecutionPolicy Default -Scope CurrentUser",
+        "target": "Set-ExecutionPolicy -ExecutionPolicy Default -Scope CurrentUser -Force",
         "education": [
           {
             "locale": "EN",
@@ -1304,7 +1304,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser",
+        "target": "Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser -Force",
         "education": [
           {
             "locale": "EN",
