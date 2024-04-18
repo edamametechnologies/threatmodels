@@ -831,7 +831,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "$guestName = (Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -like '*-501'} | Select-Object -ExpandProperty Name); if(net user $guestName | findstr /c:'active' | findstr /c:'Yes') { 'Guest account active' } else { '' }",
+        "target": "$guestAccount = Get-LocalUser | Where-Object {$_.SID -like '*-501'}; if ($guestAccount.Enabled) {'Guest account is active'} else {''}",
         "education": []
       },
       "remediation": {
@@ -840,7 +840,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "$guestName = (Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -like '*-501'} | Select-Object -ExpandProperty Name); Disable-LocalUser -Name $guestName",
+        "target": "$guestAccount = Get-LocalUser | Where-Object {$_.SID -like '*-501'}; if ($guestAccount.Enabled) {Disable-LocalUser -Name $guestAccount.Name}",
         "education": [
           {
             "locale": "EN",
@@ -860,7 +860,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "$guestName = (Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -like '*-501'} | Select-Object -ExpandProperty Name); Enable-LocalUser -Name $guestName",
+        "target": "$guestAccount = Get-LocalUser | Where-Object {$_.SID -like '*-501'}; if (-not $guestAccount.Enabled) {Enable-LocalUser -Name $guestAccount.Name}",
         "education": [
           {
             "locale": "EN",
@@ -905,7 +905,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "$adminName = (Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -like '*-500'} | Select-Object -ExpandProperty Name); if(((net user $adminName) | findstr /C:'Account active') -match 'Yes') { Write-Output 'Built-in Administrator account enabled' } else { Write-Output '' }",
+        "target": "$adminAccount = Get-LocalUser | Where-Object {$_.SID -like '*-500'}; if ($adminAccount.Enabled) {'Built-in Administrator account enabled'} else {''}",
         "education": []
       },
       "remediation": {
@@ -914,7 +914,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "$adminName = (Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -like '*-500'} | Select-Object -ExpandProperty Name); net user $adminName /active:no",
+        "target": "$adminAccount = Get-LocalUser | Where-Object {$_.SID -like '*-500'}; if ($adminAccount.Enabled) {Disable-LocalUser -Name $adminAccount.Name}",
         "education": [
           {
             "locale": "EN",
@@ -934,7 +934,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "$adminName = (Get-WmiObject Win32_UserAccount | Where-Object {$_.SID -like '*-500'} | Select-Object -ExpandProperty Name); net user $adminName /active:yes",
+        "target": "$adminAccount = Get-LocalUser | Where-Object {$_.SID -like '*-500'}; if (-not $adminAccount.Enabled) {Enable-LocalUser -Name $adminAccount.Name}",
         "education": [
           {
             "locale": "EN",
@@ -1398,9 +1398,7 @@
       "dimension": "network",
       "severity": 5,
       "scope": "generic",
-      "tags": [
-        "CIS Benchmark Level 1,windows_security/smb1_protocol_disabled"
-      ],
+      "tags": ["CIS Benchmark Level 1,windows_security/smb1_protocol_disabled"],
       "description": [
         {
           "locale": "EN",
