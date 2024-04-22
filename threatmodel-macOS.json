@@ -121,7 +121,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "/usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode off",
+        "target": "/usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode off && defaults write /Library/Preferences/com.apple.alf globalstate -int 0; sleep 1; defaults write /Library/Preferences/com.apple.alf globalstate -int 1",
         "education": [
           {
             "locale": "EN",
@@ -142,9 +142,7 @@
       "dimension": "system integrity",
       "severity": 5,
       "scope": "generic",
-      "tags": [
-        "Personal Posture"
-      ],
+      "tags": ["Personal Posture"],
       "description": [
         {
           "locale": "EN",
@@ -213,9 +211,7 @@
       "dimension": "system integrity",
       "severity": 5,
       "scope": "macOS",
-      "tags": [
-        "Personal Posture"
-      ],
+      "tags": ["Personal Posture"],
       "description": [
         {
           "locale": "EN",
@@ -838,9 +834,7 @@
       "dimension": "system integrity",
       "severity": 4,
       "scope": "generic",
-      "tags": [
-        "Personal Posture"
-      ],
+      "tags": ["Personal Posture"],
       "description": [
         {
           "locale": "EN",
