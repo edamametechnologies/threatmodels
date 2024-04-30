@@ -28,3 +28,9 @@ ignore:
       tests: ["remediation", "rollback"]
     - metric_name: "automatic login enabled"
       tests: ["remediation", "rollback"]
+    - metric_name: "remote login enabled"
+      tests: ["remediation", "rollback"]
+    - metric_name: "remote desktop enabled"
+      tests: ["remediation", "rollback"]
+    - metric_name: "remote events enabled"
+      tests: ["remediation", "rollback"]
