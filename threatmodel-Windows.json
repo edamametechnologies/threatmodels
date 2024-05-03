@@ -1283,7 +1283,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "system",
+        "elevation": "restart",
         "target": "Set-ExecutionPolicy -ExecutionPolicy Default -Scope CurrentUser -Force",
         "education": [
           {
@@ -1303,7 +1303,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "system",
+        "elevation": "restart",
         "target": "Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser -Force",
         "education": [
           {
@@ -1398,9 +1398,7 @@
       "dimension": "network",
       "severity": 5,
       "scope": "generic",
-      "tags": [
-        "CIS Benchmark Level 1,windows_security/smb1_protocol_disabled"
-      ],
+      "tags": ["CIS Benchmark Level 1,windows_security/smb1_protocol_disabled"],
       "description": [
         {
           "locale": "EN",
@@ -1427,7 +1425,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "system",
+        "elevation": "restart",
         "target": "Disable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -norestart",
         "education": [
           {
@@ -1447,7 +1445,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "cli",
-        "elevation": "system",
+        "elevation": "restart",
         "target": "Enable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -norestart",
         "education": [
           {
