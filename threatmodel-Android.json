@@ -526,13 +526,13 @@
       "description": [
         {
           "locale": "EN",
-          "title": "Password strength insufficient",
-          "summary": "Your device password strength is insufficient. Ensure you are using a strong password (e.g., alphanumeric with special characters) for better security."
+          "title": "Weak password",
+          "summary": "Your device password strength is insufficient. Ensure you are using at least a 6-digit PIN for better security."
         },
         {
           "locale": "FR",
           "title": "Force du mot de passe insuffisante",
-          "summary": "La force de votre mot de passe est insuffisante. Assurez-vous d'utiliser un mot de passe fort (par exemple, alphanumérique avec des caractères spéciaux) pour une meilleure sécurité."
+          "summary": "La force de votre mot de passe est insuffisante. Assurez-vous d'utiliser au moins un code PIN à 6 chiffres pour une meilleure sécurité."
         }
       ],
       "implementation": {
@@ -555,12 +555,12 @@
           {
             "locale": "EN",
             "class": "link",
-            "target": "https://www.youtube.com/watch?v=Vz4KfV4q3og"
+            "target": "https://support.google.com/android/answer/9079129?hl=en"
           },
           {
             "locale": "FR",
             "class": "link",
-            "target": "https://www.youtube.com/watch?v=Vz4KfV4q3og"
+            "target": "https://support.google.com/android/answer/9079129?hl=fr"
           }
         ]
       },
@@ -575,12 +575,12 @@
           {
             "locale": "EN",
             "class": "link",
-            "target": "https://www.youtube.com/watch?v=Vz4KfV4q3og"
+            "target": "https://support.google.com/android/answer/9079129?hl=en"
           },
           {
             "locale": "FR",
             "class": "link",
-            "target": "https://www.youtube.com/watch?v=Vz4KfV4q3og"
+            "target": "https://support.google.com/android/answer/9079129?hl=fr"
           }
         ]
       }
@@ -628,12 +628,12 @@
           {
             "locale": "EN",
             "class": "link",
-            "target": "https://www.youtube.com/watch?v=Vz4KfV4q3og"
+            "target": "https://support.google.com/pixelphone/answer/9517039?hl=en"
           },
           {
             "locale": "FR",
             "class": "link",
-            "target": "https://www.youtube.com/watch?v=Vz4KfV4q3og"
+            "target": "https://support.google.com/pixelphone/answer/9517039?hl=fr"
           }
         ]
       },
@@ -648,12 +648,12 @@
           {
             "locale": "EN",
             "class": "link",
-            "target": "https://www.youtube.com/watch?v=Vz4KfV4q3og"
+            "target": "https://support.google.com/pixelphone/answer/9517039?hl=en"
           },
           {
             "locale": "FR",
             "class": "link",
-            "target": "https://www.youtube.com/watch?v=Vz4KfV4q3og"
+            "target": "https://support.google.com/pixelphone/answer/9517039?hl=fr"
           }
         ]
       }
@@ -701,12 +701,12 @@
           {
             "locale": "EN",
             "class": "link",
-            "target": "https://www.youtube.com/watch?v=Vz4KfV4q3og"
+            "target": "https://support.google.com/googleplay/answer/2812853?hl=en"
           },
           {
             "locale": "FR",
             "class": "link",
-            "target": "https://www.youtube.com/watch?v=Vz4KfV4q3og"
+            "target": "https://support.google.com/googleplay/answer/2812853?hl=fr"
           }
         ]
       },
@@ -721,12 +721,12 @@
           {
             "locale": "EN",
             "class": "link",
-            "target": "https://www.youtube.com/watch?v=Vz4KfV4q3og"
+            "target": "https://support.google.com/googleplay/answer/2812853?hl=en"
           },
           {
             "locale": "FR",
             "class": "link",
-            "target": "https://www.youtube.com/watch?v=Vz4KfV4q3og"
+            "target": "https://support.google.com/googleplay/answer/2812853?hl=fr"
           }
         ]
       }
@@ -774,12 +774,12 @@
           {
             "locale": "EN",
             "class": "link",
-            "target": "https://www.youtube.com/watch?v=Vz4KfV4q3og"
+            "target": "https://support.google.com/nexus/answer/2844831?hl=en"
           },
           {
             "locale": "FR",
             "class": "link",
-            "target": "https://www.youtube.com/watch?v=Vz4KfV4q3og"
+            "target": "https://support.google.com/nexus/answer/2844831?hl=fr"
           }
         ]
       },
@@ -794,12 +794,12 @@
           {
             "locale": "EN",
             "class": "link",
-            "target": "https://www.youtube.com/watch?v=Vz4KfV4q3og"
+            "target": "https://support.google.com/nexus/answer/2844831?hl=en"
           },
           {
             "locale": "FR",
             "class": "link",
-            "target": "https://www.youtube.com/watch?v=Vz4KfV4q3og"
+            "target": "https://support.google.com/nexus/answer/2844831?hl=fr"
           }
         ]
       }
