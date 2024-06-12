@@ -1076,7 +1076,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "globalpreferences",
-        "target": "defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates 2>&1 | grep -v 1",
+        "target": "defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates 2>/dev/null | grep -qv 0 || echo 'macosupdate auto is not enabled or key is missing'",
         "education": []
       },
       "remediation": {
