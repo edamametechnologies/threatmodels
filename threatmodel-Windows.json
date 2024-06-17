@@ -63,7 +63,7 @@
       }
     },
     {
-      "name": "cached logon credentials enabled",
+      "name": "Cached logon credentials enabled",
       "metrictype": "bool",
       "dimension": "credentials",
       "severity": 4,
@@ -1740,26 +1740,26 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "$screensaverTimeout = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaveTimeOut' -ErrorAction SilentlyContinue).ScreenSaveTimeOut; $screensaverActive = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaveActive' -ErrorAction SilentlyContinue).ScreenSaveActive; $secureScreensaver = (Get-ItemProperty -Path 'HKCU:\\Software\\Policies\\Microsoft\\Windows\\Control Panel\\Desktop' -Name 'ScreenSaverIsSecure' -ErrorAction SilentlyContinue).ScreenSaverIsSecure; if ($screensaverActive -eq '1' -and $secureScreensaver -eq '1' -and $screensaverTimeout -le 600) { '' } else { 'Screensaver lock is not properly configured.' }",
+        "target": "$screensaverTimeout = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaveTimeOut' -ErrorAction SilentlyContinue).ScreenSaveTimeOut; $screensaverActive = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaveActive' -ErrorAction SilentlyContinue).ScreenSaveActive; $secureScreensaver = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaverIsSecure' -ErrorAction SilentlyContinue).ScreenSaverIsSecure; if ($screensaverActive -eq '1' -and $secureScreensaver -eq '1' -and $screensaverTimeout -le 600) { '' } else { 'Screensaver lock is not properly configured.' }",
         "education": []
       },
       "remediation": {
         "system": "Windows",
         "minversion": 10,
         "maxversion": 0,
-        "class": "link",
-        "elevation": "user",
-        "target": "ms-settings:lockscreen",
+        "class": "cli",
+        "elevation": "system",
+        "target": "Set-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaveTimeOut' -Value 600; Set-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaveActive' -Value 1; Set-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaverIsSecure' -Value 1",
         "education": [
           {
             "locale": "EN",
             "class": "html",
-            "target": "<p>This remediation will direct you to the lock screen settings where you can configure your screensaver timeout and security settings. Ensure that your screensaver is active and set a timeout of 10 minutes or less. For more detailed instructions, visit the <a href='https://support.microsoft.com/en-us/windows/change-your-screen-saver-settings-a9dc2a0c-dc8e-9161-d270-aaccc252082a'>support page</a>.</p>"
+            "target": "<p>This remediation configures your screensaver settings to ensure it is active and set to lock after 10 minutes of inactivity. For more detailed instructions, visit the <a href='https://support.microsoft.com/en-us/windows/change-your-screen-saver-settings-a9dc2a0c-dc8e-9161-d270-aaccc252082a'>support page</a>.</p>"
           },
           {
             "locale": "FR",
             "class": "html",
-            "target": "<p>Cette remédiation vous dirigera vers les paramètres de l'écran de verrouillage où vous pourrez configurer le délai d'attente et les paramètres de sécurité de votre économiseur d'écran. Assurez-vous que votre économiseur d'écran est actif et définissez un délai d'attente de 10 minutes ou moins. Pour des instructions plus détaillées, visitez la <a href='https://support.microsoft.com/fr-fr/windows/modifier-vos-param%C3%A8tres-d-%C3%A9cran-de-veille-a9dc2a0c-dc8e-9161-d270-aaccc252082a'>page de support</a>.</p>"
+            "target": "<p>Cette remédiation configure les paramètres de votre économiseur d'écran pour qu'il soit actif et configuré pour se verrouiller après 10 minutes d'inactivité. Pour des instructions plus détaillées, visitez la <a href='https://support.microsoft.com/fr-fr/windows/modifier-vos-param%C3%A8tres-d-%C3%A9cran-de-veille-a9dc2a0c-dc8e-9161-d270-aaccc252082a'>page de support</a>.</p>"
           }
         ]
       },
@@ -1768,7 +1768,7 @@
         "minversion": 10,
         "maxversion": 0,
         "class": "link",
-        "elevation": "user",
+        "elevation": "",
         "target": "ms-settings:lockscreen",
         "education": [
           {
