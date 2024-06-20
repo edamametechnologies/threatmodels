@@ -1177,7 +1177,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "defaults -currentHost read com.apple.screensaver askForPasswordDelay | grep -v '0'",
+        "target": "sysadminctl -screenLock status 2>&1 | grep off",
         "education": []
       },
       "remediation": {
