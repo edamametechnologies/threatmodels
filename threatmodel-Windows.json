@@ -25,7 +25,7 @@
       ],
       "implementation": {
         "system": "Windows",
-        "minversion": 12,
+        "minversion": 10,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -34,7 +34,7 @@
       },
       "remediation": {
         "system": "Windows",
-        "minversion": 12,
+        "minversion": 10,
         "maxversion": 0,
         "class": "installer",
         "elevation": "user",
@@ -43,7 +43,7 @@
       },
       "rollback": {
         "system": "Windows",
-        "minversion": 12,
+        "minversion": 10,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -457,7 +457,7 @@
       ],
       "implementation": {
         "system": "Windows",
-        "minversion": 12,
+        "minversion": 10,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -466,7 +466,7 @@
       },
       "remediation": {
         "system": "Windows",
-        "minversion": 12,
+        "minversion": 10,
         "maxversion": 0,
         "class": "internal",
         "elevation": "",
@@ -486,7 +486,7 @@
       },
       "rollback": {
         "system": "Windows",
-        "minversion": 12,
+        "minversion": 10,
         "maxversion": 0,
         "class": "",
         "elevation": "",
