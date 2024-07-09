@@ -1,8 +1,8 @@
 {
   "name": "threat model Android",
   "extends": "none",
-  "date": "April 17th 2024",
-  "signature": "edcd1640587552e638f11cd9f60d4638324029f420ad8b2b65063b6cf4eaa0d3",
+  "date": "July 09th 2024",
+  "signature": "c7219208028c1051c1980528b2ae3f2da72afa9adcb4dedf29b6e77b710a6936",
   "metrics": [
     {
       "name": "MDM profiles",
@@ -10,7 +10,9 @@
       "dimension": "system integrity",
       "severity": 5,
       "scope": "generic",
-      "tags": ["Personal Posture"],
+      "tags": [
+        "Personal Posture"
+      ],
       "description": [
         {
           "locale": "EN",
