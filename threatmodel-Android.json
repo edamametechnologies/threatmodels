@@ -25,7 +25,7 @@
       ],
       "implementation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -34,7 +34,7 @@
       },
       "remediation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -54,7 +54,7 @@
       },
       "rollback": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -99,7 +99,7 @@
       ],
       "implementation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -108,7 +108,7 @@
       },
       "remediation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -128,7 +128,7 @@
       },
       "rollback": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -173,7 +173,7 @@
       ],
       "implementation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -182,7 +182,7 @@
       },
       "remediation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -202,7 +202,7 @@
       },
       "rollback": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -247,7 +247,7 @@
       ],
       "implementation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -256,7 +256,7 @@
       },
       "remediation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "internal",
         "elevation": "",
@@ -276,7 +276,7 @@
       },
       "rollback": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -321,7 +321,7 @@
       ],
       "implementation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -330,7 +330,7 @@
       },
       "remediation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "internal",
         "elevation": "",
@@ -350,7 +350,7 @@
       },
       "rollback": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -390,7 +390,7 @@
       ],
       "implementation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -399,7 +399,7 @@
       },
       "remediation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -419,7 +419,7 @@
       },
       "rollback": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -464,7 +464,7 @@
       ],
       "implementation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -473,7 +473,7 @@
       },
       "remediation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -493,7 +493,7 @@
       },
       "rollback": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -537,7 +537,7 @@
       ],
       "implementation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -546,7 +546,7 @@
       },
       "remediation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -566,7 +566,7 @@
       },
       "rollback": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -610,7 +610,7 @@
       ],
       "implementation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -619,7 +619,7 @@
       },
       "remediation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -639,7 +639,7 @@
       },
       "rollback": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -683,7 +683,7 @@
       ],
       "implementation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -692,7 +692,7 @@
       },
       "remediation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -712,7 +712,7 @@
       },
       "rollback": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -756,7 +756,7 @@
       ],
       "implementation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "internal",
         "elevation": "user",
@@ -765,7 +765,7 @@
       },
       "remediation": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -785,7 +785,7 @@
       },
       "rollback": {
         "system": "Android",
-        "minversion": 12,
+        "minversion": 11,
         "maxversion": 0,
         "class": "",
         "elevation": "",
