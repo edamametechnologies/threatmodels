@@ -44,7 +44,7 @@ jobs:
             git commit -m "docs: Updated wiki files"
             git push
 
-        - name: slack-send
+        - name: Slack reports
           uses: slackapi/slack-github-action@v1.26.0
           with:
             channel-id: 'C07127YECN4'
