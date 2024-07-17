@@ -1,6 +1,6 @@
 # Endpoint Threat Models
 This repo contains the threat models used by the EDAMAME Security application to compute its Security Score. 
-The reference for defining macOS threats leverage NIST's amazing https://github.com/usnistgov/macos_security as well as other sources.
+The reference for defining macOS threats leverage NIST and CIS benchmarks as well as other sources.
 The threats are categorized along 5 dimensions:
 - Applications: includes application authorizations, signing, installed EPP/antivirus...
 - Network: network related threats
