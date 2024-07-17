@@ -90,9 +90,7 @@ jobs:
           - name: slack-send
             uses: slackapi/slack-github-action@v1.24.0
             with:
-              # Slack channel ID where message will be posted. Needed if using bot token
-              channel-id: 'C05BY6YNDFF'
-              # Message to post into Slack. Needed if using bot token
+              channel-id: 'C07127YECN4'
               slack-message: "GitHub threat models tests result on branch ${{ github.ref }}: \n${{ needs.tests-macos.outputs.macos-report }}\n${{ needs.tests-windows.outputs.windows-report }}\n${{ needs.tests-ubuntu.outputs.ubuntu-report }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             env:
                 SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
