@@ -43,3 +43,11 @@ jobs:
             git add .
             git commit -m "docs: Updated wiki files"
             git push
+
+        - name: slack-send
+          uses: slackapi/slack-github-action@v1.24.0
+          with:
+            channel-id: 'C07127YECN4'
+            slack-message: "GitHub threat models wiki updated from branch ${{ github.ref }} - see: https://github.com/edamametechnologies/threatmodels/wiki"
+          env:
+              SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
