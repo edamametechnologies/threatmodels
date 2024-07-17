@@ -47,19 +47,19 @@ jobs:
 
       - name: Slack alerts
         if: steps.validate.outcome == 'failure'
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'C072J0U9TH7'
-          slack-message: "GitHub threat models validation on branch ${{ github.ref }} successful"
+          slack-message: "GitHub threat models validation on branch ${{ github.ref }} failed, commit has been reverted"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
       - name: Slack reports
         if: steps.validate.outcome != 'failure'
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'C07127YECN4'
-          slack-message: "GitHub threat models validation on branch ${{ github.ref }} failed, commit has been reverted"
+          slack-message: "GitHub threat models validation on branch ${{ github.ref }} successful"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
