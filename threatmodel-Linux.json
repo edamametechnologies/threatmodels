@@ -164,18 +164,7 @@
         "class": "link",
         "elevation": "",
         "target": "https://help.ubuntu.com/community/EncryptedHome",
-        "education": [
-          {
-            "locale": "EN",
-            "class": "html",
-            "target": "To enable home folder encryption, you will need to set up encrypted home directories. Follow the instructions on the official Ubuntu documentation page: <a href='https://help.ubuntu.com/community/EncryptedHome'>Enable Encrypted Home</a>."
-          },
-          {
-            "locale": "FR",
-            "class": "html",
-            "target": "Pour activer le cryptage du dossier personnel, vous devez configurer des répertoires personnels chiffrés. Suivez les instructions sur la page de documentation officielle d'Ubuntu : <a href='https://help.ubuntu.com/community/EncryptedHome'>Activer le cryptage du dossier personnel</a>."
-          }
-        ]
+        "education": []
       },
       "rollback": {
         "system": "Ubuntu",
@@ -184,18 +173,7 @@
         "class": "link",
         "elevation": "",
         "target": "https://help.ubuntu.com/community/EncryptedHome",
-        "education": [
-          {
-            "locale": "EN",
-            "class": "html",
-            "target": "To disable home folder encryption, you will need to decrypt your home directories. Follow the instructions on the official Ubuntu documentation page."
-          },
-          {
-            "locale": "FR",
-            "class": "html",
-            "target": "Pour désactiver le cryptage du dossier personnel, vous devez déchiffrer vos répertoires personnels. Suivez les instructions sur la page de documentation officielle d'Ubuntu."
-          }
-        ]
+        "education": []
       }
     },
     {
@@ -238,18 +216,7 @@
         "class": "link",
         "elevation": "",
         "target": "https://help.ubuntu.com/community/FullDiskEncryptionHowto",
-        "education": [
-          {
-            "locale": "EN",
-            "class": "html",
-            "target": "To enable disk encryption, you will need to set up full disk encryption. Follow the instructions on the official Ubuntu documentation page."
-          },
-          {
-            "locale": "FR",
-            "class": "html",
-            "target": "Pour activer le cryptage du disque, vous devez configurer le cryptage complet du disque. Suivez les instructions sur la page de documentation officielle d'Ubuntu."
-          }
-        ]
+        "education": []
       },
       "rollback": {
         "system": "Ubuntu",
@@ -258,18 +225,7 @@
         "class": "link",
         "elevation": "",
         "target": "https://help.ubuntu.com/community/FullDiskEncryptionHowto",
-        "education": [
-          {
-            "locale": "EN",
-            "class": "html",
-            "target": "To disable disk encryption, you will need to set up full disk encryption. Follow the instructions on the official Ubuntu documentation page."
-          },
-          {
-            "locale": "FR",
-            "class": "html",
-            "target": "Pour désactiver le cryptage du disque, vous devez configurer le cryptage complet du disque. Suivez les instructions sur la page de documentation officielle d'Ubuntu."
-          }
-        ]
+        "education": []
       }
     },
     {
