@@ -799,13 +799,13 @@
       "description": [
         {
           "locale": "EN",
-          "title": "Uncomplicated firewall (ufw) not installed or disabled",
-          "summary": "A firewall is a crucial part of any network security framework. Firewalls control the incoming and outgoing network traffic based on predetermined security rules. They establish a barrier between trusted internal networks and untrusted external networks. It can also block unauthorized access to or from private networks, preventing intruders from accessing sensitive information. Uncomplicated firewall provides a command line interface and aims to be uncomplicated and easy to use."
+          "title": "Local firewall disabled",
+          "summary": "Your local firewall is disabled. This is fine in a trusted environment but dangerous if you happened to connect to public networks. You should turn it on by default."
         },
         {
           "locale": "FR",
-          "title": "Uncomplicated firewall (ufw) non installé ou désactivé",
-          "summary": "Un pare-feu est un élément crucial de tout cadre de sécurité réseau. Les pare-feu contrôlent le trafic réseau entrant et sortant en fonction de règles de sécurité prédéterminées. Ils établissent une barrière entre les réseaux internes de confiance et les réseaux externes non fiables. Il peut également bloquer l'accès non autorisé vers ou depuis des réseaux privés, empêchant les intrus d'accéder à des informations sensibles. Uncomplicated firewall fournit une interface en ligne de commande et vise à être simple d'utilisation."
+          "title": "Pare-feu local désactivé",
+          "summary": "Votre pare-feu local est désactivé. C'est bien dans un environnement de confiance mais dangereux si vous vous connectez à des réseaux publics. Vous devriez l'activer par défaut."
         }
       ],
       "implementation": {
