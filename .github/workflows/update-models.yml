@@ -59,7 +59,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'C07127YECN4'
-          slack-message: "GitHub threat models validation on branch ${{ github.ref }} successful"
+          slack-message: "GitHub threat models (${{ steps.changed-files-specific.outputs.all_changed_files }}) validation on branch ${{ github.ref }} successful"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
