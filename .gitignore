@@ -3,3 +3,4 @@ __pycache__/
 /privacy-*.md
 /threatmodel-*.md
 /port_vulns_db_*.json
+/venv/
