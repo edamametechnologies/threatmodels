@@ -50,7 +50,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: 'C072J0U9TH7'
-          slack-message: "GitHub threat models validation on branch ${{ github.ref }} failed, commit has been reverted"
+          slack-message: "GitHub threat models (${{ steps.changed-files-specific.outputs.all_changed_files }}) validation on branch ${{ github.ref }} failed, commit has been reverted"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
