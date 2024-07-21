@@ -2,7 +2,7 @@
   "name": "threat model Windows",
   "extends": "none",
   "date": "May 03th 2024",
-  "signature": "56d3ccf012b79b06adfe2e0e63db7c373a614cc672b958833ce51aa4ab26ec9a",
+  "signature": "56d3ccf012b79b06adfe2e0e63db7c373a14cc672b958833ce51aa4ab26ec9a",
   "metrics": [
     {
       "name": "edamame helper disabled",

@@ -2,7 +2,7 @@
   "name": "threat model Android",
   "extends": "none",
   "date": "July 09th 2024",
-  "signature": "c7219208028c1051c1980528b2ae3f2da72afa9adcb4dedf29b6e77b710a6936",
+  "signature": "c7219208028c1051c1980528b2ae3f2da72afa9adcb4dedf29b677b710a6936",
   "metrics": [
     {
       "name": "MDM profiles",
