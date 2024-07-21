@@ -206,7 +206,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "lsblk -o MOUNTPOINT,FSTYPE | grep '/$' | grep -q 'crypt' || echo encryption_disabled; lsblk -o MOUNTPOINT,FSTYPE | grep '/swap' | grep -q 'crypt' || echo encryption_disabled",
+        "target": "grep -qE '(hypervisor|vmware|virtualbox|qemu|kvm|xen)' /proc/cpuinfo || { lsblk -o MOUNTPOINT,FSTYPE | grep '/$' | grep -q 'crypt' || echo encryption_disabled; lsblk -o MOUNTPOINT,FSTYPE | grep '/swap' | grep -q 'crypt' || echo encryption_disabled; }",
         "education": []
       },
       "remediation": {
