@@ -1,8 +1,8 @@
 {
   "name": "threat model iOS",
   "extends": "none",
-  "date": "April 17th 2024",
-  "signature": "99ed7684c5e0db2805559ea3d8ee0d6254a897f730e79fa080f40a9340d9344",
+  "date": "July 21th 2024",
+  "signature": "6d7b026dcd134261ae2e6395d42811a70f7cf86e7f3afd96ff4f4205254187cb",
   "metrics": [
     {
       "name": "MDM profiles",
@@ -10,7 +10,9 @@
       "dimension": "system integrity",
       "severity": 5,
       "scope": "generic",
-      "tags": ["Personal Posture"],
+      "tags": [
+        "Personal Posture"
+      ],
       "description": [
         {
           "locale": "EN",
