@@ -469,7 +469,7 @@
           {
             "locale": "FR",
             "class": "html",
-            "target": "Si nécessaire, le pare-feu peut être désactivé pour le dépannage ou des tâches réseau spécifiques, mais il est recommandé de le garder activé pour la sécurité."
+            "target": "Si nécessaire, le pare-feu peut être désactivé pour le dépannage ou pour des tâches réseau spécifiques, mais il est recommandé de le garder activé pour la sécurité."
           }
         ]
       }
