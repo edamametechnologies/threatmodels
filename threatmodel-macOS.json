@@ -960,7 +960,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "fdesetup isactive | grep false",
+        "target": "system_profiler SPHardwareDataType | grep -q \"Virtualization\" || fdesetup isactive | grep false",
         "education": []
       },
       "remediation": {
