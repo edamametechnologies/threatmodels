@@ -1,8 +1,8 @@
 {
   "name": "threat model Windows",
   "extends": "none",
-  "date": "July 21th 2024",
-  "signature": "525f5df9ef84c8671911fe8c73265f5400a97bea642e5012d9b7e1840b2be041",
+  "date": "July 22th 2024",
+  "signature": "a5a703769c321160f55e017142cda7dec0fc13e6e283c873a2569608a9c166bc",
   "metrics": [
     {
       "name": "edamame helper disabled",
