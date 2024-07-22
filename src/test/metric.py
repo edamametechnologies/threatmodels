@@ -44,7 +44,7 @@ class Metric(object):
     def is_target_cli(self, target_type):
         '''Check if the given target type has a cli target'''
         if self.info[target_type]['class'] != 'cli':
-            self.log("warning", f"{target_type} target  is not a `cli` or not "
+            self.log("warning", f"{self.metric_name}/{target_type} is not a `cli` or not "
                      "implemented yet. "
                      f"Class: `{self.info[target_type]['class']}`")
             raise TargetIsNotACLI
@@ -64,7 +64,7 @@ class Metric(object):
             # Execute the target
             self.execute_target(target_type)
         except (subprocess.TimeoutExpired, TargetExecutionError) as e:
-            self.log("error", f"{target_type}: {e}")
+            self.log("error", f"{self.metric_name}/{target_type}: {e}")
             return False
 
         return True
@@ -81,7 +81,7 @@ class Metric(object):
         # stdout with data means that a remediation is needed
         need_remediation, _ = self.fetch_need_remediation()
 
-        self.log("ok", f"{target_type} target passed tests. "
+        self.log("ok", f"{self.metric_name}/{target_type} target passed tests. "
                  f"Need remediation: {need_remediation}")
 
         return True
@@ -99,10 +99,10 @@ class Metric(object):
         need_remediation, result = self.fetch_need_remediation()
 
         if need_remediation:
-            self.log("error", f"{target_type} target ran flawlessly but did not "
+            self.log("error", f"{self.metric_name}/{target_type} ran flawlessly but did not "
                      "resolve the metric", result=result)
         else:
-            self.log("ok", f"{target_type} target successfuly resolved the "
+            self.log("ok", f"{self.metric_name}/{target_type} successfuly resolved the "
                      "metric")
 
         return not need_remediation
@@ -120,10 +120,10 @@ class Metric(object):
         need_remediation, result = self.fetch_need_remediation()
 
         if not need_remediation:
-            self.log("error", f"{target_type} dit not revert the changes",
+            self.log("error", f"{self.metric_name}/{target_type} dit not revert the changes",
                      result=result)
         else:
-            self.log("ok", f"{target_type} successfuly reverted the changes")
+            self.log("ok", f"{self.metric_name}/{target_type} successfuly reverted the changes")
 
         return need_remediation
 
@@ -185,9 +185,9 @@ class Metric(object):
             self.execute_target(target_type, permissions=False)
             need_permissions = False
         except subprocess.TimeoutExpired or TargetExecutionError as e:
-            self.log("error", f"{target_type} target failed during "
+            self.log("error", f"{self.metric_name}/{target_type} failed during "
                      f"elevation test: {e}")
-            self.log("info", f"{target_type} retrying with permissions")
+            self.log("info", f"{self.metric_name}/{target_type} retrying with permissions")
 
             # This call will be able to raise exceptions
             self.execute_target(target_type, permissions=True)
@@ -197,21 +197,21 @@ class Metric(object):
             # If execution required permissions and the elevation is set to
             # user, the elevation is too low
             if self.info[target_type]["elevation"] == "user":
-                self.log("warning", f"{target_type} target elevation too low. "
+                self.log("warning", f"{self.metric_name}/{target_type} target elevation too low. "
                          "Needed: `Admin`, current: `user`")
             else:
                 self.log("ok",
-                         f"{target_type} elevation is at a correct level")
+                         f"{self.metric_name}/{target_type} elevation is at a correct level")
         else:
             # If execution did not require permissions and the elevation is set
             # to something else than user, the elevation is too high
             if self.info[target_type]["elevation"] != "user":
-                self.log("warning", f"{target_type} target elevation too high."
+                self.log("warning", f"{self.metric_name}/{target_type} target elevation too high."
                          " Needed: `user`, current: "
                          f"`{self.info[target_type]['elevation']}`")
             else:
                 self.log("ok",
-                         f"{target_type} elevation is at a correct level")
+                         f"{self.metric_name}/{target_type} elevation is at a correct level")
 
         self.report[target_type]["need_permissions"] = need_permissions
 
