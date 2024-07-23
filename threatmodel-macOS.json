@@ -960,7 +960,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "system_profiler SPHardwareDataType | grep -q 'Virtual' || fdesetup isactive | grep false",
+        "target": "system_profiler SPHardwareDataType | grep -q \"Virtualization\" || fdesetup isactive | grep false",
         "education": []
       },
       "remediation": {
@@ -1316,12 +1316,12 @@
         {
           "locale": "EN",
           "title": "System Integrity Protection disabled",
-          "summary": "System Integrity Protection is a great ability of macOS that prevents any software to change system files and components. To some extent it's a 'good enough' antivirus for your Mac. Having it disabled is... unusual and dangerous. It should be enabled by default on your Mac. This content will explain a way to enable it again. Bear with me .. it's somewhat hard to achieve!"
+          "summary": "System Integrity Protection is a great ability of macOS that prevents any software to change system files and components. To some extent it's a \"good enough\" antivirus for your Mac. Having it disabled is... unusual and dangerous. It should be enabled by default on your Mac. This content will explain a way to enable it again. Bear with me .. it's somewhat hard to achieve!"
         },
         {
           "locale": "FR",
           "title": "Protection d'intégrité système désactivée",
-          "summary": "La Protection de l'Intégrité du Système est une capacité clé de macOS qui empêche tous logiciels de modifier les fichiers et les composants du système. Dans une certaine mesure, c'est un antivirus 'assez bon' pour votre Mac. Le désactiver est... inhabituel et dangereux. Il devrait être activé par défaut sur votre Mac. Ce contenu vous expliquera comment l'activer à nouveau. Soyez courageux... c'est un peu difficile à réaliser !"
+          "summary": "La Protection de l'Intégrité du Système est une capacité clé de macOS qui empêche tous logiciels de modifier les fichiers et les composants du système. Dans une certaine mesure, c'est un antivirus \"assez bon\" pour votre Mac. Le désactiver est... inhabituel et dangereux. Il devrait être activé par défaut sur votre Mac. Ce contenu vous expliquera comment l'activer à nouveau. Soyez courageux... c'est un peu difficile à réaliser !"
         }
       ],
       "implementation": {
@@ -1472,7 +1472,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "dscl . -read /Users/root Password | grep '\\*\\*'",
+        "target": "dscl . -read /Users/root Password | grep \"\\*\\*\"",
         "education": []
       },
       "remediation": {
@@ -1555,7 +1555,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "security authorizationdb read system.preferences > /tmp/system.preferences.plist; /usr/libexec/PlistBuddy -c 'Set :shared false' /tmp/system.preferences.plist; security authorizationdb write system.preferences < /tmp/system.preferences.plist",
+        "target": "security authorizationdb read system.preferences > /tmp/system.preferences.plist; /usr/libexec/PlistBuddy -c \"Set :shared false\" /tmp/system.preferences.plist; security authorizationdb write system.preferences < /tmp/system.preferences.plist",
         "education": [
           {
             "locale": "EN",
@@ -1575,7 +1575,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "security authorizationdb read system.preferences > /tmp/system.preferences.plist; /usr/libexec/PlistBuddy -c 'Set :shared true' /tmp/system.preferences.plist; security authorizationdb write system.preferences < /tmp/system.preferences.plist",
+        "target": "security authorizationdb read system.preferences > /tmp/system.preferences.plist; /usr/libexec/PlistBuddy -c \"Set :shared true\" /tmp/system.preferences.plist; security authorizationdb write system.preferences < /tmp/system.preferences.plist",
         "education": [
           {
             "locale": "EN",
