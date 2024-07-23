@@ -206,7 +206,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "sudo apt install virt-what > /dev/null 2>&1 && sudo virt-what | read -t 0 -N 0 && { lsblk -o MOUNTPOINT,FSTYPE | grep '/ ' | grep -q 'crypt' || echo encryption_disabled; lsblk -o MOUNTPOINT,FSTYPE | grep '/swap' | grep -q 'crypt' || echo encryption_disabled; }",
+        "target": "sudo apt install virt-what -y > /dev/null 2>&1 && output=$(sudo virt-what) && [ -z \"$output\" ] && { lsblk -o MOUNTPOINT,FSTYPE | grep '/ ' | grep -q 'crypt' || echo encryption_disabled; lsblk -o MOUNTPOINT,FSTYPE | grep '/swap' | grep -q 'crypt' || echo encryption_disabled; }",
         "education": []
       },
       "remediation": {
