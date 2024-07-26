@@ -30,7 +30,18 @@
         "class": "internal",
         "elevation": "user",
         "target": "helper_check",
-        "education": []
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://github.com/edamametechnologies/edamame_helper"
+          },
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://github.com/edamametechnologies/edamame_helper"
+          }
+        ]
       },
       "remediation": {
         "system": "Linux",

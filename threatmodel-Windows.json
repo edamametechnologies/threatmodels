@@ -39,7 +39,18 @@
         "class": "installer",
         "elevation": "user",
         "target": "https://github.com/edamametechnologies/edamame_helper/releases/download",
-        "education": []
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://github.com/edamametechnologies/edamame_helper"
+          },
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://github.com/edamametechnologies/edamame_helper"
+          }
+        ]
       },
       "rollback": {
         "system": "Windows",
