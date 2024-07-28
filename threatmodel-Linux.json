@@ -1223,12 +1223,12 @@
           {
             "locale": "EN",
             "class": "link",
-            "target": "https://manpages.ubuntu.com/manpages/latest/en/man3/pwquality.3.html"
+            "target": "https://manpages.ubuntu.com/manpages/oracular/en/man3/pwquality.3.html"
           },
           {
             "locale": "FR",
             "class": "link",
-            "target": "https://manpages.ubuntu.com/manpages/latest/fr/man3/pwquality.3.html"
+            "target": "https://manpages.ubuntu.com/manpages/oracular/en/man3/pwquality.3.html"
           }
         ]
       },
