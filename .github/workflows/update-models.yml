@@ -30,7 +30,6 @@ jobs:
       - name: Checkout threatmodel repo
         uses: actions/checkout@v3
         with:
-         # The token must have the workflow scope
          token: ${{ secrets.DEV_GITHUB_TOKEN }}
 
       - name: Get changed threat models
