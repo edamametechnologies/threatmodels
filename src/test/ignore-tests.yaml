@@ -7,11 +7,21 @@ ignore:
   Linux:
     - metric_name: "remote login enabled"
       tests: [ "remediation", "rollback" ]
+    - metric_name: "remote desktop enabled"
+      tests: [ "rollback" ]
+    - metric_name: "file sharing enabled"
+      tests: [ "rollback" ]
+    - metric_name: "too slow or disabled screensaver lock"
+      tests: [ "remediation", "rollback" ]
   MacOS:
+    - metric_name: "remote login enabled"
+      tests: [ "remediation", "rollback" ]
     - metric_name: "WOL enabled"
       tests: ["remediation", "rollback"]
     - metric_name: "automatic login enabled"
       tests: ["remediation", "rollback"]
-    - metric_name: "remote login enabled"
-      tests: ["remediation", "rollback"]
+    - metric_name: "remote desktop enabled"
+      tests: ["rollback"]
+    - metric_name: "remote events enabled"
+      tests: ["rollback"]
 
