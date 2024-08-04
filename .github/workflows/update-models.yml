@@ -22,16 +22,16 @@ jobs:
           edamame_id: ${{ github.run_id }}
           auto_remediate: true
 
+      - name: Checkout threatmodel repo
+        uses: actions/checkout@v4
+        with:
+          # The token must have the workflow scope
+          token: ${{ secrets.DEV_GITHUB_TOKEN }}
+
       - name: Setup Python
         uses: actions/setup-python@v3.1.4
         with:
           python-version: 3.11.3
-
-      - name: Checkout threatmodel repo
-        uses: actions/checkout@v3
-        with:
-          # The token must have the workflow scope
-         token: ${{ secrets.DEV_GITHUB_TOKEN }}
 
       - name: Get changed threat models
         id: changed-files-specific
@@ -83,5 +83,5 @@ jobs:
           # As we are using a non standard token, we need to set our name and use [skip ci] to avoid infinite loop
           git config user.email "dev@edamame.tech"
           git config user.name "EDAMAME Dev"
-          git commit -m "Updated models hash and date [skip ci]"
+          git commit -a -m "Updated models hash and date [skip ci]"
           git push
