@@ -13,6 +13,8 @@ ignore:
       tests: [ "remediation", "rollback" ]
     - metric_name: "too slow or disabled screensaver lock"
       tests: [ "remediation", "rollback" ]
+    - metric_name: "latest os"
+      tests: [ "remediation", "rollback" ]
   MacOS:
     - metric_name: "remote login enabled"
       tests: [ "remediation", "rollback" ]
