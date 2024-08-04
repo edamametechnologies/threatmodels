@@ -1016,7 +1016,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "sudo apt install samba -y > /dev/null 2>&1 && sudo systemctl start smbd && sudo systemctl enable smbd; sudo systemctl start nfs-kernel-server && sudo systemctl enable nfs-kernel-server",
+        "target": "sudo apt install samba -y > /dev/null 2>&1 && sudo systemctl start smbd && sudo systemctl enable smbd; sudo apt install nfs-kernel-server -y > /dev/null 2>&1 && sudo systemctl start nfs-kernel-server && sudo systemctl enable nfs-kernel-server",
         "education": [
           {
             "locale": "EN",
@@ -1216,7 +1216,7 @@
         "system": "Linux",
         "minversion": 5,
         "maxversion": 0,
-        "class": "cli",
+        "class": "",
         "elevation": "",
         "target": "",
         "education": [
@@ -1236,7 +1236,7 @@
         "system": "Linux",
         "minversion": 5,
         "maxversion": 0,
-        "class": "cli",
+        "class": "",
         "elevation": "",
         "target": "",
         "education": [

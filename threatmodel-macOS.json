@@ -1586,7 +1586,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "system",
-        "target": "security authorizationdb read system.preferences > /tmp/system.preferences.plist; /usr/libexec/PlistBuddy -c 'Set :shared true' /tmp/system.preferences.plist; security authorizationdb write system.preferences < /tmp/system.preferences.plist",
+        "target": "security authorizationdb read system.preferences > /tmp/system.preferences.plist; /usr/libexec/PlistBuddy -c \"Set :shared true\" /tmp/system.preferences.plist; security authorizationdb write system.preferences < /tmp/system.preferences.plist",
         "education": [
           {
             "locale": "EN",
