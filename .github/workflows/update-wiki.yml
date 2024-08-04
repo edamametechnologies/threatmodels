@@ -49,7 +49,7 @@ jobs:
           run: |
             cd /tmp/wiki
             git config user.email "dev@edamame.tech"
-            git config user.name "Edamame Dev"
+            git config user.name "EDAMAME Dev"
             git add .
             git commit -m "docs: Updated wiki files"
             git push
