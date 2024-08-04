@@ -1637,7 +1637,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "$lastLoggedOnProvider = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\LogonUI' -Name 'LastLoggedOnProvider' -ErrorAction SilentlyContinue).LastLoggedOnProvider; if ($lastLoggedOnProvider -like '*NgcPin*') { $pinLength = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\PassportForWork\\PINComplexity' -Name 'MinimumPINLength' -ErrorAction SilentlyContinue).MinimumPINLength; if ($pinLength -lt 6) { 'Windows Hello PIN does not meet the minimum length requirement.' } else { '' } } else { '' }",
+        "target": "if (($lastLoggedOnProvider = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\LogonUI' -Name 'LastLoggedOnProvider' -ErrorAction SilentlyContinue).LastLoggedOnProvider) -eq $null) { 'Registry doesn\\'t exist' } elseif ($lastLoggedOnProvider -like '*NgcPin*' -and (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\PassportForWork\\PINComplexity' -Name 'MinimumPINLength' -ErrorAction SilentlyContinue).MinimumPINLength -lt 6) { 'Windows Hello PIN does not meet the minimum length requirement.' } else { '' }\n",
         "education": []
       },
       "remediation": {
@@ -1706,7 +1706,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "$lastLoggedOnProvider = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\LogonUI' -Name 'LastLoggedOnProvider' -ErrorAction SilentlyContinue).LastLoggedOnProvider; if ($lastLoggedOnProvider -like '*NgcFace*') { $antiSpoofingEnabled = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Biometrics\\FacialFeatures' -Name 'EnhancedAntiSpoofing' -ErrorAction SilentlyContinue).EnhancedAntiSpoofing; if ($antiSpoofingEnabled -ne 1) { 'Enhanced anti-spoofing is not enabled for facial recognition.' } else { '' } } else { '' }",
+        "target": "$lastLoggedOnProvider = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\LogonUI' -Name 'LastLoggedOnProvider' -ErrorAction SilentlyContinue).LastLoggedOnProvider; if ($null -eq $lastLoggedOnProvider) { 'Registry doesn\\'t exist' } elseif ($lastLoggedOnProvider -like '*NgcFace*' -and (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Biometrics\\FacialFeatures' -Name 'EnhancedAntiSpoofing' -ErrorAction SilentlyContinue).EnhancedAntiSpoofing -ne 1) { 'Enhanced anti-spoofing is not enabled for facial recognition.' } elseif ($lastLoggedOnProvider -like '*NgcPin*' -and (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\PassportForWork\\PINComplexity' -Name 'MinimumPINLength' -ErrorAction SilentlyContinue).MinimumPINLength -lt 6) { 'Windows Hello PIN does not meet the minimum length requirement.' } else { '' }",
         "education": []
       },
       "remediation": {

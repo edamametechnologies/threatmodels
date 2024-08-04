@@ -217,7 +217,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "sudo apt install virt-what -y > /dev/null 2>&1 && output=$(sudo virt-what) && [ -z \"$output\" ] && { lsblk -o MOUNTPOINT,FSTYPE | grep '/ ' | grep -q 'crypt' || echo encryption_disabled; lsblk -o MOUNTPOINT,FSTYPE | grep '/swap' | grep -q 'crypt' || echo encryption_disabled; }",
+        "target": "sudo apt install virt-what -y > /dev/null 2>&1 && output=$(sudo virt-what) && [ -z \"$output\" ] && { lsblk -o MOUNTPOINT,FSTYPE | grep \"/ \" | grep -q 'crypt' || echo encryption_disabled; lsblk -o MOUNTPOINT,FSTYPE | grep '/swap' | grep -q 'crypt' || echo encryption_disabled; }",
         "education": []
       },
       "remediation": {
@@ -790,7 +790,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "sudo apt install ufw && sudo ufw enable",
+        "target": "sudo apt install ufw -y > /dev/null 2>&1 && sudo ufw enable",
         "education": [
           {
             "locale": "EN",
@@ -942,7 +942,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "sudo systemctl start xrdp && sudo systemctl enable xrdp",
+        "target": "sudo apt install xrdp -y > /dev/null 2>&1 && sudo systemctl start xrdp && sudo systemctl enable xrdp",
         "education": [
           {
             "locale": "EN",
@@ -1016,7 +1016,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "sudo systemctl start smbd && sudo systemctl enable smbd; sudo systemctl start nfs-kernel-server && sudo systemctl enable nfs-kernel-server",
+        "target": "sudo apt install samba -y > /dev/null 2>&1 && sudo systemctl start smbd && sudo systemctl enable smbd; sudo systemctl start nfs-kernel-server && sudo systemctl enable nfs-kernel-server",
         "education": [
           {
             "locale": "EN",
@@ -1209,7 +1209,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "grep -E 'minlen|dcredit|ucredit|ocredit|lcredit' /etc/security/pwquality.conf || echo weak_password_policy",
+        "target": "[ -f /etc/security/pwquality.conf ] && grep -E 'minlen|dcredit|ucredit|ocredit|lcredit' /etc/security/pwquality.conf || echo weak_password_policy",
         "education": []
       },
       "remediation": {
