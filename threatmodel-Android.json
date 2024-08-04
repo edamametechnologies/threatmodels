@@ -64,7 +64,7 @@
         "education": [
           {
             "locale": "EN",
-            "class": "youtube",
+            "class": "link",
             "target": "https://www.youtube.com/watch?v=5Btm7jvBO2s"
           },
           {
