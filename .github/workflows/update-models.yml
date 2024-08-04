@@ -78,4 +78,10 @@ jobs:
 
       - name: Update models hash and date
         if: steps.validate.outcome == 'success'
-        run: python3 src/publish/update-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
+        run: | 
+          python3 src/publish/update-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
+          # As we are using a non standard token, we need to set our name and use [skip ci] to avoid infinite loop
+          git config user.email "dev@edamame.tech"
+          git config user.name "EDAMAME Dev"
+          git commit -m "Updated models hash and date [skip ci]"
+          git push
