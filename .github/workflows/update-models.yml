@@ -12,6 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+
       - name: Setup Python
         uses: actions/setup-python@v3.1.4
         with:
@@ -21,6 +22,8 @@ jobs:
         uses: actions/checkout@v3
         with:
          token: ${{ secrets.DEV_GITHUB_TOKEN }}
+         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
+         fetch-depth: 0             # otherwise, you will fail to push refs to dest repo
 
       - name: Get changed threat models
         id: changed-files-specific
@@ -41,7 +44,7 @@ jobs:
         run: |
           # As we are using a non standard token, we need to set our name and use [skip ci] to avoid infinite loop
           git config user.email "dev@edamame.tech"
-          git config user.name "Edamame Dev"
+          git config user.name "EDAMAME Dev"
           git revert -m 1 HEAD --no-edit --no-commit
           git commit -m "Reverted after threat models validation failed [skip ci]"
 
@@ -69,6 +72,3 @@ jobs:
 
       - name: Commit & Push changes
         uses: actions-js/push@master
-        with:
-          github_token: ${{ secrets.DEV_GITHUB_TOKEN }}
-          branch: ${{ github.ref_name }}
