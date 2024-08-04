@@ -8,9 +8,9 @@ ignore:
     - metric_name: "remote login enabled"
       tests: [ "remediation", "rollback" ]
     - metric_name: "remote desktop enabled"
-      tests: [ "rollback" ]
+      tests: [ "remediation", "rollback" ]
     - metric_name: "file sharing enabled"
-      tests: [ "rollback" ]
+      tests: [ "remediation", "rollback" ]
     - metric_name: "too slow or disabled screensaver lock"
       tests: [ "remediation", "rollback" ]
   MacOS:
