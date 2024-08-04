@@ -5,24 +5,8 @@ ignore:
     - metric_name: "SMBv1 enabled"
       tests: ["remediation", "rollback"]
   Linux:
-    - metric_name: "/etc/passwd permissions"
-      tests: ["all"]
-    - metric_name: "/etc/shadow permissions"
-      tests: ["all"]
-    - metric_name: "/etc/fstab permissions"
-      tests: ["all"]
-    - metric_name: "/etc/group permissions"
-      tests: ["all"]
-    - metric_name: "/etc/group group"
-      tests: ["remediation", "rollback"]
-    - metric_name: "/etc/shadow group"
-      tests: ["remediation", "rollback"]
-    - metric_name: "restrict cron to root"
-      tests: ["all"]
-    - metric_name: "manual system updates"
-      tests: ["all"]
-    - metric_name: "local firewall disabled"
-      tests: ["remediation", "rollback"]
+    - metric_name: "remote login enabled"
+      tests: [ "remediation", "rollback" ]
   MacOS:
     - metric_name: "WOL enabled"
       tests: ["remediation", "rollback"]
@@ -30,7 +14,4 @@ ignore:
       tests: ["remediation", "rollback"]
     - metric_name: "remote login enabled"
       tests: ["remediation", "rollback"]
-    - metric_name: "remote desktop enabled"
-      tests: ["remediation", "rollback"]
-    - metric_name: "remote events enabled"
-      tests: ["remediation", "rollback"]
+
