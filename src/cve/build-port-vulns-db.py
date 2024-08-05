@@ -126,7 +126,7 @@ async def main(existing_data):
 
 
 if __name__ == "__main__":
-    existing_data_file = "../../lanscan-port-vulns-db.json"
+    existing_data_file = "./lanscan-port-vulns-db.json"
     try:
         with open(existing_data_file, "r") as file:
             existing_data = json.load(file)
