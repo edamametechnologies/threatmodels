@@ -42,6 +42,8 @@ def update_threat_model_header(filename):
 
     # Update the date
     data["date"] = datetime.datetime.now().strftime("%B %dth %Y")
+    # Remove a leading 0 in the day (breaks the date format)
+    data["date"] = data["date"].replace(" 0", " ")
     # Remove the signature to prepare hash computation
     data["signature"] = ""
 
