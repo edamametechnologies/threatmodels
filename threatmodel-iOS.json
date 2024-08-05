@@ -1,7 +1,7 @@
 {
   "name": "threat model iOS",
   "extends": "none",
-  "date": "August 5th 2024",
+  "date": "Aug 05th 2024",
   "signature": "1f6aea1dc633970cd31318d78f1dc527c8d8c17adfc60493698672b0cf1a2e2e",
   "metrics": [
     {
