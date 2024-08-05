@@ -91,7 +91,7 @@
         {
           "locale": "EN",
           "title": "Screen lock disabled",
-          "summary": "Your device doesn't have a screensaver enabled with a password. It leaves it open for phsyical access by anyone. This is very dangerous!"
+          "summary": "Your device doesn't have a screensaver enabled with a password. It leaves it open for physical access by anyone. This is very dangerous!"
         },
         {
           "locale": "FR",

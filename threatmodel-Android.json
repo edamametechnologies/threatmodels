@@ -456,7 +456,7 @@
         {
           "locale": "EN",
           "title": "Your OS is not up to date",
-          "summary": "Your operating system is not up to date, please proceed to upgrade to get the latest security patches."
+          "summary": "Your operating system is not up to date, please upgrade it to get the latest security patches."
         },
         {
           "locale": "FR",
