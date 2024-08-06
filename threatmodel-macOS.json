@@ -1,7 +1,7 @@
 {
   "name": "threat model macOS",
   "extends": "none",
-  "date": "Aug 05th 2024",
+  "date": "August 05th 2024",
   "signature": "f6abe9808f33fe60fa21d3e33b669625038fd1512dee625e156cbf23de61172e",
   "metrics": [
     {
