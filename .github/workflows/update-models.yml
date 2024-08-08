@@ -12,15 +12,26 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+
+      - name: Setup EDAMAME Posture
+        uses: edamametechnologies/edamame_posture_action@v0
+        with:
+          edamame_user: ${{ vars.EDAMAME_POSTURE_USER }}
+          edamame_domain: ${{ vars.EDAMAME_POSTURE_DOMAIN }}
+          edamame_pin: ${{ secrets.EDAMAME_POSTURE_PIN }}
+          edamame_id: ${{ github.run_id }}
+          auto_remediate: true
+
+      - name: Checkout threatmodel repo
+        uses: actions/checkout@v4
+        with:
+          # The token must have the workflow scope
+          token: ${{ secrets.DEV_GITHUB_TOKEN }}
+
       - name: Setup Python
         uses: actions/setup-python@v3.1.4
         with:
           python-version: 3.11.3
-
-      - name: Checkout threatmodel repo
-        uses: actions/checkout@v3
-        with:
-         token: ${{ secrets.DEV_GITHUB_TOKEN }}
 
       - name: Get changed threat models
         id: changed-files-specific
@@ -33,7 +44,8 @@ jobs:
         run: |
           echo "Changed files: ${{ steps.changed-files-specific.outputs.all_changed_files }}"
           pip install -r requirements.txt
-          python3 src/publish/validate-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
+          echo "Validating all threat models"
+          python3 src/publish/validate-models.py threatmodel-*.json
         continue-on-error: true
 
       - name: Revert last commit if validation fails
@@ -41,27 +53,35 @@ jobs:
         run: |
           # As we are using a non standard token, we need to set our name and use [skip ci] to avoid infinite loop
           git config user.email "dev@edamame.tech"
-          git config user.name "Edamame Dev"
+          git config user.name "EDAMAME Dev"
           git revert -m 1 HEAD --no-edit --no-commit
           git commit -m "Reverted after threat models validation failed [skip ci]"
+          git push
 
-      - name: slack-send
+      - name: Slack alerts
         if: steps.validate.outcome == 'failure'
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@v1.26.0
         with:
-          # Slack channel ID where message will be posted. Needed if using bot token
-          channel-id: 'C05BY6YNDFF'
-          # Message to post into Slack. Needed if using bot token
-          slack-message: "GitHub threat models validation on branch ${{ github.ref }} failed, commit has been reverted"
+          channel-id: 'C072J0U9TH7'
+          slack-message: "GitHub threat models (${{ steps.changed-files-specific.outputs.all_changed_files }}) validation on branch ${{ github.ref }} failed, commit has been reverted"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Slack reports
+        if: steps.validate.outcome != 'failure'
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: 'C07127YECN4'
+          slack-message: "GitHub threat models (${{ steps.changed-files-specific.outputs.all_changed_files }}) validation on branch ${{ github.ref }} successful"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
       - name: Update models hash and date
         if: steps.validate.outcome == 'success'
-        run: python3 src/publish/update-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
-
-      - name: Commit & Push changes
-        uses: actions-js/push@master
-        with:
-          github_token: ${{ secrets.DEV_GITHUB_TOKEN }}
-          branch: ${{ github.ref_name }}
+        run: | 
+          python3 src/publish/update-models.py ${{ steps.changed-files-specific.outputs.all_changed_files }}
+          # As we are using a non standard token, we need to set our name and use [skip ci] to avoid infinite loop
+          git config user.email "dev@edamame.tech"
+          git config user.name "EDAMAME Dev"
+          git commit -a -m "Updated models hash and date [skip ci]"
+          git push

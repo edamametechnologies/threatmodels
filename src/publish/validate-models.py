@@ -274,15 +274,27 @@ def validate_threat_model(filename: str) -> None:
                 raise ValueError(f"Unexpected keys [{impl.keys()}] in {key} at '{metric['name']} -> {key}'")
 
             # If we have a class "link" or "youtube" or "installer" check the url is valid and try to access it to check if we have a 404
-            # We make and exception for the edamame_helper class as the url is a prefix
-            if impl['class'] in ['link', 'youtube', 'installer'] and metric['name'] != 'edamame helper disabled':
-                response = requests.head(education['target'])
-                if not response.ok:
-                    # Sometime head request is not allowed, try with get
-                    response = requests.get(education['target'])
+            if impl['class'] in ['link', 'youtube']:
+                # Only check http(s) links
+                if impl['target'].startswith("http"):
+                    response = requests.head(impl['target'])
                     if not response.ok:
-                        raise ValueError(f"Invalid URL '{education['target']}' in target field at '{metric['name']} -> {key} -> education[{k}]'. "
-                                         f"Reason: {response.status_code} {response.reason}")
+                        # Sometime head request is not allowed, try with get
+                        response = requests.get(impl['target'])
+                        if not response.ok:
+                            raise ValueError(f"Invalid URL '{impl['target']}' in target field at '{metric['name']} -> {key} -> impl[{k}]'. "
+                                             f"Reason: {response.status_code} {response.reason}")
+
+            # If we have a youtube class, check the URL is a valid youtube video
+            if impl['class'] == 'youtube':
+                if not impl['target'].startswith("https://www.youtube.com/watch?v="):
+                    raise ValueError(f"Invalid URL '{impl['target']}' in target field at '{metric['name']} -> {key} -> impl[{k}]'. "
+                                     f"URL must start with 'https://www.youtube.com/watch?v='")
+
+            # If we have a youtube URL, check if the class is 'youtube'
+            if impl['target'].startswith("https://www.youtube.com/watch?v=") and impl['class'] != 'youtube':
+                raise ValueError(f"Invalid class '{impl['class']}' in class field at '{metric['name']} -> {key} -> impl[{k}]'. "
+                                 f"Class must be 'youtube'")
 
             # Validate 'education' in 'implementation'
             for k, education in enumerate(impl['education']):
@@ -293,15 +305,28 @@ def validate_threat_model(filename: str) -> None:
                 if not all(isinstance(education[field], str) for field in allowed_keys_education):
                     raise ValueError(f"Invalid data type in education fields at '{metric['name']} -> {key} -> education[{k}]'")
 
-                # If we have a class "link" or "youtube" or "installer" check the url is valid and try to access it to check if we have a 404
-                if education['class'] in ['link', 'youtube', 'installer']:
-                    response = requests.head(education['target'])
-                    if not response.ok:
-                        # Sometime head request is not allowed, try with get
-                        response = requests.get(education['target'])
+                # If we have a class "link" or "youtube" check the url is valid and try to access it to check if we have a 404
+                if education['class'] in ['link', 'youtube']:
+                    # Only check http(s) links
+                    if education['target'].startswith("http"):
+                        response = requests.head(education['target'])
                         if not response.ok:
-                            raise ValueError(f"Invalid URL '{education['target']}' in target field at '{metric['name']} -> {key} -> education[{k}]'. "
-                                         f"Reason: {response.status_code} {response.reason}")
+                            # Sometime head request is not allowed, try with get
+                            response = requests.get(education['target'])
+                            if not response.ok:
+                                raise ValueError(f"Invalid URL '{education['target']}' in target field at '{metric['name']} -> {key} -> education[{k}]'. "
+                                             f"Reason: {response.status_code} {response.reason}")
+
+                    # If we have a youtube class, check the URL is a valid youtube video
+                    if education['class'] == 'youtube':
+                        if not education['target'].startswith("https://www.youtube.com/watch?v="):
+                            raise ValueError(f"Invalid URL '{education['target']}' in target field at '{metric['name']} -> {key} -> impl[{k}]'. "
+                                             f"URL must start with 'https://www.youtube.com/watch?v='")
+
+                    # If we have a youtube URL, check if the class is 'youtube'
+                    if education['target'].startswith("https://www.youtube.com/watch?v=") and education['class'] != 'youtube':
+                        raise ValueError(f"Invalid class '{impl['class']}' in class field at '{metric['name']} -> {key} -> impl[{k}]'. "
+                                         f"Class must be 'youtube'")
 
             # Type checks for other fields in implementation/remediation/rollback
             if not isinstance(impl['system'], str) or \
