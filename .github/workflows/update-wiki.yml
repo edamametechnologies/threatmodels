@@ -13,13 +13,23 @@ jobs:
     build:
         runs-on: ubuntu-latest
         steps:
+
+        - name: Setup EDAMAME Posture
+          uses: edamametechnologies/edamame_posture_action@v0
+          with:
+            edamame_user: ${{ vars.EDAMAME_POSTURE_USER }}
+            edamame_domain: ${{ vars.EDAMAME_POSTURE_DOMAIN }}
+            edamame_pin: ${{ secrets.EDAMAME_POSTURE_PIN }}
+            edamame_id: ${{ github.run_id }}
+            auto_remediate: true
+
         - name: Setup Python
           uses: actions/setup-python@v3.1.4
           with:
             python-version: 3.11.3
         
         - name: Checkout threatmodel repo
-          uses: actions/checkout@v3
+          uses: actions/checkout@v4
         
         - name: Generate wiki files
           run: |
@@ -39,7 +49,15 @@ jobs:
           run: |
             cd /tmp/wiki
             git config user.email "dev@edamame.tech"
-            git config user.name "Edamame Dev"
+            git config user.name "EDAMAME Dev"
             git add .
             git commit -m "docs: Updated wiki files"
             git push
+
+        - name: Slack reports
+          uses: slackapi/slack-github-action@v1.26.0
+          with:
+            channel-id: 'C07127YECN4'
+            slack-message: "GitHub threat models wiki updated from branch ${{ github.ref }} - see: https://github.com/edamametechnologies/threatmodels/wiki"
+          env:
+              SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

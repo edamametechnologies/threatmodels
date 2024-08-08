@@ -14,12 +14,12 @@ class Metric(object):
         self.ignore_list = ignore_list
 
         self.report = {
-                "implementation": {},
-                "remediation": {},
-                "rollback": {},
-                "error_count": 0,
-                "warning_count": 0,
-                "ok_count": 0
+            "implementation": {},
+            "remediation": {},
+            "rollback": {},
+            "error_count": 0,
+            "warning_count": 0,
+            "ok_count": 0
         }
 
     def get_report(self):
@@ -45,8 +45,8 @@ class Metric(object):
         '''Check if the given target type has a cli target'''
         if self.info[target_type]['class'] != 'cli':
             self.log("warning", f"{target_type} target  is not a `cli` or not "
-                     "implemented yet. "
-                     f"Class: `{self.info[target_type]['class']}`")
+                                "implemented yet. "
+                                f"Class: `{self.info[target_type]['class']}`")
             raise TargetIsNotACLI
         else:
             return True
@@ -82,7 +82,7 @@ class Metric(object):
         need_remediation, _ = self.fetch_need_remediation()
 
         self.log("ok", f"{target_type} target passed tests. "
-                 f"Need remediation: {need_remediation}")
+                       f"Need remediation: {need_remediation}")
 
         return True
 
@@ -100,10 +100,10 @@ class Metric(object):
 
         if need_remediation:
             self.log("error", f"{target_type} target ran flawlessly but did not "
-                     "resolve the metric", result=result)
+                              "resolve the metric", result=result)
         else:
             self.log("ok", f"{target_type} target successfuly resolved the "
-                     "metric")
+                           "metric")
 
         return not need_remediation
 
@@ -161,10 +161,10 @@ class Metric(object):
 
         # Run the command
         result = subprocess.run(
-                command,
-                shell=True,
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
-                timeout=CMD_TIMEOUT
+            command,
+            shell=True,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+            timeout=CMD_TIMEOUT
         )
 
         # Raise an exception if the execution failed
@@ -186,7 +186,7 @@ class Metric(object):
             need_permissions = False
         except subprocess.TimeoutExpired or TargetExecutionError as e:
             self.log("error", f"{target_type} target failed during "
-                     f"elevation test: {e}")
+                              f"elevation test: {e}")
             self.log("info", f"{target_type} retrying with permissions")
 
             # This call will be able to raise exceptions
@@ -198,7 +198,7 @@ class Metric(object):
             # user, the elevation is too low
             if self.info[target_type]["elevation"] == "user":
                 self.log("warning", f"{target_type} target elevation too low. "
-                         "Needed: `Admin`, current: `user`")
+                                    "Needed: `Admin`, current: `user`")
             else:
                 self.log("ok",
                          f"{target_type} elevation is at a correct level")
@@ -207,8 +207,8 @@ class Metric(object):
             # to something else than user, the elevation is too high
             if self.info[target_type]["elevation"] != "user":
                 self.log("warning", f"{target_type} target elevation too high."
-                         " Needed: `user`, current: "
-                         f"`{self.info[target_type]['elevation']}`")
+                                    " Needed: `user`, current: "
+                                    f"`{self.info[target_type]['elevation']}`")
             else:
                 self.log("ok",
                          f"{target_type} elevation is at a correct level")
@@ -223,11 +223,11 @@ class Metric(object):
             # If no need remediation
             if not need_remediation:
                 self.log("error", "rollback dit not revert the changes at the "
-                         f"attempt {i}", result=result)
+                                  f"attempt {i}", result=result)
                 return False
             else:
                 self.log("ok", "rollback reverted the changes successfuly at "
-                         f"the attempt {i}")
+                               f"the attempt {i}")
 
             self.execute_target("remediation")
 
@@ -235,11 +235,11 @@ class Metric(object):
             # If need remediation
             if need_remediation:
                 self.log("error", "remediation dit not resolve the "
-                         f"implementation at attempt {i}", result=result)
+                                  f"implementation at attempt {i}", result=result)
                 return False
             else:
                 self.log("ok", "remediation resolved the implementation "
-                         f"successfuly at the attempt {i}")
+                               f"successfuly at the attempt {i}")
 
     def should_ignore(self, metric_name, test_type):
         for item in self.ignore_list:
@@ -251,21 +251,21 @@ class Metric(object):
         '''Run all the tests for this metric'''
 
         if self.should_ignore(self.info['name'], 'implementation'):
-                self.logger.info(f"Skipping `{self.info['name']}` due to ignore list.")
-                return True
+            self.logger.info(f"Skipping `{self.info['name']}` due to ignore list.")
+            return True
 
         self.logger.info(f"Running `{self.info['name']}` tests")
 
         if not self.implementation_tests():
             self.log("info", "Skipping other tests because implementation "
-                     "failed")
+                             "failed")
             return False
 
         if self.fetch_need_remediation()[0]:
             if not self.should_ignore(self.info['name'], 'remediation'):
                 if not self.remediation_tests():
                     self.log("info", "Skipping other tests because remediation "
-                            "failed")
+                                     "failed")
                     return False
             else:
                 self.logger.info(f"Skipping `{self.info['name']}` remediation due to ignore list.")
@@ -273,7 +273,7 @@ class Metric(object):
             if not self.should_ignore(self.info['name'], 'rollback'):
                 if not self.rollback_test():
                     self.log("info", "Skipping degradation tests because rollback "
-                            "failed")
+                                     "failed")
                     return False
             else:
                 self.logger.info(f"Skipping `{self.info['name']}` rollback due to ignore list.")
@@ -282,7 +282,7 @@ class Metric(object):
             if not self.should_ignore(self.info['name'], 'rollback'):
                 if not self.rollback_test():
                     self.log("info", "Skipping other tests because rollback "
-                            "failed")
+                                     "failed")
                     return False
             else:
                 self.logger.info(f"Skipping `{self.info['name']}` rollback due to ignore list.")
@@ -290,11 +290,11 @@ class Metric(object):
             if not self.should_ignore(self.info['name'], 'remediation'):
                 if not self.remediation_tests():
                     self.log("info", "Skipping degradation because remediation "
-                            "failed")
+                                     "failed")
                     return False
             else:
                 self.logger.info(f"Skipping `{self.info['name']}` remediation due to ignore list.")
-            
+
         if not self.should_ignore(self.info['name'], 'remediation') and not self.should_ignore(self.info['name'], 'rollback'):
             self.degradation_tests()
 
