@@ -2,6 +2,7 @@
 
 from mdutils.mdutils import MdUtils
 import json
+import re
 
 def print_action(loc, elevation, target, osName, osVersion):
 
@@ -16,6 +17,14 @@ def print_action(loc, elevation, target, osName, osVersion):
 
     mdFile.new_line()
     mdFile.new_table(columns=4, rows=2, text=[systemHeader, actionHeader, elevationHeader, targetHeader, osName + " " + str(osVersion), action, elevation, target], text_align='left')
+
+def md_sanitize(text):
+    # Escape backslashes first, since they are escape characters in Markdown
+    text = text.replace('\\', '\\\\')
+    # Escape other special Markdown characters
+    markdown_special_chars = r"[*_`~]"
+    text = re.sub(f"([{markdown_special_chars}])", r"\\\1", text)
+    return text
 
 sources = ['Windows', 'macOS', 'iOS', 'Linux', 'Android']
 for source in sources:
@@ -32,8 +41,6 @@ for source in sources:
         mdFile = MdUtils(file_name='threatmodel-' + source + '-' + loc, title=title)
         mdFileP = MdUtils(file_name='privacy-' + source + '-' + loc, title=titleP)
         mdFilePD = MdUtils(file_name='privacy-detailed-' + source + '-' + loc, title=titlePD)
-
-
 
         modelname = 'threatmodel-' + source
         with open(modelname + '.json', 'r') as json_file:
@@ -126,24 +133,24 @@ for source in sources:
                     break
 
             mdFile.new_header(level=2, title=implemationHeader)
-            print_action(loc, metric["implementation"]["elevation"], metric["implementation"]["target"], metric["implementation"]["system"], metric["implementation"]["minversion"])
+            print_action(loc, metric["implementation"]["elevation"], md_sanitize(metric["implementation"]["target"]), metric["implementation"]["system"], metric["implementation"]["minversion"])
 
             mdFile.new_header(level=2, title=remedediationHeader)
             if metric["remediation"]["target"] != "":
-                print_action(loc, metric["remediation"]["elevation"], metric["remediation"]["target"], metric["remediation"]["system"], metric["remediation"]["minversion"])
+                print_action(loc, metric["remediation"]["elevation"], md_sanitize(metric["remediation"]["target"]), metric["remediation"]["system"], metric["remediation"]["minversion"])
             else:
                 for localized in metric["remediation"]["education"]:
                     if localized["locale"] == loc:
-                        mdFile.new_paragraph(localized["target"])
+                        mdFile.new_paragraph(md_sanitize(localized["target"]))
                         break
 
             mdFile.new_header(level=2, title=rollbackHeader)
             if metric["rollback"]["target"] != "":
-                print_action(loc, metric["rollback"]["elevation"], metric["rollback"]["target"], metric["rollback"]["system"], metric["rollback"]["minversion"])
+                print_action(loc, metric["rollback"]["elevation"], md_sanitize(metric["rollback"]["target"]), metric["rollback"]["system"], metric["rollback"]["minversion"])
             else:
                 for localized in metric["rollback"]["education"]:
                     if localized["locale"] == loc:
-                        mdFile.new_paragraph(localized["target"])
+                        mdFile.new_paragraph(md_sanitize(localized["target"]))
                         break
 
         # Privacy policy
