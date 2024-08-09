@@ -19,11 +19,8 @@ def print_action(loc, elevation, target, osName, osVersion):
     mdFile.new_table(columns=4, rows=2, text=[systemHeader, actionHeader, elevationHeader, targetHeader, osName + " " + str(osVersion), action, elevation, target], text_align='left')
 
 def md_sanitize(text):
-    # Escape backslashes first, since they are escape characters in Markdown
-    text = text.replace('\\', '\\\\')
-    # Escape other special Markdown characters
-    markdown_special_chars = r"[*_`~]"
-    text = re.sub(f"([{markdown_special_chars}])", r"\\\1", text)
+    # Create an markdown block code by fronting it with ``` and ending it with ```
+    text = "```" + text + "```"
     return text
 
 sources = ['Windows', 'macOS', 'iOS', 'Linux', 'Android']
