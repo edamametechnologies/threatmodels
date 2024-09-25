@@ -2,14 +2,13 @@ name: Test models
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events for main and dev branches
-  push:
-    branches: [ "main", "dev" ]
   pull_request:
-    branches: [ "main", "dev" ]
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches: ["*"]
   workflow_dispatch:
+  push:
+    branches:
+      - 'dev'
+      - 'main'
 
 jobs:
     tests-macos:
