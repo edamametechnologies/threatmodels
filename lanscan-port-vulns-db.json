@@ -1,6 +1,6 @@
 {
-  "date": "Aug 05th 2024",
-  "signature": "35c0231516de64b5d205c4708387df16e1b2e32ced7e4f851cd81416bfbddfef",
+  "date": "September 29th 2024",
+  "signature": "79db592efcadee61ff5c013b94a25e8a6a6de73fa34aad6ceb3935638d1bfd7b",
   "vulnerabilities": [
     {
       "port": 0,
@@ -131,13 +131,9 @@
         {
           "name": "CVE-2019-10927",
           "description": "A vulnerability has been identified in SCALANCE SC-600 (V2.0), SCALANCE XB-200 (V4.1), SCALANCE XC-200 (V4.1), SCALANCE XF-200BA (V4.1), SCALANCE XP-200 (V4.1), SCALANCE XR-300WG (V4.1). An authenticated attacker with network access to to port 22/tcp of an affected device may cause a Denial-of-Service condition. The security vulnerability could be exploited by an authenticated attacker with network access to the affected device. No user interaction is required to exploit this vulnerability. The vulnerability impacts the availability of the affected device."
-        },
-        {
-          "name": "CVE-2017-3819",
-          "description": "A privilege escalation vulnerability in the Secure Shell (SSH) subsystem in the StarOS operating system for Cisco ASR 5000 Series, ASR 5500 Series, ASR 5700 Series devices, and Cisco Virtualized Packet Core could allow an authenticated, remote attacker to gain unrestricted, root shell access. The vulnerability is due to missing input validation of parameters passed during SSH or SFTP login. An attacker could exploit this vulnerability by providing crafted user input to the SSH or SFTP command-line interface (CLI) during SSH or SFTP login. An exploit could allow an authenticated attacker to gain root privileges access on the router. Note: Only traffic directed to the affected system can be used to exploit this vulnerability. This vulnerability can be triggered via both IPv4 and IPv6 traffic. An established TCP connection toward port 22, the SSH default port, is needed to perform the attack. The attacker must have valid credentials to login to the system via SSH or SFTP. The following products have been confirmed to be vulnerable: Cisco ASR 5000/5500/5700 Series devices running StarOS after 17.7.0 and prior to 18.7.4, 19.5, and 20.2.3 with SSH configured are vulnerable. Cisco Virtualized Packet Core - Single Instance (VPC-SI) and Distributed Instance (VPC-DI) devices running StarOS prior to N4.2.7 (19.3.v7) and N4.7 (20.2.v0) with SSH configured are vulnerable. Cisco Bug IDs: CSCva65853."
         }
       ],
-      "count": 7,
+      "count": 6,
       "protocol": "tcp"
     },
     {
@@ -148,10 +144,6 @@
         {
           "name": "CVE-2021-27165",
           "description": "An issue was discovered on FiberHome HG6245D devices through RP2613. The telnet daemon on port 23/tcp can be abused with the gpon/gpon credentials."
-        },
-        {
-          "name": "CVE-2014-7279",
-          "description": "The Konke Smart Plug K does not require authentication for TELNET sessions, which allows remote attackers to obtain \"equipment  management authority\" via TCP traffic to port 23."
         },
         {
           "name": "CVE-2023-44416",
@@ -174,7 +166,7 @@
           "description": "NETGEAR RAX30 cmsCli_authenticate Stack-based Buffer Overflow Remote Code Execution Vulnerability. This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of NETGEAR RAX30 routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within a shared library used by the telnetd service, which listens on TCP port 23 by default. The issue results from the lack of proper validation of the length of user-supplied data prior to copying it to a fixed-length stack-based buffer. An attacker can leverage this vulnerability to execute code in the context of root. Was ZDI-CAN-19918."
         }
       ],
-      "count": 7,
+      "count": 6,
       "protocol": "tcp"
     },
     {
@@ -674,32 +666,16 @@
           "description": "A vulnerability has been identified in Desigo PX automation controllers PXC00-E.D, PXC50-E.D, PXC100-E.D, PXC200-E.D with Desigo PX Web modules PXA40-W0, PXA40-W1, PXA40-W2 (All firmware versions < V6.00.320), Desigo PX automation controllers PXC00-U, PXC64-U, PXC128-U with Desigo PX Web modules PXA30-W0, PXA30-W1, PXA30-W2 (All firmware versions < V6.00.320), Desigo PX automation controllers PXC22.1-E.D, PXC36-E.D, PXC36.1-E.D with activated web server (All firmware versions < V6.00.320). The device contains a vulnerability that could allow an attacker to cause a denial of service condition on the device's web server by sending a specially crafted HTTP message to the web server port (tcp/80). The security vulnerability could be exploited by an attacker with network access to an affected device. Successful exploitation requires no system privileges and no user interaction. An attacker could use the vulnerability to compromise the availability of the device's web service. While the device itself stays operational, the web server responds with HTTP status code 404 (Not found) to any further request. A reboot is required to recover the web interface. At the time of advisory publication no public exploitation of this security vulnerability was known."
         },
         {
-          "name": "CVE-2018-7244",
-          "description": "An information disclosure vulnerability exists In Schneider Electric's 66074 MGE Network Management Card Transverse installed in MGE UPS and MGE STS. The integrated web server (Port 80/443/TCP) of the affected devices could allow a remote attacker to obtain sensitive device information if network access was obtained."
-        },
-        {
           "name": "CVE-2018-4837",
           "description": "A vulnerability has been identified in TeleControl Server Basic < V3.1. An attacker with access to the TeleControl Server Basic's webserver (port 80/tcp or 443/tcp) could cause a Denial-of-Service condition on the web server. The remaining functionality of the TeleControl Server Basic is not affected by the Denial-of-Service condition."
-        },
-        {
-          "name": "CVE-2018-13814",
-          "description": "A vulnerability has been identified in SIMATIC HMI Comfort Panels 4\" - 22\" (All versions < V14), SIMATIC HMI Comfort Outdoor Panels 7\" & 15\" (All versions < V14), SIMATIC HMI KTP Mobile Panels KTP400F, KTP700, KTP700F, KTP900 and KTP900F (All versions < V14), SIMATIC WinCC Runtime Advanced (All versions < V14), SIMATIC WinCC Runtime Professional (All versions < V14), SIMATIC WinCC (TIA Portal) (All versions < V14), SIMATIC HMI Classic Devices (TP/MP/OP/MP Mobile Panel) (All versions). The integrated web server (port 80/tcp and port 443/tcp) of the affected devices could allow an attacker to inject HTTP headers. An attacker must trick a valid user who is authenticated to the device into clicking on a malicious link to exploit the vulnerability. At the time of advisory publication no public exploitation of this security vulnerability was known."
         },
         {
           "name": "CVE-2017-12739",
           "description": "An issue was discovered on Siemens SICAM RTUs SM-2556 COM Modules with the firmware variants ENOS00, ERAC00, ETA2, ETLS00, MODi00, and DNPi00. The integrated web server (port 80/tcp) of the affected devices could allow unauthenticated remote attackers to execute arbitrary code on the affected device."
         },
         {
-          "name": "CVE-2016-9158",
-          "description": "A vulnerability has been identified in SIMATIC S7-300 CPU family (All versions), SIMATIC S7-300 CPU family (incl. related ET200 CPUs and SIPLUS variants) (All versions), SIMATIC S7-400 PN/DP V6 and below CPU family (incl. SIPLUS variants) (All versions), SIMATIC S7-400 PN/DP V7 CPU family (incl. SIPLUS variants) (All versions), SIMATIC S7-400 V6 and earlier CPU family (All versions), SIMATIC S7-400 V7 CPU family (All versions). Specially crafted packets sent to port 80/tcp could cause the affected devices to go into defect mode. A cold restart is required to recover the system."
-        },
-        {
           "name": "CVE-2016-7112",
           "description": "A vulnerability has been identified in Firmware variant PROFINET IO for EN100 Ethernet module : All versions < V1.04.01; Firmware variant Modbus TCP for EN100 Ethernet module : All versions < V1.11.00; Firmware variant DNP3 TCP for EN100 Ethernet module : All versions < V1.03; Firmware variant IEC 104 for EN100 Ethernet module : All versions < V1.21; EN100 Ethernet module included in SIPROTEC Merging Unit 6MU80 : All versions < 1.02.02. Attackers with network access to the device's web interface (port 80/tcp) could possibly circumvent authentication and perform certain administrative operations."
-        },
-        {
-          "name": "CVE-2013-0655",
-          "description": "The client in Schneider Electric Software Update (SESU) Utility 1.0.x and 1.1.x does not ensure that updates have a valid origin, which allows man-in-the-middle attackers to spoof updates, and consequently execute arbitrary code, by modifying the data stream on TCP port 80."
         },
         {
           "name": "CVE-2024-5295",
@@ -862,7 +838,7 @@
           "description": "NETGEAR Multiple Routers httpd Stack-based Buffer Overflow Remote Code Execution Vulnerability. This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of multiple NETGEAR routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the httpd service, which listens on TCP port 80 by default. When parsing the strings file, the process does not properly validate the length of user-supplied data prior to copying it to a fixed-length stack-based buffer. An attacker can leverage this vulnerability to execute code in the context of root. . Was ZDI-CAN-13709."
         }
       ],
-      "count": 72,
+      "count": 68,
       "protocol": "http"
     },
     {
@@ -1121,23 +1097,15 @@
           "description": "A vulnerability has been identified in SIMATIC CP 1626 (All versions), SIMATIC ET 200SP Open Controller CPU 1515SP PC (incl. SIPLUS variants) (All versions), SIMATIC ET 200SP Open Controller CPU 1515SP PC2 (incl. SIPLUS variants) (All versions < V20.8), SIMATIC HMI Panel (incl. SIPLUS variants) (All versions), SIMATIC NET PC Software V14 (All versions < V14 SP1 Update 14), SIMATIC NET PC Software V15 (All versions), SIMATIC S7-1200 CPU family (incl. SIPLUS variants) (All versions < V4.4.0), SIMATIC S7-1500 CPU family (incl. related ET200 CPUs and SIPLUS variants) (All versions < V2.8.1), SIMATIC S7-1500 Software Controller (All versions < V20.8), SIMATIC S7-PLCSIM Advanced (All versions < V3.0), SIMATIC STEP 7 (TIA Portal) (All versions < V16), SIMATIC WinCC (TIA Portal) (All versions < V16), SIMATIC WinCC OA (All versions < V3.16 P013), SIMATIC WinCC Runtime Advanced (All versions < V16), SIMATIC WinCC Runtime Professional (All versions < V16), TIM 1531 IRC (incl. SIPLUS NET variants) (All versions < V2.1). Affected devices contain a message protection bypass vulnerability due to certain properties in the calculation used for integrity protection. This could allow an attacker in a Man-in-the-Middle position to modify network traffic sent on port 102/tcp to the affected devices."
         },
         {
-          "name": "CVE-2018-13816",
-          "description": "A vulnerability has been identified in TIM 1531 IRC (All version < V2.0). The devices was missing proper authentication on port 102/tcp, although configured. Successful exploitation requires an attacker to be able to send packets to port 102/tcp of the affected device. No user interaction and no user privileges are required to exploit the vulnerability. At the time of advisory publication no public exploitation of this vulnerability was known."
-        },
-        {
           "name": "CVE-2018-11451",
           "description": "A vulnerability has been identified in Firmware variant IEC 61850 for EN100 Ethernet module (All versions < V4.33), Firmware variant PROFINET IO for EN100 Ethernet module (All versions), Firmware variant Modbus TCP for EN100 Ethernet module (All versions), Firmware variant DNP3 TCP for EN100 Ethernet module (All versions), Firmware variant IEC104 for EN100 Ethernet module (All versions < V1.22), SIPROTEC 5 relays with CPU variants CP300 and CP100 and the respective Ethernet communication modules (All versions < V7.80), SIPROTEC 5 relays with CPU variants CP200 and the respective Ethernet communication modules (All versions < V7.58). Specially crafted packets to port 102/tcp could cause a denial-of-service condition in the affected products. A manual restart is required to recover the EN100 module functionality of the affected devices. Successful exploitation requires an attacker with network access to send multiple packets to the affected products or modules. As a precondition the IEC 61850-MMS communication needs to be activated on the affected products or modules. No user interaction or privileges are required to exploit the vulnerability. The vulnerability could allow causing a Denial-of-Service condition of the network functionality of the device, compromising the availability of the system. At the time of advisory publication no public exploitation of this security vulnerability was known."
-        },
-        {
-          "name": "CVE-2016-2200",
-          "description": "Siemens SIMATIC S7-1500 CPU devices before 1.8.3 allow remote attackers to cause a denial of service (STOP mode transition) via crafted packets on TCP port 102."
         },
         {
           "name": "CVE-2013-0700",
           "description": "Siemens SIMATIC S7-1200 PLCs 2.x and 3.x allow remote attackers to cause a denial of service (defect-mode transition and control outage) via crafted packets to TCP port 102 (aka the ISO-TSAP port)."
         }
       ],
-      "count": 22,
+      "count": 20,
       "protocol": "tcp"
     },
     {
@@ -2765,19 +2733,31 @@
           "description": "A vulnerability has been identified in All other SIPROTEC 5 device types with CPU variants CP300 and CP100 and the respective Ethernet communication modules (All versions ), DIGSI 5 engineering software (All versions < V7.90), SIPROTEC 5 device types 6MD85, 6MD86, 6MD89, 7UM85, 7SA87, 7SD87, 7SL87, 7VK87, 7SA82, 7SA86, 7SD82, 7SD86, 7SL82, 7SL86, 7SJ86, 7SK82, 7SK85, 7SJ82, 7SJ85, 7UT82, 7UT85, 7UT86, 7UT87 and 7VE85 with CPU variants CP300 and CP100 and the respective Ethernet communication modules (All versions < V7.90), SIPROTEC 5 device types 7SS85 and 7KE85 (All versions < V8.01), SIPROTEC 5 device types with CPU variants CP200 and the respective Ethernet communication modules (All versions). A remote attacker could use specially crafted packets sent to port 443/TCP to upload, download or delete files in certain parts of the file system."
         },
         {
-          "name": "CVE-2018-11448",
-          "description": "A vulnerability has been identified in SCALANCE M875 (All versions). The web interface on port 443/tcp could allow a stored Cross-Site Scripting (XSS) attack if an unsuspecting user is tricked into accessing a malicious link. Successful exploitation requires that the attacker has access to the web interface of an affected device. The attacker must be authenticated as administrative user on the web interface. Afterwards, a legitimate user must access the web interface. A successful attack could allow an attacker to execute malicious code in the browser of a legitimate user. At the time of advisory publication no public exploitation of this security vulnerability was known."
-        },
-        {
           "name": "CVE-2016-8673",
           "description": "A vulnerability has been identified in SIMATIC CP 343-1 Advanced (incl. SIPLUS NET variant) (All versions < V3.0.53), SIMATIC CP 443-1 Advanced (incl. SIPLUS NET variant) (All versions < V3.2.17), SIMATIC S7-300 PN/DP CPU family (incl. SIPLUS variants) (All versions), SIMATIC S7-400 PN/DP CPU family (incl. SIPLUS variants) (All versions). The integrated web server at port 80/TCP or port 443/TCP of the affected devices could allow remote attackers to perform actions with the permissions of an authenticated user, provided the targeted user has an active session and is induced to trigger the malicious request."
         },
         {
-          "name": "CVE-2013-1080",
-          "description": "The web server in Novell ZENworks Configuration Management (ZCM) 10.3 and 11.2 before 11.2.4 does not properly perform authentication for zenworks/jsp/index.jsp, which allows remote attackers to conduct directory traversal attacks, and consequently upload and execute arbitrary programs, via a request to TCP port 443."
+          "name": "CVE-2024-7604",
+          "description": "Logsign Unified SecOps Platform Incorrect Authorization Authentication Bypass Vulnerability. This vulnerability allows local attackers to bypass authentication on affected installations of Logsign Unified SecOps Platform. Authentication is required to exploit this vulnerability. The specific flaw exists within the HTTP API service, which listens on TCP port 443 by default. The issue results from the lack of proper validation of the user's license expiration date. An attacker can leverage this vulnerability to bypass authentication on the system. Was ZDI-CAN-25029."
+        },
+        {
+          "name": "CVE-2024-7603",
+          "description": "Logsign Unified SecOps Platform Directory Traversal Arbitrary Directory Deletion Vulnerability. This vulnerability allows remote attackers to delete arbitrary directories on affected installations of Logsign Unified SecOps Platform. Authentication is required to exploit this vulnerability. The specific flaw exists within the HTTP API service, which listens on TCP port 443 by default. The issue results from the lack of proper validation of a user-supplied path prior to using it in file operations. An attacker can leverage this vulnerability to delete directories in the context of root. Was ZDI-CAN-25028."
+        },
+        {
+          "name": "CVE-2024-7602",
+          "description": "Logsign Unified SecOps Platform Directory Traversal Information Disclosure Vulnerability. This vulnerability allows remote attackers to disclose sensitive information on affected installations of Logsign Unified SecOps Platform. Authentication is required to exploit this vulnerability. The specific flaw exists within the HTTP API service, which listens on TCP port 443 by default. The issue results from the lack of proper validation of a user-supplied path prior to using it in file operations. An attacker can leverage this vulnerability to disclose information in the context of root. Was ZDI-CAN-25027."
+        },
+        {
+          "name": "CVE-2024-7601",
+          "description": "Logsign Unified SecOps Platform Directory data_export_delete_all Traversal Arbitrary File Deletion Vulnerability. This vulnerability allows remote attackers to delete arbitrary files on affected installations of Logsign Unified SecOps Platform. Authentication is required to exploit this vulnerability. The specific flaw exists within the HTTP API service, which listens on TCP port 443 by default. The issue results from the lack of proper validation of a user-supplied path prior to using it in file operations. An attacker can leverage this vulnerability to delete files in the context of root. Was ZDI-CAN-25026."
+        },
+        {
+          "name": "CVE-2024-7600",
+          "description": "Logsign Unified SecOps Platform Directory Traversal Arbitrary File Deletion Vulnerability. This vulnerability allows remote attackers to delete arbitrary files on affected installations of Logsign Unified SecOps Platform. Authentication is required to exploit this vulnerability. The specific flaw exists within the HTTP API service, which listens on TCP port 443 by default. The issue results from the lack of proper validation of a user-supplied path prior to using it in file operations. An attacker can leverage this vulnerability to delete files in the context of root. Was ZDI-CAN-25025."
         }
       ],
-      "count": 13,
+      "count": 16,
       "protocol": "http"
     },
     {
@@ -11856,6 +11836,19 @@
       "protocol": "tcp"
     },
     {
+      "port": 2536,
+      "name": "",
+      "description": "",
+      "vulnerabilities": [
+        {
+          "name": "CVE-2024-6918",
+          "description": "CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') vulnerability exists that could cause a crash of the Accutech Manager when receiving a specially crafted request over port 2536/TCP."
+        }
+      ],
+      "count": 1,
+      "protocol": "tcp"
+    },
+    {
       "port": 2537,
       "name": "upgrade",
       "description": "Upgrade Protocol",
@@ -16853,13 +16846,8 @@
       "port": 3480,
       "name": "plethora",
       "description": "Secure Virtual Workspace",
-      "vulnerabilities": [
-        {
-          "name": "CVE-2017-9382",
-          "description": "An issue was discovered on Vera VeraEdge 1.7.19 and Veralite 1.7.481 devices. The device provides UPnP services that are available on port 3480 and can also be accessed via port 80 using the url \"/port_3480\". It seems that the UPnP services provide \"file\" as one of the service actions for a normal user to read a file that is stored under the /etc/cmh-lu folder. It retrieves the value from the \"parameters\" query string variable and then passes it to an internal function \"FileUtils::ReadFileIntoBuffer\" which is a library function that does not perform any sanitization on the value submitted and this allows an attacker to use directory traversal characters \"../\" and read files from other folders within the device."
-        }
-      ],
-      "count": 1,
+      "vulnerabilities": [],
+      "count": 0,
       "protocol": "tcp"
     },
     {
@@ -23581,9 +23569,13 @@
         {
           "name": "CVE-2021-25659",
           "description": "A vulnerability has been identified in Automation License Manager 5 (All versions), Automation License Manager 6 (All versions < V6.0 SP9 Update 2). Sending specially crafted packets to port 4410/tcp of an affected system could lead to extensive memory being consumed and as such could cause a denial-of-service preventing legitimate users from using the system."
+        },
+        {
+          "name": "CVE-2024-44087",
+          "description": "A vulnerability has been identified in Automation License Manager V5 (All versions), Automation License Manager V6.0 (All versions), Automation License Manager V6.2 (All versions < V6.2 Upd3). Affected applications do not properly validate certain fields in incoming network packets on port 4410/tcp. This could allow an unauthenticated remote attacker to cause an integer overflow and crash of the application. This denial of service condition could prevent legitimate users from using subsequent products that rely on the affected application for license verification."
         }
       ],
-      "count": 1,
+      "count": 2,
       "protocol": "tcp"
     },
     {
@@ -33864,13 +33856,9 @@
         {
           "name": "CVE-2019-12297",
           "description": "An issue was discovered in scopd on Motorola routers CX2 1.01 and M2 1.01. There is a Use of an Externally Controlled Format String, reachable via TCP port 8010 or UDP port 8080."
-        },
-        {
-          "name": "CVE-2017-2682",
-          "description": "The Siemens web application RUGGEDCOM NMS < V1.2 on port 8080/TCP and 8081/TCP could allow a remote attacker to perform a Cross-Site Request Forgery (CSRF) attack, potentially allowing an attacker to execute administrative operations, provided the targeted user has an active session and is induced to trigger a malicious request."
         }
       ],
-      "count": 7,
+      "count": 6,
       "protocol": "http"
     },
     {
@@ -33879,19 +33867,11 @@
       "description": "sunproxyadmin | ICECap user console | Sun Proxy Admin Service",
       "vulnerabilities": [
         {
-          "name": "CVE-2017-16603",
-          "description": "This vulnerability allows remote attackers to execute code by creating arbitrary files on vulnerable installations of NetGain Systems Enterprise Manager 7.2.730 build 1034. Although authentication is required to exploit this vulnerability, the existing authentication mechanism can be bypassed. The specific flaw exists within the org.apache.jsp.u.jsp.settings.upload_005ffile_005fdo_jsp servlet, which listens on TCP port 8081 by default. When parsing the filename parameter, the process does not properly validate user-supplied data, which can allow for the upload of files. An attacker can leverage this vulnerability to execute code under the context of Administrator. Was ZDI-CAN-5194."
-        },
-        {
           "name": "CVE-2017-16599",
           "description": "This vulnerability allows remote attackers to delete arbitrary files on vulnerable installations of NetGain Systems Enterprise Manager 7.2.730 build 1034. Although authentication is required to exploit this vulnerability, the existing authentication mechanism can be bypassed. The specific flaw exists within the org.apache.jsp.u.jsp.reports.templates.misc.sample_jsp servlet, which listens on TCP port 8081 by default. When parsing the type parameter, the process does not properly validate a user-supplied path prior to using it in file operations. An attacker can leverage this in conjunction with other vulnerabilities to execute code in the context of Administrator. Was ZDI-CAN-5190."
-        },
-        {
-          "name": "CVE-2017-16594",
-          "description": "This vulnerability allows remote attackers to create arbitrary files on vulnerable installations of NetGain Systems Enterprise Manager 7.2.730 build 1034. Although authentication is required to exploit this vulnerability, the existing authentication mechanism can be bypassed. The specific flaw exists within the org.apache.jsp.u.jsp.db.save_005fimage_jsp servlet, which listens on TCP port 8081 by default. When parsing the id parameter, the process does not properly validate user-supplied data, which can allow for the upload of files. An attacker can leverage this vulnerability to execute code under the context of Administrator. Was ZDI-CAN-5117."
         }
       ],
-      "count": 3,
+      "count": 1,
       "protocol": "tcp"
     },
     {
@@ -34237,13 +34217,8 @@
       "port": 8190,
       "name": "gcp-rphy",
       "description": "Generic control plane for RPHY",
-      "vulnerabilities": [
-        {
-          "name": "CVE-2015-2899",
-          "description": "Heap-based buffer overflow in the QualifierList retrieve_qualifier_list function in Medicomp MEDCIN Engine before 2.22.20153.226 might allow remote attackers to execute arbitrary code via a long list name in a packet on port 8190."
-        }
-      ],
-      "count": 1,
+      "vulnerabilities": [],
+      "count": 0,
       "protocol": "tcp"
     },
     {
@@ -35796,6 +35771,19 @@
       "protocol": "tcp"
     },
     {
+      "port": 9183,
+      "name": "",
+      "description": "",
+      "vulnerabilities": [
+        {
+          "name": "CVE-2024-45229",
+          "description": "The Versa Director offers REST APIs for orchestration and management. By design, certain APIs, such as the login screen, banner display, and device registration, do not require authentication. However, it was discovered that for Directors directly connected to the Internet, one of these APIs can be exploited by injecting invalid arguments into a GET request, potentially exposing the authentication tokens of other currently logged-in users. These tokens can then be used to invoke additional APIs on port 9183. This exploit does not disclose any username or password information. Currently, there are no workarounds in Versa Director. However, if there is Web Application Firewall (WAF) or API Gateway fronting the Versa Director, it can be used to block access to the URLs of vulnerable API. /vnms/devicereg/device/* (on ports 9182 & 9183) and /versa/vnms/devicereg/device/* (on port 443). Versa recommends that Directors be upgraded to one of the remediated software versions. This vulnerability is not exploitable on Versa Directors not exposed to the Internet.We have validated that no Versa-hosted head ends have been affected by this vulnerability. Please contact Versa Technical Support or Versa account team for any further assistance."
+        }
+      ],
+      "count": 1,
+      "protocol": "tcp"
+    },
+    {
       "port": 9191,
       "name": "sun-as-jpda",
       "description": "Sun AppSvr JPDA",
@@ -36880,15 +36868,11 @@
       "description": "ndmp | SecureNet Pro Sensor https management server or apple airport admin | Network Data Management Protocol",
       "vulnerabilities": [
         {
-          "name": "CVE-2017-2687",
-          "description": "Siemens RUGGEDCOM ROX I (all versions) contain a vulnerability in the integrated web server at port 10000/TCP which is prone to reflected Cross-Site Scripting attacks if an unsuspecting user is induced to click on a malicious link."
-        },
-        {
           "name": "CVE-2023-51454",
           "description": "A Out-of-bounds Write issue affecting the v2_sdk_service running on a set of DJI drone devices on the port 10000 could allow an attacker to overwrite a pointer in the process memory through a crafted payload triggering an unsafe memory write operation in the my_tcp_receive function implemented in the libv2_sdk.so library used by the dji_vtwo_sdk binary implementing the service, potentially leading to a memory information leak or to an arbitrary code execution. Affected models are Mavic 3 Pro until v01.01.0300, Mavic 3 until v01.00.1200, Mavic 3 Classic until v01.00.0500, Mavic 3 Enterprise until v07.01.10.03, Matrice 300 until v57.00.01.00, Matrice M30 until v07.01.0022 and Mini 3 Pro until v01.00.0620."
         }
       ],
-      "count": 2,
+      "count": 1,
       "protocol": "https"
     },
     {
@@ -39371,13 +39355,8 @@
       "port": 20000,
       "name": "dnp",
       "description": "",
-      "vulnerabilities": [
-        {
-          "name": "CVE-2013-2789",
-          "description": "The Kepware DNP Master Driver for the KEPServerEX Communications Platform before 5.12.140.0 allows remote attackers to cause a denial of service (master-station infinite loop) via crafted DNP3 packets to TCP port 20000 and allows physically proximate attackers to cause a denial of service (master-station infinite loop) via crafted input over a serial line."
-        }
-      ],
-      "count": 1,
+      "vulnerabilities": [],
+      "count": 0,
       "protocol": "tcp"
     },
     {
@@ -41489,6 +41468,19 @@
       "description": "Premier SQL Middleware Server",
       "vulnerabilities": [],
       "count": 0,
+      "protocol": "tcp"
+    },
+    {
+      "port": 38751,
+      "name": "",
+      "description": "",
+      "vulnerabilities": [
+        {
+          "name": "CVE-2024-20390",
+          "description": "A vulnerability in the Dedicated XML Agent feature of Cisco IOS XR Software could allow an unauthenticated, remote attacker to cause a denial of service (DoS) on XML TCP listen port 38751. This vulnerability is due to a lack of proper error validation of ingress XML packets. An attacker could exploit this vulnerability by sending a sustained, crafted stream of XML traffic to a targeted device. A successful exploit could allow the attacker to cause XML TCP port 38751 to become unreachable while the attack traffic persists."
+        }
+      ],
+      "count": 1,
       "protocol": "tcp"
     },
     {

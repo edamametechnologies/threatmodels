@@ -55,6 +55,10 @@ def update_threat_model_header(filename):
 
     save_threat_model(filename, data)
 
+    # Save a .sig file with the signature (remove the .json extension)
+    with open(filename.removesuffix(".json") + ".sig", "w") as file:
+        file.write(data["signature"])
+
 
 if __name__ == "__main__":
     for arg in sys.argv:
