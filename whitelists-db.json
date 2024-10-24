@@ -59,7 +59,6 @@
           "description": "Connection to Cloudflare (http) (ASN: 13335, Country: US, Owner: CLOUDFLARENET)"
         },
         {
-          "domain": "*.pool.ntp.org",
           "port": 123,
           "description": "Connection to NTP"
         }
