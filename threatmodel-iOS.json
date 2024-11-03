@@ -44,13 +44,13 @@
         "education": [
           {
             "locale": "EN",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=5Btm7jvBO2s"
+            "class": "link",
+            "target": "https://support.apple.com/en-us/guide/deployment/depc0aadd3fe/web"
           },
           {
             "locale": "FR",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=5ii7kcEVmmo"
+            "class": "link",
+            "target": "https://support.apple.com/fr-fr/guide/deployment/depc0aadd3fe/web"
           }
         ]
       },
@@ -64,13 +64,13 @@
         "education": [
           {
             "locale": "EN",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=5Btm7jvBO2s"
+            "class": "link",
+            "target": "https://support.apple.com/en-us/guide/deployment/depc0aadd3fe/web"
           },
           {
             "locale": "FR",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=5ii7kcEVmmo"
+            "class": "link",
+            "target": "https://support.apple.com/fr-fr/guide/deployment/depc0aadd3fe/web"
           }
         ]
       }
@@ -118,13 +118,13 @@
         "education": [
           {
             "locale": "EN",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=2t0NrqIwI2s"
+            "class": "link",
+            "target": "https://support.apple.com/en-us/guide/iphone/iph9a2a69136/ios"
           },
           {
             "locale": "FR",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=55lKpx3SCK0"
+            "class": "link",
+            "target": "https://support.apple.com/fr-fr/guide/iphone/iph9a2a69136/ios"
           }
         ]
       },
@@ -138,13 +138,13 @@
         "education": [
           {
             "locale": "EN",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=2t0NrqIwI2s"
+            "class": "link",
+            "target": "https://support.apple.com/en-us/guide/iphone/iph9a2a69136/ios"
           },
           {
             "locale": "FR",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=55lKpx3SCK0"
+            "class": "link",
+            "target": "https://support.apple.com/fr-fr/guide/iphone/iph9a2a69136/ios"
           }
         ]
       }
@@ -192,13 +192,13 @@
         "education": [
           {
             "locale": "EN",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=_VNsH_OWmRw"
+            "class": "link",
+            "target": "https://support.apple.com/en-us/HT201252"
           },
           {
             "locale": "FR",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=jdIrJ2ex0gE"
+            "class": "link",
+            "target": "https://support.apple.com/fr-fr/HT201252"
           }
         ]
       },
@@ -212,13 +212,13 @@
         "education": [
           {
             "locale": "EN",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=_VNsH_OWmRw"
+            "class": "link",
+            "target": "https://support.apple.com/en-us/HT201252"
           },
           {
             "locale": "FR",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=jdIrJ2ex0gE"
+            "class": "link",
+            "target": "https://support.apple.com/fr-fr/HT201252"
           }
         ]
       }
@@ -409,13 +409,13 @@
         "education": [
           {
             "locale": "EN",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=50ZgIargFJ4"
+            "class": "link",
+            "target": "https://support.apple.com/en-us/HT202180"
           },
           {
             "locale": "FR",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=AlZVQbLdvSY"
+            "class": "link",
+            "target": "https://support.apple.com/fr-fr/HT202180"
           }
         ]
       },
@@ -429,13 +429,13 @@
         "education": [
           {
             "locale": "EN",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=50ZgIargFJ4"
+            "class": "link",
+            "target": "https://support.apple.com/en-us/HT202180"
           },
           {
             "locale": "FR",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=AlZVQbLdvSY"
+            "class": "link",
+            "target": "https://support.apple.com/fr-fr/HT202180"
           }
         ]
       }
@@ -483,13 +483,13 @@
         "education": [
           {
             "locale": "EN",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=o4zUfDPwHnM"
+            "class": "link",
+            "target": "https://support.apple.com/en-us/HT204204"
           },
           {
             "locale": "FR",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=02UHT0OBGlo"
+            "class": "link",
+            "target": "https://support.apple.com/fr-fr/HT204204"
           }
         ]
       },
@@ -503,13 +503,13 @@
         "education": [
           {
             "locale": "EN",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=o4zUfDPwHnM"
+            "class": "link",
+            "target": "https://support.apple.com/en-us/HT204204"
           },
           {
             "locale": "FR",
-            "class": "youtube",
-            "target": "https://www.youtube.com/watch?v=02UHT0OBGlo"
+            "class": "link",
+            "target": "https://support.apple.com/fr-fr/HT204204"
           }
         ]
       }
