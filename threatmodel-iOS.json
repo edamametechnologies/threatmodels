@@ -1,8 +1,8 @@
 {
   "name": "threat model iOS",
   "extends": "none",
-  "date": "October 04th 2024",
-  "signature": "b32f4533ce0486ea66bb4b3412169c8922bac937625f0e58e73b6ab66ae72bd4",
+  "date": "November 03th 2024",
+  "signature": "4ae3901c7b220293c4b724290702e924af59ecdf88f47dbf2d726f163e1a3329",
   "metrics": [
     {
       "name": "MDM profiles",
