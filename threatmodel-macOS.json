@@ -707,7 +707,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "fulldisk",
-        "target": "sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate",
+        "target": "/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate",
         "education": [
           {
             "locale": "EN",
