@@ -2,7 +2,7 @@
   "name": "threat model Linux",
   "extends": "none",
   "date": "November 22th 2024",
-  "signature": "46263df5313addc70ed11b57b0455603f0e5b3ffce7b65f9c9053582524b2866",
+  "signature": "04363cc863206b5ddd92fd09e0c19a17a0e8d14dd21676f04e5a1e8077be3612",
   "metrics": [
     {
       "name": "edamame helper disabled",
