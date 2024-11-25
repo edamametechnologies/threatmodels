@@ -145,8 +145,8 @@
         }
       ],
       "implementation": {
-        "system": "Ubuntu",
-        "minversion": 20,
+        "system": "Linux",
+        "minversion": 3,
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
@@ -154,8 +154,8 @@
         "education": []
       },
       "remediation": {
-        "system": "Ubuntu",
-        "minversion": 20,
+        "system": "Linux",
+        "minversion": 3,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -169,8 +169,8 @@
         ]
       },
       "rollback": {
-        "system": "Ubuntu",
-        "minversion": 20,
+        "system": "Linux",
+        "minversion": 3,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -209,8 +209,8 @@
         }
       ],
       "implementation": {
-        "system": "Ubuntu",
-        "minversion": 20,
+        "system": "Linux",
+        "minversion": 3,
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
@@ -218,8 +218,8 @@
         "education": []
       },
       "remediation": {
-        "system": "Ubuntu",
-        "minversion": 20,
+        "system": "Linux",
+        "minversion": 3,
         "maxversion": 0,
         "class": "",
         "elevation": "",
@@ -233,8 +233,8 @@
         ]
       },
       "rollback": {
-        "system": "Ubuntu",
-        "minversion": 20,
+        "system": "Linux",
+        "minversion": 3,
         "maxversion": 0,
         "class": "",
         "elevation": "",
