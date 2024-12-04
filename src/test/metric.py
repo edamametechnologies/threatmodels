@@ -247,7 +247,7 @@ class Metric(object):
                 return True
         return False
 
-    def run_all_tests(self):
+    def run_all_tests(self, implementation_only=False):
         '''Run all the tests for this metric'''
 
         if self.should_ignore(self.info['name'], 'implementation'):
@@ -260,6 +260,9 @@ class Metric(object):
             self.log("info", "Skipping other tests because implementation "
                              "failed")
             return False
+
+        if implementation_only:
+            return True
 
         if self.fetch_need_remediation()[0]:
             if not self.should_ignore(self.info['name'], 'remediation'):
