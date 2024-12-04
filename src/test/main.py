@@ -1,6 +1,6 @@
 from model import Model
 import logging
-
+import sys
 logging.basicConfig(
         format='[%(asctime)s][%(levelname)s] %(message)s',
         )
@@ -20,7 +20,9 @@ logger.setLevel(logging.DEBUG)
 
 model = Model(logger, dir_path=".", ignore_tests_path='./src/test/ignore-tests.yaml')
 
-results = model.run_metrics_sequentially()
+# If implementation_only is passed to the script, only implementation tests are run
+implementation_only = len(sys.argv) > 1 and sys.argv[1] == "implementation_only"
+results = model.run_metrics_sequentially(implementation_only)
 
 print(results)
 
