@@ -1856,7 +1856,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "user",
-        "target": "defaults read /Applications/Google\\ Chrome.app/Contents/Info.plist CFBundleShortVersionString &>/dev/null && { local_version=$(defaults read /Applications/Google\\ Chrome.app/Contents/Info.plist CFBundleShortVersionString); latest_version=$(curl -s \"https://formulae.brew.sh/api/cask/google-chrome.json\" | awk -F'[\"]' '{for(i=1;i<=NF;i++) if ($i==\"version\") {print $(i+2); exit}}'); [[ \"${local_version}\" < \"${latest_version}\" ]] && echo \"Chrome is not up to date (Installed: $local_version, Latest: $latest_version)\"; }",
+        "target": "defaults read /Applications/Google\\ Chrome.app/Contents/Info.plist CFBundleShortVersionString &>/dev/null && { local_version=$(defaults read /Applications/Google\\ Chrome.app/Contents/Info.plist CFBundleShortVersionString); latest_version=$(curl -s \\\"https://formulae.brew.sh/api/cask/google-chrome.json\\\" | awk -F'[\"]' '{for(i=1;i<=NF;i++) if ($i==\\\"version\\\") {print $(i+2); exit}}'); [ \\\"\\$(printf '%s\\\\n' \\\"\\$local_version\\\" \\\"\\$latest_version\\\" | sort -V | tail -n1)\\\" != \\\"\\$local_version\\\" ] && echo \\\"Chrome is not up to date (Installed: \\$local_version, Latest: \\$latest_version)\\\"; }",
         "education": []
       },
       "remediation": {
