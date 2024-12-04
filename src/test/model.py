@@ -39,7 +39,7 @@ class Model(object):
             config = yaml.safe_load(file)
             return config.get('ignore', {}).get(self.source, [])
 
-    def run_metrics_sequentially(self):
+    def run_metrics_sequentially(self, implementation_only=False):
         '''
         Run all tests sequentially and returns the results.
         '''
@@ -48,7 +48,7 @@ class Model(object):
 
         for metric in self.metrics:
             try:
-                if metric.run_all_tests():
+                if metric.run_all_tests(implementation_only):
                     nb_metrics_ok += 1
             except TargetIsNotACLI:
                 nb_metrics_ok += 1

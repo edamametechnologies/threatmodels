@@ -4,3 +4,4 @@ __pycache__/
 /threatmodel-*.md
 /port_vulns_db_*.json
 /venv/
+report-results.txt
