@@ -1,0 +1,344 @@
+{
+  "Cached logon credentials enabled": {
+    "threat model Windows": [
+      "CIS Benchmark Level 1,Interactive logon: Number of previous logons to cache"
+    ]
+  },
+  "Chrome not uptodate": {
+    "threat model Windows": [],
+    "threat model macOS": []
+  },
+  "LM and NTLMv1 enabled": {
+    "threat model Windows": [
+      "CIS Benchmark Level 1,Network security: LAN Manager authentication level"
+    ]
+  },
+  "Lsass process protection": {
+    "threat model Windows": [
+      "CIS Benchmark Level 1,Ensure LSASS is configured to run as a Protected Process"
+    ]
+  },
+  "MDM profiles": {
+    "threat model Android": [
+      "Personal Posture"
+    ],
+    "threat model iOS": [
+      "Personal Posture"
+    ],
+    "threat model macOS": [
+      "Personal Posture"
+    ]
+  },
+  "MDM remote admin": {
+    "threat model macOS": [
+      "Personal Posture"
+    ]
+  },
+  "PS execution policy unrestricted": {
+    "threat model Windows": [
+      "CIS Benchmark Level 1,Ensure PowerShell Execution Policy is set to RemoteSigned"
+    ]
+  },
+  "Remote Registry Service enabled": {
+    "threat model Windows": [
+      "CIS Benchmark Level 1,Ensure Remote Registry Service is disabled"
+    ]
+  },
+  "SIP disabled": {
+    "threat model macOS": [
+      "CIS Benchmark Level 1,Ensure System Integrity Protection is enabled"
+    ]
+  },
+  "SMBv1 enabled": {
+    "threat model Windows": [
+      "CIS Benchmark Level 1,Ensure SMBv1 protocol is disabled"
+    ]
+  },
+  "UAC disabled": {
+    "threat model Windows": [
+      "CIS Benchmark Level 1,User Account Control: Admin Approval Mode"
+    ]
+  },
+  "WOL enabled": {
+    "threat model macOS": [
+      "CIS Benchmark Level 1,Disable Wake on Network Access"
+    ]
+  },
+  "Windows Hello availability": {
+    "threat model Windows": []
+  },
+  "Windows Script Host enabled": {
+    "threat model Windows": [
+      "CIS Benchmark Level 1,Disable Windows Script Host"
+    ]
+  },
+  "app not up to date": {
+    "threat model Android": [],
+    "threat model iOS": []
+  },
+  "automatic login enabled": {
+    "threat model Windows": [
+      "CIS Benchmark Level 1,Disable Automatic Logon"
+    ],
+    "threat model macOS": [
+      "CIS Benchmark Level 1,Disable automatic login"
+    ]
+  },
+  "biometric authentication disabled": {
+    "threat model Android": []
+  },
+  "edamame helper disabled": {
+    "threat model Linux": [],
+    "threat model Windows": [],
+    "threat model macOS": []
+  },
+  "encrypted disk disabled": {
+    "threat model Android": [
+      "ISO 27001/2,A.8.3.1-Media Protection",
+      "SOC 2,CC6.7-Encryption"
+    ],
+    "threat model Linux": [
+      "CIS Benchmark Level 2,Configure Disk Encryption",
+      "ISO 27001/2,A.8.3.1-Media Protection",
+      "SOC 2,CC6.7-Data Protection"
+    ],
+    "threat model Windows": [
+      "CIS Benchmark Level 1,Configure BitLocker Drive Encryption",
+      "ISO 27001/2,A.8.3.1-Media Protection",
+      "SOC 2,CC6.7-Data Protection"
+    ],
+    "threat model macOS": [
+      "CIS Benchmark Level 1,Enable FileVault",
+      "ISO 27001/2,A.8.3.1-Media Protection",
+      "SOC 2,CC6.7-Data Protection"
+    ]
+  },
+  "encrypted disk organizational recovery": {
+    "threat model macOS": [
+      "Personal Posture"
+    ]
+  },
+  "encrypted private folder disabled": {
+    "threat model Linux": [
+      "CIS Benchmark Level 2,Configure /home partition encryption"
+    ]
+  },
+  "file sharing enabled": {
+    "threat model Linux": [
+      "CIS Benchmark Level 1,Ensure NFS and RPC are not enabled"
+    ],
+    "threat model macOS": [
+      "CIS Benchmark Level 1,Disable File Sharing"
+    ]
+  },
+  "fstab permissions": {
+    "threat model Linux": []
+  },
+  "group group": {
+    "threat model Linux": [
+      "CIS Benchmark Level 1,Verify Group File Ownership"
+    ]
+  },
+  "group permissions": {
+    "threat model Linux": [
+      "CIS Benchmark Level 1,Verify Group File Permissions"
+    ]
+  },
+  "guest account enabled": {
+    "threat model Windows": [
+      "CIS Benchmark Level 1,Ensure Guest account status is disabled"
+    ],
+    "threat model macOS": [
+      "CIS Benchmark Level 1,Disable Guest account"
+    ]
+  },
+  "jailbroken": {
+    "threat model Android": [
+      "CIS Benchmark Level 1,Ensure device is not rooted"
+    ],
+    "threat model iOS": [
+      "CIS Benchmark Level 1,Ensure device is not jailbroken"
+    ]
+  },
+  "lanscan": {
+    "generic": [
+      "Personal Posture"
+    ],
+    "threat model Android": [],
+    "threat model Linux": [],
+    "threat model Windows": [],
+    "threat model iOS": [],
+    "threat model macOS": []
+  },
+  "latest os": {
+    "threat model Android": [
+      "CIS Benchmark Level 1,System is up to date"
+    ],
+    "threat model Linux": [
+      "CIS Benchmark Level 1,Ensure package manager repositories are configured"
+    ],
+    "threat model iOS": [
+      "CIS Benchmark Level 1,Keep iOS Auto-Update Enabled"
+    ],
+    "threat model macOS": [
+      "CIS Benchmark Level 1,Enable Software Update"
+    ]
+  },
+  "local firewall disabled": {
+    "threat model Linux": [
+      "CIS Benchmark Level 1,Ensure UFW is installed"
+    ],
+    "threat model Windows": [
+      "CIS Benchmark Level 1,Ensure Windows Firewall is Enabled"
+    ],
+    "threat model macOS": [
+      "CIS Benchmark Level 1,Enable Firewall"
+    ]
+  },
+  "manual store application updates": {
+    "threat model macOS": [
+      "CIS Benchmark Level 1,Enable App Store Automatic Update"
+    ]
+  },
+  "manual system updates": {
+    "threat model Windows": [
+      "CIS Benchmark Level 1,Configure Automatic Updates"
+    ],
+    "threat model macOS": [
+      "CIS Benchmark Level 1,Enable Software Update Automatic Download"
+    ]
+  },
+  "no EPP": {
+    "threat model Linux": [
+      "ISO 27001/2,A.12.2.1-Malware Controls",
+      "SOC 2,CC6.8-Malware Protection"
+    ],
+    "threat model Windows": [
+      "CIS Benchmark Level 1,Configure Microsoft Defender Antivirus",
+      "ISO 27001/2,A.12.2.1-Malware Controls",
+      "SOC 2,CC6.8-Malware Protection"
+    ],
+    "threat model macOS": [
+      "ISO 27001/2,A.12.2.1-Malware Controls",
+      "SOC 2,CC6.8-Malware Protection"
+    ]
+  },
+  "no sign-in options protection": {
+    "threat model Windows": []
+  },
+  "passwd permissions": {
+    "threat model Linux": [
+      "CIS Benchmark Level 1,Verify Password File Permissions"
+    ]
+  },
+  "password is too weak": {
+    "threat model Android": [
+      "CIS Benchmark Level 1,Ensure minimum password length"
+    ],
+    "threat model Linux": [
+      "CIS Benchmark Level 1,Configure Password Policy Requirements"
+    ]
+  },
+  "play protect disabled": {
+    "threat model Android": [
+      "CIS Benchmark Level 1,Enable Google Play Protect"
+    ]
+  },
+  "pwned": {
+    "generic": [
+      "Personal Posture"
+    ],
+    "threat model Android": [],
+    "threat model Linux": [],
+    "threat model Windows": [],
+    "threat model iOS": [],
+    "threat model macOS": []
+  },
+  "remote desktop enabled": {
+    "threat model Linux": [
+      "CIS Benchmark Level 1,Ensure remote administration tools are not installed"
+    ],
+    "threat model Windows": [
+      "CIS Benchmark Level 1,Ensure Remote Desktop Protocol is Configured"
+    ],
+    "threat model macOS": [
+      "CIS Benchmark Level 1,Disable Remote Desktop Sharing"
+    ]
+  },
+  "remote events enabled": {
+    "threat model macOS": [
+      "CIS Benchmark Level 1,Disable Remote Apple Events"
+    ]
+  },
+  "remote login enabled": {
+    "threat model Linux": [
+      "CIS Benchmark Level 1,Ensure SSH Server is configured with appropriate ciphers"
+    ],
+    "threat model macOS": [
+      "CIS Benchmark Level 1,Disable Remote Login"
+    ]
+  },
+  "response to ping enabled": {
+    "threat model macOS": [
+      "CIS Benchmark Level 1,Enable Stealth Mode"
+    ]
+  },
+  "root user enabled": {
+    "threat model Windows": [
+      "CIS Benchmark Level 1,Built-in Administrator account status"
+    ],
+    "threat model macOS": [
+      "CIS Benchmark Level 1,Disable root account"
+    ]
+  },
+  "secure boot disabled": {
+    "threat model Linux": [
+      "CIS Benchmark Level 2,Ensure Secure Boot is enabled"
+    ]
+  },
+  "shadow group": {
+    "threat model Linux": [
+      "CIS Benchmark Level 1,Verify Shadow File Group Ownership"
+    ]
+  },
+  "shadow permissions": {
+    "threat model Linux": [
+      "CIS Benchmark Level 1,Verify Shadow File Permissions"
+    ]
+  },
+  "too slow or disabled screensaver lock": {
+    "generic": [
+      "ISO 27001/2,A.11.2.8-Unattended User Equipment"
+    ],
+    "threat model Android": [
+      "CIS Benchmark Level 1,Maximum screen lock timeout",
+      "SOC 2,CC6.1-Access Control"
+    ],
+    "threat model Linux": [
+      "CIS Benchmark Level 1,Lock inactive user accounts",
+      "SOC 2,CC6.1-Logical Access"
+    ],
+    "threat model Windows": [
+      "CIS Benchmark Level 1,Machine inactivity limit",
+      "SOC 2,CC6.1-Logical Access"
+    ],
+    "threat model iOS": [
+      "CIS Benchmark Level 1,Set Auto-Lock to 2 Minutes or Less",
+      "SOC 2,CC6.1-Access Control"
+    ],
+    "threat model macOS": [
+      "CIS Benchmark Level 1,Set inactivity interval",
+      "SOC 2,CC6.1-Access Control"
+    ]
+  },
+  "unprotected system wide changes": {
+    "threat model macOS": [
+      "CIS Benchmark Level 1,Enable system wide preferences"
+    ]
+  },
+  "unsigned applications allowed": {
+    "threat model macOS": [
+      "CIS Benchmark Level 1,Enable Gatekeeper"
+    ]
+  }
+}
