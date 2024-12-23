@@ -20,13 +20,7 @@ jobs:
           edamame_domain: ${{ vars.EDAMAME_POSTURE_DOMAIN }}
           edamame_pin: ${{ secrets.EDAMAME_POSTURE_PIN }}
           edamame_id: ${{ github.run_id }}
-          auto_remediate: true
-
-      - name: Checkout threatmodel repo
-        uses: actions/checkout@v4
-        with:
-          # The token must have the workflow scope
-          token: ${{ secrets.DEV_GITHUB_TOKEN }}
+          checkout: true
 
       - name: Setup Python
         uses: actions/setup-python@v3.1.4
