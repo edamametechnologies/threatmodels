@@ -21,15 +21,12 @@ jobs:
             edamame_domain: ${{ vars.EDAMAME_POSTURE_DOMAIN }}
             edamame_pin: ${{ secrets.EDAMAME_POSTURE_PIN }}
             edamame_id: ${{ github.run_id }}
-            auto_remediate: true
+            checkout: true
 
         - name: Setup Python
           uses: actions/setup-python@v3.1.4
           with:
             python-version: 3.11.3
-        
-        - name: Checkout threatmodel repo
-          uses: actions/checkout@v4
         
         - name: Generate wiki files
           run: |
