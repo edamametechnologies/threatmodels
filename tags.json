@@ -340,5 +340,7 @@
     "threat model macOS": [
       "CIS Benchmark Level 1,Enable Gatekeeper"
     ]
-  }
+  },
+  "date": "December 22th 2024",
+  "signature": "0a8f3a7b7ddb7b5194fa96d70bdbd3a1dcf329405cdce056e1881d25b115cbc5"
 }
