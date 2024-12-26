@@ -1275,6 +1275,65 @@
       }
     },
     {
+      "name": "no password manager",
+      "metrictype": "bool",
+      "dimension": "credentials",
+      "severity": 4,
+      "scope": "generic",
+      "tags": [],
+      "description": [
+        {
+          "locale": "EN",
+          "title": "No password manager installed",
+          "summary": "You don't have any password manager installed. We recommend you to install one."
+        },
+        {
+          "locale": "FR",
+          "title": "Pas de gestionnaire de mots de passe installé",
+          "summary": "Vous n'avez pas de gestionnaire de mots de passe installé. Nous vous recommandons d'en installer un."
+        }
+      ],
+      "implementation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "cli",
+        "elevation": "admin",
+        "target": "([ -d \"/Applications/1Password 7.app\" ] || [ -d \"/Applications/LastPass.app\" ] || [ -d \"/Applications/KeePassXC.app\" ] || [ -d \"/Applications/Bitwarden.app\" ] || command -v pass || command -v op || command -v lpass || command -v keepassxc || command -v bw) >/dev/null 2>&1 || echo \"No password manager installed\"",
+        "education": []
+      },
+      "remediation": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "link",
+            "target": "https://en.wikipedia.org/wiki/Password_manager"
+          }
+        ]
+      },
+      "rollback": {
+        "system": "macOS",
+        "minversion": 12,
+        "maxversion": 0,
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "FR",
+            "class": "link",
+            "target": "https://fr.wikipedia.org/wiki/Password_manager"
+          }
+        ]
+      }
+    },
+    {
       "name": "SIP disabled",
       "metrictype": "bool",
       "dimension": "system integrity",
