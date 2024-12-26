@@ -136,6 +136,7 @@ jobs:
 
       - name: Update models hash and date
         if: |
+          "${{ needs.validate.outputs.changed_files }} != "" &&
           needs.test-ubuntu.result == 'success' &&
           needs.test-windows.result == 'success' &&
           needs.test-macos.result == 'success'
