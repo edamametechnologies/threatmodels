@@ -130,43 +130,51 @@ jobs:
    if: always()
    runs-on: ubuntu-latest
    steps:
-     - uses: actions/checkout@v4
-     - name: Revert last commit if any tests fail
-       if: |
-         needs.test-ubuntu.result == 'failure' ||
-         needs.test-windows.result == 'failure' ||
-         needs.test-macos.result == 'failure'
-       run: |
-         git config user.email "dev@edamame.tech"
-         git config user.name "EDAMAME Dev"
-         git revert -m 1 HEAD --no-edit --no-commit
-         git commit -m "Reverted after threat models testing failed [skip ci]"
-         git push
+      - name: Setup EDAMAME Posture
+        uses: edamametechnologies/edamame_posture_action@v0
+        with:
+          edamame_user: ${{ vars.EDAMAME_POSTURE_USER }}
+          edamame_domain: ${{ vars.EDAMAME_POSTURE_DOMAIN }}
+          edamame_pin: ${{ secrets.EDAMAME_POSTURE_PIN }}
+          edamame_id: ${{ github.run_id }}
+          checkout: true
+          
+      - name: Revert last commit if any tests fail
+        if: |
+          needs.test-ubuntu.result == 'failure' ||
+          needs.test-windows.result == 'failure' ||
+          needs.test-macos.result == 'failure'
+        run: |
+          git config user.email "dev@edamame.tech"
+          git config user.name "EDAMAME Dev"
+          git revert -m 1 HEAD --no-edit --no-commit
+          git commit -m "Reverted after threat models testing failed [skip ci]"
+          git push
 
-     - name: Update models hash and date
-       if: |
-         needs.validate.outputs.changed_files != '' &&
-         needs.test-ubuntu.result == 'success' &&
-         needs.test-windows.result == 'success' &&
-         needs.test-macos.result == 'success'
-       run: | 
-         pip install -r requirements.txt
-         python3 src/publish/update-models.py ${{ needs.validate.outputs.changed_files }}
-         git config user.email "dev@edamame.tech"
-         git config user.name "EDAMAME Dev"
-         git commit -a -m "Updated models hash and date [skip ci]"
-         git push --set-upstream origin main
+      - name: Update models hash and date
+        if: |
+          needs.validate.outputs.changed_files != '' &&
+          needs.test-ubuntu.result == 'success' &&
+          needs.test-windows.result == 'success' &&
+          needs.test-macos.result == 'success'
+        run: | 
+          pip install -r requirements.txt
+          python3 src/publish/update-models.py ${{ needs.validate.outputs.changed_files }}
+          git config user.email "dev@edamame.tech"
+          git config user.name "EDAMAME Dev"
+          git commit -a -m "Updated models hash and date [skip ci]"
+          git push --set-upstream origin main
 
-     - name: Slack final report
-       uses: slackapi/slack-github-action@v1.26.0
-       with:
-         channel-id: 'C07127YECN4'
-         slack-message: |
-           GitHub threat models validation and test results on branch ${{ github.ref }}:
-           Validation: ${{ needs.validate.result }}
-           Tests Ubuntu: ${{ needs.test-ubuntu.outputs.report }}
-           Tests Windows: ${{ needs.test-windows.outputs.report }}
-           Tests MacOS: ${{ needs.test-macos.outputs.report }}
-           ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-       env:
-         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      - name: Slack final report
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: 'C07127YECN4'
+          slack-message: |
+            GitHub threat models validation and test results on branch ${{ github.ref }}:
+            Validation: ${{ needs.validate.result }}
+            Tests Ubuntu: ${{ needs.test-ubuntu.outputs.report }}
+            Tests Windows: ${{ needs.test-windows.outputs.report }}
+            Tests MacOS: ${{ needs.test-macos.outputs.report }}
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
