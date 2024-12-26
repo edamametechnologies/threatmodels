@@ -242,7 +242,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "@(Get-ItemProperty 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*', 'HKLM:\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*' -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -match '1Password|LastPass|KeePass|Bitwarden|Dashlane' }).Count -eq 0 -and Write-Output 'No password manager installed'",
+        "target": "$installed = @(Get-ItemProperty HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*, HKLM:\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -match '1Password|LastPass|KeePass|Bitwarden|Dashlane' }).Count; if ($installed -eq 0) { Write-Output 'No password manager installed' }",
         "education": []
       },
       "remediation": {
