@@ -3,5 +3,8 @@ __pycache__/
 /privacy-*.md
 /threatmodel-*.md
 /port_vulns_db_*.json
+/threat\ model\ macOS/
+/threat\ model\ Windows/
+/threat\ model\ Linux/
 /venv/
 report-results.txt
