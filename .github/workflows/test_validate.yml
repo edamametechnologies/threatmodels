@@ -76,7 +76,6 @@ jobs:
           pip install -r requirements.txt
           python3 src/test/main.py
       - id: read_output
-        if: always()
         run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
 
   test-windows:
@@ -96,7 +95,6 @@ jobs:
           pip install -r requirements.txt
           python3 src/test/main.py
       - id: read_output
-        if: always()
         shell: pwsh
         run: echo "::set-output name=report::$(cat report-results.txt)"
 
@@ -117,20 +115,13 @@ jobs:
           pip install -r requirements.txt
           python3 src/test/main.py
       - id: read_output
-        if: always()
         run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
 
   finalize:
     needs: [validate, test-ubuntu, test-windows, test-macos]
-    if: always()
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        if: |
-          needs.test-ubuntu.result == 'failure' ||
-          needs.test-windows.result == 'failure' ||
-          needs.test-macos.result == 'failure'
-
       - name: Revert last commit if any tests fail
         if: |
           needs.test-ubuntu.result == 'failure' ||
