@@ -1,163 +1,164 @@
 name: Validate and Test Models
 on:
-  push:
-    branches: [ "main", "dev" ]
-  pull_request:
-    branches: ["*"]
-  workflow_dispatch:
+ push:
+   branches: [ "main", "dev" ]
+ pull_request:
+   branches: ["*"]
+ workflow_dispatch:
 
 jobs:
-  validate:
-    runs-on: ubuntu-latest
-    outputs:
-      changed_files: ${{ steps.changed-files-specific.outputs.all_changed_files }}
-    steps:
-      - name: Setup EDAMAME Posture
-        uses: edamametechnologies/edamame_posture_action@v0
-        with:
-          edamame_user: ${{ vars.EDAMAME_POSTURE_USER }}
-          edamame_domain: ${{ vars.EDAMAME_POSTURE_DOMAIN }}
-          edamame_pin: ${{ secrets.EDAMAME_POSTURE_PIN }}
-          edamame_id: ${{ github.run_id }}
-          checkout: true
+ validate:
+   runs-on: ubuntu-latest
+   outputs:
+     changed_files: ${{ steps.changed-files-specific.outputs.all_changed_files }}
+   steps:
+     - name: Setup EDAMAME Posture
+       uses: edamametechnologies/edamame_posture_action@v0
+       with:
+         edamame_user: ${{ vars.EDAMAME_POSTURE_USER }}
+         edamame_domain: ${{ vars.EDAMAME_POSTURE_DOMAIN }}
+         edamame_pin: ${{ secrets.EDAMAME_POSTURE_PIN }}
+         edamame_id: ${{ github.run_id }}
+         checkout: true
 
-      - name: Setup Python
-        uses: actions/setup-python@v3.1.4
-        with:
-          python-version: 3.11.3
+     - name: Setup Python
+       uses: actions/setup-python@v3.1.4
+       with:
+         python-version: 3.11.3
 
-      - name: Get changed threat models
-        id: changed-files-specific
-        uses: tj-actions/changed-files@v36
-        with:
-          files: ./*.json
+     - name: Get changed threat models
+       id: changed-files-specific
+       uses: tj-actions/changed-files@v36
+       with:
+         files: ./threatmodel-*.json
 
-      - name: Validate models
-        id: validate
-        run: |
-          echo "Changed files: ${{ steps.changed-files-specific.outputs.all_changed_files }}"
-          pip install -r requirements.txt
-          echo "Validating all threat models"
-          python3 src/publish/validate-models.py threatmodel-*.json
-        continue-on-error: true
+     - name: Validate models
+       id: validate
+       run: |
+         echo "Changed files: ${{ steps.changed-files-specific.outputs.all_changed_files }}"
+         pip install -r requirements.txt
+         echo "Validating all threat models"
+         python3 src/publish/validate-models.py threatmodel-*.json
+       continue-on-error: true
 
-      - name: Revert last commit if validation fails
-        if: steps.validate.outcome == 'failure'
-        run: |
-          git config user.email "dev@edamame.tech"
-          git config user.name "EDAMAME Dev"
-          git revert -m 1 HEAD --no-edit --no-commit
-          git commit -m "Reverted after threat models validation failed [skip ci]"
-          git push
+     - name: Revert last commit if validation fails
+       if: steps.validate.outcome == 'failure'
+       run: |
+         git config user.email "dev@edamame.tech"
+         git config user.name "EDAMAME Dev"
+         git revert -m 1 HEAD --no-edit --no-commit
+         git commit -m "Reverted after threat models validation failed [skip ci]"
+         git push
 
-      - name: Slack alert for validation failure
-        if: steps.validate.outcome == 'failure'
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          channel-id: 'C072J0U9TH7'
-          slack-message: "GitHub threat models (${{ steps.changed-files-specific.outputs.all_changed_files }}) validation on branch ${{ github.ref }} failed, commit has been reverted"
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+     - name: Slack alert for validation failure
+       if: steps.validate.outcome == 'failure'
+       uses: slackapi/slack-github-action@v1.26.0
+       with:
+         channel-id: 'C072J0U9TH7'
+         slack-message: "GitHub threat models (${{ steps.changed-files-specific.outputs.all_changed_files }}) validation on branch ${{ github.ref }} failed, commit has been reverted"
+       env:
+         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
-  test-ubuntu:
-    needs: validate
-    if: needs.validate.result == 'success'
-    runs-on: ubuntu-latest
-    outputs:
-      report: ${{ steps.read_output.outputs.report }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v3.1.4
-        with:
-          python-version: 3.11.3
-      - name: Run tests
-        run: |
-          pip install -r requirements.txt
-          python3 src/test/main.py
-      - id: read_output
-        run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
+ test-ubuntu:
+   needs: validate
+   if: needs.validate.result == 'success'
+   runs-on: ubuntu-latest
+   outputs:
+     report: ${{ steps.read_output.outputs.report }}
+   steps:
+     - uses: actions/checkout@v4
+     - name: Setup Python
+       uses: actions/setup-python@v3.1.4
+       with:
+         python-version: 3.11.3
+     - name: Run tests
+       run: |
+         pip install -r requirements.txt
+         python3 src/test/main.py
+     - id: read_output
+       run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
 
-  test-windows:
-    needs: validate
-    if: needs.validate.result == 'success'
-    runs-on: windows-latest
-    outputs:
-      report: ${{ steps.read_output.outputs.report }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v3.1.4
-        with:
-          python-version: 3.11.3
-      - name: Run tests
-        run: |
-          pip install -r requirements.txt
-          python3 src/test/main.py
-      - id: read_output
-        shell: pwsh
-        run: echo "::set-output name=report::$(cat report-results.txt)"
+ test-windows:
+   needs: validate
+   if: needs.validate.result == 'success'
+   runs-on: windows-latest
+   outputs:
+     report: ${{ steps.read_output.outputs.report }}
+   steps:
+     - uses: actions/checkout@v4
+     - name: Setup Python
+       uses: actions/setup-python@v3.1.4
+       with:
+         python-version: 3.11.3
+     - name: Run tests
+       run: |
+         pip install -r requirements.txt
+         python3 src/test/main.py
+     - id: read_output
+       shell: pwsh
+       run: echo "::set-output name=report::$(cat report-results.txt)"
 
-  test-macos:
-    needs: validate
-    if: needs.validate.result == 'success'
-    runs-on: macos-latest
-    outputs:
-      report: ${{ steps.read_output.outputs.report }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v3.1.4
-        with:
-          python-version: 3.11.3
-      - name: Run tests
-        run: |
-          pip install -r requirements.txt
-          python3 src/test/main.py
-      - id: read_output
-        run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
+ test-macos:
+   needs: validate
+   if: needs.validate.result == 'success'
+   runs-on: macos-latest
+   outputs:
+     report: ${{ steps.read_output.outputs.report }}
+   steps:
+     - uses: actions/checkout@v4
+     - name: Setup Python
+       uses: actions/setup-python@v3.1.4
+       with:
+         python-version: 3.11.3
+     - name: Run tests
+       run: |
+         pip install -r requirements.txt
+         python3 src/test/main.py
+     - id: read_output
+       run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
 
-  finalize:
-    needs: [validate, test-ubuntu, test-windows, test-macos]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Revert last commit if any tests fail
-        if: |
-          needs.test-ubuntu.result == 'failure' ||
-          needs.test-windows.result == 'failure' ||
-          needs.test-macos.result == 'failure'
-        run: |
-          git config user.email "dev@edamame.tech"
-          git config user.name "EDAMAME Dev"
-          git revert -m 1 HEAD --no-edit --no-commit
-          git commit -m "Reverted after threat models testing failed [skip ci]"
-          git push
+ finalize:
+   needs: [validate, test-ubuntu, test-windows, test-macos]
+   if: always()
+   runs-on: ubuntu-latest
+   steps:
+     - uses: actions/checkout@v4
+     - name: Revert last commit if any tests fail
+       if: |
+         needs.test-ubuntu.result == 'failure' ||
+         needs.test-windows.result == 'failure' ||
+         needs.test-macos.result == 'failure'
+       run: |
+         git config user.email "dev@edamame.tech"
+         git config user.name "EDAMAME Dev"
+         git revert -m 1 HEAD --no-edit --no-commit
+         git commit -m "Reverted after threat models testing failed [skip ci]"
+         git push
 
-      - name: Update models hash and date
-        if: |
-          "${{ needs.validate.outputs.changed_files }} != "" &&
-          needs.test-ubuntu.result == 'success' &&
-          needs.test-windows.result == 'success' &&
-          needs.test-macos.result == 'success'
-        run: | 
-          pip install -r requirements.txt
-          python3 src/publish/update-models.py ${{ needs.validate.outputs.changed_files }}
-          git config user.email "dev@edamame.tech"
-          git config user.name "EDAMAME Dev"
-          git commit -a -m "Updated models hash and date [skip ci]"
-          git push --set-upstream origin main
+     - name: Update models hash and date
+       if: |
+         needs.validate.outputs.changed_files != '' &&
+         needs.test-ubuntu.result == 'success' &&
+         needs.test-windows.result == 'success' &&
+         needs.test-macos.result == 'success'
+       run: | 
+         pip install -r requirements.txt
+         python3 src/publish/update-models.py ${{ needs.validate.outputs.changed_files }}
+         git config user.email "dev@edamame.tech"
+         git config user.name "EDAMAME Dev"
+         git commit -a -m "Updated models hash and date [skip ci]"
+         git push --set-upstream origin main
 
-      - name: Slack final report
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          channel-id: 'C07127YECN4'
-          slack-message: |
-            GitHub threat models validation and test results on branch ${{ github.ref }}:
-            Validation: ${{ needs.validate.result }}
-            Tests Ubuntu: ${{ needs.test-ubuntu.outputs.report }}
-            Tests Windows: ${{ needs.test-windows.outputs.report }}
-            Tests MacOS: ${{ needs.test-macos.outputs.report }}
-            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+     - name: Slack final report
+       uses: slackapi/slack-github-action@v1.26.0
+       with:
+         channel-id: 'C07127YECN4'
+         slack-message: |
+           GitHub threat models validation and test results on branch ${{ github.ref }}:
+           Validation: ${{ needs.validate.result }}
+           Tests Ubuntu: ${{ needs.test-ubuntu.outputs.report }}
+           Tests Windows: ${{ needs.test-windows.outputs.report }}
+           Tests MacOS: ${{ needs.test-macos.outputs.report }}
+           ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+       env:
+         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
