@@ -6,6 +6,14 @@ on:
    branches: ["*"]
  workflow_dispatch:
 
+# Auto cancel previous runs if they were not completed.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+# Write permissions are required to upload the release asset.
+permissions: write-all
+
 jobs:
  validate:
    runs-on: ubuntu-latest
