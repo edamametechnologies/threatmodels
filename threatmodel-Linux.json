@@ -179,67 +179,6 @@
       }
     },
     {
-      "name": "encrypted private folder disabled",
-      "metrictype": "bool",
-      "dimension": "system services",
-      "severity": 4,
-      "scope": "generic",
-      "tags": [
-        "CIS Benchmark Level 2,Configure /home partition encryption"
-      ],
-      "description": [
-        {
-          "locale": "EN",
-          "title": "Private directory disabled",
-          "summary": "Your home folder private encrypted directory is not enabled. Enabling home folder encryption helps protect your personal data from unauthorized access."
-        },
-        {
-          "locale": "FR",
-          "title": "Dossier privé désactivé",
-          "summary": "Le dossier privé de votre dossier personnel n'est pas crypté. Activer le cryptage du dossier personnel aide à protéger vos données personnelles contre tout accès non autorisé."
-        }
-      ],
-      "implementation": {
-        "system": "Linux",
-        "minversion": 3,
-        "maxversion": 0,
-        "class": "cli",
-        "elevation": "user",
-        "target": "[ -f ~/.ecryptfs/wrapped-passphrase ] || echo encryption_inactive",
-        "education": []
-      },
-      "remediation": {
-        "system": "Linux",
-        "minversion": 3,
-        "maxversion": 0,
-        "class": "",
-        "elevation": "",
-        "target": "",
-        "education": [
-          {
-            "locale": "EN",
-            "class": "link",
-            "target": "https://help.ubuntu.com/community/EncryptedHome"
-          }
-        ]
-      },
-      "rollback": {
-        "system": "Linux",
-        "minversion": 3,
-        "maxversion": 0,
-        "class": "",
-        "elevation": "",
-        "target": "",
-        "education": [
-          {
-            "locale": "EN",
-            "class": "link",
-            "target": "https://help.ubuntu.com/community/EncryptedHome"
-          }
-        ]
-      }
-    },
-    {
       "name": "encrypted disk disabled",
       "metrictype": "bool",
       "dimension": "system services",
