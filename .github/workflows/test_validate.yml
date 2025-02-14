@@ -17,6 +17,8 @@ permissions: write-all
 jobs:
  validate:
    runs-on: ubuntu-latest
+   timeout-minutes: 90
+
    outputs:
      changed_files: ${{ steps.changed-files-specific.outputs.all_changed_files }}
    steps:
@@ -71,6 +73,8 @@ jobs:
    needs: validate
    if: needs.validate.result == 'success'
    runs-on: ubuntu-latest
+   timeout-minutes: 90
+
    outputs:
      report: ${{ steps.read_output.outputs.report }}
    steps:
@@ -90,6 +94,8 @@ jobs:
    needs: validate
    if: needs.validate.result == 'success'
    runs-on: windows-latest
+   timeout-minutes: 90
+
    outputs:
      report: ${{ steps.read_output.outputs.report }}
    steps:
@@ -110,6 +116,8 @@ jobs:
    needs: validate
    if: needs.validate.result == 'success'
    runs-on: macos-latest
+   timeout-minutes: 90
+
    outputs:
      report: ${{ steps.read_output.outputs.report }}
    steps:
@@ -129,6 +137,8 @@ jobs:
    needs: [validate, test-ubuntu, test-windows, test-macos]
    if: always()
    runs-on: ubuntu-latest
+   timeout-minutes: 90
+
    steps:
       - name: Setup EDAMAME Posture
         uses: edamametechnologies/edamame_posture_action@v0
