@@ -85,7 +85,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "LANG=C sentinelctl version 2>/dev/null | grep -q 'Agent version' || echo epp_disabled",
+        "target": "LANG=C sentinelctl version 2>/dev/null | grep -q 'Agent version' || pgrep -f FortiEDRAvScanner >/dev/null 2>&1 || echo epp_disabled",
         "education": []
       },
       "remediation": {
@@ -144,7 +144,7 @@
         "maxversion": 0,
         "class": "cli",
         "elevation": "admin",
-        "target": "(command -v pass || command -v keepassxc || command -v bw || command -v lpass || command -v gopass) >/dev/null 2>&1 || echo \"No password manager installed\"",
+        "target": "(command -v pass || command -v keepassxc || command -v bw || command -v lpass || command -v gopass || command -v 1password) >/dev/null 2>&1 || echo \"No password manager installed\"",
         "education": []
       },
       "remediation": {
