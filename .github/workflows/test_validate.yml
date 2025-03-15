@@ -38,9 +38,25 @@ jobs:
 
      - name: Get changed threat models
        id: changed-files-specific
-       uses: tj-actions/changed-files@v36
-       with:
-         files: ./threatmodel-*.json
+       run: |
+         # For pull requests, compare with base branch
+         if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+           BASE_SHA=${{ github.event.pull_request.base.sha }}
+           HEAD_SHA=${{ github.event.pull_request.head.sha }}
+         else
+           # For push events, compare with previous commit
+           BASE_SHA=$(git rev-parse HEAD^)
+           HEAD_SHA=$(git rev-parse HEAD)
+         fi
+         
+         # Get changed files matching pattern and format them as comma-separated list
+         CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRT $BASE_SHA $HEAD_SHA | grep -E 'threatmodel-.*\.json' || true)
+         
+         # Convert newlines to comma-separated list
+         CHANGED_FILES_CSV=$(echo "$CHANGED_FILES" | tr '\n' ',' | sed 's/,$//')
+         
+         echo "all_changed_files=$CHANGED_FILES_CSV" >> $GITHUB_OUTPUT
+         echo "Changed files: $CHANGED_FILES_CSV"
 
      - name: Validate models
        id: validate
