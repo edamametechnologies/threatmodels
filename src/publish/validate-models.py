@@ -282,9 +282,9 @@ def validate_threat_model(filename: str) -> None:
                         # Sometime head request is not allowed, try with get
                         response = requests.get(impl['target'])
                         if not response.ok:
-                            print(f"Invalid URL '{impl['target']}' in target field at '{metric['name']} -> {key} -> impl[{k}]'. "
-                                             f"Reason: {response.status_code} {response.reason}")
-                            continue
+                            error_msg = f"Invalid URL '{impl['target']}' in target field at '{metric['name']} -> {key}'. Reason: {response.status_code} {response.reason}"
+                            print(error_msg)
+                            raise ValueError(error_msg)
 
             # If we have a youtube class, check the URL is a valid youtube video
             if impl['class'] == 'youtube':
@@ -315,9 +315,9 @@ def validate_threat_model(filename: str) -> None:
                             # Sometime head request is not allowed, try with get
                             response = requests.get(education['target'])
                             if not response.ok:
-                                print(f"Invalid URL '{education['target']}' in target field at '{metric['name']} -> {key} -> education[{k}]'. "
-                                      f"Reason: {response.status_code} {response.reason}")
-                                continue
+                                error_msg = f"Invalid URL '{education['target']}' in target field at '{metric['name']} -> {key} -> education[{k}]'. Reason: {response.status_code} {response.reason}"
+                                print(error_msg)
+                                raise ValueError(error_msg)
 
                     # If we have a youtube class, check the URL is a valid youtube video
                     if education['class'] == 'youtube':
