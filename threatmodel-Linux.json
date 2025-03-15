@@ -114,7 +114,7 @@
           {
             "locale": "FR",
             "class": "link",
-            "target": "https://help.ubuntu.com/community/Antivirus"
+            "target": "https://fr.wikipedia.org/wiki/Antivirus"
           }
         ]
       }
@@ -173,7 +173,7 @@
           {
             "locale": "FR",
             "class": "link",
-            "target": "https://fr.wikipedia.org/wiki/Password_manager"
+            "target": "https://fr.wikipedia.org/wiki/Gestionnaire_de_mots_de_passe"
           }
         ]
       }
