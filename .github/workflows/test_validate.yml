@@ -44,8 +44,16 @@ jobs:
            BASE_SHA=${{ github.event.pull_request.base.sha }}
            HEAD_SHA=${{ github.event.pull_request.head.sha }}
          else
-           # For push events, compare with previous commit
-           BASE_SHA=$(git rev-parse HEAD^)
+           # For push events, fetch history and compare with previous commit
+           git fetch --prune --unshallow || true  # Ensure we have history, ignoring errors
+           # Try to get previous commit SHA, fallback to comparing against empty tree if needed
+           if git rev-parse HEAD^ >/dev/null 2>&1; then
+             BASE_SHA=$(git rev-parse HEAD^)
+           else
+             # If HEAD^ doesn't exist (first commit or shallow clone), use empty tree
+             BASE_SHA=$(git hash-object -t tree /dev/null)
+             echo "No previous commit found, comparing against empty tree"
+           fi
            HEAD_SHA=$(git rev-parse HEAD)
          fi
          
