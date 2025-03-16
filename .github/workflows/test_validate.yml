@@ -152,9 +152,11 @@ jobs:
           git commit -m "Reverted after threat models testing failed [skip ci]"
           git push
 
-      - name: Update models hash and date if their respective tests succeed
+      - name: Update models hash and date (if their respective tests succeed)
         run: | 
           pip install -r requirements.txt
+
+          # Update of the hash and date will take place only if the file has changed
           if [ "${{ needs.test-ubuntu.result }}" == "success" ]; then
             python3 src/publish/update-models.py threatmodel-Linux.json
           fi
@@ -162,8 +164,10 @@ jobs:
             python3 src/publish/update-models.py threatmodel-Windows.json
           fi
           if [ "${{ needs.test-macos.result }}" == "success" ]; then
-            python3 src/publish/update-models.py threatmodel-MacOS.json
+            python3 src/publish/update-models.py threatmodel-macOS.json
           fi
+          python3 src/publish/update-models.py threatmodel-iOS.json
+          python3 src/publish/update-models.py threatmodel-Android.json
           
           git config user.email "dev@edamame.tech"
           git config user.name "EDAMAME Dev"
