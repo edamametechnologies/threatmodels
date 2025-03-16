@@ -62,10 +62,10 @@ jobs:
          
          # Create both newline and comma-separated versions
          CHANGED_FILES_CSV=$(echo "$CHANGED_FILES" | tr '\n' ',' | sed 's/,$//')
-         # Store each file as a separate line in the output file for proper array handling
-         echo "all_changed_files<<EOF" >> $GITHUB_OUTPUT
-         echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
-         echo "EOF" >> $GITHUB_OUTPUT
+         
+         # Store files as a JSON array for proper handling across jobs
+         CHANGED_FILES_JSON=$(echo "$CHANGED_FILES" | jq -R -s -c 'split("\n") | map(select(length > 0))')
+         echo "all_changed_files=$CHANGED_FILES_JSON" >> $GITHUB_OUTPUT
          
          echo "Changed files: $CHANGED_FILES_CSV"
 
@@ -196,8 +196,17 @@ jobs:
           needs.test-macos.result == 'success'
         run: | 
           pip install -r requirements.txt
-          # Use xargs to properly pass each file as a separate argument
-          echo "${{ needs.validate.outputs.changed_files }}" | xargs python3 src/publish/update-models.py
+          
+          # Extract the JSON array into individual files and pass to script
+          FILES=$(echo '${{ needs.validate.outputs.changed_files }}' | jq -r '.[]')
+          echo "Files to update: $FILES"
+          
+          # Use a loop to process each file individually
+          for file in $FILES; do
+            echo "Processing file: $file"
+            python3 src/publish/update-models.py "$file"
+          done
+          
           git config user.email "dev@edamame.tech"
           git config user.name "EDAMAME Dev"
           git commit -a -m "Updated models hash and date [skip ci]"
