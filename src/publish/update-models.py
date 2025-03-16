@@ -36,9 +36,43 @@ def hash_file(filename: str) -> str:
     return h.hexdigest()
 
 
+def verify_signature(filename: str, stored_signature: str) -> bool:
+    '''Verify if the current signature matches the stored one
+    
+    Returns True if signature is valid (file hasn't changed)
+    Returns False if signature is invalid (file has changed)
+    '''
+    # Save current data with empty signature to verify hash
+    data = open_threat_model(filename)
+    original_signature = data["signature"]
+    data["signature"] = ""
+    save_threat_model(filename, data)
+    
+    # Calculate hash
+    calculated_hash = hash_file(filename)
+    
+    # Restore original signature
+    data["signature"] = original_signature
+    save_threat_model(filename, data)
+    
+    # Compare calculated hash with stored signature
+    return calculated_hash == stored_signature
+
+
 def update_threat_model_header(filename):
     '''Update the hash and date in the header of the threat model'''
     data = open_threat_model(filename)
+    
+    # Get the current signature
+    current_signature = data.get("signature", "")
+    
+    # Check if signature is valid (file hasn't changed)
+    if current_signature and verify_signature(filename, current_signature):
+        print(f"Signature valid for {filename} - file hasn't changed, skipping update")
+        return
+    
+    # File has changed or no signature exists, proceed with update
+    print(f"Updating signature for {filename}")
 
     # Update the date
     data["date"] = datetime.datetime.now().strftime("%B %dth %Y")
@@ -63,5 +97,5 @@ def update_threat_model_header(filename):
 if __name__ == "__main__":
     for arg in sys.argv:
         if arg.endswith(".json"):
-            print(f"Updating {arg}")
+            print(f"Checking {arg}")
             update_threat_model_header(arg)
