@@ -57,13 +57,16 @@ jobs:
            HEAD_SHA=$(git rev-parse HEAD)
          fi
          
-         # Get changed files matching pattern and format them as comma-separated list
+         # Get changed files matching pattern
          CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRT $BASE_SHA $HEAD_SHA | grep -E 'threatmodel-.*\.json' || true)
          
-         # Convert newlines to comma-separated list
+         # Create both newline and comma-separated versions
          CHANGED_FILES_CSV=$(echo "$CHANGED_FILES" | tr '\n' ',' | sed 's/,$//')
+         # Store each file as a separate line in the output file for proper array handling
+         echo "all_changed_files<<EOF" >> $GITHUB_OUTPUT
+         echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
+         echo "EOF" >> $GITHUB_OUTPUT
          
-         echo "all_changed_files=$CHANGED_FILES_CSV" >> $GITHUB_OUTPUT
          echo "Changed files: $CHANGED_FILES_CSV"
 
      - name: Validate models
@@ -193,7 +196,8 @@ jobs:
           needs.test-macos.result == 'success'
         run: | 
           pip install -r requirements.txt
-          python3 src/publish/update-models.py ${{ needs.validate.outputs.changed_files }}
+          # Use xargs to properly pass each file as a separate argument
+          echo "${{ needs.validate.outputs.changed_files }}" | xargs python3 src/publish/update-models.py
           git config user.email "dev@edamame.tech"
           git config user.name "EDAMAME Dev"
           git commit -a -m "Updated models hash and date [skip ci]"

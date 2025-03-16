@@ -1193,12 +1193,12 @@
         {
           "locale": "EN",
           "title": "Business rule not respected",
-          "summary": "One or more business rules are not respected. Please check the metric output for more details."
+          "summary": "One or more business rules are not respected. Please check the command output for more details."
         },
         {
           "locale": "FR",
           "title": "Règle métier non respectée",
-          "summary": "Une ou plusieurs règles métier ne sont pas respectées. Veuillez vérifier la sortie de la métrique pour plus de détails."
+          "summary": "Une ou plusieurs règles métier ne sont pas respectées. Veuillez vérifier la sortie de la commande pour plus de détails."
         }
       ],
       "implementation": {
