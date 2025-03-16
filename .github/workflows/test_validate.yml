@@ -155,7 +155,15 @@ jobs:
       - name: Update models hash and date if their respective tests succeed
         run: | 
           pip install -r requirements.txt
-          python3 src/publish/update-models.py threatmodel-*.json
+          if [ "${{ needs.test-ubuntu.result }}" == "success" ]; then
+            python3 src/publish/update-models.py threatmodel-Linux.json
+          fi
+          if [ "${{ needs.test-windows.result }}" == "success" ]; then
+            python3 src/publish/update-models.py threatmodel-Windows.json
+          fi
+          if [ "${{ needs.test-macos.result }}" == "success" ]; then
+            python3 src/publish/update-models.py threatmodel-MacOS.json
+          fi
           
           git config user.email "dev@edamame.tech"
           git config user.name "EDAMAME Dev"
