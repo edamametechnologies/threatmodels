@@ -19,8 +19,6 @@ jobs:
    runs-on: ubuntu-latest
    timeout-minutes: 90
 
-   outputs:
-     changed_files: ${{ steps.changed-files-specific.outputs.all_changed_files }}
    steps:
      - name: Setup EDAMAME Posture
        uses: edamametechnologies/edamame_posture_action@v0
@@ -36,43 +34,9 @@ jobs:
        with:
          python-version: 3.11.3
 
-     - name: Get changed threat models
-       id: changed-files-specific
-       run: |
-         # For pull requests, compare with base branch
-         if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-           BASE_SHA=${{ github.event.pull_request.base.sha }}
-           HEAD_SHA=${{ github.event.pull_request.head.sha }}
-         else
-           # For push events, fetch history and compare with previous commit
-           git fetch --prune --unshallow || true  # Ensure we have history, ignoring errors
-           # Try to get previous commit SHA, fallback to comparing against empty tree if needed
-           if git rev-parse HEAD^ >/dev/null 2>&1; then
-             BASE_SHA=$(git rev-parse HEAD^)
-           else
-             # If HEAD^ doesn't exist (first commit or shallow clone), use empty tree
-             BASE_SHA=$(git hash-object -t tree /dev/null)
-             echo "No previous commit found, comparing against empty tree"
-           fi
-           HEAD_SHA=$(git rev-parse HEAD)
-         fi
-         
-         # Get changed files matching pattern
-         CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRT $BASE_SHA $HEAD_SHA | grep -E 'threatmodel-.*\.json' || true)
-         
-         # Create both newline and comma-separated versions
-         CHANGED_FILES_CSV=$(echo "$CHANGED_FILES" | tr '\n' ',' | sed 's/,$//')
-         
-         # Store files as a JSON array for proper handling across jobs
-         CHANGED_FILES_JSON=$(echo "$CHANGED_FILES" | jq -R -s -c 'split("\n") | map(select(length > 0))')
-         echo "all_changed_files=$CHANGED_FILES_JSON" >> $GITHUB_OUTPUT
-         
-         echo "Changed files: $CHANGED_FILES_CSV"
-
      - name: Validate models
        id: validate
        run: |
-         echo "Changed files: ${{ steps.changed-files-specific.outputs.all_changed_files }}"
          pip install -r requirements.txt
          echo "Validating all threat models"
          python3 src/publish/validate-models.py threatmodel-*.json
@@ -92,7 +56,7 @@ jobs:
        uses: slackapi/slack-github-action@v1.26.0
        with:
          channel-id: 'C072J0U9TH7'
-         slack-message: "GitHub threat models (${{ steps.changed-files-specific.outputs.all_changed_files }}) validation on branch ${{ github.ref }} failed, commit has been reverted"
+         slack-message: "GitHub threat models validation on branch ${{ github.ref }} failed, commit has been reverted"
        env:
          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -188,24 +152,10 @@ jobs:
           git commit -m "Reverted after threat models testing failed [skip ci]"
           git push
 
-      - name: Update models hash and date
-        if: |
-          needs.validate.outputs.changed_files != '' &&
-          needs.test-ubuntu.result == 'success' &&
-          needs.test-windows.result == 'success' &&
-          needs.test-macos.result == 'success'
+      - name: Update models hash and date if their respective tests succeed
         run: | 
           pip install -r requirements.txt
-          
-          # Extract the JSON array into individual files and pass to script
-          FILES=$(echo '${{ needs.validate.outputs.changed_files }}' | jq -r '.[]')
-          echo "Files to update: $FILES"
-          
-          # Use a loop to process each file individually
-          for file in $FILES; do
-            echo "Processing file: $file"
-            python3 src/publish/update-models.py "$file"
-          done
+          python3 src/publish/update-models.py threatmodel-*.json
           
           git config user.email "dev@edamame.tech"
           git config user.name "EDAMAME Dev"
