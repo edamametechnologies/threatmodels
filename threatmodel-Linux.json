@@ -1181,6 +1181,75 @@
           }
         ]
       }
+    },
+    {
+      "name": "Business rule not respected",
+      "metrictype": "bool",
+      "dimension": "applications",
+      "severity": 1,
+      "scope": "generic",
+      "tags": [],
+      "description": [
+        {
+          "locale": "EN",
+          "title": "Business rule not respected",
+          "summary": "One or more business rules are not respected. Please check the metric output for more details."
+        },
+        {
+          "locale": "FR",
+          "title": "Règle métier non respectée",
+          "summary": "Une ou plusieurs règles métier ne sont pas respectées. Veuillez vérifier la sortie de la métrique pour plus de détails."
+        }
+      ],
+      "implementation": {
+        "system": "Linux",
+        "minversion": 3,
+        "maxversion": 0,
+        "class": "internal",
+        "elevation": "user",
+        "target": "business_rules",
+        "education": []
+      },
+      "remediation": {
+        "system": "Linux",
+        "minversion": 3,
+        "maxversion": 0,
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "html",
+            "target": "Refer to the business rules documentation for more details."
+          },
+          {
+            "locale": "FR",
+            "class": "html",
+            "target": "Consultez la documentation des règles métier pour plus de détails."
+          }
+        ]
+      },
+      "rollback": {
+        "system": "Linux",
+        "minversion": 3,
+        "maxversion": 0,
+        "class": "",
+        "elevation": "",
+        "target": "",
+        "education": [
+          {
+            "locale": "EN",
+            "class": "html",
+            "target": "Refer to the business rules documentation for more details."
+          },
+          {
+            "locale": "FR",
+            "class": "html",
+            "target": "Consultez la documentation des règles métier pour plus de détails."
+          }
+        ]
+      }
     }
   ]
 }
