@@ -171,8 +171,9 @@ jobs:
           
           git config user.email "dev@edamame.tech"
           git config user.name "EDAMAME Dev"
-          git commit -a -m "Updated models hash and date [skip ci]"
-          git push --set-upstream origin main
+          git commit -a -m "Updated models hash and date [skip ci]" && \
+          git push --set-upstream origin main || \
+          echo "No changes to commit"
 
       - name: Slack final report
         uses: slackapi/slack-github-action@v1.26.0
