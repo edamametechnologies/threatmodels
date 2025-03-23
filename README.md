@@ -97,6 +97,30 @@ Each whitelist entry can specify:
 - Autonomous System information (AS number, country, owner)
 - Process-specific restrictions
 
+#### Domain Wildcard Matching
+
+The whitelist system supports wildcards that can match one or more complete domain components:
+
+1. **Prefix Wildcards** (`*.example.com`): 
+   - Matches any subdomain of example.com, regardless of depth
+   - Examples: `sub.example.com`, `deep.sub.example.com`, `a.b.c.example.com`
+   - Does not match the base domain itself (`example.com`)
+
+2. **Middle Position Wildcards** (`example.*.com`):
+   - Matches any domain with `example` as the first element and `com` as the last element
+   - The wildcard can match one or more domain components
+   - Examples: `example.test.com`, `example.one.two.three.com`
+
+3. **Suffix Wildcards** (`example.*`):
+   - Matches `example` domain with any suffix, regardless of depth
+   - Examples: `example.com`, `example.org`, `example.co.uk`
+
+Note: Each domain pattern can contain at most one wildcard character, but that wildcard can match multiple domain components. Partial wildcards within components (e.g., `ex*ample.com`) are not supported.
+
+#### IP Address Matching
+
+IP address matching supports both specific addresses and network ranges using standard notation.
+
 This database enables EDAMAME to distinguish between legitimate and potentially unauthorized network connections, which is essential for security posture assessment.
 
 ### Database Integrity and Updates
@@ -200,125 +224,4 @@ Direct checks of system configuration, file presence, or settings that can be ev
 Safe, predefined commands that gather information about the system state. These commands are carefully vetted to ensure they cannot cause harm to the system.
 
 ### Business Rules
-Specialized checks that execute local scripts in userspace, leveraging the `EDAMAME_BUSINESS_RULES_CMD` environment variable. These scripts operate entirely on the user's device and implement organization-specific security policies without compromising user privacy.
-
-The business rules framework allows organizations to define custom security checks while ensuring that:
-- Scripts run locally in userspace only
-- Only the final check result (pass/fail) is transmitted when reporting the security score
-- The detailed output of the script remains available only on the local device
-- No sensitive user data is sent to remote servers
-
-This approach prevents potential abuse by administrators while maintaining the privacy and security of end users. Business rules can only access information that a normal user process could access, providing an additional layer of protection against privacy violations.
-
-## Platform Coverage
-
-EDAMAME provides threat models for multiple platforms:
-
-| Platform | Coverage |
-|----------|----------|
-| **Android** | Android 11+ |
-| **iOS** | iOS 15+ |
-| **Linux** | Various distributions |
-| **macOS** | macOS-specific threats |
-| **Windows** | Windows-specific threats |
-
-Each platform model contains:
-1. **Platform-specific threats**: Threats unique to the platform's architecture
-2. **Generic threats**: Common threats applicable across multiple platforms
-3. **Implementation differences**: Platform-appropriate detection methods for similar threats
-
-## Security Assessment
-
-### Severity Classification
-
-Threats are classified on a scale from 1 to 5:
-
-| Level | Severity | Description |
-|-------|----------|-------------|
-| 1 | **Low** | Represents good security practice but minimal immediate risk |
-| 2 | **Medium-Low** | May represent a security weakness |
-| 3 | **Medium** | Significant security risk in specific circumstances |
-| 4 | **High** | Serious security risk for most users |
-| 5 | **Critical** | Severe security risk requiring immediate remediation |
-
-### Compliance Frameworks
-
-Threat models leverage industry standards and compliance frameworks:
-
-| Framework | Description |
-|-----------|-------------|
-| **CIS Benchmarks** | Center for Internet Security standardized configurations |
-| **ISO 27001/2** | International security management standards |
-| **SOC 2** | Service Organization Control framework |
-| **Personal Posture** | EDAMAME-specific recommendations for personal device security |
-
-## Privacy Protection
-
-EDAMAME's threat model implementation follows a privacy-by-design approach. The security assessment framework ensures that:
-
-1. Only the result of a check (pass/fail/not applicable) is transmitted when reporting the security score
-2. Raw data and detailed script outputs remain on the local device
-3. Checks cannot access privileged information beyond what's available to the user
-4. No personally identifiable information is collected or transmitted without explicit consent
-
-This architecture intentionally prevents administrative abuse of security checks and guarantees user privacy, in line with EDAMAME Technologies' commitment to building security tools that respect user autonomy and privacy.
-
-### Important Note on Business Rules
-
-While the threat models included in this repository have been carefully vetted by EDAMAME Technologies to respect user privacy, the **Business Rules** functionality requires special attention:
-
-The `EDAMAME_BUSINESS_RULES_CMD` environment variable allows organizations to define and execute custom security checks through user-supplied scripts or commands. Unlike EDAMAME's built-in models, **these custom commands are NOT pre-vetted** by EDAMAME Technologies.
-
-It is the responsibility of the user or organization to ensure that any custom business rule commands:
-- Do not collect or transmit sensitive user data without appropriate consent
-- Operate only within appropriate permission boundaries
-- Respect user privacy and organizational data handling policies
-- Do not contain malicious code that could compromise security
-
-When implementing custom business rules, carefully review all scripts to verify they align with your privacy standards and security requirements. Remember that while the EDAMAME framework only transmits the final pass/fail result of these checks, the scripts themselves have access to whatever information is available to the user account running them.
-
-## Additional Features
-
-### Internationalization
-
-Threat descriptions support multiple languages, currently:
-- English (EN)
-- French (FR)
-
-Each threat description, remediation step, and user-facing element is internationalized to provide native language support.
-
-### Implementation Details
-
-Each threat implementation contains:
-- **system**: Target operating system
-- **minversion/maxversion**: Version compatibility range
-- **class**: Implementation method (internal, command, business_rules)
-- **elevation**: Required permission level (user, admin)
-- **target**: Specific check to perform
-- **education**: Optional educational materials
-
-### Remediation Guidance
-
-Remediation paths include:
-- **Direct links**: To official documentation for standard remediation
-- **HTML content**: Rich formatted guidance for complex issues
-- **Internal tools**: For threats that can be addressed through EDAMAME tooling
-
-## EDAMAME Ecosystem
-
-These threat models are used throughout the EDAMAME security ecosystem:
-
-- **EDAMAME Core**: The core implementation used by all EDAMAME components (closed source)
-- **[EDAMAME Security](https://github.com/edamametechnologies)**: Desktop/mobile security application with full UI and enhanced capabilities (closed source)
-- **[EDAMAME Foundation](https://github.com/edamametechnologies/edamame_foundation)**: Foundation library providing security assessment functionality
-- **[EDAMAME Posture](https://github.com/edamametechnologies/edamame_posture_cli)**: CLI tool for security posture assessment and remediation
-- **[EDAMAME Helper](https://github.com/edamametechnologies/edamame_helper)**: Helper application for executing privileged security checks
-- **[EDAMAME CLI](https://github.com/edamametechnologies/edamame_cli)**: Interface to EDAMAME core services
-- **[GitHub Integration](https://github.com/edamametechnologies/edamame_posture_action)**: GitHub Action for integrating posture checks in CI/CD
-- **[GitLab Integration](https://gitlab.com/edamametechnologies/edamame_posture_action)**: Similar integration for GitLab CI/CD workflows
-- **[Threat Models](https://github.com/edamametechnologies/threatmodels)**: Threat model definitions used throughout the system
-- **[EDAMAME Hub](https://hub.edamame.tech)**: Web portal for centralized management when using these components in team environments
-
-## Author
-
-EDAMAME Technologies
+Specialized checks that execute local scripts in userspace, leveraging the `EDAMAME_BUSINESS_RULES_CMD`
