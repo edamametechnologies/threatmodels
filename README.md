@@ -138,11 +138,11 @@ Security threats are categorized along 5 key dimensions:
 
 | Dimension | Description |
 |-----------|-------------|
-| **Applications** | Application authorizations, code signing, EPP/antivirus, etc. |
-| **Network** | Network configuration, exposed services, unsafe connections |
-| **Credentials** | Password policies, biometrics, 2FA, exposed credentials |
-| **System Integrity** | MDM profiles, jailbreaking, 3rd party administrative access |
-| **System Services** | System configuration, service vulnerabilities |
+| **Applications** | Application authorizations, EPP/antivirus, ... |
+| **Network** | Network configuration, exposed services, ... |
+| **Credentials** | Password policies, biometrics, 2FA, ... |
+| **System Integrity** | MDM profiles, jailbreaking, 3rd party administrative access, ... |
+| **System Services** | System configuration, service vulnerabilities, ... |
 
 ## Naming Conventions
 
