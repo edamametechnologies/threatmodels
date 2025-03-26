@@ -90,39 +90,6 @@ The `whitelists-db.json` database defines allowable network connections for diff
 3. Platform-specific whitelists (macOS, Linux, Windows)
 4. Hierarchical definitions with inheritance support
 
-Each whitelist entry can specify:
-- Domains (including wildcard patterns)
-- IP addresses (both specific and network ranges)
-- Ports and protocols
-- Autonomous System information (AS number, country, owner)
-- Process-specific restrictions
-
-#### Domain Wildcard Matching
-
-The whitelist system supports wildcards that can match one or more complete domain components:
-
-1. **Prefix Wildcards** (`*.example.com`): 
-   - Matches any subdomain of example.com, regardless of depth
-   - Examples: `sub.example.com`, `deep.sub.example.com`, `a.b.c.example.com`
-   - Does not match the base domain itself (`example.com`)
-
-2. **Middle Position Wildcards** (`example.*.com`):
-   - Matches any domain with `example` as the first element and `com` as the last element
-   - The wildcard can match one or more domain components
-   - Examples: `example.test.com`, `example.one.two.three.com`
-
-3. **Suffix Wildcards** (`example.*`):
-   - Matches `example` domain with any suffix, regardless of depth
-   - Examples: `example.com`, `example.org`, `example.co.uk`
-
-Note: Each domain pattern can contain at most one wildcard character, but that wildcard can match multiple domain components. Partial wildcards within components (e.g., `ex*ample.com`) are not supported.
-
-#### IP Address Matching
-
-IP address matching supports both specific addresses and network ranges using standard notation.
-
-This database enables EDAMAME to distinguish between legitimate and potentially unauthorized network connections, which is essential for security posture assessment.
-
 ### Database Integrity and Updates
 
 All EDAMAME databases include:
