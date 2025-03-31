@@ -7,6 +7,7 @@
   - [Vendor Vulnerability Database](#vendor-vulnerability-database)
   - [Device Profile Database](#device-profile-database)
   - [Whitelist Database](#whitelist-database)
+  - [Blacklist Database](#blacklist-database)
   - [Database Integrity and Updates](#database-integrity-and-updates)
 - [Threat Dimensions](#threat-dimensions)
 - [Naming Conventions](#naming-conventions)
@@ -50,6 +51,8 @@ The `lanscan-port-vulns-db.json` database catalogs vulnerabilities associated wi
 5. Adds metadata including service names, descriptions, and protocol information
 6. Generates a cryptographic signature for database integrity verification
 
+The database is updated **monthly** via a scheduled GitHub Actions workflow (`.github/workflows/update_vulns_db.yml`).
+
 The port vulnerability database enables EDAMAME to identify potentially vulnerable services running on endpoints within a network scan.
 
 ### Vendor Vulnerability Database
@@ -62,6 +65,8 @@ Similarly, the `lanscan-vendor-vulns-db.json` database tracks vulnerabilities as
 4. Retains only recent CVEs (past 4 years)
 5. Organizes vulnerabilities by vendor with appropriate metadata
 6. Signs the database for integrity verification
+
+Like the port vulnerability database, this database is updated **monthly** via the same GitHub Actions workflow (`.github/workflows/update_vulns_db.yml`).
 
 This database helps EDAMAME evaluate potential risks associated with specific hardware vendors detected on the network.
 
@@ -89,6 +94,26 @@ The `whitelists-db.json` database defines allowable network connections for diff
 2. Specialized whitelists for development and CI/CD environments
 3. Platform-specific whitelists (macOS, Linux, Windows)
 4. Hierarchical definitions with inheritance support
+
+Currently, the database defines the following key whitelists:
+- `edamame`: Base list for core application connections (backend APIs, analytics, IP services).
+- `builder`: Extends `edamame` for development environments (package repositories, cloud services, CDNs).
+- `github`: Extends `builder` for GitHub-related connections (GitHub domains, Azure IPs for Actions).
+- `github_macos`, `github_linux`, `github_windows`: Extend `github` with platform-specific connections needed in CI/CD environments (e.g., Homebrew/Apple services for macOS, Ubuntu/Microsoft repositories for Linux).
+
+### Blacklist Database
+
+The `blacklists-db.json` database catalogs known malicious or unwanted IP addresses and ranges sourced from public blocklists. This database is automatically generated and updated by the `build-blacklists.py` script, which:
+
+1.  Downloads IP lists from predefined sources. Currently, it uses the `firehol_level1` list (`https://raw.githubusercontent.com/ktsaou/blocklist-ipsets/master/firehol_level1.netset`), known for basic protection with minimal false positives.
+2.  Parses the downloaded content, removing comments and extracting IP addresses or CIDR ranges.
+3.  Structures the data, including metadata such as the source URL, description, and last update time for each list.
+4.  Stores the collected IP ranges within the JSON structure.
+5.  Generates a cryptographic signature based on the blacklist content for integrity verification.
+
+The database is updated **daily** via a scheduled GitHub Actions workflow (`.github/workflows/update_blacklists_db.yml`).
+
+This database enables EDAMAME to identify connections to potentially harmful IP addresses.
 
 ### Database Integrity and Updates
 
