@@ -60,7 +60,7 @@ jobs:
           fetch-depth: 0  # Fetch all history
       
       - name: Download blacklists database
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: blacklists-db
           path: .
