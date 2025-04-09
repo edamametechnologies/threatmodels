@@ -57,6 +57,24 @@
           "domain": "*.bc.googleusercontent.com",
           "port": 443,
           "description": "Google Cloud Platform services"
+        },
+        {
+          "process": "edamame_posture",
+          "as_number": 13335,
+          "port": 443,
+          "description": "Cloudflare (https)"
+        },
+        {
+          "process": "edamame_posture",
+          "as_number": 13335,
+          "port": 80,
+          "description": "Cloudflare (http)"
+        },
+        {
+          "process": "edamame_posture",
+          "domain": "*.globalsign.com",
+          "port": 80,
+          "description": "GlobalSign"
         }
       ]
     },
@@ -154,6 +172,11 @@
           "domain": "*.github.com",
           "port": 443,
           "description": "Connection to GitHub"
+        },
+        {
+          "domain": "ghcr.io",
+          "port": 443,
+          "description": "Connection to GitHub Container Registry"
         },
         {
           "domain": "raw.githubusercontent.com",
@@ -262,6 +285,16 @@
           "as_number": 6185,
           "port": 443,
           "description": "Connection to Apple Austin services (https) (ASN: 6185, Country: US, Owner: APPLE-AUSTIN)"
+        },
+        {
+          "ip": "192.168.64.0/24",
+          "port": 52616,
+          "description": "Connection to GitHub"
+        },
+        {
+          "domain": "timestamp.apple.com",
+          "port": 80,
+          "description": "Connection to Apple timestamp service"
         }
       ]
     },
@@ -275,6 +308,11 @@
           "domain": "*.ubuntu.com",
           "port": 443,
           "description": "Connection to Ubuntu"
+        },
+        {
+          "domain": "*.alpinelinux.org",
+          "port": 80,
+          "description": "Connection to Alpine Linux"
         },
         {
           "domain": "api.snapcraft.io",
