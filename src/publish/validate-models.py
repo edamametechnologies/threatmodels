@@ -3,6 +3,8 @@
 import sys
 import json
 import requests
+import ipaddress
+from urllib.parse import urlparse
 
 # Validate validate_lanscan-port-vulns against this VulnerabilityInfoList Rust structure
 # #[derive(Serialize, Deserialize, Debug, Clone, Ord, Eq, PartialEq, PartialOrd)]
@@ -342,14 +344,245 @@ def validate_threat_model(filename: str) -> None:
     print("Validation successful")
 
 
+# Validate whitelist against WhitelistsJSON Rust structure
+# pub struct WhitelistEndpoint {
+#     pub domain: Option<String>,
+#     pub ip: Option<String>,
+#     pub port: Option<u16>,
+#     pub protocol: Option<String>,
+#     pub as_number: Option<u32>,
+#     pub as_country: Option<String>,
+#     pub as_owner: Option<String>,
+#     pub process: Option<String>,
+#     pub description: Option<String>,
+# }
+# pub struct WhitelistInfo {
+#     pub name: String,
+#     pub extends: Option<Vec<String>>,
+#     pub endpoints: Vec<WhitelistEndpoint>,
+# }
+# pub struct WhitelistsJSON {
+#     pub date: String,
+#     pub signature: Option<String>,
+#     pub whitelists: Vec<WhitelistInfo>,
+# }
+def validate_whitelist(filename: str) -> None:
+    allowed_top_keys = {'date', 'signature', 'whitelists'}
+    required_top_keys = {'date', 'whitelists'}
+    allowed_info_keys = {'name', 'extends', 'endpoints'}
+    required_info_keys = {'name', 'endpoints'}
+    allowed_endpoint_keys = {
+        'domain', 'ip', 'port', 'protocol', 'as_number', 'as_country',
+        'as_owner', 'process', 'description'
+    }
+
+    with open(filename, 'r', encoding="utf-8") as file:
+        data = json.load(file)
+
+    if not isinstance(data, dict):
+        raise ValueError("Data is not a valid JSON object")
+
+    actual_top_keys = set(data.keys())
+    if not required_top_keys.issubset(actual_top_keys):
+        missing = required_top_keys - actual_top_keys
+        raise ValueError(f"Missing required top-level keys: {missing}")
+    if not actual_top_keys.issubset(allowed_top_keys):
+        extra = actual_top_keys - allowed_top_keys
+        raise ValueError(f"Unexpected top-level keys: {extra}")
+
+    if not isinstance(data['date'], str):
+        raise ValueError("Top-level 'date' must be a string")
+    if 'signature' in data and data['signature'] is not None and not isinstance(data['signature'], str):
+         raise ValueError("Top-level 'signature' must be a string or null")
+    if not isinstance(data['whitelists'], list):
+        raise ValueError("Top-level 'whitelists' must be a list")
+
+    for i, info in enumerate(data['whitelists']):
+        if not isinstance(info, dict):
+            raise ValueError(f"Item at whitelists[{i}] is not a valid object")
+
+        actual_info_keys = set(info.keys())
+        if not required_info_keys.issubset(actual_info_keys):
+            missing = required_info_keys - actual_info_keys
+            raise ValueError(f"Missing required keys in whitelists[{i}]: {missing}")
+        if not actual_info_keys.issubset(allowed_info_keys):
+            extra = actual_info_keys - allowed_info_keys
+            raise ValueError(f"Unexpected keys in whitelists[{i}]: {extra}")
+
+        if not isinstance(info['name'], str):
+            raise ValueError(f"'name' in whitelists[{i}] must be a string")
+        if 'extends' in info and info['extends'] is not None:
+             if not isinstance(info['extends'], list) or not all(isinstance(item, str) for item in info['extends']):
+                 raise ValueError(f"'extends' in whitelists[{i}] must be a list of strings or null")
+        if not isinstance(info['endpoints'], list):
+            raise ValueError(f"'endpoints' in whitelists[{i}] must be a list")
+
+        whitelist_name = info.get('name', f'index {i}') # For error messages
+
+        for j, endpoint in enumerate(info['endpoints']):
+            path = f"whitelists['{whitelist_name}'] -> endpoints[{j}]"
+            if not isinstance(endpoint, dict):
+                 raise ValueError(f"Item at {path} is not a valid object")
+
+            actual_endpoint_keys = set(endpoint.keys())
+            if not actual_endpoint_keys.issubset(allowed_endpoint_keys):
+                extra = actual_endpoint_keys - allowed_endpoint_keys
+                raise ValueError(f"Unexpected keys in {path}: {extra}")
+
+            # Type checks for optional fields
+            if 'domain' in endpoint and endpoint['domain'] is not None and not isinstance(endpoint['domain'], str):
+                raise ValueError(f"'domain' in {path} must be a string or null")
+            if 'ip' in endpoint and endpoint['ip'] is not None:
+                 if not isinstance(endpoint['ip'], str):
+                     raise ValueError(f"'ip' in {path} must be a string or null")
+                 try:
+                     # Check if it's a valid IP or CIDR
+                     if '/' in endpoint['ip']:
+                         ipaddress.ip_network(endpoint['ip'], strict=False)
+                     else:
+                         ipaddress.ip_address(endpoint['ip'])
+                 except ValueError as ip_err:
+                     raise ValueError(f"Invalid 'ip' format in {path}: {endpoint['ip']} ({ip_err})")
+            if 'port' in endpoint and endpoint['port'] is not None:
+                 if not isinstance(endpoint['port'], int):
+                     raise ValueError(f"'port' in {path} must be an integer or null")
+                 if not (0 <= endpoint['port'] <= 65535):
+                     raise ValueError(f"'port' in {path} must be between 0 and 65535")
+            if 'protocol' in endpoint and endpoint['protocol'] is not None and not isinstance(endpoint['protocol'], str):
+                raise ValueError(f"'protocol' in {path} must be a string or null")
+            if 'as_number' in endpoint and endpoint['as_number'] is not None and not isinstance(endpoint['as_number'], int):
+                 raise ValueError(f"'as_number' in {path} must be an integer or null")
+            if 'as_country' in endpoint and endpoint['as_country'] is not None and not isinstance(endpoint['as_country'], str):
+                raise ValueError(f"'as_country' in {path} must be a string or null")
+            if 'as_owner' in endpoint and endpoint['as_owner'] is not None and not isinstance(endpoint['as_owner'], str):
+                 raise ValueError(f"'as_owner' in {path} must be a string or null")
+            if 'process' in endpoint and endpoint['process'] is not None and not isinstance(endpoint['process'], str):
+                 raise ValueError(f"'process' in {path} must be a string or null")
+            if 'description' in endpoint and endpoint['description'] is not None and not isinstance(endpoint['description'], str):
+                raise ValueError(f"'description' in {path} must be a string or null")
+
+    print("Whitelist validation successful")
+
+
+# Validate blacklist against BlacklistsJSON Rust structure
+# pub struct BlacklistInfo {
+#     pub name: String,
+#     pub description: Option<String>,
+#     pub last_updated: Option<String>,
+#     pub source_url: Option<String>,
+#     pub ip_ranges: Vec<String>,
+# }
+# pub struct BlacklistsJSON {
+#     pub date: String,
+#     pub signature: String,
+#     pub blacklists: Vec<BlacklistInfo>,
+# }
+def validate_blacklist(filename: str) -> None:
+    allowed_top_keys = {'date', 'signature', 'blacklists'}
+    required_top_keys = {'date', 'signature', 'blacklists'}
+    allowed_info_keys = {'name', 'description', 'last_updated', 'source_url', 'ip_ranges'}
+    required_info_keys = {'name', 'ip_ranges'}
+
+    with open(filename, 'r', encoding="utf-8") as file:
+        data = json.load(file)
+
+    if not isinstance(data, dict):
+        raise ValueError("Data is not a valid JSON object")
+
+    actual_top_keys = set(data.keys())
+    if not required_top_keys.issubset(actual_top_keys):
+        missing = required_top_keys - actual_top_keys
+        raise ValueError(f"Missing required top-level keys: {missing}")
+    if not actual_top_keys.issubset(allowed_top_keys):
+        extra = actual_top_keys - allowed_top_keys
+        raise ValueError(f"Unexpected top-level keys: {extra}")
+
+    if not isinstance(data['date'], str):
+        raise ValueError("Top-level 'date' must be a string")
+    if not isinstance(data['signature'], str):
+        raise ValueError("Top-level 'signature' must be a string")
+    if not isinstance(data['blacklists'], list):
+        raise ValueError("Top-level 'blacklists' must be a list")
+
+    for i, info in enumerate(data['blacklists']):
+        if not isinstance(info, dict):
+            raise ValueError(f"Item at blacklists[{i}] is not a valid object")
+
+        actual_info_keys = set(info.keys())
+        if not required_info_keys.issubset(actual_info_keys):
+            missing = required_info_keys - actual_info_keys
+            raise ValueError(f"Missing required keys in blacklists[{i}]: {missing}")
+        if not actual_info_keys.issubset(allowed_info_keys):
+            extra = actual_info_keys - allowed_info_keys
+            raise ValueError(f"Unexpected keys in blacklists[{i}]: {extra}")
+
+        if not isinstance(info['name'], str):
+            raise ValueError(f"'name' in blacklists[{i}] must be a string")
+        if 'description' in info and info['description'] is not None and not isinstance(info['description'], str):
+            raise ValueError(f"'description' in blacklists[{i}] must be a string or null")
+        if 'last_updated' in info and info['last_updated'] is not None and not isinstance(info['last_updated'], str):
+             raise ValueError(f"'last_updated' in blacklists[{i}] must be a string or null")
+        if 'source_url' in info and info['source_url'] is not None:
+            if not isinstance(info['source_url'], str):
+                 raise ValueError(f"'source_url' in blacklists[{i}] must be a string or null")
+            # Basic URL format validation
+            try:
+                parsed = urlparse(info['source_url'])
+                if not parsed.scheme or not parsed.netloc:
+                    raise ValueError(f"Invalid URL format for 'source_url' in blacklists[{i}]: {info['source_url']}")
+            except ValueError as url_err:
+                 raise ValueError(f"Invalid URL format for 'source_url' in blacklists[{i}]: {info['source_url']} ({url_err})")
+
+        if not isinstance(info['ip_ranges'], list):
+            raise ValueError(f"'ip_ranges' in blacklists[{i}] must be a list")
+
+        blacklist_name = info.get('name', f'index {i}') # For error messages
+
+        for j, ip_range in enumerate(info['ip_ranges']):
+            path = f"blacklists['{blacklist_name}'] -> ip_ranges[{j}]"
+            if not isinstance(ip_range, str):
+                 raise ValueError(f"Item at {path} must be a string")
+            try:
+                # Check if it's a valid IP or CIDR
+                if '/' in ip_range:
+                    ipaddress.ip_network(ip_range, strict=False)
+                else:
+                    ipaddress.ip_address(ip_range)
+            except ValueError as ip_err:
+                raise ValueError(f"Invalid IP/CIDR format in {path}: {ip_range} ({ip_err})")
+
+    print("Blacklist validation successful")
+
+
 if __name__ == "__main__":
-    for arg in sys.argv:
-        if arg.startswith("lanscan-port-vulns"):
-            print(f"Validating {arg}")
-            validate_lanscan_port_vulns(arg)
-        elif arg.startswith("lanscan_profiles"):
-            print(f"Validating {arg}")
-            validate_lanscan_profiles(arg)
-        elif arg.startswith("threatmodel"):
-            print(f"Validating {arg}")
-            validate_threat_model(arg)
+    validation_errors = []
+    for arg in sys.argv[1:]: # Skip the script name itself
+        try:
+            print(f"Validating {arg}...")
+            if arg.startswith("lanscan-port-vulns"):
+                validate_lanscan_port_vulns(arg)
+            elif arg.startswith("lanscan-profiles") or arg.startswith("lanscan_profiles"): # Match both patterns
+                validate_lanscan_profiles(arg)
+            elif arg.startswith("threatmodel"):
+                validate_threat_model(arg)
+            # Add elif conditions for whitelist and blacklist once their validation functions exist
+            elif arg.startswith("whitelist"):
+                 validate_whitelist(arg) # Use the new function
+            elif arg.startswith("blacklist"):
+                 validate_blacklist(arg) # Use the new function
+            else:
+                print(f"Warning: No specific validation logic found for prefix of file '{arg}'. Skipping.")
+            print(f"Validation successful for {arg}")
+        except Exception as e:
+            error_msg = f"Validation failed for {arg}: {e}"
+            print(error_msg)
+            validation_errors.append(error_msg)
+
+    if validation_errors:
+        print("\n--- Validation Summary: FAILURES --- GITHUB_ACTION_ERRORS --- START") # Marker for GH Action error parsing
+        for error in validation_errors:
+            print(error)
+        print("--- Validation Summary: FAILURES --- GITHUB_ACTION_ERRORS --- END") # Marker for GH Action error parsing
+        sys.exit(1) # Exit with non-zero code if any validation failed
+    else:
+        print("\n--- Validation Summary: All files validated successfully! ---")

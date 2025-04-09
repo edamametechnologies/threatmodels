@@ -34,29 +34,82 @@ jobs:
        with:
          python-version: 3.11.3
 
+     - name: Install dependencies
+       run: pip install -r requirements.txt
+
      - name: Validate models
        id: validate
        run: |
-         pip install -r requirements.txt
          echo "Validating all threat models"
-         python3 src/publish/validate-models.py threatmodel-*.json
+         if ! python3 src/publish/validate-models.py threatmodel-*.json > validate_models_output.txt 2>&1; then
+           echo "Validation Failed!"
+           # Use GITHUB_OUTPUT environment file
+           echo "error_message<<EOF" >> $GITHUB_OUTPUT
+           head -n 10 validate_models_output.txt >> $GITHUB_OUTPUT
+           echo "EOF" >> $GITHUB_OUTPUT
+           exit 1
+         fi
+       continue-on-error: true
+
+     - name: Validate whitelists
+       id: validate_whitelist
+       run: |
+         echo "Validating all whitelists"
+         if ! python3 src/publish/validate-models.py whitelist-*.json > validate_whitelist_output.txt 2>&1; then
+           echo "Validation Failed!"
+           echo "error_message_whitelist<<EOF" >> $GITHUB_OUTPUT
+           head -n 10 validate_whitelist_output.txt >> $GITHUB_OUTPUT
+           echo "EOF" >> $GITHUB_OUTPUT
+           exit 1
+         fi
+       continue-on-error: true
+
+     - name: Validate blacklists
+       id: validate_blacklist
+       run: |
+         echo "Validating all blacklists"
+         if ! python3 src/publish/validate-models.py blacklist-*.json > validate_blacklist_output.txt 2>&1; then
+           echo "Validation Failed!"
+           echo "error_message_blacklist<<EOF" >> $GITHUB_OUTPUT
+           head -n 10 validate_blacklist_output.txt >> $GITHUB_OUTPUT
+           echo "EOF" >> $GITHUB_OUTPUT
+           exit 1
+         fi
+       continue-on-error: true
+
+     - name: Validate lanscan profiles
+       id: validate_lanscan
+       run: |
+         echo "Validating all lanscan profiles"
+         if ! python3 src/publish/validate-models.py lanscan-profiles-*.json > validate_lanscan_output.txt 2>&1; then
+           echo "Validation Failed!"
+           echo "error_message_lanscan<<EOF" >> $GITHUB_OUTPUT
+           head -n 10 validate_lanscan_output.txt >> $GITHUB_OUTPUT
+           echo "EOF" >> $GITHUB_OUTPUT
+           exit 1
+         fi
        continue-on-error: true
 
      - name: Revert last commit if validation fails
-       if: steps.validate.outcome == 'failure'
+       if: steps.validate.outcome == 'failure' || steps.validate_whitelist.outcome == 'failure' || steps.validate_blacklist.outcome == 'failure' || steps.validate_lanscan.outcome == 'failure'
        run: |
          git config user.email "dev@edamame.tech"
          git config user.name "EDAMAME Dev"
          git revert -m 1 HEAD --no-edit --no-commit
-         git commit -m "Reverted after threat models validation failed [skip ci]"
+         git commit -m "Reverted after validation failed (threat models, whitelist, blacklist, or lanscan) [skip ci]"
          git push
 
      - name: Slack alert for validation failure
-       if: steps.validate.outcome == 'failure'
+       if: steps.validate.outcome == 'failure' || steps.validate_whitelist.outcome == 'failure' || steps.validate_blacklist.outcome == 'failure' || steps.validate_lanscan.outcome == 'failure'
        uses: slackapi/slack-github-action@v1.26.0
        with:
          channel-id: 'C072J0U9TH7'
-         slack-message: "GitHub threat models validation on branch ${{ github.ref }} failed, commit has been reverted"
+         slack-message: |
+           GitHub validation failed on branch ${{ github.ref }}, commit has been reverted. Details:
+           Threat Models: ${{ steps.validate.outcome }} ${{ steps.validate.outcome == 'failure' && format(': {0}', steps.validate.outputs.error_message) || '' }}
+           Whitelist: ${{ steps.validate_whitelist.outcome }} ${{ steps.validate_whitelist.outcome == 'failure' && format(': {0}', steps.validate_whitelist.outputs.error_message_whitelist) || '' }}
+           Blacklist: ${{ steps.validate_blacklist.outcome }} ${{ steps.validate_blacklist.outcome == 'failure' && format(': {0}', steps.validate_blacklist.outputs.error_message_blacklist) || '' }}
+           Lanscan: ${{ steps.validate_lanscan.outcome }} ${{ steps.validate_lanscan.outcome == 'failure' && format(': {0}', steps.validate_lanscan.outputs.error_message_lanscan) || '' }}
        env:
          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
