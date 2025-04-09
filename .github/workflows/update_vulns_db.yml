@@ -96,13 +96,13 @@ jobs:
           fetch-depth: 0  # Fetch all history
       
       - name: Download port vulnerability database
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: port-vulns-db
           path: .
       
       - name: Download vendor vulnerability database
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: vendor-vulns-db
           path: .
