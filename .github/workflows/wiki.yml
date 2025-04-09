@@ -46,13 +46,31 @@ jobs:
             git config --global user.email "dev@edamame.tech"
             git config --global user.name "EDAMAME Dev"
             git add .
-            git commit -m "docs: Updated wiki files"
-            git push
+            # Try to commit. If it fails (non-zero exit code), it means no changes.
+            # If it succeeds (zero exit code), then push.
+            if git commit -m "docs: Updated wiki files"; then
+              echo "Changes committed, pushing to wiki..."
+              git push
+            else
+              echo "No changes to commit to wiki."
+              # Exit with 0 to indicate success (no push needed/attempted)
+              exit 0
+            fi
 
         - name: Slack reports
+          if: success() # Only report success if the job succeeded
           uses: slackapi/slack-github-action@v1.26.0
           with:
             channel-id: 'C07127YECN4'
             slack-message: "GitHub threat models wiki updated from branch ${{ github.ref }} - see: https://github.com/edamametechnologies/threatmodels/wiki"
+          env:
+              SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+        - name: Slack failure report
+          if: failure() # Report if any step failed
+          uses: slackapi/slack-github-action@v1.26.0
+          with:
+            channel-id: 'C072J0U9TH7'
+            slack-message: "FAILED: GitHub threat models wiki update from branch ${{ github.ref }}. Check workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           env:
               SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
