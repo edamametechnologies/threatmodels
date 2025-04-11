@@ -222,6 +222,14 @@ jobs:
           python3 src/publish/update-models.py threatmodel-iOS.json
           python3 src/publish/update-models.py threatmodel-Android.json
           
+          # Update other model types
+          echo "Updating other model types signatures..."
+          python3 src/publish/update-models.py whitelists-db.json
+          python3 src/publish/update-models.py blacklists-db.json
+          python3 src/publish/update-models.py lanscan-profiles-db.json
+          python3 src/publish/update-models.py lanscan-port-vulns-db.json
+          python3 src/publish/update-models.py lanscan-vendor-vulns-db.json
+          
           git config user.email "dev@edamame.tech"
           git config user.name "EDAMAME Dev"
           git commit -a -m "Updated models hash and date [skip ci]" && \

@@ -27,9 +27,12 @@ if __name__ == "__main__":
     try:
         with open(existing_data_file, "r") as file:
             existing_data = json.load(file)
+            # Store the original signature
+            original_signature = existing_data.get("signature", "")
     except FileNotFoundError:
         log("No existing database found.", 1)
         existing_data = {"date": datetime.now().strftime("%Y-%m-%d"), "vulnerabilities": []}
+        original_signature = ""
 
     # Purge old entries for each vendor
     for vendor_entry in existing_data["vulnerabilities"]:
@@ -50,12 +53,30 @@ if __name__ == "__main__":
         existing_data["vulnerabilities"], key=lambda x: x["vendor"].lower()
     )
 
-    # Update the date and signature
-    existing_data["date"] = datetime.now().strftime("%B %dth %Y")
-    existing_data["signature"] = hashlib.sha256(json.dumps(existing_data).encode('utf-8')).hexdigest()
+    # Make a copy of the data without signature for calculating new signature
+    existing_data_copy = existing_data.copy()
+    existing_data_copy["signature"] = ""
+    
+    # Calculate new signature
+    new_signature = hashlib.sha256(json.dumps(existing_data_copy, sort_keys=True).encode('utf-8')).hexdigest()
+    
+    # Only update the date if the content has changed
+    if original_signature and original_signature == new_signature:
+        log("Content unchanged - keeping original date.", 1)
+    else:
+        log("Content changed - updating date.", 1)
+        existing_data["date"] = datetime.now().strftime("%B %dth %Y")
+    
+    # Always update the signature
+    existing_data["signature"] = new_signature
 
     # Save the updated data back to the JSON file
     with open(existing_data_file, 'w') as file:
-        json.dump(existing_data, file, indent=4)
+        json.dump(existing_data, file, indent=4, sort_keys=True)
+        
+    # Save signature to separate .sig file
+    sig_file = existing_data_file.removesuffix(".json") + ".sig"
+    with open(sig_file, 'w') as file:
+        file.write(existing_data["signature"])
 
     log("Database purge completed.", 1)

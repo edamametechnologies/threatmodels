@@ -4,7 +4,61 @@ import sys
 import json
 import requests
 import ipaddress
+import hashlib
 from urllib.parse import urlparse
+
+def verify_signature(data, stored_signature):
+    '''Verify if the stored signature matches the computed one
+    
+    Returns True if signature is valid (matches computed hash)
+    Returns False if signature is invalid (doesn't match computed hash)
+    '''
+    # Create a copy of the data with empty signature to compute hash
+    data_copy = data.copy()
+    data_copy["signature"] = ""
+    
+    # Calculate hash
+    json_str = json.dumps(data_copy, sort_keys=True)
+    calculated_hash = hashlib.sha256(json_str.encode()).hexdigest()
+    
+    # Compare calculated hash with stored signature
+    return calculated_hash == stored_signature
+
+def check_file_signature(filename):
+    '''Check if the signature in the file matches the computed signature.
+    Also verifies against .sig file if it exists.
+    '''
+    with open(filename, 'r', encoding="utf-8") as file:
+        data = json.load(file)
+    
+    if "signature" not in data:
+        print(f"Warning: No signature found in {filename}")
+        return False
+    
+    stored_signature = data["signature"]
+    if not stored_signature:
+        print(f"Warning: Empty signature in {filename}")
+        return False
+    
+    # Verify the in-file signature
+    is_valid = verify_signature(data, stored_signature)
+    if not is_valid:
+        print(f"Error: Signature validation failed for {filename}")
+        return False
+    
+    # Also check against .sig file if it exists
+    sig_file = filename.removesuffix(".json") + ".sig"
+    try:
+        with open(sig_file, 'r') as file:
+            sig_file_content = file.read().strip()
+            if sig_file_content != stored_signature:
+                print(f"Error: Signature in {sig_file} does not match signature in {filename}")
+                return False
+    except FileNotFoundError:
+        print(f"Warning: No .sig file found for {filename}")
+    
+    print(f"Signature validation successful for {filename}")
+    return True
 
 # Validate validate_lanscan-port-vulns against this VulnerabilityInfoList Rust structure
 # #[derive(Serialize, Deserialize, Debug, Clone, Ord, Eq, PartialEq, PartialOrd)]
@@ -58,6 +112,10 @@ def validate_lanscan_port_vulns(filename: str) -> None:
         for j, v in enumerate(vuln['vulnerabilities']):
             if not isinstance(v, dict) or set(v.keys()) != allowed_keys_vulnerability_info:
                 raise ValueError(f"Unexpected keys [{v.keys()}] in VulnerabilityInfo at 'vulnerabilities[{i}] -> vulnerabilities[{j}]'")
+
+    # Verify the signature
+    if not check_file_signature(filename):
+        raise ValueError(f"Signature verification failed for {filename}")
 
     print("Validation successful")
 
@@ -157,6 +215,10 @@ def validate_lanscan_profiles(filename: str) -> None:
 
         for j, condition in enumerate(profile['conditions']):
             validate_condition(condition, f"profiles[{i}] -> conditions[{j}]")
+
+    # Verify the signature
+    if not check_file_signature(filename):
+        raise ValueError(f"Signature verification failed for {filename}")
 
     print("Validation successful")
 
@@ -461,6 +523,11 @@ def validate_whitelist(filename: str) -> None:
             if 'description' in endpoint and endpoint['description'] is not None and not isinstance(endpoint['description'], str):
                 raise ValueError(f"'description' in {path} must be a string or null")
 
+    # Verify the signature if it exists
+    if 'signature' in data and data['signature']:
+        if not check_file_signature(filename):
+            raise ValueError(f"Signature verification failed for {filename}")
+
     print("Whitelist validation successful")
 
 
@@ -551,7 +618,64 @@ def validate_blacklist(filename: str) -> None:
             except ValueError as ip_err:
                 raise ValueError(f"Invalid IP/CIDR format in {path}: {ip_range} ({ip_err})")
 
+    # Verify the signature
+    if not check_file_signature(filename):
+        raise ValueError(f"Signature verification failed for {filename}")
+
     print("Blacklist validation successful")
+
+
+# Validate vendor vulnerabilities against the structure used in build-vendor-vulns-db.py
+def validate_vendor_vulns(filename: str) -> None:
+    """Validate vendor vulnerabilities database"""
+    allowed_keys_root = {'date', 'signature', 'vulnerabilities'}
+    allowed_keys_vendor = {'vendor', 'vulnerabilities', 'count'}
+    allowed_keys_vulnerability = {'name', 'description'}
+
+    with open(filename, 'r', encoding="utf-8") as file:
+        data = json.load(file)
+
+    if not isinstance(data, dict):
+        raise ValueError("Data is not a valid JSON object")
+
+    actual_keys = set(data.keys())
+    if not actual_keys == allowed_keys_root:
+        raise ValueError(f"Unexpected keys [{actual_keys}] in JSON data at root")
+
+    if not isinstance(data['vulnerabilities'], list):
+        raise ValueError("'vulnerabilities' must be a list")
+
+    for i, vendor_entry in enumerate(data['vulnerabilities']):
+        if not isinstance(vendor_entry, dict):
+            raise ValueError(f"Each vendor entry must be a dictionary at vulnerabilities[{i}]")
+        
+        actual_keys = set(vendor_entry.keys())
+        if not actual_keys.issubset(allowed_keys_vendor):
+            unexpected_keys = actual_keys - allowed_keys_vendor
+            raise ValueError(f"Unexpected keys [{unexpected_keys}] in vendor at vulnerabilities[{i}]")
+        
+        if 'vendor' not in vendor_entry:
+            raise ValueError(f"Missing 'vendor' key in vulnerabilities[{i}]")
+            
+        if 'vulnerabilities' not in vendor_entry:
+            raise ValueError(f"Missing 'vulnerabilities' key in vulnerabilities[{i}]")
+        
+        if not isinstance(vendor_entry['vulnerabilities'], list):
+            raise ValueError(f"'vulnerabilities' must be a list in vulnerabilities[{i}]")
+            
+        for j, vuln in enumerate(vendor_entry['vulnerabilities']):
+            if not isinstance(vuln, dict):
+                raise ValueError(f"Each vulnerability must be a dictionary at vulnerabilities[{i}].vulnerabilities[{j}]")
+                
+            actual_keys = set(vuln.keys())
+            if not actual_keys == allowed_keys_vulnerability:
+                raise ValueError(f"Unexpected keys [{actual_keys}] in vulnerability at vulnerabilities[{i}].vulnerabilities[{j}]")
+
+    # Verify the signature
+    if not check_file_signature(filename):
+        raise ValueError(f"Signature verification failed for {filename}")
+
+    print("Vendor vulnerabilities validation successful")
 
 
 if __name__ == "__main__":
@@ -565,11 +689,12 @@ if __name__ == "__main__":
                 validate_lanscan_profiles(arg)
             elif arg.startswith("threatmodel"):
                 validate_threat_model(arg)
-            # Add elif conditions for whitelist and blacklist once their validation functions exist
             elif arg.startswith("whitelist"):
-                 validate_whitelist(arg) # Use the new function
+                 validate_whitelist(arg)
             elif arg.startswith("blacklist"):
-                 validate_blacklist(arg) # Use the new function
+                 validate_blacklist(arg)
+            elif arg.startswith("lanscan-vendor-vulns"):
+                 validate_vendor_vulns(arg)
             else:
                 print(f"Warning: No specific validation logic found for prefix of file '{arg}'. Skipping.")
             print(f"Validation successful for {arg}")
