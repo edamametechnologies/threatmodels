@@ -75,6 +75,23 @@ jobs:
           name: blacklists-db
           path: .
       
+      - name: Setup Python
+        uses: actions/setup-python@v3.1.4
+        with:
+          python-version: 3.11.3
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+      
+      - name: Validate blacklists database
+        id: validate_blacklists
+        run: |
+          echo "Validating blacklists database..."
+          python3 src/publish/validate-models.py blacklists-db.json
+        continue-on-error: true
+      
       - name: Configure git
         run: |
           # Configure git

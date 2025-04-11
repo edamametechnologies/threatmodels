@@ -25,7 +25,7 @@ def parse_ip_list(content):
 
 def create_blacklist_json(blacklists):
     """Create the blacklists JSON structure."""
-    today = datetime.datetime.now().strftime("%B %d %Y")
+    today = datetime.datetime.now().strftime("%B %dth %Y")
     
     blacklists_data = {
         "date": today,
@@ -33,25 +33,17 @@ def create_blacklist_json(blacklists):
         "signature": ""  # Will be updated later
     }
     
-    # Generate signature (hash of the blacklists content)
-    blacklists_json = json.dumps(blacklists_data["blacklists"], sort_keys=True)
-    blacklists_data["signature"] = hashlib.sha256(blacklists_json.encode()).hexdigest()
+    # Generate signature (hash of the entire data with empty signature)
+    json_string = json.dumps(blacklists_data, sort_keys=True)
+    blacklists_data["signature"] = hashlib.sha256(json_string.encode()).hexdigest()
     
     return blacklists_data
 
-def generate_signature_file(json_data, output_file):
-    """Generate a separate .sig file with a base64 encoded signature."""
-    # Create a signature from the full JSON content
-    json_string = json.dumps(json_data, sort_keys=True)
-    signature = hashlib.sha256(json_string.encode()).digest()
-    
-    # Base64 encode the signature
-    signature_b64 = base64.b64encode(signature).decode('utf-8')
-    
-    # Write the signature to a .sig file
+def save_signature_file(signature, output_file):
+    """Save the signature to a separate .sig file."""
     sig_filename = output_file.replace('.json', '.sig')
     with open(sig_filename, 'w') as f:
-        f.write(signature_b64)
+        f.write(signature)
     
     print(f"Created signature file: {sig_filename}")
 
@@ -67,6 +59,19 @@ def main():
             "description": "A firewall blacklist for basic protection with minimum false positives"
         }
     ]
+    
+    # First, try to read existing file to get original date and signature
+    output_file = "blacklists-db.json"
+    original_date = None
+    original_signature = None
+    
+    try:
+        with open(output_file, "r") as f:
+            existing_data = json.load(f)
+            original_date = existing_data.get("date")
+            original_signature = existing_data.get("signature")
+    except (FileNotFoundError, json.JSONDecodeError):
+        print("No existing blacklists file found or file is invalid.")
     
     blacklists = []
     
@@ -87,16 +92,23 @@ def main():
         blacklists.append(blacklist)
         print(f"Processed {source['name']} with {len(ip_ranges)} IP ranges")
     
-    # Create the final JSON structure
+    # Create the final JSON structure (with today's date initially)
     blacklists_data = create_blacklist_json(blacklists)
+    new_signature = blacklists_data["signature"]
+    
+    # Check if content has changed by comparing signatures
+    if original_signature and original_signature == new_signature and original_date:
+        print("Content unchanged - keeping original date.")
+        blacklists_data["date"] = original_date
+    else:
+        print("Content changed or new file - using today's date.")
     
     # Write to files
-    output_file = "blacklists-db.json"
     with open(output_file, "w") as f:
         json.dump(blacklists_data, f, indent=2)
     
-    # Generate the separate signature file
-    generate_signature_file(blacklists_data, output_file)
+    # Save the signature to a separate .sig file
+    save_signature_file(blacklists_data["signature"], output_file)
     
     print(f"Created {output_file} with {len(blacklists)} blacklists")
 
