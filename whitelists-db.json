@@ -6,16 +6,9 @@
       "extends": null,
       "endpoints": [
         {
-          "process": "edamame_posture",
           "domain": "ip-api.com",
           "port": 80,
           "description": "IP-API"
-        },
-        {
-          "process": "edamame_posture",
-          "domain": "api.mixpanel.com",
-          "port": 443,
-          "description": "Connection to Mixpanel analytics"
         },
         {
           "domain": "api.ipify.org",
@@ -24,9 +17,21 @@
         },
         {
           "process": "edamame_posture",
+          "domain": "api.mixpanel.com",
+          "port": 443,
+          "description": "Connection to Mixpanel analytics"
+        },
+        {
+          "process": "edamame_posture",
           "domain": "*.execute-api.eu-west-1.amazonaws.com",
           "port": 443,
           "description": "EDAMAME backend"
+        },
+        {
+          "process": "edamame_posture",
+          "domain": "www.edamame.tech",
+          "port": 443,
+          "description": "EDAMAME website"
         },
         {
           "process": "edamame_posture",
@@ -100,7 +105,6 @@
           "description": "Connection to Chromium source code repository"
         },
         {
-          "process": "gem",
           "domain": "rubygems.org",
           "port": 443,
           "description": "Connection to Ruby package repository"
@@ -154,6 +158,31 @@
           "domain": "androidpublisher.googleapis.com",
           "port": 443,
           "description": "Connection to Google Play Developer API"
+        },
+        {
+          "domain": "api.adoptium.net",
+          "port": 443,
+          "description": "Connection to Adoptium API"
+        },
+        {
+          "domain": "plugins-artifacts.gradle.org",
+          "port": 443,
+          "description": "Connection to Gradle plugins artifacts"
+        },
+        {
+          "domain": "cdn.cocoapods.org",
+          "port": 443,
+          "description": "Connection to CocoaPods"
+        },
+        {
+          "domain": "*.globalsign.com",
+          "port": 443,
+          "description": "Connection to GlobalSign"
+        },
+        {
+          "domain": "*.digicert.com",
+          "port": 443,
+          "description": "Connection to DigiCert"
         }
       ]
     },
@@ -343,6 +372,18 @@
           "as_number": 41231,
           "port": 443,
           "description": "Connection to Canonical services (https) (ASN: 41231, Country: GB, Owner: CANONICAL-AS)"
+        },
+        {
+          "process": "edamame_posture",
+          "as_number": 41231,
+          "port": 80,
+          "description": "Connection to Canonical services (http) (ASN: 41231, Country: GB, Owner: CANONICAL-AS)"
+        },
+        {
+          "process": "edamame_posture",
+          "domain": "*.canonical.com",
+          "port": 80,
+          "description": "Connection to Canonical mirrors"
         },
         {
           "process": "_apt",
