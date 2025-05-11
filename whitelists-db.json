@@ -5,6 +5,18 @@
     {
       "endpoints": [
         {
+          "description": "10.0.0.0/8",
+          "ip": "10.0.0.0/8"
+        },
+        {
+          "description": "172.16.0.0/12",
+          "ip": "172.16.0.0/12"
+        },
+        {
+          "description": "192.168.0.0/16",
+          "ip": "192.168.0.0/16"
+        },
+        {
           "description": "IP-API",
           "domain": "ip-api.com",
           "port": 80
@@ -71,12 +83,6 @@
         {
           "as_number": 13335,
           "description": "Cloudflare (http)",
-          "port": 80,
-          "process": "edamame_posture"
-        },
-        {
-          "description": "GlobalSign",
-          "domain": "*.globalsign.com",
           "port": 80,
           "process": "edamame_posture"
         }
@@ -172,9 +178,14 @@
           "port": 443
         },
         {
-          "description": "Connection to GlobalSign",
+          "description": "Connection to GlobalSign (https)",
           "domain": "*.globalsign.com",
           "port": 443
+        },
+        {
+          "description": "Connection to GlobalSign (http)",
+          "domain": "*.globalsign.com",
+          "port": 80
         },
         {
           "description": "Connection to DigiCert",
@@ -298,6 +309,11 @@
           "port": 80
         },
         {
+          "description": "Connection to Apple News",
+          "domain": "c.apple.news",
+          "port": 443
+        },
+        {
           "as_number": 714,
           "description": "Connection to Apple Engineering services (https) (ASN: 714, Country: US, Owner: APPLE-ENGINEERING)",
           "port": 443
@@ -341,6 +357,11 @@
           "port": 80
         },
         {
+          "description": "Connection to Alpine Linux",
+          "domain": "*.alpinelinux.org",
+          "port": 443
+        },
+        {
           "description": "Connection to Snapcraft",
           "domain": "api.snapcraft.io",
           "port": 443
@@ -368,6 +389,16 @@
         {
           "as_number": 41231,
           "description": "Connection to Canonical services (https) (ASN: 41231, Country: GB, Owner: CANONICAL-AS)",
+          "port": 443
+        },
+        {
+          "description": "Connection to Ubuntu ports",
+          "domain": "ports.ubuntu.com",
+          "port": 443
+        },
+        {
+          "description": "Connection to Ubuntu mirrors",
+          "domain": "archive.archive.ubuntu.com",
           "port": 443
         },
         {
