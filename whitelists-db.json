@@ -103,6 +103,11 @@
           "process": "dart"
         },
         {
+          "description": "Connection to Googleusercontent (WARNING too permissive but required for Dart/Flutter and others)",
+          "domain": "*.googleusercontent.com",
+          "port": 443
+        },
+        {
           "description": "Connection to Chromium source code repository",
           "domain": "chromium.googlesource.com",
           "port": 443
@@ -411,6 +416,12 @@
           "description": "Connection to Canonical mirrors",
           "domain": "*.canonical.com",
           "port": 80,
+          "process": "edamame_posture"
+        },
+        {
+          "description": "Connection to Canonical mirrors",
+          "domain": "*.canonical.com",
+          "port": 443,
           "process": "edamame_posture"
         },
         {
