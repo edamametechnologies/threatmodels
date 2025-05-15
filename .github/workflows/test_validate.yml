@@ -97,7 +97,8 @@ jobs:
          git config user.name "EDAMAME Dev"
          git revert -m 1 HEAD --no-edit --no-commit
          git commit -m "Reverted after validation failed (threat models, whitelist, blacklist, or lanscan) [skip ci]"
-         git push
+         git push --set-upstream origin main || \
+         echo "No changes to commit"
 
      - name: Slack alert for validation failure
        if: steps.validate.outcome == 'failure' || steps.validate_whitelist.outcome == 'failure' || steps.validate_blacklist.outcome == 'failure' || steps.validate_lanscan.outcome == 'failure'
