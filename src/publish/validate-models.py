@@ -21,6 +21,14 @@ def verify_signature(data, stored_signature):
     json_str = json.dumps(data_copy, sort_keys=True)
     calculated_hash = hashlib.sha256(json_str.encode()).hexdigest()
     
+    # Debug information
+    print(f"\nDebug - Signature Validation:")
+    print(f"Stored signature: {stored_signature}")
+    print(f"Calculated hash: {calculated_hash}")
+    print(f"JSON string used for hash (first 100 chars): {json_str[:100]}...")
+    print(f"JSON string length: {len(json_str)}")
+    print(f"JSON string encoding: {json_str.encode().hex()[:100]}...")
+    
     # Compare calculated hash with stored signature
     return calculated_hash == stored_signature
 
@@ -28,6 +36,8 @@ def check_file_signature(filename):
     '''Check if the signature in the file matches the computed signature.
     Also verifies against .sig file if it exists.
     '''
+    print(f"\nDebug - Checking signature for file: {filename}")
+    
     with open(filename, 'r', encoding="utf-8") as file:
         data = json.load(file)
     
@@ -40,6 +50,10 @@ def check_file_signature(filename):
         print(f"Warning: Empty signature in {filename}")
         return False
     
+    print(f"Debug - File contents:")
+    print(f"Date field: {data.get('date', 'Not found')}")
+    print(f"Number of whitelists: {len(data.get('whitelists', []))}")
+    
     # Verify the in-file signature
     is_valid = verify_signature(data, stored_signature)
     if not is_valid:
@@ -51,6 +65,9 @@ def check_file_signature(filename):
     try:
         with open(sig_file, 'r') as file:
             sig_file_content = file.read().strip()
+            print(f"\nDebug - .sig file check:")
+            print(f"Signature in .sig file: {sig_file_content}")
+            print(f"Signature in JSON file: {stored_signature}")
             if sig_file_content != stored_signature:
                 print(f"Error: Signature in {sig_file} does not match signature in {filename}")
                 return False
@@ -523,10 +540,9 @@ def validate_whitelist(filename: str) -> None:
             if 'description' in endpoint and endpoint['description'] is not None and not isinstance(endpoint['description'], str):
                 raise ValueError(f"'description' in {path} must be a string or null")
 
-    # Verify the signature if it exists
-    if 'signature' in data and data['signature']:
-        if not check_file_signature(filename):
-            raise ValueError(f"Signature verification failed for {filename}")
+    # Verify the signature
+    if not check_file_signature(filename):
+        raise ValueError(f"Signature verification failed for {filename}")
 
     print("Whitelist validation successful")
 
