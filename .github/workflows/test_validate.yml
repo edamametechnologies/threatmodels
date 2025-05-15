@@ -203,7 +203,8 @@ jobs:
           git config user.name "EDAMAME Dev"
           git revert -m 1 HEAD --no-edit --no-commit
           git commit -m "Reverted after threat models testing failed [skip ci]"
-          git push
+          git push --set-upstream origin main || \
+          echo "No changes to commit"
 
       - name: Update models hash and date (if their respective tests succeed)
         run: | 
