@@ -114,7 +114,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         id: create-pr
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.DEV_GITHUB_TOKEN }}
           commit-message: "Daily update of blacklists database"
           title: "[Automated] Daily blacklists database update"
           body: |
@@ -145,7 +145,7 @@ jobs:
         run: |
           gh pr merge --auto --squash "${{ steps.create-pr.outputs.pull-request-number }}"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.DEV_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Send failure notification
         if: needs.update-blacklists-db.outputs.outcome == 'failure'
