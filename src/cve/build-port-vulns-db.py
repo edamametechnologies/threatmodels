@@ -121,11 +121,20 @@ def log(message, level=1):
 async def main(existing_data):
     nmap_services_url = "https://svn.nmap.org/nmap/nmap-services"
     port_descriptions = await load_port_descriptions(nmap_services_url)
-    start_port, end_port = 0, 65535
     
-    # Increase the concurrency - this is the key trick to speed up the script
-    # Allowing more concurrent connections will significantly speed up the process
-    semaphore = asyncio.Semaphore(100)  # Increased from 20 to 100
+    # Build a *targeted* list of ports instead of brute-forcing all 65 536 values.
+    # 1.  All ports that appear in the nmap-services file (already filtered to TCP & !unknown).
+    # 2.  All ports that already exist in the current database (to keep them fresh even if
+    #     they are no longer in the nmap-services list for some reason).
+
+    ports_to_check = sorted({
+        *[int(p) for p in port_descriptions.keys()],
+        *[int(item["port"]) for item in existing_data["vulnerabilities"]]
+    })
+
+    log(f"Will query {len(ports_to_check)} distinct ports instead of the full 65 536.", 1)
+
+    semaphore = asyncio.Semaphore(20)
     
     # Use TCP connection pooling for better performance
     conn = aiohttp.TCPConnector(limit=100, limit_per_host=20)
@@ -143,15 +152,26 @@ async def main(existing_data):
         chunk_size = 1000
         all_tasks = []
         
-        for start in range(start_port, end_port + 1, chunk_size):
-            end = min(start + chunk_size - 1, end_port)
+        for i in range(0, len(ports_to_check), chunk_size):
+            chunk = ports_to_check[i : i + chunk_size]
+
             chunk_tasks = [
-                fetch_and_update_cve_data(semaphore, data_semaphore, session, port, port_descriptions, existing_data, port_lookup) 
-                for port in range(start, end + 1)
+                fetch_and_update_cve_data(
+                    semaphore,
+                    data_semaphore,
+                    session,
+                    port,
+                    port_descriptions,
+                    existing_data,
+                    port_lookup,
+                )
+                for port in chunk
             ]
-            # Process each chunk of tasks
+
+            # Process each chunk of tasks concurrently
             await asyncio.gather(*chunk_tasks)
-            log(f"Completed chunk {start}-{end}", 1)
+
+            log(f"Completed ports {chunk[0]}-{chunk[-1]}", 1)
 
 
 if __name__ == "__main__":
