@@ -49,7 +49,6 @@ jobs:
            echo "EOF" >> $GITHUB_OUTPUT
            exit 1
          fi
-       continue-on-error: true
 
      - name: Validate whitelists
        id: validate_whitelist
@@ -62,7 +61,6 @@ jobs:
            echo "EOF" >> $GITHUB_OUTPUT
            exit 1
          fi
-       continue-on-error: true
 
      - name: Validate blacklists
        id: validate_blacklist
@@ -75,7 +73,6 @@ jobs:
            echo "EOF" >> $GITHUB_OUTPUT
            exit 1
          fi
-       continue-on-error: true
 
      - name: Validate lanscan profiles
        id: validate_lanscan
@@ -88,17 +85,6 @@ jobs:
            echo "EOF" >> $GITHUB_OUTPUT
            exit 1
          fi
-       continue-on-error: true
-
-     - name: Revert last commit if validation fails
-       if: steps.validate.outcome == 'failure' || steps.validate_whitelist.outcome == 'failure' || steps.validate_blacklist.outcome == 'failure' || steps.validate_lanscan.outcome == 'failure'
-       run: |
-         git config user.email "dev@edamame.tech"
-         git config user.name "EDAMAME Dev"
-         git revert -m 1 HEAD --no-edit --no-commit
-         git commit -m "Reverted after validation failed (threat models, whitelist, blacklist, or lanscan) [skip ci]"
-         git push --set-upstream origin main || \
-         echo "No changes to commit"
 
      - name: Slack alert for validation failure
        if: steps.validate.outcome == 'failure' || steps.validate_whitelist.outcome == 'failure' || steps.validate_blacklist.outcome == 'failure' || steps.validate_lanscan.outcome == 'failure'
@@ -106,7 +92,7 @@ jobs:
        with:
          channel-id: 'C072J0U9TH7'
          slack-message: |
-           GitHub validation failed on branch ${{ github.ref }}, commit has been reverted. Details:
+           GitHub validation failed on branch ${{ github.ref }} (PR: ${{ github.event.pull_request.number || 'N/A' }}). Details:
            Threat Models: ${{ steps.validate.outcome }} ${{ steps.validate.outcome == 'failure' && format(': {0}', steps.validate.outputs.error_message) || '' }}
            Whitelist: ${{ steps.validate_whitelist.outcome }} ${{ steps.validate_whitelist.outcome == 'failure' && format(': {0}', steps.validate_whitelist.outputs.error_message_whitelist) || '' }}
            Blacklist: ${{ steps.validate_blacklist.outcome }} ${{ steps.validate_blacklist.outcome == 'failure' && format(': {0}', steps.validate_blacklist.outputs.error_message_blacklist) || '' }}
@@ -194,24 +180,12 @@ jobs:
           edamame_id: ${{ github.run_id }}
           checkout: true
           
-      - name: Revert last commit if any tests fail
-        if: |
-          needs.test-ubuntu.result == 'failure' ||
-          needs.test-windows.result == 'failure' ||
-          needs.test-macos.result == 'failure'
-        run: |
-          git config user.email "dev@edamame.tech"
-          git config user.name "EDAMAME Dev"
-          git revert -m 1 HEAD --no-edit --no-commit
-          git commit -m "Reverted after threat models testing failed [skip ci]"
-          git push --set-upstream origin main || \
-          echo "No changes to commit"
-
-      - name: Update models hash and date (if their respective tests succeed)
+      - name: Update models hash and date (only on main branch after successful tests)
+        if: github.ref == 'refs/heads/main' && needs.validate.result == 'success'
         run: | 
           pip install -r requirements.txt
 
-          # Update of the hash and date will take place only if the file has changed
+          # Update hash and date only for models whose tests passed
           if [ "${{ needs.test-ubuntu.result }}" == "success" ]; then
             python3 src/publish/update-models.py threatmodel-Linux.json
           fi
@@ -221,10 +195,12 @@ jobs:
           if [ "${{ needs.test-macos.result }}" == "success" ]; then
             python3 src/publish/update-models.py threatmodel-macOS.json
           fi
+          
+          # Always update iOS and Android (no specific tests for these)
           python3 src/publish/update-models.py threatmodel-iOS.json
           python3 src/publish/update-models.py threatmodel-Android.json
           
-          # Update other model types
+          # Update other model types (only if validation passed)
           echo "Updating other model types signatures..."
           python3 src/publish/update-models.py whitelists-db.json
           python3 src/publish/update-models.py blacklists-db.json
@@ -243,7 +219,7 @@ jobs:
         with:
           channel-id: 'C07127YECN4'
           slack-message: |
-            GitHub threat models validation and test results on branch ${{ github.ref }}:
+            GitHub threat models validation and test results on branch ${{ github.ref }} (PR: ${{ github.event.pull_request.number || 'N/A' }}):
             Validation: ${{ needs.validate.result }}
             Tests Ubuntu: ${{ needs.test-ubuntu.outputs.report }}
             Tests Windows: ${{ needs.test-windows.outputs.report }}
