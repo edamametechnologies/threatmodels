@@ -92,7 +92,7 @@
         "maxversion": 0,
         "minversion": 3,
         "system": "Linux",
-        "target": "LANG=C sentinelctl version 2>/dev/null | grep -q 'Agent version' || pgrep -f FortiEDRAvScanner >/dev/null 2>&1 || echo epp_disabled"
+        "target": "sentinel_found=0; forti_found=0; if command -v sentinelctl >/dev/null 2>&1 && LANG=C sentinelctl version 2>/dev/null | grep -q 'Agent version'; then sentinel_found=1; fi; if pgrep -f FortiEDRAvScanner >/dev/null 2>&1; then forti_found=1; fi; if [ $sentinel_found -eq 0 ] && [ $forti_found -eq 0 ]; then echo 'epp_disabled'; fi"
       },
       "metrictype": "bool",
       "name": "no EPP",
@@ -499,7 +499,7 @@
         },
         {
           "locale": "FR",
-          "summary": "Le fichier `/etc/fstab` dans les systèmes Unix et Linux fournit une table des systèmes de fichiers qui doivent être montés automatiquement au démarrage du système. Ce fichier contient des informations importantes telles que les systèmes de fichiers à monter, où les monter et quelles options utiliser.\nCompte tenu de son importance, les permissions recommandées pour le fichier `/etc/fstab` sont `644` :\n- `6` (lecture et écriture) pour le propriétaire, qui devrait être l'utilisateur root ou superutilisateur. Cela permet au système de modifier le fichier lorsque des systèmes de fichiers sont ajoutés ou supprimés.\n- `4` (lecture seule) pour le groupe et les autres. Cela permet aux utilisateurs et aux processus de lire le fichier et de comprendre les systèmes de fichiers du système, mais les empêche d'apporter des modifications potentiellement nuisibles.\nCette configuration garantit que seul l'utilisateur root peut modifier le fichier, protégeant ainsi la configuration du système de fichiers du système. En même temps, elle permet aux autres utilisateurs et processus de lire le fichier, fournissant l'accès nécessaire aux informations sur le système de fichiers.",
+          "summary": "Le fichier `/etc/fstab` dans les systèmes Unix et Linux fournit une table des systèmes de fichiers qui doivent être montés automatiquement au démarrage du système. Ce fichier contient des informations importantes telles que les systèmes de fichiers à monter, où les monter et quelles options utiliser.\nCompte tenu de son importance, les permissions recommandées pour le fichier `/etc/fstab` sont `644` :\n- `6` (lecture et écriture) pour le propriétaire, qui devrait être l'utilisateur root ou superutilisateur. Cela permet au système de modifier le fichier lorsque des systèmes de fichiers sont ajoutés ou supprimés.\n- `4` (lecture seule) pour le groupe et les autres. Cela permet aux utilisateurs et aux processus de lire le fichier et de comprendre les systèmes de fichiers du système, mais les empêche d'apporter des modifications potentiellement nuisibles.\nCette configuration garantit que seul l'utilisateur root peut modifier le fichier, protégeant ainsi la configuration du système de fichiers.",
           "title": "Permissions du fichier /etc/fstab"
         }
       ],
