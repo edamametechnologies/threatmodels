@@ -8,6 +8,14 @@ import hashlib
 
 verbosity_level = 1
 
+def get_ordinal_suffix(day):
+    """Get the ordinal suffix for a day number (1st, 2nd, 3rd, 4th, etc.)"""
+    if 10 <= day % 100 <= 20:
+        suffix = 'th'
+    else:
+        suffix = {1: 'st', 2: 'nd', 3: 'rd'}.get(day % 10, 'th')
+    return suffix
+
 async def load_port_descriptions(url):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
@@ -216,7 +224,10 @@ if __name__ == "__main__":
         log("Content unchanged - keeping original date.", 1)
     else:
         log("Content changed - updating date.", 1)
-        existing_data["date"] = datetime.now().strftime("%B %dth %Y")
+        now = datetime.now()
+        day = now.day
+        suffix = get_ordinal_suffix(day)
+        existing_data["date"] = now.strftime(f"%B {day}{suffix} %Y")
     
     # Always update the signature
     existing_data["signature"] = new_signature
