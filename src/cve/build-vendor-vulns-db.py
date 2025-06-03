@@ -8,6 +8,14 @@ import hashlib
 
 verbosity_level = 1
 
+def get_ordinal_suffix(day):
+    """Get the ordinal suffix for a day number (1st, 2nd, 3rd, 4th, etc.)"""
+    if 10 <= day % 100 <= 20:
+        suffix = 'th'
+    else:
+        suffix = {1: 'st', 2: 'nd', 3: 'rd'}.get(day % 10, 'th')
+    return suffix
+
 def clean_vendor_name(vendor_name):
     # Pattern to match common corporate designations (case-insensitive)
     pattern = r'\b(Ltd|Corp|Corporation|Incorporated|Inc|GmbH|S\.A\.|NV|LLC|SaS|SAS|AG|BV|Pvt|Pte|Pty|Sdn|Bhd|Ltda|S\.r\.l|Srl|SpA|SpZoo|LLP|PLC|Co|Co\.|Co,|Co-|Co:|Co;|Co\||Co\.)\b'
@@ -25,6 +33,7 @@ def clean_vendor_name(vendor_name):
     cleaned_name = ' '.join(cleaned_name.split()[:2])
 
     return cleaned_name
+
 async def load_vendor_names(url):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
@@ -47,8 +56,6 @@ async def purge_old_entries(vendor_entry, data_semaphore, vendor):
         current_year = datetime.now().year
         for vulnerability in vendor_entry["vulnerabilities"]:
             if current_year - int(re.search(r"\d{4}", vulnerability["name"]).group()) > 4:
-                # Make sure the cve description will be encodable in a JSON string by removing illegal characters like quotes
-                cve_description = cve_description.replace('"', "'")
                 log(f"Removing old CVE {vulnerability['name']} from vendor {vendor}.", 1)
                 vendor_entry["vulnerabilities"].remove(vulnerability)
 
@@ -78,6 +85,8 @@ async def fetch_and_update_cve_data(semaphore, data_semaphore, session, vendor, 
                             cols = row.find_all('td')
                             if len(cols) == 2:
                                 cve_name, cve_description = cols[0].text.strip(), cols[1].text.strip()
+                                # Make sure the cve description will be encodable in a JSON string by removing illegal characters like quotes
+                                cve_description = cve_description.replace('"', "'")
                                 # Check if the description contains the vendor name
                                 if re.search(rf"\b{vendor}\b", cve_description, re.IGNORECASE):
                                     await update_cve_data(data_semaphore, cve_name, cve_description, vendor, existing_data)
@@ -170,7 +179,10 @@ if __name__ == "__main__":
         log("Content unchanged - keeping original date.", 1)
     else:
         log("Content changed - updating date.", 1)
-        existing_data["date"] = datetime.now().strftime("%B %dth %Y")
+        now = datetime.now()
+        day = now.day
+        suffix = get_ordinal_suffix(day)
+        existing_data["date"] = now.strftime(f"%B {day}{suffix} %Y")
     
     # Always update the signature
     existing_data["signature"] = new_signature
