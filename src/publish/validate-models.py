@@ -5,6 +5,7 @@ import json
 import requests
 import ipaddress
 import hashlib
+import copy
 from urllib.parse import urlparse
 
 def verify_signature(data, stored_signature):
@@ -13,13 +14,14 @@ def verify_signature(data, stored_signature):
     Returns True if signature is valid (matches computed hash)
     Returns False if signature is invalid (doesn't match computed hash)
     '''
-    # Create a copy of the data with empty signature to compute hash
-    data_copy = data.copy()
+    # Create a deep copy of the data with empty signature to compute hash
+    # This ensures we don't accidentally modify shared nested structures
+    data_copy = copy.deepcopy(data)
     data_copy["signature"] = ""
     
-    # Calculate hash
+    # Calculate hash using the same method as in build scripts
     json_str = json.dumps(data_copy, sort_keys=True)
-    calculated_hash = hashlib.sha256(json_str.encode()).hexdigest()
+    calculated_hash = hashlib.sha256(json_str.encode('utf-8')).hexdigest()
     
     # Debug information
     print(f"\nDebug - Signature Validation:")
@@ -52,7 +54,18 @@ def check_file_signature(filename):
     
     print(f"Debug - File contents:")
     print(f"Date field: {data.get('date', 'Not found')}")
-    print(f"Number of whitelists: {len(data.get('whitelists', []))}")
+    if 'whitelists' in data:
+        print(f"Number of whitelists: {len(data.get('whitelists', []))}")
+    elif 'vulnerabilities' in data:
+        print(f"Number of vulnerabilities: {len(data.get('vulnerabilities', []))}")
+    elif 'blacklists' in data:
+        print(f"Number of blacklists: {len(data.get('blacklists', []))}")
+    elif 'profiles' in data:
+        print(f"Number of profiles: {len(data.get('profiles', []))}")
+    elif 'metrics' in data:
+        print(f"Number of metrics: {len(data.get('metrics', []))}")
+    else:
+        print("Unknown data structure")
     
     # Verify the in-file signature
     is_valid = verify_signature(data, stored_signature)
