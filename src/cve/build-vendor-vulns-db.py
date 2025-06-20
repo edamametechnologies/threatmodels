@@ -167,25 +167,25 @@ if __name__ == "__main__":
     # Sort the vulnerabilities by vendor
     existing_data["vulnerabilities"] = sorted(existing_data["vulnerabilities"], key=lambda x: x["vendor"].lower())
 
-    # Make a copy of the data without signature for calculating new signature
-    existing_data_copy = existing_data.copy()
-    existing_data_copy["signature"] = ""
-    
-    # Calculate new signature
-    new_signature = hashlib.sha256(json.dumps(existing_data_copy, sort_keys=True).encode('utf-8')).hexdigest()
-    
-    # Only update the date if the content has changed
-    if original_signature and original_signature == new_signature:
-        log("Content unchanged - keeping original date.", 1)
-    else:
+    # First, compute a signature that EXCLUDES the current 'signature' field.
+    tmp_copy = existing_data.copy()
+    tmp_copy["signature"] = ""
+    comparison_hash = hashlib.sha256(json.dumps(tmp_copy, sort_keys=True).encode('utf-8')).hexdigest()
+
+    # If anything except the date/signature changed, bump the date.
+    if not original_signature or original_signature != comparison_hash:
         log("Content changed - updating date.", 1)
         now = datetime.now()
         day = now.day
         suffix = get_ordinal_suffix(day)
         existing_data["date"] = now.strftime(f"%B {day}{suffix} %Y")
-    
-    # Always update the signature
-    existing_data["signature"] = new_signature
+    else:
+        log("Content unchanged - keeping original date.", 1)
+
+    # Now compute the FINAL signature that includes the (potentially updated) date.
+    final_copy = existing_data.copy()
+    final_copy["signature"] = ""
+    existing_data["signature"] = hashlib.sha256(json.dumps(final_copy, sort_keys=True).encode('utf-8')).hexdigest()
 
     with open(existing_data_file, 'w') as file:
         json.dump(existing_data, file, indent=4, sort_keys=True)
