@@ -41,7 +41,8 @@ jobs:
        id: validate
        run: |
          echo "Validating all threat models"
-         if ! python3 src/publish/validate-models.py threatmodel-*.json > validate_models_output.txt 2>&1; then
+         set -o pipefail
+         if ! python3 src/publish/validate-models.py threatmodel-*.json 2>&1 | tee validate_models_output.txt; then
            echo "Validation Failed!"
            # Use GITHUB_OUTPUT environment file
            echo "error_message<<EOF" >> $GITHUB_OUTPUT
@@ -54,7 +55,8 @@ jobs:
        id: validate_whitelist
        run: |
          echo "Validating all whitelists"
-         if ! python3 src/publish/validate-models.py whitelists-db.json > validate_whitelist_output.txt 2>&1; then
+         set -o pipefail
+         if ! python3 src/publish/validate-models.py whitelists-db.json 2>&1 | tee validate_whitelist_output.txt; then
            echo "Validation Failed!"
            echo "error_message_whitelist<<EOF" >> $GITHUB_OUTPUT
            head -n 10 validate_whitelist_output.txt >> $GITHUB_OUTPUT
@@ -66,7 +68,8 @@ jobs:
        id: validate_blacklist
        run: |
          echo "Validating all blacklists"
-         if ! python3 src/publish/validate-models.py blacklists-db.json > validate_blacklist_output.txt 2>&1; then
+         set -o pipefail
+         if ! python3 src/publish/validate-models.py blacklists-db.json 2>&1 | tee validate_blacklist_output.txt; then
            echo "Validation Failed!"
            echo "error_message_blacklist<<EOF" >> $GITHUB_OUTPUT
            head -n 10 validate_blacklist_output.txt >> $GITHUB_OUTPUT
@@ -78,7 +81,8 @@ jobs:
        id: validate_lanscan
        run: |
          echo "Validating all lanscan profiles"
-         if ! python3 src/publish/validate-models.py lanscan-profiles-db.json > validate_lanscan_output.txt 2>&1; then
+         set -o pipefail
+         if ! python3 src/publish/validate-models.py lanscan-profiles-db.json 2>&1 | tee validate_lanscan_output.txt; then
            echo "Validation Failed!"
            echo "error_message_lanscan<<EOF" >> $GITHUB_OUTPUT
            head -n 10 validate_lanscan_output.txt >> $GITHUB_OUTPUT
