@@ -3,7 +3,7 @@ on:
  push:
    branches: [ "main", "dev" ]
  pull_request:
-   branches: ["*"]
+   branches: [ "main", "dev" ]
  workflow_dispatch:
 
 # Auto cancel previous runs if they were not completed.
