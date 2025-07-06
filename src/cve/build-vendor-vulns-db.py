@@ -7,6 +7,7 @@ from datetime import datetime
 import hashlib
 
 verbosity_level = 1
+entry_year_limit = 3
 
 def get_ordinal_suffix(day):
     """Get the ordinal suffix for a day number (1st, 2nd, 3rd, 4th, etc.)"""
@@ -55,7 +56,7 @@ async def purge_old_entries(vendor_entry, data_semaphore, vendor):
         # Purge old entries if any (with verbosity)
         current_year = datetime.now().year
         for vulnerability in vendor_entry["vulnerabilities"]:
-            if current_year - int(re.search(r"\d{4}", vulnerability["name"]).group()) > 4:
+            if current_year - int(re.search(r"\d{4}", vulnerability["name"]).group()) > entry_year_limit:
                 log(f"Removing old CVE {vulnerability['name']} from vendor {vendor}.", 1)
                 vendor_entry["vulnerabilities"].remove(vulnerability)
 

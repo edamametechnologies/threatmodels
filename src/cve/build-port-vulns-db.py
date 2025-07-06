@@ -7,6 +7,8 @@ from datetime import datetime
 import hashlib
 
 verbosity_level = 1
+# Limit the age of vulnerabilities to keep in the database
+entry_year_limit = 3
 
 def get_ordinal_suffix(day):
     """Get the ordinal suffix for a day number (1st, 2nd, 3rd, 4th, etc.)"""
@@ -38,7 +40,7 @@ async def purge_old_entries(port_entry, data_semaphore, tcp_port):
         # Purge old entries if any (with verbosity)
         current_year = datetime.now().year
         for vulnerability in port_entry["vulnerabilities"]:
-            if current_year - int(re.search(r"\d{4}", vulnerability["name"]).group()) > 5:
+            if current_year - int(re.search(r"\d{4}", vulnerability["name"]).group()) > 3:
                 log(f"Removing old CVE {vulnerability['name']} from port {tcp_port}.", 1)
                 port_entry["vulnerabilities"].remove(vulnerability)
 
