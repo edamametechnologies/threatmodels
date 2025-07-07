@@ -1,10 +1,10 @@
 {
-  "date": "July 06th 2025",
+  "date": "July 07th 2025",
   "blacklists": [
     {
       "name": "firehol_level1",
       "description": "A firewall blacklist for basic protection with minimum false positives",
-      "last_updated": "2025-07-06",
+      "last_updated": "2025-07-07",
       "source_url": "https://raw.githubusercontent.com/ktsaou/blocklist-ipsets/master/firehol_level1.netset",
       "ip_ranges": [
         "0.0.0.0/8",
@@ -4499,5 +4499,5 @@
       ]
     }
   ],
-  "signature": "c72112bccd8f2b2c12b8827b5afbe316691a5f9136ad24d588fa34f223f19823"
+  "signature": "845463e4d760b52bdd1e19e8d40331330b91f9074f8427e0ce9558c239c59517"
 }
