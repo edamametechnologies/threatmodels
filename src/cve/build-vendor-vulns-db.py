@@ -109,8 +109,8 @@ async def update_cve_data(data_semaphore, cve_name, cve_description, vendor, exi
     async with data_semaphore:
         current_year = datetime.now().year
         cve_year = int(re.search(r"\d{4}", cve_name).group())
-        if current_year - cve_year > 4:
-            log(f"Skipping CVE {cve_name} because it is older than 4 years.", 2)
+        if current_year - cve_year > entry_year_limit:
+            log(f"Skipping CVE {cve_name} because it is older than {entry_year_limit} years.", 2)
             return  # Skip adding if CVE is older than 4 years
 
         vendor_entry = next((item for item in existing_data["vulnerabilities"] if item["vendor"] == vendor), None)
