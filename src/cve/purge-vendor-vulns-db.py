@@ -3,6 +3,9 @@ import re
 from datetime import datetime
 import hashlib
 
+# Maintain the same age limit as in build-vendor-vulns-db.py
+entry_year_limit = 3
+
 verbosity_level = 1
 
 def purge_old_entries(vendor_entry, vendor):
@@ -12,7 +15,7 @@ def purge_old_entries(vendor_entry, vendor):
     original_count = len(vendor_entry["vulnerabilities"])
     vendor_entry["vulnerabilities"] = [
         vulnerability for vulnerability in vendor_entry["vulnerabilities"]
-        if current_year - int(re.search(r"\d{4}", vulnerability["name"]).group()) <= 4
+        if current_year - int(re.search(r"\d{4}", vulnerability["name"]).group()) <= entry_year_limit
     ]
     removed_count = original_count - len(vendor_entry["vulnerabilities"])
     if removed_count > 0:

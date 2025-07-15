@@ -75,6 +75,11 @@ jobs:
           echo "Running vendor vulnerabilities database update..."
           python3 src/cve/build-vendor-vulns-db.py
 
+      - name: Purge old vendor vulnerability entries
+        run: |
+          echo "Purging old entries from vendor vulnerability database..."
+          python3 src/cve/purge-vendor-vulns-db.py
+
       - name: Upload vendor vulnerability database
         uses: actions/upload-artifact@v4
         with:
