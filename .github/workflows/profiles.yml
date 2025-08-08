@@ -1,0 +1,83 @@
+name: Validate and Publish LANScan Profiles
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions: write-all
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v3.1.4
+        with:
+          python-version: 3.11.3
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate LANScan profiles DB (schema)
+        id: validate_lanscan
+        run: |
+          echo "Validating lanscan-profiles-db.json"
+          set -o pipefail
+          if ! python3 src/publish/validate-models.py lanscan-profiles-db.json 2>&1 | tee validate_lanscan_output.txt; then
+            echo "Validation Failed!"
+            echo "error_message_lanscan<<EOF" >> $GITHUB_OUTPUT
+            head -n 50 validate_lanscan_output.txt >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Validate LANScan profiles DB (rules)
+        id: validate_lanscan_rules
+        run: |
+          echo "Validating lanscan-profiles-db.json with rule validator"
+          set -o pipefail
+          if ! python3 src/profiles/validate.py --db lanscan-profiles-db.json --print-tree 2>&1 | tee validate_lanscan_rules_output.txt; then
+            echo "Rule Validation Failed!"
+            echo "error_message_lanscan_rules<<EOF" >> $GITHUB_OUTPUT
+            head -n 100 validate_lanscan_rules_output.txt >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+  publish:
+    needs: validate
+    if: github.ref == 'refs/heads/main' && needs.validate.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v3.1.4
+        with:
+          python-version: 3.11.3
+
+      - name: Update profiles hash and date
+        run: |
+          pip install -r requirements.txt
+          python3 src/publish/update-models.py lanscan-profiles-db.json
+          git config user.email "dev@edamame.tech"
+          git config user.name "EDAMAME Dev"
+          git commit -a -m "Update lanscan profiles signature and date [skip ci]" || echo "No changes to commit"
+          git push || true
+
+
