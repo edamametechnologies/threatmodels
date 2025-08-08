@@ -10,7 +10,8 @@
                 "Leaf": {
                   "mdns_services": [
                     "ipp",
-                    "printer"
+                    "printer",
+                    "airprint"
                   ]
                 }
               },
@@ -58,6 +59,13 @@
                 "Leaf": {
                   "banners": [
                     "raspbian"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "hostnames": [
+                    "raspberrypi"
                   ]
                 }
               }
@@ -129,6 +137,20 @@
                     53
                   ]
                 }
+              },
+              {
+                "Node": {
+                  "type": "OR",
+                  "sub_conditions": [
+                    { "Leaf": { "open_ports": [25, 587] } },
+                    { "Leaf": { "open_ports": [25, 465] } },
+                    { "Leaf": { "open_ports": [110, 995] } },
+                    { "Leaf": { "open_ports": [143, 993] } },
+                    { "Leaf": { "open_ports": [119, 563] } },
+                    { "Leaf": { "open_ports": [25, 110] } },
+                    { "Leaf": { "open_ports": [25, 143] } }
+                  ]
+                }
               }
             ],
             "type": "OR"
@@ -148,28 +170,6 @@
                     62078
                   ]
                 }
-              },
-              {
-                "Node": {
-                  "sub_conditions": [
-                    {
-                      "Leaf": {
-                        "open_ports": [
-                          49152
-                        ]
-                      }
-                    },
-                    {
-                      "Leaf": {
-                        "vendors": [
-                          "apple",
-                          ""
-                        ]
-                      }
-                    }
-                  ],
-                  "type": "AND"
-                }
               }
             ],
             "type": "OR"
@@ -182,16 +182,11 @@
       "conditions": [
         {
           "Node": {
+            "type": "AND",
             "sub_conditions": [
-              {
-                "Leaf": {
-                  "vendors": [
-                    "apple"
-                  ]
-                }
-              }
-            ],
-            "type": "OR"
+              { "Leaf": { "vendors": [ "apple" ] } },
+              { "Leaf": { "negate": true, "open_ports": [ 62078 ] } }
+            ]
           }
         }
       ],
@@ -262,7 +257,9 @@
                     "asustor",
                     "drobo",
                     "wd",
-                    "seagate"
+                    "seagate",
+                    "qnap",
+                    "terramaster"
                   ]
                 }
               }
@@ -340,7 +337,9 @@
                     "tuya",
                     "dyson",
                     "physical graph",
-                    "philips lighting"
+                    "philips lighting",
+                    "shelly",
+                    "tasmota"
                   ]
                 }
               }
@@ -432,7 +431,10 @@
                     "vivotek",
                     "flir",
                     "nest",
-                    "arlo"
+                    "arlo",
+                    "reolink",
+                    "amcrest",
+                    "wyze"
                   ]
                 }
               }
