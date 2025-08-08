@@ -1,6 +1,6 @@
 {
-    "date": "July 15th 2025",
-    "signature": "f77bb6dce7f7c253d6c3b07b12263f6e2ca9f26a7f0cda886de4f5347b99a678",
+    "date": "August 1st 2025",
+    "signature": "bb14c2a29365dff6cfc3ce389349658ef433943490da211560ce8c11a8518151",
     "vulnerabilities": [
         {
             "count": 1,
@@ -552,7 +552,7 @@
             "vulnerabilities": []
         },
         {
-            "count": 65,
+            "count": 64,
             "description": "World Wide Web HTTP",
             "name": "http",
             "port": 80,
@@ -583,32 +583,16 @@
                     "name": "CVE-2022-0650"
                 },
                 {
-                    "description": "This vulnerability allows network-adjacent attackers to bypass authentication on affected installations of multiple NETGEAR routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the mini_httpd service, which listens on TCP port 80 by default. The issue results from incorrect string matching logic when accessing protected pages. An attacker can leverage this vulnerability to escalate privileges and execute arbitrary code in the context of root. Was ZDI-CAN-13313.",
-                    "name": "CVE-2021-34865"
-                },
-                {
                     "description": "This vulnerability allows network-adjacent attackers to disclose sensitive information on affected installations of NETGEAR R7450 1.2.0.62_1.0.1 routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the SOAP API endpoint, which listens on TCP port 80 by default. The issue results from the lack of proper access control. An attacker can leverage this vulnerability to disclose stored credentials, leading to further compromise. Was ZDI-CAN-11559.",
                     "name": "CVE-2020-27873"
-                },
-                {
-                    "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of NETGEAR R6020, R6080, R6120, R6220, R6260, R6700v2, R6800, R6900v2, R7450, JNR3210, WNR2020, Nighthawk AC2100, and Nighthawk AC2400 routers. Although authentication is required to exploit this vulnerability, the existing authentication mechanism can be bypassed. The specific flaw exists within the mini_httpd service, which listens on TCP port 80 by default. When parsing the funjsq_access_token parameter, the process does not properly validate a user-supplied string before using it to execute a system call. An attacker can leverage this vulnerability to execute code in the context of root. Was ZDI-CAN-11653.",
-                    "name": "CVE-2020-27867"
                 },
                 {
                     "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of D-Link DAP-1860 firmware version 1.04B03 WiFi extenders. Authentication is not required to exploit this vulnerability. The specific flaw exists within the uhttpd service, which listens on TCP port 80 by default. The issue results from incorrect string matching logic when accessing protected pages. An attacker can leverage this vulnerability to escalate privileges and execute code in the context of the device. Was ZDI-CAN-10894.",
                     "name": "CVE-2020-27865"
                 },
                 {
-                    "description": "This vulnerability allows network-adjacent attackers to disclose sensitive information on affected installations of NETGEAR R6120, R6080, R6260, R6220, R6020, JNR3210, and WNR2020 routers with firmware 1.0.66. Authentication is not required to exploit this vulnerability. The specific flaw exists within the mini_httpd service, which listens on TCP port 80 by default. The issue results from incorrect string matching logic when accessing protected pages. An attacker can leverage this vulnerability to disclose stored credentials, leading to further compromise. Was ZDI-CAN-10754.",
-                    "name": "CVE-2020-17409"
-                },
-                {
                     "description": "This vulnerability allows network-adjacent attackers to bypass authentication on affected installations of NETGEAR R6700 V1.0.4.84_10.0.58 routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the httpd service, which listens on TCP port 80 by default. The issue results from the lack of proper validation of the length of user-supplied data prior to copying it to a fixed-length, stack-based buffer. An attacker can leverage this vulnerability to execute code in the context of root. Was ZDI-CAN-9703.",
                     "name": "CVE-2020-15416"
-                },
-                {
-                    "description": "A vulnerability has been identified in TeleControl Server Basic < V3.1. An attacker with access to the TeleControl Server Basic's webserver (port 80/tcp or 443/tcp) could cause a Denial-of-Service condition on the web server. The remaining functionality of the TeleControl Server Basic is not affected by the Denial-of-Service condition.",
-                    "name": "CVE-2018-4837"
                 },
                 {
                     "description": "D-Link G416 flupl self Command Injection Remote Code Execution Vulnerability. This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of D-Link G416 wireless routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the HTTP service listening on TCP port 80. The issue results from the lack of proper validation of a user-supplied string before using it to execute a system call. An attacker can leverage this vulnerability to execute code in the context of root. Was ZDI-CAN-21294.",
@@ -763,10 +747,6 @@
                     "name": "CVE-2023-32148"
                 },
                 {
-                    "description": "NETGEAR Multiple Routers httpd Stack-based Buffer Overflow Remote Code Execution Vulnerability. This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of multiple NETGEAR routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the httpd service, which listens on TCP port 80 by default. When parsing the strings file, the process does not properly validate the length of user-supplied data prior to copying it to a fixed-length stack-based buffer. An attacker can leverage this vulnerability to execute code in the context of root. . Was ZDI-CAN-13709.",
-                    "name": "CVE-2021-34982"
-                },
-                {
                     "description": "An authenticated attacker can trigger a stack based buffer overflow in the DHIP Service (TCP port 80). This vulnerability has been resolved in firmware version 2.800.0000000.8.R.20241111.",
                     "name": "CVE-2024-52547"
                 },
@@ -791,28 +771,44 @@
                     "name": "CVE-2024-51977"
                 },
                 {
-                    "description": "Fresenius Kabi Agilia Link + version 3.0 does not enforce transport layer encryption. Therefore, transmitted data may be sent in cleartext. Transport layer encryption is offered on Port TCP/443, but the affected service does not perform an automated redirect from the unencrypted service on Port TCP/80 to the encrypted service.",
-                    "name": "CVE-2021-41835"
-                },
-                {
                     "description": "NETGEAR Multiple Routers httpd Missing Authentication for Critical Function Information Disclosure Vulnerability. This vulnerability allows network-adjacent attackers to disclose sensitive information on affected installations of multiple NETGEAR routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the httpd service, which listens on TCP port 80 by default. The issue results from the lack of authentication prior to allowing access to system configuration information. An attacker can leverage this vulnerability to disclose stored credentials, leading to further compromise. Was ZDI-CAN-13708.",
                     "name": "CVE-2021-34983"
-                },
-                {
-                    "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of D-Link DAP-2020 1.01rc001 routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the webproc endpoint, which listens on TCP port 80 by default. The issue results from the lack of proper validation of the length of user-supplied data prior to copying it to a fixed-length stack-based buffer. An attacker can leverage this vulnerability to execute code in the context of root. Was ZDI-CAN-12104.",
-                    "name": "CVE-2021-34861"
                 },
                 {
                     "description": "This vulnerability allows network-adjacent attackers to bypass authentication on affected installations of NETGEAR R7450 1.2.0.62_1.0.1 routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the mini_httpd service, which listens on TCP port 80 by default. The issue results from improper state tracking in the password recovery process. An attacker can leverage this in conjunction with other vulnerabilities to execute code in the context of root. Was ZDI-CAN-11365.",
                     "name": "CVE-2020-27872"
                 },
                 {
+                    "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of D-Link DAP-1860 firmware version 1.04B03 WiFi extenders. Authentication is not required to exploit this vulnerability. The specific flaw exists within the HNAP service, which listens on TCP port 80 by default. When parsing the Authorization request header, the process does not properly validate a user-supplied string before using it to execute a system call. An attacker can leverage this vulnerability to execute code in the context of the device. Was ZDI-CAN-10880.",
+                    "name": "CVE-2020-27864"
+                },
+                {
+                    "description": "Fresenius Kabi Agilia Link + version 3.0 does not enforce transport layer encryption. Therefore, transmitted data may be sent in cleartext. Transport layer encryption is offered on Port TCP/443, but the affected service does not perform an automated redirect from the unencrypted service on Port TCP/80 to the encrypted service.",
+                    "name": "CVE-2021-41835"
+                },
+                {
+                    "description": "NETGEAR Multiple Routers httpd Stack-based Buffer Overflow Remote Code Execution Vulnerability. This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of multiple NETGEAR routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the httpd service, which listens on TCP port 80 by default. When parsing the strings file, the process does not properly validate the length of user-supplied data prior to copying it to a fixed-length stack-based buffer. An attacker can leverage this vulnerability to execute code in the context of root. . Was ZDI-CAN-13709.",
+                    "name": "CVE-2021-34982"
+                },
+                {
+                    "description": "This vulnerability allows network-adjacent attackers to bypass authentication on affected installations of multiple NETGEAR routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the mini_httpd service, which listens on TCP port 80 by default. The issue results from incorrect string matching logic when accessing protected pages. An attacker can leverage this vulnerability to escalate privileges and execute arbitrary code in the context of root. Was ZDI-CAN-13313.",
+                    "name": "CVE-2021-34865"
+                },
+                {
+                    "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of D-Link DAP-2020 1.01rc001 routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the webproc endpoint, which listens on TCP port 80 by default. The issue results from the lack of proper validation of the length of user-supplied data prior to copying it to a fixed-length stack-based buffer. An attacker can leverage this vulnerability to execute code in the context of root. Was ZDI-CAN-12104.",
+                    "name": "CVE-2021-34861"
+                },
+                {
+                    "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of NETGEAR R6020, R6080, R6120, R6220, R6260, R6700v2, R6800, R6900v2, R7450, JNR3210, WNR2020, Nighthawk AC2100, and Nighthawk AC2400 routers. Although authentication is required to exploit this vulnerability, the existing authentication mechanism can be bypassed. The specific flaw exists within the mini_httpd service, which listens on TCP port 80 by default. When parsing the funjsq_access_token parameter, the process does not properly validate a user-supplied string before using it to execute a system call. An attacker can leverage this vulnerability to execute code in the context of root. Was ZDI-CAN-11653.",
+                    "name": "CVE-2020-27867"
+                },
+                {
                     "description": "This vulnerability allows network-adjacent attackers to bypass authentication on affected installations of NETGEAR R6020, R6080, R6120, R6220, R6260, R6700v2, R6800, R6900v2, R7450, JNR3210, WNR2020, Nighthawk AC2100, and Nighthawk AC2400 routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the mini_httpd service, which listens on TCP port 80 by default. The issue results from incorrect string matching logic when accessing protected pages. An attacker can leverage this in conjunction with other vulnerabilities to execute code in the context of root. Was ZDI-CAN-11355.",
                     "name": "CVE-2020-27866"
                 },
                 {
-                    "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of D-Link DAP-1860 firmware version 1.04B03 WiFi extenders. Authentication is not required to exploit this vulnerability. The specific flaw exists within the HNAP service, which listens on TCP port 80 by default. When parsing the Authorization request header, the process does not properly validate a user-supplied string before using it to execute a system call. An attacker can leverage this vulnerability to execute code in the context of the device. Was ZDI-CAN-10880.",
-                    "name": "CVE-2020-27864"
+                    "description": "This vulnerability allows network-adjacent attackers to disclose sensitive information on affected installations of NETGEAR R6120, R6080, R6260, R6220, R6020, JNR3210, and WNR2020 routers with firmware 1.0.66. Authentication is not required to exploit this vulnerability. The specific flaw exists within the mini_httpd service, which listens on TCP port 80 by default. The issue results from incorrect string matching logic when accessing protected pages. An attacker can leverage this vulnerability to disclose stored credentials, leading to further compromise. Was ZDI-CAN-10754.",
+                    "name": "CVE-2020-17409"
                 },
                 {
                     "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of D-Link DAP-1860 1.04B03_HOTFIX WiFi extenders. Although authentication is required to exploit this vulnerability, the existing authentication mechanism can be bypassed. The specific flaw exists within the HNAP service, which listens on TCP port 80 by default. When parsing the SOAPAction header, the process does not properly validate a user-supplied string before using it to execute a system call. An attacker can leverage this vulnerability to execute code in the context of the device. Was ZDI-CAN-10084.",
@@ -1005,32 +1001,16 @@
                     "name": "CVE-2023-46156"
                 },
                 {
-                    "description": "Affected devices don't process correctly certain special crafted packets sent to port 102/tcp, which could allow an attacker to cause a denial of service in the device.",
-                    "name": "CVE-2021-44694"
-                },
-                {
                     "description": "A vulnerability has been identified in SIMATIC S7-400 CPU 412-1 DP V7 (All versions), SIMATIC S7-400 CPU 412-2 DP V7 (All versions), SIMATIC S7-400 CPU 412-2 PN/DP V7 (All versions < V7.0.3), SIMATIC S7-400 CPU 414-2 DP V7 (All versions), SIMATIC S7-400 CPU 414-3 DP V7 (All versions), SIMATIC S7-400 CPU 414-3 PN/DP V7 (All versions < V7.0.3), SIMATIC S7-400 CPU 414F-3 PN/DP V7 (All versions < V7.0.3), SIMATIC S7-400 CPU 416-2 DP V7 (All versions), SIMATIC S7-400 CPU 416-3 DP V7 (All versions), SIMATIC S7-400 CPU 416-3 PN/DP V7 (All versions < V7.0.3), SIMATIC S7-400 CPU 416F-2 DP V7 (All versions), SIMATIC S7-400 CPU 416F-3 PN/DP V7 (All versions < V7.0.3), SIMATIC S7-400 CPU 417-4 DP V7 (All versions), SIMATIC S7-400 H V6 CPU family (incl. SIPLUS variants) (All versions < V6.0.10), SIMATIC S7-410 V10 CPU family (incl. SIPLUS variants) (All versions < V10.1), SIMATIC S7-410 V8 CPU family (incl. SIPLUS variants) (All versions < V8.2.3), SIPLUS S7-400 CPU 414-3 PN/DP V7 (All versions < V7.0.3), SIPLUS S7-400 CPU 416-3 PN/DP V7 (All versions < V7.0.3), SIPLUS S7-400 CPU 416-3 V7 (All versions), SIPLUS S7-400 CPU 417-4 V7 (All versions). Affected devices improperly handle specially crafted packets sent to port 102/tcp. This could allow an attacker to create a Denial-of-Service condition. A restart is needed to restore normal operations.",
                     "name": "CVE-2021-40368"
-                },
-                {
-                    "description": "A vulnerability has been identified in SIMATIC Drive Controller family (All versions >= V2.9.2 < V2.9.4), SIMATIC ET 200SP Open Controller CPU 1515SP PC2 (incl. SIPLUS variants) (All versions >= V21.9 < V21.9.4), SIMATIC S7-1200 CPU family (incl. SIPLUS variants) (All versions >= V4.5.0 < V4.5.2), SIMATIC S7-1500 CPU family (incl. related ET200 CPUs and SIPLUS variants) (All versions >= V2.9.2 < V2.9.4), SIMATIC S7-1500 Software Controller (All versions >= V21.9 < V21.9.4), SIMATIC S7-PLCSIM Advanced (All versions >= V4.0 < V4.0 SP1), SIPLUS TIM 1531 IRC (All versions < V2.3.6), TIM 1531 IRC (All versions < V2.3.6). An unauthenticated attacker could cause a denial-of-service condition in a PLC when sending specially prepared packets over port 102/tcp. A restart of the affected device is needed to restore normal operations.",
-                    "name": "CVE-2021-37205"
                 },
                 {
                     "description": "A vulnerability has been identified in SINUMERIK 808D (All versions), SINUMERIK 828D (All versions < V4.95). Affected devices don't process correctly certain special crafted packets sent to port 102/tcp, which could allow an attacker to cause a denial-of-service in the device.",
                     "name": "CVE-2021-37199"
                 },
                 {
-                    "description": "A vulnerability has been identified in SIMATIC CP 343-1 (incl. SIPLUS variants) (All versions), SIMATIC CP 343-1 Advanced (incl. SIPLUS variants) (All versions), SIMATIC CP 343-1 ERPC (All versions), SIMATIC CP 343-1 Lean (incl. SIPLUS variants) (All versions), SIMATIC CP 443-1 (All versions < V3.3), SIMATIC CP 443-1 (All versions < V3.3), SIMATIC CP 443-1 Advanced (All versions < V3.3), SIPLUS NET CP 443-1 (All versions < V3.3), SIPLUS NET CP 443-1 Advanced (All versions < V3.3). Sending a specially crafted packet to port 102/tcp of an affected device could cause a denial of service condition. A restart is needed to restore normal operations.",
-                    "name": "CVE-2021-33737"
-                },
-                {
                     "description": "A vulnerability has been identified in SIMATIC NET CP 343-1 Advanced (incl. SIPLUS variants) (All versions), SIMATIC NET CP 343-1 Lean (incl. SIPLUS variants) (All versions), SIMATIC NET CP 343-1 Standard (incl. SIPLUS variants) (All versions). Specially crafted packets sent to TCP port 102 could cause a Denial-of-Service condition on the affected devices. A cold restart might be necessary in order to recover.",
                     "name": "CVE-2020-25242"
-                },
-                {
-                    "description": "A vulnerability has been identified in SIMATIC Drive Controller family (All versions < V2.9.2), SIMATIC ET 200SP Open Controller CPU 1515SP PC (incl. SIPLUS variants) (All versions), SIMATIC ET 200SP Open Controller CPU 1515SP PC2 (incl. SIPLUS variants) (All versions < V21.9), SIMATIC S7-1200 CPU family (incl. SIPLUS variants) (All versions < V4.5.0), SIMATIC S7-1500 CPU family (incl. related ET200 CPUs and SIPLUS variants) (All versions < V2.9.2), SIMATIC S7-1500 Software Controller (All versions < V21.9), SIMATIC S7-PLCSIM Advanced (All versions < V4.0), SINAMICS PERFECT HARMONY GH180 Drives (Drives manufactured before 2021-08-13), SINUMERIK MC (All versions < V6.15), SINUMERIK ONE (All versions < V6.15). Affected devices are vulnerable to a memory protection bypass through a specific operation. A remote unauthenticated attacker with network access to port 102/tcp could potentially write arbitrary data and code to protected memory areas or read sensitive data to launch further attacks.",
-                    "name": "CVE-2020-15782"
                 },
                 {
                     "description": "A vulnerability has been identified in SIMATIC S7-1200 CPU 1211C AC/DC/Rly (6ES7211-1BE40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1211C DC/DC/DC (6ES7211-1AE40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1211C DC/DC/Rly (6ES7211-1HE40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1212C AC/DC/Rly (6ES7212-1BE40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1212C DC/DC/DC (6ES7212-1AE40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1212C DC/DC/Rly (6ES7212-1HE40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1212FC DC/DC/DC (6ES7212-1AF40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1212FC DC/DC/Rly (6ES7212-1HF40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1214C AC/DC/Rly (6ES7214-1BG40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1214C DC/DC/DC (6ES7214-1AG40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1214C DC/DC/Rly (6ES7214-1HG40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1214FC DC/DC/DC (6ES7214-1AF40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1214FC DC/DC/Rly (6ES7214-1HF40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1215C AC/DC/Rly (6ES7215-1BG40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1215C DC/DC/DC (6ES7215-1AG40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1215C DC/DC/Rly (6ES7215-1HG40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1215FC DC/DC/DC (6ES7215-1AF40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1215FC DC/DC/Rly (6ES7215-1HF40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1217C DC/DC/DC (6ES7217-1AG40-0XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212 AC/DC/RLY (6AG1212-1BE40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212 AC/DC/RLY (6AG1212-1BE40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212 DC/DC/RLY (6AG1212-1HE40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212 DC/DC/RLY (6AG1212-1HE40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212C DC/DC/DC (6AG1212-1AE40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212C DC/DC/DC (6AG1212-1AE40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212C DC/DC/DC RAIL (6AG2212-1AE40-1XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 AC/DC/RLY (6AG1214-1BG40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 AC/DC/RLY (6AG1214-1BG40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 AC/DC/RLY (6AG1214-1BG40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 DC/DC/DC (6AG1214-1AG40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 DC/DC/DC (6AG1214-1AG40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 DC/DC/DC (6AG1214-1AG40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 DC/DC/RLY (6AG1214-1HG40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 DC/DC/RLY (6AG1214-1HG40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 DC/DC/RLY (6AG1214-1HG40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214C DC/DC/DC RAIL (6AG2214-1AG40-1XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214FC DC/DC/DC (6AG1214-1AF40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214FC DC/DC/RLY (6AG1214-1HF40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 AC/DC/RLY (6AG1215-1BG40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 AC/DC/RLY (6AG1215-1BG40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 AC/DC/RLY (6AG1215-1BG40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 DC/DC/DC (6AG1215-1AG40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 DC/DC/DC (6AG1215-1AG40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 DC/DC/RLY (6AG1215-1HG40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 DC/DC/RLY (6AG1215-1HG40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 DC/DC/RLY (6AG1215-1HG40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215C DC/DC/DC (6AG1215-1AG40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215FC DC/DC/DC (6AG1215-1AF40-5XB0) (All versions < V4.7). Affected devices do not process correctly certain special crafted packets sent to port 102/tcp, which could allow an attacker to cause a denial of service in the device.",
@@ -1038,31 +1018,47 @@
                 },
                 {
                     "description": "Affected devices don't process correctly certain special crafted packets sent to port 102/tcp, which could allow an attacker to cause a denial of service in the device.",
-                    "name": "CVE-2021-44695"
-                },
-                {
-                    "description": "Affected devices don't process correctly certain special crafted packets sent to port 102/tcp, which could allow an attacker to cause a denial of service in the device.",
                     "name": "CVE-2021-44693"
-                },
-                {
-                    "description": "Affected devices don't process correctly certain special crafted packets sent to port 102/tcp, which could allow an attacker to cause a denial of service in the device.",
-                    "name": "CVE-2021-40365"
                 },
                 {
                     "description": "A vulnerability has been identified in SIMATIC Drive Controller family (All versions < V2.9.2), SIMATIC Drive Controller family (All versions >= V2.9.2 < V2.9.4), SIMATIC ET 200SP Open Controller CPU 1515SP PC (incl. SIPLUS variants) (All versions), SIMATIC ET 200SP Open Controller CPU 1515SP PC2 (incl. SIPLUS variants) (All versions < V21.9), SIMATIC ET 200SP Open Controller CPU 1515SP PC2 (incl. SIPLUS variants) (All versions >= V21.9 < V21.9.4), SIMATIC ET 200SP Open Controller CPU 1515SP PC2 Ready4Linux (All versions), SIMATIC S7-1200 CPU family (incl. SIPLUS variants) (All versions < V4.5.0), SIMATIC S7-1200 CPU family (incl. SIPLUS variants) (All versions >= V4.5.0 < V4.5.2), SIMATIC S7-1500 CPU family (incl. related ET200 CPUs and SIPLUS variants) (All versions < V2.9.2), SIMATIC S7-1500 CPU family (incl. related ET200 CPUs and SIPLUS variants) (All versions >= V2.9.2 < V2.9.4), SIMATIC S7-1500 Software Controller (All versions < V21.9), SIMATIC S7-1500 Software Controller (All versions >= V21.9 < V21.9.4), SIMATIC S7-PLCSIM Advanced (All versions < V4.0), SIMATIC S7-PLCSIM Advanced (All versions >= V4.0 < V4.0 SP1), SIPLUS TIM 1531 IRC (All versions < V2.3.6), TIM 1531 IRC (All versions < V2.3.6). An unauthenticated attacker could cause a denial-of-service condition in a PLC when sending specially prepared packet over port 102/tcp. A restart of the affected device is needed to restore normal operations.",
                     "name": "CVE-2021-37204"
                 },
                 {
-                    "description": "A vulnerability has been identified in SIMATIC Drive Controller family (All versions >= V2.9.2 < V2.9.4), SIMATIC ET 200SP Open Controller CPU 1515SP PC2 (incl. SIPLUS variants) (All versions >= V21.9 < V21.9.4), SIMATIC S7-1200 CPU family (incl. SIPLUS variants) (All versions >= V4.5.0 < V4.5.2), SIMATIC S7-1500 CPU family (incl. related ET200 CPUs and SIPLUS variants) (All versions >= V2.9.2 < V2.9.4), SIMATIC S7-1500 Software Controller (All versions >= V21.9 < V21.9.4), SIMATIC S7-PLCSIM Advanced (All versions >= V4.0 < V4.0 SP1), SIPLUS TIM 1531 IRC (All versions < V2.3.6), TIM 1531 IRC (All versions < V2.3.6). An unauthenticated attacker could cause a denial-of-service condition in a PLC when sending specially prepared packets over port 102/tcp. A restart of the affected device is needed to restore normal operations.",
-                    "name": "CVE-2021-37185"
-                },
-                {
                     "description": "A vulnerability has been identified in SIMATIC Drive Controller family (All versions < V2.9.2), SIMATIC ET 200SP Open Controller CPU 1515SP PC2 (incl. SIPLUS variants) (All versions < V21.9), SIMATIC S7 PLCSIM Advanced (All versions > V2 < V4), SIMATIC S7-1200 CPU family (incl. SIPLUS variants) (Version V4.4), SIMATIC S7-1500 CPU family (incl. related ET200 CPUs and SIPLUS variants) (All versions > V2.5 < V2.9.2), SIMATIC S7-1500 Software Controller (All versions > V2.5 < V21.9), TIM 1531 IRC (incl. SIPLUS NET variants) (Version V2.1). Due to an incorrect authorization check in the affected component, an attacker could extract information about access protected PLC program variables over port 102/tcp from an affected device when reading multiple attributes at once.",
                     "name": "CVE-2020-28397"
                 },
                 {
+                    "description": "Affected devices don't process correctly certain special crafted packets sent to port 102/tcp, which could allow an attacker to cause a denial of service in the device.",
+                    "name": "CVE-2021-44695"
+                },
+                {
+                    "description": "Affected devices don't process correctly certain special crafted packets sent to port 102/tcp, which could allow an attacker to cause a denial of service in the device.",
+                    "name": "CVE-2021-44694"
+                },
+                {
+                    "description": "Affected devices don't process correctly certain special crafted packets sent to port 102/tcp, which could allow an attacker to cause a denial of service in the device.",
+                    "name": "CVE-2021-40365"
+                },
+                {
+                    "description": "A vulnerability has been identified in SIMATIC Drive Controller family (All versions >= V2.9.2 < V2.9.4), SIMATIC ET 200SP Open Controller CPU 1515SP PC2 (incl. SIPLUS variants) (All versions >= V21.9 < V21.9.4), SIMATIC S7-1200 CPU family (incl. SIPLUS variants) (All versions >= V4.5.0 < V4.5.2), SIMATIC S7-1500 CPU family (incl. related ET200 CPUs and SIPLUS variants) (All versions >= V2.9.2 < V2.9.4), SIMATIC S7-1500 Software Controller (All versions >= V21.9 < V21.9.4), SIMATIC S7-PLCSIM Advanced (All versions >= V4.0 < V4.0 SP1), SIPLUS TIM 1531 IRC (All versions < V2.3.6), TIM 1531 IRC (All versions < V2.3.6). An unauthenticated attacker could cause a denial-of-service condition in a PLC when sending specially prepared packets over port 102/tcp. A restart of the affected device is needed to restore normal operations.",
+                    "name": "CVE-2021-37205"
+                },
+                {
+                    "description": "A vulnerability has been identified in SIMATIC Drive Controller family (All versions >= V2.9.2 < V2.9.4), SIMATIC ET 200SP Open Controller CPU 1515SP PC2 (incl. SIPLUS variants) (All versions >= V21.9 < V21.9.4), SIMATIC S7-1200 CPU family (incl. SIPLUS variants) (All versions >= V4.5.0 < V4.5.2), SIMATIC S7-1500 CPU family (incl. related ET200 CPUs and SIPLUS variants) (All versions >= V2.9.2 < V2.9.4), SIMATIC S7-1500 Software Controller (All versions >= V21.9 < V21.9.4), SIMATIC S7-PLCSIM Advanced (All versions >= V4.0 < V4.0 SP1), SIPLUS TIM 1531 IRC (All versions < V2.3.6), TIM 1531 IRC (All versions < V2.3.6). An unauthenticated attacker could cause a denial-of-service condition in a PLC when sending specially prepared packets over port 102/tcp. A restart of the affected device is needed to restore normal operations.",
+                    "name": "CVE-2021-37185"
+                },
+                {
+                    "description": "A vulnerability has been identified in SIMATIC CP 343-1 (incl. SIPLUS variants) (All versions), SIMATIC CP 343-1 Advanced (incl. SIPLUS variants) (All versions), SIMATIC CP 343-1 ERPC (All versions), SIMATIC CP 343-1 Lean (incl. SIPLUS variants) (All versions), SIMATIC CP 443-1 (All versions < V3.3), SIMATIC CP 443-1 (All versions < V3.3), SIMATIC CP 443-1 Advanced (All versions < V3.3), SIPLUS NET CP 443-1 (All versions < V3.3), SIPLUS NET CP 443-1 Advanced (All versions < V3.3). Sending a specially crafted packet to port 102/tcp of an affected device could cause a denial of service condition. A restart is needed to restore normal operations.",
+                    "name": "CVE-2021-33737"
+                },
+                {
                     "description": "A vulnerability has been identified in SIMATIC S7-300 CPU family (incl. related ET200 CPUs and SIPLUS variants) (All versions), SIMATIC S7-400 CPU family (incl. SIPLUS variants) (All versions), SIMATIC WinAC RTX (F) 2010 (All versions), SINUMERIK 840D sl (All versions). The authentication protocol between a client and a PLC via port 102/tcp (ISO-TSAP) insufficiently protects the transmitted password. This could allow an attacker that is able to intercept the network traffic to obtain valid PLC credentials.",
                     "name": "CVE-2020-15791"
+                },
+                {
+                    "description": "A vulnerability has been identified in SIMATIC Drive Controller family (All versions < V2.9.2), SIMATIC ET 200SP Open Controller CPU 1515SP PC (incl. SIPLUS variants) (All versions), SIMATIC ET 200SP Open Controller CPU 1515SP PC2 (incl. SIPLUS variants) (All versions < V21.9), SIMATIC S7-1200 CPU family (incl. SIPLUS variants) (All versions < V4.5.0), SIMATIC S7-1500 CPU family (incl. related ET200 CPUs and SIPLUS variants) (All versions < V2.9.2), SIMATIC S7-1500 Software Controller (All versions < V21.9), SIMATIC S7-PLCSIM Advanced (All versions < V4.0), SINAMICS PERFECT HARMONY GH180 Drives (Drives manufactured before 2021-08-13), SINUMERIK MC (All versions < V6.15), SINUMERIK ONE (All versions < V6.15). Affected devices are vulnerable to a memory protection bypass through a specific operation. A remote unauthenticated attacker with network access to port 102/tcp could potentially write arbitrary data and code to protected memory areas or read sensitive data to launch further attacks.",
+                    "name": "CVE-2020-15782"
                 }
             ]
         },
@@ -2583,17 +2579,12 @@
             "vulnerabilities": []
         },
         {
-            "count": 1,
+            "count": 0,
             "description": "Server Location",
             "name": "svrloc",
             "port": 427,
             "protocol": "tcp",
-            "vulnerabilities": [
-                {
-                    "description": "OpenSLP as used in ESXi (7.0 before ESXi70U1c-17325551, 6.7 before ESXi670-202102401-SG, 6.5 before ESXi650-202102101-SG) has a heap-overflow vulnerability. A malicious actor residing within the same network segment as ESXi who has access to port 427 may be able to trigger the heap-overflow issue in OpenSLP service resulting in remote code execution.",
-                    "name": "CVE-2021-21974"
-                }
-            ]
+            "vulnerabilities": []
         },
         {
             "count": 0,
@@ -2651,10 +2642,6 @@
                     "name": "CVE-2022-43439"
                 },
                 {
-                    "description": "Barco wePresent WiPG-1600W devices have Unprotected Transport of Credentials. Affected Version(s): 2.5.1.8. An attacker armed with hardcoded API credentials (retrieved by exploiting CVE-2020-28329) can issue an authenticated query to display the admin password for the main web user interface listening on port 443/tcp of a Barco wePresent WiPG-1600W device.",
-                    "name": "CVE-2020-28330"
-                },
-                {
                     "description": "Logsign Unified SecOps Platform Incorrect Authorization Authentication Bypass Vulnerability. This vulnerability allows local attackers to bypass authentication on affected installations of Logsign Unified SecOps Platform. Authentication is required to exploit this vulnerability. The specific flaw exists within the HTTP API service, which listens on TCP port 443 by default. The issue results from the lack of proper validation of the user's license expiration date. An attacker can leverage this vulnerability to bypass authentication on the system. Was ZDI-CAN-25029.",
                     "name": "CVE-2024-7604"
                 },
@@ -2693,6 +2680,10 @@
                 {
                     "description": "Fresenius Kabi Agilia Link + version 3.0 does not enforce transport layer encryption. Therefore, transmitted data may be sent in cleartext. Transport layer encryption is offered on Port TCP/443, but the affected service does not perform an automated redirect from the unencrypted service on Port TCP/80 to the encrypted service.",
                     "name": "CVE-2021-41835"
+                },
+                {
+                    "description": "Barco wePresent WiPG-1600W devices have Unprotected Transport of Credentials. Affected Version(s): 2.5.1.8. An attacker armed with hardcoded API credentials (retrieved by exploiting CVE-2020-28329) can issue an authenticated query to display the admin password for the main web user interface listening on port 443/tcp of a Barco wePresent WiPG-1600W device.",
+                    "name": "CVE-2020-28330"
                 }
             ]
         },
@@ -4935,12 +4926,12 @@
                     "name": "CVE-2023-37895"
                 },
                 {
-                    "description": "If Apache TomEE is configured to use the embedded ActiveMQ broker, and the broker URI includes the useJMX=true parameter, a JMX port is opened on TCP port 1099, which does not include authentication. This affects Apache TomEE 8.0.0-M1 - 8.0.1, Apache TomEE 7.1.0 - 7.1.2, Apache TomEE 7.0.0-M1 - 7.0.7, Apache TomEE 1.0.0 - 1.7.5.",
-                    "name": "CVE-2020-11969"
-                },
-                {
                     "description": "If Apache TomEE 8.0.0-M1 - 8.0.3, 7.1.0 - 7.1.3, 7.0.0-M1 - 7.0.8, 1.0.0 - 1.7.5 is configured to use the embedded ActiveMQ broker, and the broker config is misconfigured, a JMX port is opened on TCP port 1099, which does not include authentication. CVE-2020-11969 previously addressed the creation of the JMX management interface, however the incomplete fix did not cover this edge case.",
                     "name": "CVE-2020-13931"
+                },
+                {
+                    "description": "If Apache TomEE is configured to use the embedded ActiveMQ broker, and the broker URI includes the useJMX=true parameter, a JMX port is opened on TCP port 1099, which does not include authentication. This affects Apache TomEE 8.0.0-M1 - 8.0.1, Apache TomEE 7.1.0 - 7.1.2, Apache TomEE 7.0.0-M1 - 7.0.7, Apache TomEE 1.0.0 - 1.7.5.",
+                    "name": "CVE-2020-11969"
                 }
             ]
         },
@@ -23718,12 +23709,12 @@
             "protocol": "tcp",
             "vulnerabilities": [
                 {
-                    "description": "A vulnerability has been identified in SIPROTEC 5 relays with CPU variants CP050 (All versions < V8.80), SIPROTEC 5 relays with CPU variants CP100 (All versions < V8.80), SIPROTEC 5 relays with CPU variants CP300 (All versions < V8.80). Specially crafted packets sent to port 4443/tcp could cause a Denial-of-Service condition or potential remote code execution.",
-                    "name": "CVE-2021-33719"
-                },
-                {
                     "description": "A vulnerability has been identified in SIPROTEC 5 relays with CPU variants CP050 (All versions < V8.80), SIPROTEC 5 relays with CPU variants CP100 (All versions < V8.80), SIPROTEC 5 relays with CPU variants CP300 (All versions < V8.80). Specially crafted packets sent to port 4443/tcp could cause a Denial-of-Service condition.",
                     "name": "CVE-2021-33720"
+                },
+                {
+                    "description": "A vulnerability has been identified in SIPROTEC 5 relays with CPU variants CP050 (All versions < V8.80), SIPROTEC 5 relays with CPU variants CP100 (All versions < V8.80), SIPROTEC 5 relays with CPU variants CP300 (All versions < V8.80). Specially crafted packets sent to port 4443/tcp could cause a Denial-of-Service condition or potential remote code execution.",
+                    "name": "CVE-2021-33719"
                 }
             ]
         },
@@ -25384,12 +25375,12 @@
             "protocol": "tcp",
             "vulnerabilities": [
                 {
-                    "description": "This vulnerability allows network-adjacent attackers to bypass authentication on affected installations of NETGEAR R6700 V1.0.4.84_10.0.58 routers. Although authentication is required to exploit this vulnerability, the existing authentication mechanism can be bypassed. The specific flaw exists within the UPnP service, which listens on TCP port 5000 by default. The issue results from the lack of proper validation of the length of user-supplied data prior to copying it to a fixed-length, stack-based buffer. An attacker can leverage this vulnerability to execute code in the context of root. Was ZDI-CAN-9643.",
-                    "name": "CVE-2020-10924"
-                },
-                {
                     "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of NETGEAR R6400v2 1.0.4.106_10.0.80 routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the UPnP service, which listens on TCP port 5000 by default. When parsing the uuid request header, the process does not properly validate the length of user-supplied data prior to copying it to a fixed-length stack-based buffer. An attacker can leverage this vulnerability to execute code in the context of root. Was ZDI-CAN-14110.",
                     "name": "CVE-2021-34991"
+                },
+                {
+                    "description": "This vulnerability allows network-adjacent attackers to bypass authentication on affected installations of NETGEAR R6700 V1.0.4.84_10.0.58 routers. Although authentication is required to exploit this vulnerability, the existing authentication mechanism can be bypassed. The specific flaw exists within the UPnP service, which listens on TCP port 5000 by default. The issue results from the lack of proper validation of the length of user-supplied data prior to copying it to a fixed-length, stack-based buffer. An attacker can leverage this vulnerability to execute code in the context of root. Was ZDI-CAN-9643.",
+                    "name": "CVE-2020-10924"
                 },
                 {
                     "description": "This vulnerability allows network-adjacent attackers to bypass authentication on affected installations of NETGEAR R6700 V1.0.4.84_10.0.58 routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the UPnP service, which listens on TCP port 5000. A crafted UPnP message can be used to bypass authentication. An attacker can leverage this in conjunction with other vulnerabilities to execute arbitrary code in the context of root. Was ZDI-CAN-9642.",
@@ -25470,16 +25461,12 @@
             "vulnerabilities": []
         },
         {
-            "count": 2,
+            "count": 1,
             "description": "TelepathStart",
             "name": "telelpathstart",
             "port": 5010,
             "protocol": "tcp",
             "vulnerabilities": [
-                {
-                    "description": "A vulnerability has been identified in SPPA-T3000 MS3000 Migration Server (All versions). An attacker with network access to the MS3000 Server can trigger a Denial-of-Service condition by sending specifically crafted packets to port 5010/tcp. This vulnerability is independent from CVE-2019-18290, CVE-2019-18291, CVE-2019-18292, CVE-2019-18294, CVE-2019-18298, CVE-2019-18299, CVE-2019-18300, CVE-2019-18301, CVE-2019-18303, CVE-2019-18304, CVE-2019-18305, CVE-2019-18306, and CVE-2019-18307. Please note that an attacker needs to have network access to the MS3000 in order to exploit this vulnerability. At the time of advisory publication no public exploitation of this security vulnerability was known.",
-                    "name": "CVE-2019-18302"
-                },
                 {
                     "description": "A vulnerability has been identified in SPPA-T3000 MS3000 Migration Server (All versions). An attacker with network access to the MS3000 Server could trigger a Denial-of-Service condition and potentially gain remote code execution by sending specifically crafted packets to port 5010/tcp. This vulnerability is independent from CVE-2019-18289, CVE-2019-18295, and CVE-2019-18296. Please note that an attacker needs to have network access to the MS3000 in order to exploit this vulnerability. At the time of advisory publication no public exploitation of this security vulnerability was known.",
                     "name": "CVE-2019-18293"
@@ -25955,12 +25942,12 @@
             "protocol": "tcp",
             "vulnerabilities": [
                 {
-                    "description": "Visual Components (owned by KUKA) is a robotic simulator that allows simulating factories and robots in order toimprove planning and decision-making processes. Visual Components software requires a special license which can beobtained from a network license server. The network license server binds to all interfaces (0.0.0.0) and listensfor packets over UDP port 5093. No authentication/authorization is required in order to communicate with theserver. The protocol being used is a property protocol by RMS Sentinel which provides the licensing infrastructurefor the network license server. RMS Sentinel license manager service exposes UDP port 5093 which provides sensitivesystem information that could be leveraged for further exploitation without any kind of authentication. Thisinformation includes detailed hardware and OS characteristics.After a decryption process, a textual protocol is found which contains a simple header with the requested command,application-identifier, and some arguments. The protocol leaks information regarding the receiving serverinformation, license information and managing licenses, among others.Through this flaw, attackers can retreive information about a KUKA simulation system, particularly, the version ofthe licensing server, which is connected to the simulator, and which will allow them to launch local simulationswith similar characteristics, further understanding the dynamics of motion virtualization and opening doors toother attacks (see RVDP#711 and RVDP#712 for subsequent vulnerabilities that compromise integrity andavailability).Beyond compromising simulations, Visual Components provides capabilities to interface with industrial machinery.Particularly, their PLC Connectivity feature 'makes it easy' to connect simulations with control systems usingeither the industry standard OPC UA or other supported vendor specific interfaces. This fills the gap of jumpingfrom simulation to real and enables attackers to pivot from the Visual Components simulator to robots or otherIndustrial Control System (ICS) devices, such as PLCs.",
-                    "name": "CVE-2020-10291"
-                },
-                {
                     "description": "Visual Components (owned by KUKA) is a robotic simulator that allows simulating factories and robots in order toimprove planning and decision-making processes. Visual Components software requires a special license which can beobtained from a network license server. The network license server binds to all interfaces (0.0.0.0) and listensfor packets over UDP port 5093. No authentication/authorization is required in order to communicate with theserver. The protocol being used is a property protocol by RMS Sentinel which provides the licensing infrastructurefor the network license server. RMS Sentinel license manager service exposes UDP port 5093 which provides sensitivesystem information that could be leveraged for further exploitation without any kind of authentication. Thisinformation includes detailed hardware and OS characteristics.After a decryption process, a textual protocol is found which contains a simple header with the requested command,application-identifier, and some arguments. The protocol is vulnerable to DoS through an arbitrary pointerderreference. This flaw allows an attacker to to pass a specially crafted package that, when processed by theservice, causes an arbitrary pointer from the stack to be dereferenced, causing an uncaught exception thatterminates the service. This can be further contructed in combination with RVDP#710 which exploits an informationdisclosure leak, or with RVDP#711 for an stack-overflow and potential code execution.Beyond denying simulations, Visual Components provides capabilities to interface with industrial machinery andautomate certain processes (e.g. testing, benchmarking, etc.) which depending on the DevOps setup might beintegrated into the industrial flow. Accordingly, a DoS in the simulation might have higher repercusions, dependingon the Industrial Control System (ICS) ICS infrastructure.",
                     "name": "CVE-2020-10292"
+                },
+                {
+                    "description": "Visual Components (owned by KUKA) is a robotic simulator that allows simulating factories and robots in order toimprove planning and decision-making processes. Visual Components software requires a special license which can beobtained from a network license server. The network license server binds to all interfaces (0.0.0.0) and listensfor packets over UDP port 5093. No authentication/authorization is required in order to communicate with theserver. The protocol being used is a property protocol by RMS Sentinel which provides the licensing infrastructurefor the network license server. RMS Sentinel license manager service exposes UDP port 5093 which provides sensitivesystem information that could be leveraged for further exploitation without any kind of authentication. Thisinformation includes detailed hardware and OS characteristics.After a decryption process, a textual protocol is found which contains a simple header with the requested command,application-identifier, and some arguments. The protocol leaks information regarding the receiving serverinformation, license information and managing licenses, among others.Through this flaw, attackers can retreive information about a KUKA simulation system, particularly, the version ofthe licensing server, which is connected to the simulator, and which will allow them to launch local simulationswith similar characteristics, further understanding the dynamics of motion virtualization and opening doors toother attacks (see RVDP#711 and RVDP#712 for subsequent vulnerabilities that compromise integrity andavailability).Beyond compromising simulations, Visual Components provides capabilities to interface with industrial machinery.Particularly, their PLC Connectivity feature 'makes it easy' to connect simulations with control systems usingeither the industry standard OPC UA or other supported vendor specific interfaces. This fills the gap of jumpingfrom simulation to real and enables attackers to pivot from the Visual Components simulator to robots or otherIndustrial Control System (ICS) devices, such as PLCs.",
+                    "name": "CVE-2020-10291"
                 }
             ]
         },
@@ -30898,12 +30885,12 @@
             "protocol": "tcp",
             "vulnerabilities": [
                 {
-                    "description": "Stack-based buffer overflow vulnerability exists in how the CMA readfile function of Garrett Metal Detectors iC Module CMA Version 5.0 is used at various locations. The Garrett iC Module exposes an authenticated CLI over TCP port 6877. This interface is used by a secondary GUI client, called &#8220;CMA Connect&#8221;, to interact with the iC Module on behalf of the user. After a client successfully authenticates, they can send plaintext commands to manipulate the device.",
-                    "name": "CVE-2021-21905"
-                },
-                {
                     "description": "Stack-based buffer overflow vulnerability exists in how the CMA readfile function of Garrett Metal Detectors iC Module CMA Version 5.0 is used at various locations. The Garrett iC Module exposes an authenticated CLI over TCP port 6877. This interface is used by a secondary GUI client, called &#8220;CMA Connect&#8221;, to interact with the iC Module on behalf of the user. Every time a user submits a password to the CLI password prompt, the buffer containing their input is passed as the password parameter to the checkPassword function.",
                     "name": "CVE-2021-21906"
+                },
+                {
+                    "description": "Stack-based buffer overflow vulnerability exists in how the CMA readfile function of Garrett Metal Detectors iC Module CMA Version 5.0 is used at various locations. The Garrett iC Module exposes an authenticated CLI over TCP port 6877. This interface is used by a secondary GUI client, called &#8220;CMA Connect&#8221;, to interact with the iC Module on behalf of the user. After a client successfully authenticates, they can send plaintext commands to manipulate the device.",
+                    "name": "CVE-2021-21905"
                 }
             ]
         },
@@ -33385,12 +33372,12 @@
             "protocol": "http",
             "vulnerabilities": [
                 {
-                    "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of D-Link DVA-2800 and DSL-2888A routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the dhttpd service, which listens on TCP port 8008 by default. When parsing the path parameter, the process does not properly validate a user-supplied string before using it to execute a system call. An attacker can leverage this vulnerability to execute code in the context of the web server. Was ZDI-CAN-10911.",
-                    "name": "CVE-2020-27862"
-                },
-                {
                     "description": "This vulnerability allows network-adjacent attackers to disclose sensitive information on affected installations of D-Link DVA-2800 and DSL-2888A routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the dhttpd service, which listens on TCP port 8008 by default. The issue results from incorrect string matching logic when accessing protected pages. An attacker can leverage this vulnerability to disclose stored credentials, leading to further compromise. Was ZDI-CAN-10912.",
                     "name": "CVE-2020-27863"
+                },
+                {
+                    "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of D-Link DVA-2800 and DSL-2888A routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the dhttpd service, which listens on TCP port 8008 by default. When parsing the path parameter, the process does not properly validate a user-supplied string before using it to execute a system call. An attacker can leverage this vulnerability to execute code in the context of the web server. Was ZDI-CAN-10911.",
+                    "name": "CVE-2020-27862"
                 }
             ]
         },
@@ -34488,10 +34475,6 @@
             "protocol": "https",
             "vulnerabilities": [
                 {
-                    "description": "VMware Workspace ONE Access and Identity Manager, allow the /cfg web app and diagnostic endpoints, on port 8443, to be accessed via port 443 using a custom host header. A malicious actor with network access to port 443 could tamper with host headers to facilitate access to the /cfg web app, in addition a malicious actor could access /cfg diagnostic endpoints without authentication.",
-                    "name": "CVE-2021-22002"
-                },
-                {
                     "description": "An authenticated remote code execution vulnerability exists in NSClient++ version 0.5.2.35 when the web interface and ExternalScripts module are enabled. A remote attacker with the administrator password can authenticate to the web interface (default port 8443), inject arbitrary commands as external scripts via the /settings/query.json API, save the configuration, and trigger the script via the /query/{name} endpoint. The injected commands are executed with SYSTEM privileges, enabling full remote compromise. This capability is an intended feature, but the lack of safeguards or privilege separation makes it risky when exposed to untrusted actors.",
                     "name": "CVE-2025-34079"
                 },
@@ -34502,6 +34485,10 @@
                 {
                     "description": "The Opportunistic Encryption feature of HTTP2 (RFC 8164) allows a connection to be transparently upgraded to TLS while retaining the visual properties of an HTTP connection, including being same-origin with unencrypted connections on port 80. However, if a second encrypted port on the same IP address (e.g. port 8443) did not opt-in to opportunistic encryption; a network attacker could forward a connection from the browser to port 443 to port 8443, causing the browser to treat the content of port 8443 as same-origin with HTTP. This was resolved by disabling the Opportunistic Encryption feature, which had low usage. This vulnerability affects Firefox < 94, Thunderbird < 91.3, and Firefox ESR < 91.3.",
                     "name": "CVE-2021-38507"
+                },
+                {
+                    "description": "VMware Workspace ONE Access and Identity Manager, allow the /cfg web app and diagnostic endpoints, on port 8443, to be accessed via port 443 using a custom host header. A malicious actor with network access to port 443 could tamper with host headers to facilitate access to the /cfg web app, in addition a malicious actor could access /cfg diagnostic endpoints without authentication.",
+                    "name": "CVE-2021-22002"
                 }
             ]
         },
@@ -36179,12 +36166,12 @@
             "protocol": "tcp",
             "vulnerabilities": [
                 {
-                    "description": "Xiongmai Technology Co devices AHB7008T-MH-V2, AHB7804R-ELS, AHB7804R-MH-V2, AHB7808R-MS-V2, AHB7808R-MS, AHB7808T-MS-V2, AHB7804R-LMS, and HI3518E_50H10L_S39 were all discovered to have port 9530 open which allows unauthenticated attackers to make arbitrary Telnet connections with the victim device.",
-                    "name": "CVE-2020-22253"
-                },
-                {
                     "description": "FOSCAM Camera FI9805E with firmware V4.02.R12.00018510.10012.143900.00000 contains a backdoor that opens Telnet port when special command is sent on port 9530.",
                     "name": "CVE-2021-43517"
+                },
+                {
+                    "description": "Xiongmai Technology Co devices AHB7008T-MH-V2, AHB7804R-ELS, AHB7804R-MH-V2, AHB7808R-MS-V2, AHB7808R-MS, AHB7808T-MS-V2, AHB7804R-LMS, and HI3518E_50H10L_S39 were all discovered to have port 9530 open which allows unauthenticated attackers to make arbitrary Telnet connections with the victim device.",
+                    "name": "CVE-2020-22253"
                 }
             ]
         },
@@ -36810,12 +36797,12 @@
             "protocol": "tcp",
             "vulnerabilities": [
                 {
-                    "description": "A vulnerability has been identified in LOGO! 8 BM (incl. SIPLUS variants) (All versions < V8.3). A service available on port 10005/tcp of the affected devices could allow complete access to all services without authorization. An attacker could gain full control over an affected device, if he has access to this service. The system manual recommends to protect access to this port.",
-                    "name": "CVE-2020-25228"
-                },
-                {
                     "description": "A vulnerability has been identified in LOGO! 8 BM (incl. SIPLUS variants) (All versions < V8.3). Due to the usage of an outdated cipher mode on port 10005/tcp, an attacker could extract the encryption key from a captured communication with the device.",
                     "name": "CVE-2020-25230"
+                },
+                {
+                    "description": "A vulnerability has been identified in LOGO! 8 BM (incl. SIPLUS variants) (All versions < V8.3). A service available on port 10005/tcp of the affected devices could allow complete access to all services without authorization. An attacker could gain full control over an affected device, if he has access to this service. The system manual recommends to protect access to this port.",
+                    "name": "CVE-2020-25228"
                 }
             ]
         },
@@ -37112,12 +37099,12 @@
             "protocol": "tcp",
             "vulnerabilities": [
                 {
-                    "description": "The Kubelet component in versions 1.15.0-1.15.9, 1.16.0-1.16.6, and 1.17.0-1.17.2 has been found to be vulnerable to a denial of service attack via the kubelet API, including the unauthenticated HTTP read-only API typically served on port 10255, and the authenticated HTTPS API typically served on port 10250.",
-                    "name": "CVE-2020-8551"
-                },
-                {
                     "description": "A flaw was found in the OpenShift Installer before version v0.9.0-master.0.20210125200451-95101da940b0. During installation of OpenShift Container Platform 4 clusters, bootstrap nodes are provisioned with anonymous authentication enabled on kubelet port 10250. A remote attacker able to reach this port during installation can make unauthenticated `/exec` requests to execute arbitrary commands within running containers. The highest threat from this vulnerability is to data confidentiality and integrity as well as system availability.",
                     "name": "CVE-2021-20198"
+                },
+                {
+                    "description": "The Kubelet component in versions 1.15.0-1.15.9, 1.16.0-1.16.6, and 1.17.0-1.17.2 has been found to be vulnerable to a denial of service attack via the kubelet API, including the unauthenticated HTTP read-only API typically served on port 10255, and the authenticated HTTPS API typically served on port 10250.",
+                    "name": "CVE-2020-8551"
                 }
             ]
         },
