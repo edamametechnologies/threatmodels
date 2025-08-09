@@ -1,0 +1,1077 @@
+[
+  {
+    "label": "GameConsole-0040",
+    "expected": "GameConsole",
+    "input": {
+      "open_ports": [],
+      "mdns_services": [
+        "device._spotify-connect._tcp.local"
+      ],
+      "vendor": "azurewave technology inc.",
+      "hostname": "ps5-1.local"
+    }
+  },
+  {
+    "label": "GameConsole-0041",
+    "expected": "GameConsole",
+    "input": {
+      "open_ports": [],
+      "mdns_services": [
+        "device._spotify-connect._tcp.local"
+      ],
+      "vendor": "microsoft corporation",
+      "hostname": "xbox-1.local"
+    }
+  },
+  {
+    "label": "NetworkDevice-0042",
+    "expected": "NetworkDevice",
+    "input": {
+      "open_ports": [
+        {
+          "port": 80,
+          "banner": "http_version=http/1.1, server=TP-LINK HTTPd, content-type=text/html; charset=UTF-8, title=TP-LINK Wireless N AP"
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "tp-link technologies co., ltd.",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "NetworkDevice-0043",
+    "expected": "NetworkDevice",
+    "input": {
+      "open_ports": [
+        {
+          "port": 80,
+          "banner": "http_version=http/1.1, server=mini_httpd/1.24, content-type=text/html, www-authenticate=Basic realm=\\\"NETGEAR R7000\\\""
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "netgear",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "NetworkDevice-0044",
+    "expected": "NetworkDevice",
+    "input": {
+      "open_ports": [
+        {
+          "port": 22,
+          "banner": "banner=ssh-2.0-dropbear_2020.80"
+        },
+        {
+          "port": 443,
+          "banner": "http_version=http/1.1, content-type=text/html, content-length=248, connection=close, title=400 the plain http request was sent to https port"
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "ubiquiti networks inc.",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "NetworkDevice-0045",
+    "expected": "NetworkDevice",
+    "input": {
+      "open_ports": [
+        {
+          "port": 80,
+          "banner": "http_version=http/1.1, server=GoAhead-Webs, content-type=text/html, connection=close, title=Cisco Configuration Utility"
+        },
+        {
+          "port": 443,
+          "banner": "http_version=http/1.1, content-type=text/html, content-length=248, connection=close, title=400 the plain http request was sent to https port"
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "cisco systems, inc.",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "Camera-0046",
+    "expected": "Camera",
+    "input": {
+      "open_ports": [
+        {
+          "port": 80,
+          "banner": "http_version=http/1.1, server=Hikvision-Webs, content-type=text/html, transfer-encoding=chunked, connection=close, cache-control=no-cache, pragma=no-cache, www-authenticate=Basic realm=\\\"Hikvision IP Camera\\\""
+        },
+        {
+          "port": 554,
+          "banner": ""
+        },
+        {
+          "port": 8000,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "hangzhou hikvision digital technology co., ltd.",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "Camera-0047",
+    "expected": "Camera",
+    "input": {
+      "open_ports": [
+        {
+          "port": 80,
+          "banner": "http_version=http/1.1, server=GoAhead-Webs, content-type=text/html, connection=close, www-authenticate=Basic realm=\\\"DCS-932L\\\""
+        },
+        {
+          "port": 443,
+          "banner": "http_version=http/1.1, content-type=text/html, content-length=248, connection=close, title=400 the plain http request was sent to https port"
+        },
+        {
+          "port": 554,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "d-link corporation",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "Camera-0048",
+    "expected": "Camera",
+    "input": {
+      "open_ports": [
+        {
+          "port": 80,
+          "banner": "http_version=http/1.1, server=Boa/0.94.14rc21, content-type=text/html, connection=close, www-authenticate=Basic realm=\\\"AXIS Camera\\\""
+        },
+        {
+          "port": 443,
+          "banner": "http_version=http/1.1, content-type=text/html, content-length=248, connection=close, title=400 the plain http request was sent to https port"
+        },
+        {
+          "port": 554,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "axis communications ab",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "Camera-0049",
+    "expected": "Camera",
+    "input": {
+      "open_ports": [
+        {
+          "port": 80,
+          "banner": "http_version=http/1.1, server=Embedded Web Server, content-type=text/html, connection=close, title=Foscam IP Camera"
+        },
+        {
+          "port": 554,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "shenzhen foscam intelligent technology co.,ltd.",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "iPhone-0050",
+    "expected": "iPhone",
+    "input": {
+      "open_ports": [],
+      "mdns_services": [
+        "device._apple-mobdev2._tcp.local",
+        "device.local"
+      ],
+      "vendor": "apple, inc.",
+      "hostname": "host-21.local"
+    }
+  },
+  {
+    "label": "iPhone-0051",
+    "expected": "iPhone",
+    "input": {
+      "open_ports": [
+        {
+          "port": 62078,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [
+        "device._apple-mobdev2._tcp.local",
+        "device.local"
+      ],
+      "vendor": "apple, inc.",
+      "hostname": "host-22.local"
+    }
+  },
+  {
+    "label": "iPhone-0052",
+    "expected": "iPhone",
+    "input": {
+      "open_ports": [
+        {
+          "port": 62078,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "SmartSpeaker-0053",
+    "expected": "SmartSpeaker",
+    "input": {
+      "open_ports": [
+        {
+          "port": 5000,
+          "banner": ""
+        },
+        {
+          "port": 7000,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [
+        "device._airplay._tcp.local",
+        "device._hap._tcp.local",
+        "device._raop._tcp.local",
+        "device.local"
+      ],
+      "vendor": "apple, inc.",
+      "hostname": "host-23.local"
+    }
+  },
+  {
+    "label": "SmartSpeaker-0054",
+    "expected": "SmartSpeaker",
+    "input": {
+      "open_ports": [],
+      "mdns_services": [
+        "device._spotify-connect._tcp.local",
+        "device.local"
+      ],
+      "vendor": "amazon technologies inc.",
+      "hostname": "host-24.local"
+    }
+  },
+  {
+    "label": "SmartSpeaker-0056",
+    "expected": "SmartSpeaker",
+    "input": {
+      "open_ports": [
+        {
+          "port": 8090,
+          "banner": "http_version=http/1.1, content-type=text/xml, transfer-encoding=chunked, connection=close"
+        },
+        {
+          "port": 8200,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [
+        "device._spotify-connect._tcp.local",
+        "device.local"
+      ],
+      "vendor": "bose corporation",
+      "hostname": "host-26.local"
+    }
+  },
+  {
+    "label": "RaspberryPi-0057",
+    "expected": "RaspberryPi",
+    "input": {
+      "open_ports": [
+        {
+          "port": 22,
+          "banner": "banner=ssh-2.0-openssh_8.4p1 Raspbian-5+deb11u4"
+        },
+        {
+          "port": 53,
+          "banner": ""
+        },
+        {
+          "port": 80,
+          "banner": "http_version=http/1.1, server=lighttpd/1.4.53, content-type=text/html, set-cookie=PHPSESSID=abcdef; path=/, title=Pi-hole Admin Console"
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "raspberry pi foundation",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "RaspberryPi-0058",
+    "expected": "RaspberryPi",
+    "input": {
+      "open_ports": [
+        {
+          "port": 8123,
+          "banner": "http_version=http/1.1, content-type:text/html; charset=UTF-8, set-cookie=session=abcd1234; Path=/, title=Home Assistant"
+        }
+      ],
+      "mdns_services": [
+        "device._hap._tcp.local",
+        "device.local"
+      ],
+      "vendor": "raspberry pi foundation",
+      "hostname": "host-27.local"
+    }
+  },
+  {
+    "label": "RaspberryPi-0059",
+    "expected": "RaspberryPi",
+    "input": {
+      "open_ports": [
+        {
+          "port": 22,
+          "banner": "banner=ssh-2.0-openssh_8.4p1 Raspbian-5+deb11u2"
+        },
+        {
+          "port": 8080,
+          "banner": "http_version=http/1.1, content-type:text/html; charset=UTF-8, title=Kodi Web Interface"
+        },
+        {
+          "port": 9090,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [
+        "device._http._tcp.local",
+        "device.local"
+      ],
+      "vendor": "raspberry pi foundation",
+      "hostname": "host-28.local"
+    }
+  },
+  {
+    "label": "RaspberryPi-0060",
+    "expected": "RaspberryPi",
+    "input": {
+      "open_ports": [
+        {
+          "port": 22,
+          "banner": "banner=ssh-2.0-openssh_7.9p1 Raspbian-10+deb10u2"
+        },
+        {
+          "port": 139,
+          "banner": ""
+        },
+        {
+          "port": 445,
+          "banner": ""
+        },
+        {
+          "port": 9091,
+          "banner": "http_version=http/1.1, content-type:text/html; charset=UTF-8, title=Transmission Web Interface"
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "raspberry pi foundation",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "Router-0061",
+    "expected": "Router",
+    "input": {
+      "open_ports": [
+        {
+          "port": 23,
+          "banner": ""
+        },
+        {
+          "port": 53,
+          "banner": ""
+        },
+        {
+          "port": 80,
+          "banner": "http_version=http/1.1, server=ZyXEL HTTPd, content-type:text/html; charset=UTF-8, title=ZyXEL Configuration Interface"
+        },
+        {
+          "port": 7547,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "zyxel communications corp.",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "Router-0063",
+    "expected": "Router",
+    "input": {
+      "open_ports": [
+        {
+          "port": 22,
+          "banner": ""
+        },
+        {
+          "port": 53,
+          "banner": ""
+        },
+        {
+          "port": 853,
+          "banner": ""
+        },
+        {
+          "port": 5353,
+          "banner": ""
+        },
+        {
+          "port": 49152,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "Router-0064",
+    "expected": "Router",
+    "input": {
+      "open_ports": [
+        {
+          "port": 21,
+          "banner": ""
+        },
+        {
+          "port": 22,
+          "banner": ""
+        },
+        {
+          "port": 23,
+          "banner": ""
+        },
+        {
+          "port": 80,
+          "banner": ""
+        },
+        {
+          "port": 8291,
+          "banner": ""
+        },
+        {
+          "port": 8728,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "mikrotik",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "Router-0065",
+    "expected": "Router",
+    "input": {
+      "open_ports": [
+        {
+          "port": 80,
+          "banner": "http_version=http/1.1, server=mini_httpd, content-type:text/html; charset=UTF-8, title=ASUS Wireless Router"
+        },
+        {
+          "port": 8443,
+          "banner": "http_version=http/1.1, content-type=text/html, content-length=248, connection=close, title=400 the plain http request was sent to https port"
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "asustek computer inc.",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "Printer-0066",
+    "expected": "Printer",
+    "input": {
+      "open_ports": [
+        {
+          "port": 80,
+          "banner": "http_version=http/1.1, server=HP HTTP Server; HP LaserJet Pro M404; serial number: CN12345XYZ; content-language=en, content-type=text/html, last-modified=Fri, 10 Jan 2020 12:00:00 GMT, cache-control=max-age=0, set-cookie=SessionId=ABCDEF1234;path=/; HttpOnly, title=HP LaserJet Pro M404"
+        },
+        {
+          "port": 443,
+          "banner": "http_version=http/1.1, content-type=text/html, content-length=248, connection=close, title=400 the plain http request was sent to https port"
+        },
+        {
+          "port": 631,
+          "banner": "http_version=http/1.1, server=HP HTTP Server; HP LaserJet Pro M404; serial number: CN12345XYZ; content-language=en, content-type=text/html, last-modified=Fri, 10 Jan 2020 12:00:00 GMT, cache-control=max-age=0, set-cookie=SessionId=XYZABC5678;path=/; HttpOnly, title=HP LaserJet Pro M404"
+        },
+        {
+          "port": 8080,
+          "banner": "http_version=http/1.1, server=HP HTTP Server; HP LaserJet Pro M404; serial number: CN12345XYZ; content-language=en, content-type=text/html, last-modified=Fri, 10 Jan 2020 12:00:00 GMT, cache-control=max-age=0, set-cookie=SessionId=JKL98765;path=/; HttpOnly, title=HP LaserJet Pro M404"
+        },
+        {
+          "port": 9100,
+          "banner": ""
+        },
+        {
+          "port": 9220,
+          "banner": ""
+        },
+        {
+          "port": 3910,
+          "banner": ""
+        },
+        {
+          "port": 3911,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [
+        "device._http._tcp.local",
+        "device._ipps._tcp.local",
+        "device._pdl-datastream._tcp.local",
+        "device._privet._tcp.local",
+        "device._scanner._tcp.local",
+        "device.local"
+      ],
+      "vendor": "hp inc.",
+      "hostname": "host-29.local"
+    }
+  },
+  {
+    "label": "Printer-0067",
+    "expected": "Printer",
+    "input": {
+      "open_ports": [
+        {
+          "port": 80,
+          "banner": "http_version=http/1.1, server=CANON HTTP Server; Canon iR-ADV C3520; serial number: JPN01234; content-language=en, content-type=text/html, last-modified=Wed, 15 Mar 2017 10:00:00 GMT, cache-control=max-age=0, title=Canon iR-ADV C3520"
+        },
+        {
+          "port": 443,
+          "banner": "http_version=http/1.1, content-type=text/html, content-length=248, connection=close, title=400 the plain http request was sent to https port"
+        },
+        {
+          "port": 515,
+          "banner": ""
+        },
+        {
+          "port": 631,
+          "banner": ""
+        },
+        {
+          "port": 9100,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [
+        "device._http._tcp.local",
+        "device._ipps._tcp.local",
+        "device._printer._tcp.local",
+        "device._scanner._tcp.local",
+        "device.local"
+      ],
+      "vendor": "canon inc.",
+      "hostname": "host-30.local"
+    }
+  },
+  {
+    "label": "Printer-0068",
+    "expected": "Printer",
+    "input": {
+      "open_ports": [
+        {
+          "port": 80,
+          "banner": "http_version=http/1.1, server=EPSON HTTP Server; EPSON WF-2750; serial number: X8Y7Z6W5; content-language=en, content-type=text/html, last-modified=Mon, 05 Jul 2021 08:00:00 GMT, cache-control=no-cache, title=EPSON WF-2750"
+        },
+        {
+          "port": 443,
+          "banner": "http_version=http/1.1, content-type=text/html, content-length=248, connection=close, title=400 the plain http request was sent to https port"
+        },
+        {
+          "port": 515,
+          "banner": ""
+        },
+        {
+          "port": 631,
+          "banner": ""
+        },
+        {
+          "port": 9100,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [
+        "device._http._tcp.local",
+        "device._ipps._tcp.local",
+        "device._printer._tcp.local",
+        "device._scanner._tcp.local",
+        "device.local"
+      ],
+      "vendor": "seiko epson corp.",
+      "hostname": "host-31.local"
+    }
+  },
+  {
+    "label": "SmartTV-0069",
+    "expected": "SmartTV",
+    "input": {
+      "open_ports": [
+        {
+          "port": 8001,
+          "banner": ""
+        },
+        {
+          "port": 8002,
+          "banner": ""
+        },
+        {
+          "port": 8080,
+          "banner": "http_version=http/1.1, content-type=text/html, content-length=341, server=WebServer, title=403 forbidden"
+        },
+        {
+          "port": 9119,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [
+        "device._airplay._tcp.local",
+        "device._spotify-connect._tcp.local",
+        "device.local"
+      ],
+      "vendor": "samsung electronics co.,ltd",
+      "hostname": "host-32.local"
+    }
+  },
+  {
+    "label": "SmartTV-0070",
+    "expected": "SmartTV",
+    "input": {
+      "open_ports": [
+        {
+          "port": 3000,
+          "banner": "http_version=http/1.1, content-length=0, content-type:text/html"
+        },
+        {
+          "port": 3001,
+          "banner": "http_version=http/1.1, content-length=0, content-type:text/html"
+        },
+        {
+          "port": 9080,
+          "banner": ""
+        },
+        {
+          "port": 9955,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [
+        "device._airplay._tcp.local",
+        "device._hap._tcp.local",
+        "device.local"
+      ],
+      "vendor": "lg electronics",
+      "hostname": "host-33.local"
+    }
+  },
+  {
+    "label": "SmartTV-0071",
+    "expected": "SmartTV",
+    "input": {
+      "open_ports": [
+        {
+          "port": 8060,
+          "banner": "http_version=http/1.1, content-type:text/xml, content-length=342, connection=close"
+        }
+      ],
+      "mdns_services": [
+        "device._airplay._tcp.local",
+        "device._raop._tcp.local",
+        "device.local"
+      ],
+      "vendor": "roku, inc.",
+      "hostname": "host-34.local"
+    }
+  },
+  {
+    "label": "SmartTV-0072",
+    "expected": "SmartTV",
+    "input": {
+      "open_ports": [
+        {
+          "port": 5000,
+          "banner": ""
+        },
+        {
+          "port": 7000,
+          "banner": ""
+        },
+        {
+          "port": 7100,
+          "banner": ""
+        },
+        {
+          "port": 62078,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [
+        "device._airplay._tcp.local",
+        "device._raop._tcp.local",
+        "device._companion-link._tcp.local",
+        "device._mediaremotetv._tcp.local",
+        "device._hap._tcp.local",
+        "device.local"
+      ],
+      "vendor": "apple, inc.",
+      "hostname": "host-35.local"
+    }
+  },
+  {
+    "label": "SmartTV-0073",
+    "expected": "SmartTV",
+    "input": {
+      "open_ports": [
+        {
+          "port": 8008,
+          "banner": "http_version=http/1.1, content-length=0, content-type=text/html"
+        },
+        {
+          "port": 8009,
+          "banner": ""
+        },
+        {
+          "port": 8443,
+          "banner": "http_version=http/1.1, content-length=0, content-type=text/html"
+        }
+      ],
+      "mdns_services": [
+        "device._googlecast._tcp.local",
+        "device._androidtvremote2._tcp.local",
+        "device.local"
+      ],
+      "vendor": "sony corporation",
+      "hostname": "host-36.local"
+    }
+  },
+  {
+    "label": "Unknown-0074",
+    "expected": "Unknown",
+    "input": {
+      "open_ports": [],
+      "mdns_services": [],
+      "vendor": "",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "Unknown-0075",
+    "expected": "Unknown",
+    "input": {
+      "open_ports": [
+        {
+          "port": 80,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "espressif inc.",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "Unknown-0076",
+    "expected": "Unknown",
+    "input": {
+      "open_ports": [],
+      "mdns_services": [],
+      "vendor": "azurewave technology inc.",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "Unknown-0077",
+    "expected": "Unknown",
+    "input": {
+      "open_ports": [],
+      "mdns_services": [],
+      "vendor": "huawei technologies co., ltd.",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "Unknown-0078",
+    "expected": "Unknown",
+    "input": {
+      "open_ports": [
+        {
+          "port": 80,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "texas instruments",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "PC-0079",
+    "expected": "PC",
+    "input": {
+      "open_ports": [
+        {
+          "port": 135,
+          "banner": ""
+        },
+        {
+          "port": 139,
+          "banner": ""
+        },
+        {
+          "port": 445,
+          "banner": ""
+        },
+        {
+          "port": 3389,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "dell inc.",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "PC-0080",
+    "expected": "PC",
+    "input": {
+      "open_ports": [
+        {
+          "port": 22,
+          "banner": "banner=ssh-2.0-openssh_8.2p1 Ubuntu-4ubuntu0.4"
+        },
+        {
+          "port": 139,
+          "banner": ""
+        },
+        {
+          "port": 445,
+          "banner": ""
+        },
+        {
+          "port": 5900,
+          "banner": "banner=RFB 003.008"
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "intel corporate",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "PC-0081",
+    "expected": "PC",
+    "input": {
+      "open_ports": [
+        {
+          "port": 135,
+          "banner": ""
+        },
+        {
+          "port": 445,
+          "banner": ""
+        },
+        {
+          "port": 7680,
+          "banner": ""
+        },
+        {
+          "port": 2869,
+          "banner": ""
+        },
+        {
+          "port": 10243,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "intel corporate",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "Apple PC-0082",
+    "expected": "Apple PC",
+    "input": {
+      "open_ports": [
+        {
+          "port": 22,
+          "banner": "banner=ssh-2.0-openssh_8.1"
+        },
+        {
+          "port": 88,
+          "banner": ""
+        },
+        {
+          "port": 445,
+          "banner": ""
+        },
+        {
+          "port": 3283,
+          "banner": ""
+        },
+        {
+          "port": 5900,
+          "banner": "banner=RFB 003.889"
+        }
+      ],
+      "mdns_services": [
+        "device._afpovertcp._tcp.local",
+        "device._sftp-ssh._tcp.local",
+        "device._rfb._tcp.local",
+        "device.local"
+      ],
+      "vendor": "apple, inc.",
+      "hostname": "host-37.local"
+    }
+  },
+  {
+    "label": "Apple PC-0083",
+    "expected": "Apple PC",
+    "input": {
+      "open_ports": [],
+      "mdns_services": [],
+      "vendor": "apple, inc.",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "Apple PC-0084",
+    "expected": "Apple PC",
+    "input": {
+      "open_ports": [
+        {
+          "port": 139,
+          "banner": ""
+        },
+        {
+          "port": 445,
+          "banner": ""
+        },
+        {
+          "port": 3389,
+          "banner": ""
+        },
+        {
+          "port": 5357,
+          "banner": ""
+        },
+        {
+          "port": 7680,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "apple, inc.",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "IoT-0085",
+    "expected": "IoT",
+    "input": {
+      "open_ports": [
+        {
+          "port": 80,
+          "banner": "http_version=http/1.1, server=lighttpd, content-type:text/html, last-modified=Tue, 22 Jun 2021 18:35:00 GMT, content-length=3456, connection=close, title=Shelly Device"
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "allterco robotics ltd.",
+      "hostname": ""
+    }
+  },
+  {
+    "label": "IoT-0086",
+    "expected": "IoT",
+    "input": {
+      "open_ports": [
+        {
+          "port": 80,
+          "banner": "http_version=http/1.1, server=Mongoose/6.18, content-type:text/html; charset=UTF-8, content-length=1854, last-modified=Fri, 23 Jul 2021 15:50:28 GMT, pragma=no-cache, title=Hue Bridge"
+        },
+        {
+          "port": 443,
+          "banner": "http_version=http/1.1, content-type=text/html, content-length=248, connection=close, title=400 the plain http request was sent to https port"
+        },
+        {
+          "port": 3000,
+          "banner": ""
+        },
+        {
+          "port": 5353,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [
+        "device._hue._tcp.local",
+        "device._hap._tcp.local",
+        "device.local"
+      ],
+      "vendor": "philips lighting bv",
+      "hostname": "host-38.local"
+    }
+  },
+  {
+    "label": "IoT-0087",
+    "expected": "IoT",
+    "input": {
+      "open_ports": [],
+      "mdns_services": [
+        "device._hap._tcp.local",
+        "device.local"
+      ],
+      "vendor": "ecobee inc.",
+      "hostname": "host-38.local"
+    }
+  },
+  {
+    "label": "IoT-0088",
+    "expected": "IoT",
+    "input": {
+      "open_ports": [
+        {
+          "port": 23,
+          "banner": ""
+        },
+        {
+          "port": 443,
+          "banner": "http_version=http/1.1, server=lwIP/2.1.2, content-type:text/html, content-length=128, connection=close"
+        }
+      ],
+      "mdns_services": [
+        "device._hap._tcp.local",
+        "device.local"
+      ],
+      "vendor": "lutron electronics co., inc.",
+      "hostname": "host-39.local"
+    }
+  },
+  {
+    "label": "IoT-0089",
+    "expected": "IoT",
+    "input": {
+      "open_ports": [
+        {
+          "port": 6668,
+          "banner": ""
+        }
+      ],
+      "mdns_services": [],
+      "vendor": "tuya smart inc.",
+      "hostname": ""
+    }
+  }
+]
