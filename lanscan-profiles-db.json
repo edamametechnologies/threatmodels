@@ -1,5 +1,5 @@
 {
-  "date": "April 11th 2025",
+  "date": "August 09th 2025",
   "profiles": [
     {
       "conditions": [
@@ -121,21 +121,53 @@
               },
               {
                 "Node": {
-                  "type": "AND",
                   "sub_conditions": [
-                    { "Leaf": { "mdns_services": [ "spotify-connect" ] } },
-                    { "Leaf": { "vendors": [ "amazon" ] } }
-                  ]
+                    {
+                      "Leaf": {
+                        "mdns_services": [
+                          "spotify-connect"
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "vendors": [
+                          "amazon"
+                        ]
+                      }
+                    }
+                  ],
+                  "type": "AND"
                 }
               },
               {
                 "Node": {
-                  "type": "AND",
                   "sub_conditions": [
-                    { "Leaf": { "mdns_services": [ "raop", "airplay" ] } },
-                    { "Leaf": { "negate": true, "mdns_services": [ "mediaremotetv" ] } },
-                    { "Leaf": { "vendors": [ "apple" ] } }
-                  ]
+                    {
+                      "Leaf": {
+                        "mdns_services": [
+                          "raop",
+                          "airplay"
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "mdns_services": [
+                          "mediaremotetv"
+                        ],
+                        "negate": true
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "vendors": [
+                          "apple"
+                        ]
+                      }
+                    }
+                  ],
+                  "type": "AND"
                 }
               }
             ],
@@ -167,22 +199,73 @@
               {
                 "Leaf": {
                   "open_ports": [
-                    21, 22, 23
+                    21,
+                    22,
+                    23
                   ]
                 }
               },
               {
                 "Node": {
-                  "type": "OR",
                   "sub_conditions": [
-                    { "Leaf": { "open_ports": [25, 587] } },
-                    { "Leaf": { "open_ports": [25, 465] } },
-                    { "Leaf": { "open_ports": [110, 995] } },
-                    { "Leaf": { "open_ports": [143, 993] } },
-                    { "Leaf": { "open_ports": [119, 563] } },
-                    { "Leaf": { "open_ports": [25, 110] } },
-                    { "Leaf": { "open_ports": [25, 143] } }
-                  ]
+                    {
+                      "Leaf": {
+                        "open_ports": [
+                          25,
+                          587
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "open_ports": [
+                          25,
+                          465
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "open_ports": [
+                          110,
+                          995
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "open_ports": [
+                          143,
+                          993
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "open_ports": [
+                          119,
+                          563
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "open_ports": [
+                          25,
+                          110
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "open_ports": [
+                          25,
+                          143
+                        ]
+                      }
+                    }
+                  ],
+                  "type": "OR"
                 }
               }
             ],
@@ -196,21 +279,62 @@
       "conditions": [
         {
           "Node": {
-            "type": "AND",
             "sub_conditions": [
-              { "Leaf": { "negate": true, "mdns_services": [ "googlecast", "androidtvremote", "raop", "hap" ] } },
-              { "Leaf": { "negate": true, "vendors": [ "samsung", "vizio", "tcl", "hisense", "toshiba", "philips", "tpvision" ] } },
               {
-                "Node": {
-                  "type": "OR",
-                  "sub_conditions": [
-                    { "Leaf": { "open_ports": [ 62078 ] } },
-                    { "Leaf": { "mdns_services": [ "apple-mobdev2" ] } },
-                    { "Leaf": { "open_ports": [ 49152 ] } }
+                "Leaf": {
+                  "mdns_services": [
+                    "googlecast",
+                    "androidtvremote",
+                    "raop",
+                    "hap"
+                  ],
+                  "negate": true
+                }
+              },
+              {
+                "Leaf": {
+                  "negate": true,
+                  "vendors": [
+                    "samsung",
+                    "vizio",
+                    "tcl",
+                    "hisense",
+                    "toshiba",
+                    "philips",
+                    "tpvision"
                   ]
                 }
+              },
+              {
+                "Node": {
+                  "sub_conditions": [
+                    {
+                      "Leaf": {
+                        "open_ports": [
+                          62078
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "mdns_services": [
+                          "apple-mobdev2"
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "open_ports": [
+                          49152
+                        ]
+                      }
+                    }
+                  ],
+                  "type": "OR"
+                }
               }
-            ]
+            ],
+            "type": "AND"
           }
         }
       ],
@@ -220,13 +344,42 @@
       "conditions": [
         {
           "Node": {
-            "type": "AND",
             "sub_conditions": [
-              { "Leaf": { "vendors": [ "apple" ] } },
-              { "Leaf": { "negate": true, "open_ports": [ 62078 ] } },
-              { "Leaf": { "negate": true, "mdns_services": [ "apple-mobdev2" ] } },
-              { "Leaf": { "negate": true, "mdns_services": [ "airplay", "googlecast", "androidtvremote" ] } }
-            ]
+              {
+                "Leaf": {
+                  "vendors": [
+                    "apple"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "negate": true,
+                  "open_ports": [
+                    62078
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "mdns_services": [
+                    "apple-mobdev2"
+                  ],
+                  "negate": true
+                }
+              },
+              {
+                "Leaf": {
+                  "mdns_services": [
+                    "airplay",
+                    "googlecast",
+                    "androidtvremote"
+                  ],
+                  "negate": true
+                }
+              }
+            ],
+            "type": "AND"
           }
         }
       ],
@@ -261,7 +414,6 @@
             "sub_conditions": [
               {
                 "Node": {
-                  "type": "OR",
                   "sub_conditions": [
                     {
                       "Leaf": {
@@ -282,7 +434,8 @@
                         ]
                       }
                     }
-                  ]
+                  ],
+                  "type": "OR"
                 }
               },
               {
@@ -376,27 +529,28 @@
               },
               {
                 "Node": {
-                  "type": "AND",
                   "sub_conditions": [
-                    { "Leaf": {
-                    "mdns_services": [
-                      "mqtt",
-                      "hap",
-                      "hue",
-                      "miio"
-                      ]
+                    {
+                      "Leaf": {
+                        "mdns_services": [
+                          "mqtt",
+                          "hap",
+                          "hue",
+                          "miio"
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "mdns_services": [
+                          "airplay"
+                        ],
+                        "negate": true
+                      }
                     }
-                  },
-                  {
-                    "Leaf": {
-                      "negate": true,
-                      "mdns_services": [
-                        "airplay"
-                      ]
-                    }
-                  }
-                ]
-              }
+                  ],
+                  "type": "AND"
+                }
               },
               {
                 "Leaf": {
@@ -430,20 +584,75 @@
       "conditions": [
         {
           "Node": {
-            "type": "AND",
             "sub_conditions": [
-              { "Leaf": { "negate": true, "vendors": [ "freebox" ] } },
-              { "Node": {
-                  "type": "OR",
-                  "sub_conditions": [
-                    { "Leaf": { "open_ports": [ 8001, 8002, 8080 ] } },
-                    { "Leaf": { "open_ports": [ 3000, 3001, 18181 ] } },
-                    { "Leaf": { "open_ports": [ 8008, 8009, 8443, 9000 ] } },
-                    { "Leaf": { "vendors": [ "tcl", "hisense", "vizio", "sharp", "toshiba", "lg", "sony", "apple" ] } },
-                    { "Leaf": { "mdns_services": [ "androidtvremote", "googlecast", "airplay" ] } }
+              {
+                "Leaf": {
+                  "negate": true,
+                  "vendors": [
+                    "freebox"
                   ]
-                } }
-            ]
+                }
+              },
+              {
+                "Node": {
+                  "sub_conditions": [
+                    {
+                      "Leaf": {
+                        "open_ports": [
+                          8001,
+                          8002,
+                          8080
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "open_ports": [
+                          3000,
+                          3001,
+                          18181
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "open_ports": [
+                          8008,
+                          8009,
+                          8443,
+                          9000
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "vendors": [
+                          "tcl",
+                          "hisense",
+                          "vizio",
+                          "sharp",
+                          "toshiba",
+                          "lg",
+                          "sony",
+                          "apple"
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "mdns_services": [
+                          "androidtvremote",
+                          "googlecast",
+                          "airplay"
+                        ]
+                      }
+                    }
+                  ],
+                  "type": "OR"
+                }
+              }
+            ],
+            "type": "AND"
           }
         }
       ],
@@ -524,5 +733,5 @@
       "device_type": "NetworkDevice"
     }
   ],
-  "signature": "668dface3a45fc82f044dfb25618000ffbcfb773b9d3891e4345c459b1916184"
+  "signature": "83e703da51e0ecbc354914d4b99b19a69f75006068af1eacd7ff999db788bc26"
 }

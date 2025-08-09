@@ -6,7 +6,7 @@ from pathlib import Path
 BASE = Path(__file__).resolve().parent
 IN_FILE = BASE / "test_devices.json"
 OUT_FILE = BASE / "test_devices.json"
-BACKUP_FILE = BASE / "test_devices.raw.json"
+BACKUP_FILE = BASE / "test_devices.origin.json"
 
 # Known vendor tokens to preserve in hostnames when present
 VENDOR_TOKENS = [
