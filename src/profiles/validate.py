@@ -14,8 +14,18 @@ WARN = "WARN"
 def classify_device(db: Dict[str, Any], device: Dict[str, Any]) -> str:
     """Pure-Python mirror of profiles.rs logic at a high level.
     Evaluates profiles against one device input and returns device_type or 'Unknown'.
+
+    Parsing and order semantics mirror Rust:
+    - Last-write-wins per device_type (map insertion overwrites prior entries)
+    - Iterate in the order of last occurrences to have a deterministic pass consistent with parse
     """
-    profiles = db.get("profiles", [])
+    profiles_list = db.get("profiles", [])
+    # Build map device_type -> last index (last-write-wins), mirroring Rust map overwrite
+    last_index: Dict[str, int] = {}
+    for idx, prof in enumerate(profiles_list):
+        dt = prof.get("device_type")
+        if isinstance(dt, str) and dt:
+            last_index[dt] = idx
     # Normalize inputs
     vendor = (device.get("vendor") or "").lower()
     hostname = (device.get("hostname") or "").lower()
@@ -61,7 +71,11 @@ def classify_device(db: Dict[str, Any], device: Dict[str, Any]) -> str:
                 return any(cond_matches(s) for s in subs)
         return False
 
-    for prof in profiles:
+    # Iterate in original JSON order but skip any device_type entries that are not the last occurrence
+    for idx, prof in enumerate(profiles_list):
+        dt = prof.get("device_type")
+        if isinstance(dt, str) and dt and last_index.get(dt, idx) != idx:
+            continue
         for cond in prof.get("conditions", []):
             if cond_matches(cond):
                 return prof.get("device_type", "Unknown")
