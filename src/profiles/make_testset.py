@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 
 
-DEFAULT_SRC = Path(__file__).resolve().parent / "regression.json"
+DEFAULT_SRC = Path(__file__).resolve().parent / "get_lanscan_cli_output.json"
 OUT = Path(__file__).resolve().parent / "test_devices.json"
 
 

@@ -5,90 +5,69 @@ import json
 import requests
 import ipaddress
 import hashlib
-import copy
+import re
+import os
 from urllib.parse import urlparse
 
-def verify_signature(data, stored_signature):
-    '''Verify if the stored signature matches the computed one
-    
-    Returns True if signature is valid (matches computed hash)
-    Returns False if signature is invalid (doesn't match computed hash)
-    '''
-    # Create a deep copy of the data with empty signature to compute hash
-    # This ensures we don't accidentally modify shared nested structures
-    data_copy = copy.deepcopy(data)
-    data_copy["signature"] = ""
-    
-    # Calculate hash using the same method as in build scripts
-    json_str = json.dumps(data_copy, sort_keys=True)
-    calculated_hash = hashlib.sha256(json_str.encode('utf-8')).hexdigest()
-    
-    # Debug information
-    print(f"\nDebug - Signature Validation:")
-    print(f"Stored signature: {stored_signature}")
-    print(f"Calculated hash: {calculated_hash}")
-    print(f"JSON string used for hash (first 100 chars): {json_str[:100]}...")
-    print(f"JSON string length: {len(json_str)}")
-    print(f"JSON string encoding: {json_str.encode().hex()[:100]}...")
-    
-    # Compare calculated hash with stored signature
-    return calculated_hash == stored_signature
 
-def check_file_signature(filename):
-    '''Check if the signature in the file matches the computed signature.
-    Also verifies against .sig file if it exists.
-    '''
-    print(f"\nDebug - Checking signature for file: {filename}")
-    
-    with open(filename, 'r', encoding="utf-8") as file:
-        data = json.load(file)
-    
+# --- Common header validation (date/signature) ---------------------------------
+def _compute_signature(data: dict) -> str:
+    """Compute sha256 over JSON where signature field is blanked.
+
+    Sorting keys is critical to ensure deterministic signature.
+    """
+    data_copy = data.copy()
+    # Some models allow signature to be null/missing; normalize to empty string
+    data_copy["signature"] = ""
+    json_str = json.dumps(data_copy, sort_keys=True)
+    return hashlib.sha256(json_str.encode()).hexdigest()
+
+
+_DATE_REGEX = re.compile(r"^[A-Za-z]+\s+\d{1,2}(st|nd|rd|th)\s+\d{4}$")
+
+
+def _validate_date_string(date_value: str, ctx: str) -> None:
+    if not isinstance(date_value, str):
+        raise ValueError(f"Top-level 'date' must be a string ({ctx})")
+    if not _DATE_REGEX.match(date_value.strip()):
+        raise ValueError(
+            f"Top-level 'date' must match 'Month DDth YYYY' format (e.g., 'August 08th 2025') ({ctx})"
+        )
+
+
+def _validate_signature_and_sidecar(filename: str, data: dict, *, signature_required: bool, allow_null_signature: bool = False) -> None:
+    """Validate signature presence and correctness, and that sidecar .sig matches.
+
+    - signature_required: when True, 'signature' must be a non-empty string
+    - allow_null_signature: when True, 'signature' may be None; if None, skip verification
+    """
     if "signature" not in data:
-        print(f"Warning: No signature found in {filename}")
-        return False
-    
-    stored_signature = data["signature"]
-    if not stored_signature:
-        print(f"Warning: Empty signature in {filename}")
-        return False
-    
-    print(f"Debug - File contents:")
-    print(f"Date field: {data.get('date', 'Not found')}")
-    if 'whitelists' in data:
-        print(f"Number of whitelists: {len(data.get('whitelists', []))}")
-    elif 'vulnerabilities' in data:
-        print(f"Number of vulnerabilities: {len(data.get('vulnerabilities', []))}")
-    elif 'blacklists' in data:
-        print(f"Number of blacklists: {len(data.get('blacklists', []))}")
-    elif 'profiles' in data:
-        print(f"Number of profiles: {len(data.get('profiles', []))}")
-    elif 'metrics' in data:
-        print(f"Number of metrics: {len(data.get('metrics', []))}")
-    else:
-        print("Unknown data structure")
-    
-    # Verify the in-file signature
-    is_valid = verify_signature(data, stored_signature)
-    if not is_valid:
-        print(f"Error: Signature validation failed for {filename}")
-        return False
-    
-    # Also check against .sig file if it exists
-    sig_file = filename.removesuffix(".json") + ".sig"
-    try:
-        with open(sig_file, 'r') as file:
-            sig_file_content = file.read().strip()
-            print(f"\nDebug - .sig file check:")
-            print(f"Signature in .sig file: {sig_file_content}")
-            print(f"Signature in JSON file: {stored_signature}")
-            if sig_file_content != stored_signature:
-                print(f"Error: Signature in {sig_file} does not match signature in {filename}")
-                return False
-    except FileNotFoundError:
-        print(f"Warning: No .sig file found for {filename}")
-    
-    print(f"Signature validation successful for {filename}")
-    return True
+        if signature_required:
+            raise ValueError("Missing top-level 'signature'")
+        # If not required and missing, nothing to verify
+        return
+
+    sig = data.get("signature")
+    if sig is None:
+        if signature_required and not allow_null_signature:
+            raise ValueError("Top-level 'signature' must be a string")
+        # Optional and absent → skip content verification
+        return
+
+    if not isinstance(sig, str) or sig.strip() == "":
+        raise ValueError("Top-level 'signature' must be a non-empty string or null")
+
+    calculated = _compute_signature(data)
+    if calculated != sig:
+        raise ValueError("Top-level 'signature' does not match content (recompute required)")
+
+    # Validate sidecar .sig content if file exists
+    sidecar_path = filename.removesuffix('.json') + '.sig'
+    if os.path.exists(sidecar_path):
+        with open(sidecar_path, 'r', encoding='utf-8') as f:
+            sidecar = f.read().strip()
+        if sidecar != sig:
+            raise ValueError(f"Signature sidecar {os.path.basename(sidecar_path)} does not match top-level signature")
 
 # Validate validate_lanscan-port-vulns against this VulnerabilityInfoList Rust structure
 # #[derive(Serialize, Deserialize, Debug, Clone, Ord, Eq, PartialEq, PartialOrd)]
@@ -143,9 +122,9 @@ def validate_lanscan_port_vulns(filename: str) -> None:
             if not isinstance(v, dict) or set(v.keys()) != allowed_keys_vulnerability_info:
                 raise ValueError(f"Unexpected keys [{v.keys()}] in VulnerabilityInfo at 'vulnerabilities[{i}] -> vulnerabilities[{j}]'")
 
-    # Verify the signature
-    if not check_file_signature(filename):
-        raise ValueError(f"Signature verification failed for {filename}")
+    # Header checks
+    _validate_date_string(data.get('date'), 'lanscan-port-vulns')
+    _validate_signature_and_sidecar(filename, data, signature_required=True)
 
     print("Validation successful")
 
@@ -234,6 +213,10 @@ def validate_lanscan_profiles(filename: str) -> None:
         missing_keys = allowed_keys_device_type_list - actual_keys
         raise ValueError(f"Unexpected keys [{unexpected_keys}] or missing keys [{missing_keys}] in JSON data")
 
+    # Header checks
+    _validate_date_string(data.get('date'), 'lanscan-profiles')
+    _validate_signature_and_sidecar(filename, data, signature_required=True)
+
     for i, profile in enumerate(data['profiles']):
         if not isinstance(profile, dict):
             raise ValueError(f"Each profile must be a dictionary at profiles[{i}]")
@@ -245,10 +228,6 @@ def validate_lanscan_profiles(filename: str) -> None:
 
         for j, condition in enumerate(profile['conditions']):
             validate_condition(condition, f"profiles[{i}] -> conditions[{j}]")
-
-    # Verify the signature
-    if not check_file_signature(filename):
-        raise ValueError(f"Signature verification failed for {filename}")
 
     print("Validation successful")
 
@@ -351,6 +330,10 @@ def validate_threat_model(filename: str) -> None:
 
     if set(data.keys()) != allowed_keys_threat_metrics_json:
         raise ValueError(f"Unexpected keys [{data.keys()}] in JSON data at root")
+
+    # Header checks
+    _validate_date_string(data.get('date'), 'threatmodel')
+    _validate_signature_and_sidecar(filename, data, signature_required=True)
 
     for i, metric in enumerate(data['metrics']):
         if set(metric.keys()) != allowed_keys_threat_metric_json:
@@ -482,10 +465,9 @@ def validate_whitelist(filename: str) -> None:
         extra = actual_top_keys - allowed_top_keys
         raise ValueError(f"Unexpected top-level keys: {extra}")
 
-    if not isinstance(data['date'], str):
-        raise ValueError("Top-level 'date' must be a string")
-    if 'signature' in data and data['signature'] is not None and not isinstance(data['signature'], str):
-         raise ValueError("Top-level 'signature' must be a string or null")
+    _validate_date_string(data.get('date'), 'whitelist')
+    # Optional signature: if present, verify; if None/missing, skip
+    _validate_signature_and_sidecar(filename, data, signature_required=False, allow_null_signature=True)
     if not isinstance(data['whitelists'], list):
         raise ValueError("Top-level 'whitelists' must be a list")
 
@@ -553,10 +535,6 @@ def validate_whitelist(filename: str) -> None:
             if 'description' in endpoint and endpoint['description'] is not None and not isinstance(endpoint['description'], str):
                 raise ValueError(f"'description' in {path} must be a string or null")
 
-    # Verify the signature
-    if not check_file_signature(filename):
-        raise ValueError(f"Signature verification failed for {filename}")
-
     print("Whitelist validation successful")
 
 
@@ -593,10 +571,8 @@ def validate_blacklist(filename: str) -> None:
         extra = actual_top_keys - allowed_top_keys
         raise ValueError(f"Unexpected top-level keys: {extra}")
 
-    if not isinstance(data['date'], str):
-        raise ValueError("Top-level 'date' must be a string")
-    if not isinstance(data['signature'], str):
-        raise ValueError("Top-level 'signature' must be a string")
+    _validate_date_string(data.get('date'), 'blacklist')
+    _validate_signature_and_sidecar(filename, data, signature_required=True)
     if not isinstance(data['blacklists'], list):
         raise ValueError("Top-level 'blacklists' must be a list")
 
@@ -647,10 +623,6 @@ def validate_blacklist(filename: str) -> None:
             except ValueError as ip_err:
                 raise ValueError(f"Invalid IP/CIDR format in {path}: {ip_range} ({ip_err})")
 
-    # Verify the signature
-    if not check_file_signature(filename):
-        raise ValueError(f"Signature verification failed for {filename}")
-
     print("Blacklist validation successful")
 
 
@@ -700,12 +672,10 @@ def validate_vendor_vulns(filename: str) -> None:
             if not actual_keys == allowed_keys_vulnerability:
                 raise ValueError(f"Unexpected keys [{actual_keys}] in vulnerability at vulnerabilities[{i}].vulnerabilities[{j}]")
 
-    # Verify the signature
-    if not check_file_signature(filename):
-        raise ValueError(f"Signature verification failed for {filename}")
+    _validate_date_string(data.get('date'), 'lanscan-vendor-vulns')
+    _validate_signature_and_sidecar(filename, data, signature_required=True)
 
     print("Vendor vulnerabilities validation successful")
-
 
 if __name__ == "__main__":
     validation_errors = []
