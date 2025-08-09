@@ -3,10 +3,85 @@ import argparse
 import json
 import sys
 from typing import Any, Dict, List, Tuple
+from pathlib import Path
 
 
 FAIL = "FAIL"
 WARN = "WARN"
+
+
+# --- Classification test runner ---
+def classify_device(db: Dict[str, Any], device: Dict[str, Any]) -> str:
+    """Pure-Python mirror of profiles.rs logic at a high level.
+    Evaluates profiles against one device input and returns device_type or 'Unknown'.
+    """
+    profiles = db.get("profiles", [])
+    # Normalize inputs
+    vendor = (device.get("vendor") or "").lower()
+    hostname = (device.get("hostname") or "").lower()
+    mdns = [(s or "").lower() for s in device.get("mdns_services", [])]
+    ports = set()
+    banners = []
+    for p in device.get("open_ports", []) or []:
+        if isinstance(p, dict):
+            if isinstance(p.get("port"), int):
+                ports.add(p["port"])
+            if isinstance(p.get("banner"), str):
+                banners.append(p["banner"].lower())
+    
+    def leaf_matches(attrs: Dict[str, Any]) -> bool:
+        # AND across attributes; within each attribute, OR/contains semantics
+        # open_ports: all listed must be present
+        # negate: invert result
+        result = True
+        if "open_ports" in attrs and isinstance(attrs["open_ports"], list):
+            op = attrs["open_ports"]
+            result = result and all(isinstance(x, int) and x in ports for x in op)
+        if "mdns_services" in attrs and isinstance(attrs["mdns_services"], list) and attrs["mdns_services"]:
+            result = result and any(any(s in m for m in mdns) for s in attrs["mdns_services"])
+        if "vendors" in attrs and isinstance(attrs["vendors"], list) and attrs["vendors"]:
+            result = result and any((v or "").lower() in vendor for v in attrs["vendors"])
+        if "hostnames" in attrs and isinstance(attrs["hostnames"], list) and attrs["hostnames"]:
+            result = result and any((h or "").lower() in hostname for h in attrs["hostnames"])
+        if "banners" in attrs and isinstance(attrs["banners"], list) and attrs["banners"]:
+            result = result and any(any(bfrag in b for b in banners) for bfrag in attrs["banners"])
+        if attrs.get("negate") is True:
+            result = not result
+        return result
+
+    def cond_matches(cond: Dict[str, Any]) -> bool:
+        if "Leaf" in cond and isinstance(cond["Leaf"], dict):
+            return leaf_matches(cond["Leaf"])
+        if "Node" in cond and isinstance(cond["Node"], dict):
+            ctype = cond["Node"].get("type")
+            subs = cond["Node"].get("sub_conditions") or []
+            if ctype == "AND":
+                return all(cond_matches(s) for s in subs)
+            if ctype == "OR":
+                return any(cond_matches(s) for s in subs)
+        return False
+
+    for prof in profiles:
+        for cond in prof.get("conditions", []):
+            if cond_matches(cond):
+                return prof.get("device_type", "Unknown")
+    return "Unknown"
+
+
+def run_classification_tests(db: Dict[str, Any], test_path: str) -> int:
+    with open(test_path, "r", encoding="utf-8") as f:
+        tests = json.load(f)
+    failures = 0
+    for t in tests:
+        expected = t.get("expected", "")
+        device = t.get("input", {})
+        got = classify_device(db, device)
+        if expected and got != expected:
+            print(f"[FAIL] Classification mismatch for {t.get('label','device')}: expected={expected}, got={got}")
+            failures += 1
+    if failures:
+        raise RuntimeError(f"{failures} classification mismatches in test set")
+    return len(tests)
 
 
 def load_json(path: str) -> Dict[str, Any]:
@@ -256,6 +331,23 @@ def main() -> int:
         print(f"[{level}] {msg}", file=stream)
         if level == FAIL:
             failed = True
+
+    # Run semantic tests against anonymized test set if present
+    try:
+        # Locate test set next to this script
+        script_dir = Path(__file__).resolve().parent
+        test_path = script_dir / "test_devices.json"
+        if test_path.exists():
+            total = run_classification_tests(db, str(test_path))
+            print(f"[INFO] Classification tests executed: {total} cases")
+        else:
+            print(f"[INFO] No test set found at {test_path}; skipping classification tests")
+    except FileNotFoundError:
+        # Optional tests – skip when not present
+        print("[INFO] No test set found; skipping classification tests")
+    except Exception as e:
+        print(f"[FAIL] Test set execution error: {e}")
+        failed = True
 
     if failed:
         return 1
