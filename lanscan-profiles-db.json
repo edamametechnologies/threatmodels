@@ -118,6 +118,25 @@
                     "harman"
                   ]
                 }
+              },
+              {
+                "Node": {
+                  "type": "AND",
+                  "sub_conditions": [
+                    { "Leaf": { "mdns_services": [ "spotify-connect" ] } },
+                    { "Leaf": { "vendors": [ "amazon" ] } }
+                  ]
+                }
+              },
+              {
+                "Node": {
+                  "type": "AND",
+                  "sub_conditions": [
+                    { "Leaf": { "mdns_services": [ "raop", "airplay" ] } },
+                    { "Leaf": { "negate": true, "mdns_services": [ "mediaremotetv" ] } },
+                    { "Leaf": { "vendors": [ "apple" ] } }
+                  ]
+                }
               }
             ],
             "type": "OR"
@@ -133,8 +152,22 @@
             "sub_conditions": [
               {
                 "Leaf": {
+                  "banners": [
+                    "router"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
                   "open_ports": [
                     53
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "open_ports": [
+                    21, 22, 23
                   ]
                 }
               },
@@ -163,16 +196,21 @@
       "conditions": [
         {
           "Node": {
+            "type": "AND",
             "sub_conditions": [
+              { "Leaf": { "negate": true, "mdns_services": [ "googlecast", "androidtvremote", "raop", "hap" ] } },
+              { "Leaf": { "negate": true, "vendors": [ "samsung", "vizio", "tcl", "hisense", "toshiba", "philips", "tpvision" ] } },
               {
-                "Leaf": {
-                  "open_ports": [
-                    62078
+                "Node": {
+                  "type": "OR",
+                  "sub_conditions": [
+                    { "Leaf": { "open_ports": [ 62078 ] } },
+                    { "Leaf": { "mdns_services": [ "apple-mobdev2" ] } },
+                    { "Leaf": { "open_ports": [ 49152 ] } }
                   ]
                 }
               }
-            ],
-            "type": "OR"
+            ]
           }
         }
       ],
@@ -185,7 +223,9 @@
             "type": "AND",
             "sub_conditions": [
               { "Leaf": { "vendors": [ "apple" ] } },
-              { "Leaf": { "negate": true, "open_ports": [ 62078 ] } }
+              { "Leaf": { "negate": true, "open_ports": [ 62078 ] } },
+              { "Leaf": { "negate": true, "mdns_services": [ "apple-mobdev2" ] } },
+              { "Leaf": { "negate": true, "mdns_services": [ "airplay", "googlecast", "androidtvremote" ] } }
             ]
           }
         }
@@ -220,13 +260,28 @@
           "Node": {
             "sub_conditions": [
               {
-                "Leaf": {
-                  "vendors": [
-                    "dell",
-                    "lenovo",
-                    "acer",
-                    "msi",
-                    "asus"
+                "Node": {
+                  "type": "OR",
+                  "sub_conditions": [
+                    {
+                      "Leaf": {
+                        "vendors": [
+                          "dell",
+                          "lenovo",
+                          "acer",
+                          "msi",
+                          "asus",
+                          "intel corporate"
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "banners": [
+                          "ubuntu"
+                        ]
+                      }
+                    }
                   ]
                 }
               },
@@ -278,7 +333,7 @@
               {
                 "Leaf": {
                   "vendors": [
-                    "sony",
+                    "microsoft",
                     "microsoft",
                     "nintendo"
                   ]
@@ -320,14 +375,28 @@
                 }
               },
               {
-                "Leaf": {
-                  "mdns_services": [
-                    "mqtt",
-                    "hap",
-                    "_hue",
-                    "miio"
-                  ]
-                }
+                "Node": {
+                  "type": "AND",
+                  "sub_conditions": [
+                    { "Leaf": {
+                    "mdns_services": [
+                      "mqtt",
+                      "hap",
+                      "hue",
+                      "miio"
+                      ]
+                    }
+                  },
+                  {
+                    "Leaf": {
+                      "negate": true,
+                      "mdns_services": [
+                        "airplay"
+                      ]
+                    }
+                  }
+                ]
+              }
               },
               {
                 "Leaf": {
@@ -342,6 +411,13 @@
                     "tasmota"
                   ]
                 }
+              },
+              {
+                "Leaf": {
+                  "banners": [
+                    "shelly"
+                  ]
+                }
               }
             ],
             "type": "OR"
@@ -354,57 +430,20 @@
       "conditions": [
         {
           "Node": {
+            "type": "AND",
             "sub_conditions": [
-              {
-                "Leaf": {
-                  "open_ports": [
-                    8001,
-                    8002,
-                    8080
+              { "Leaf": { "negate": true, "vendors": [ "freebox" ] } },
+              { "Node": {
+                  "type": "OR",
+                  "sub_conditions": [
+                    { "Leaf": { "open_ports": [ 8001, 8002, 8080 ] } },
+                    { "Leaf": { "open_ports": [ 3000, 3001, 18181 ] } },
+                    { "Leaf": { "open_ports": [ 8008, 8009, 8443, 9000 ] } },
+                    { "Leaf": { "vendors": [ "tcl", "hisense", "vizio", "sharp", "toshiba", "lg", "sony", "apple" ] } },
+                    { "Leaf": { "mdns_services": [ "androidtvremote", "googlecast", "airplay" ] } }
                   ]
-                }
-              },
-              {
-                "Leaf": {
-                  "open_ports": [
-                    3000,
-                    3001,
-                    18181
-                  ]
-                }
-              },
-              {
-                "Leaf": {
-                  "open_ports": [
-                    8008,
-                    8009,
-                    8443,
-                    9000
-                  ]
-                }
-              },
-              {
-                "Leaf": {
-                  "vendors": [
-                    "tcl",
-                    "hisense",
-                    "vizio",
-                    "sharp",
-                    "toshiba"
-                  ]
-                }
-              },
-              {
-                "Leaf": {
-                  "mdns_services": [
-                    "androidtvremote",
-                    "googlecast",
-                    "airplay"
-                  ]
-                }
-              }
-            ],
-            "type": "OR"
+                } }
+            ]
           }
         }
       ],
@@ -434,7 +473,9 @@
                     "arlo",
                     "reolink",
                     "amcrest",
-                    "wyze"
+                    "wyze",
+                    "d-link",
+                    "foscam"
                   ]
                 }
               }
