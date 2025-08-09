@@ -33,19 +33,7 @@ def create_blacklist_json(blacklists):
         "signature": ""  # Will be updated later
     }
     
-    # Generate signature (hash of the entire data with empty signature)
-    json_string = json.dumps(blacklists_data, sort_keys=True)
-    blacklists_data["signature"] = hashlib.sha256(json_string.encode()).hexdigest()
-    
     return blacklists_data
-
-def save_signature_file(signature, output_file):
-    """Save the signature to a separate .sig file."""
-    sig_filename = output_file.replace('.json', '.sig')
-    with open(sig_filename, 'w') as f:
-        f.write(signature)
-    
-    print(f"Created signature file: {sig_filename}")
 
 def main():
     # Create directory if it doesn't exist
@@ -106,9 +94,6 @@ def main():
     # Write to files
     with open(output_file, "w") as f:
         json.dump(blacklists_data, f, indent=2)
-    
-    # Save the signature to a separate .sig file
-    save_signature_file(blacklists_data["signature"], output_file)
     
     print(f"Created {output_file} with {len(blacklists)} blacklists")
 

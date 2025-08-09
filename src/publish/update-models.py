@@ -1,4 +1,4 @@
-'''Update threat models hash and dates'''
+'''Update models hash and dates'''
 
 import sys
 import hashlib
@@ -6,14 +6,14 @@ import json
 import datetime
 
 
-def open_threat_model(filename: str) -> None:
+def open_model(filename: str) -> None:
     '''Open the file in read mode and return the JSON'''
     with open(filename, 'r', encoding="utf-8") as file:
         data = json.load(file)
     return data
 
 
-def save_threat_model(filename: str, data: dict) -> None:
+def save_model(filename: str, data: dict) -> None:
     '''Open the file in write mode and save the JSON'''
     with open(filename, 'w', encoding="utf-8") as file:
         json.dump(data, file, indent=2, ensure_ascii=False, sort_keys=True)
@@ -43,7 +43,7 @@ def verify_signature(filename: str, stored_signature: str) -> bool:
     Returns False if signature is invalid (file has changed)
     '''
     # Load data from file
-    data = open_threat_model(filename)
+    data = open_model(filename)
     
     # Create a copy for calculating signature
     data_copy = data.copy()
@@ -57,32 +57,34 @@ def verify_signature(filename: str, stored_signature: str) -> bool:
     return calculated_hash == stored_signature
 
 
-def update_threat_model_header(filename):
+def update_model_header(filename):
     '''Update the hash and date in the header of the threat model'''
-    data = open_threat_model(filename)
+    data = open_model(filename)
     
     # Get the current signature
     current_signature = data.get("signature", "")
     
-    # Create a copy for calculating the new signature
-    data_copy = data.copy()
-    data_copy["signature"] = ""
-    
-    # Calculate new signature by serializing JSON (same method as in validate-models.py)
-    json_str = json.dumps(data_copy, sort_keys=True)
-    new_signature = hashlib.sha256(json_str.encode()).hexdigest()
-    
+    # Create a copy for calculating the signature with signature blanked
+    def compute_signature(obj: dict) -> str:
+        data_copy = obj.copy()
+        data_copy["signature"] = ""
+        json_str = json.dumps(data_copy, sort_keys=True)
+        return hashlib.sha256(json_str.encode()).hexdigest()
+
+    # Calculate signature of current content (before any date change)
+    preupdate_signature = compute_signature(data)
+
     # If signatures match (content hasn't changed), don't update the date
-    if current_signature and current_signature == new_signature:
+    if current_signature and current_signature == preupdate_signature:
         print(f"Content unchanged for {filename} - keeping original date")
     else:
-        # Content has changed or no previous signature exists, update the date
+        # Content has changed or no previous signature exists, update the date first
         print(f"Content changed for {filename} - updating date and signature")
         data["date"] = datetime.datetime.now().strftime("%B %dth %Y")
-    
-    # Always update the signature to ensure it's correct
-    data["signature"] = new_signature
-    save_threat_model(filename, data)
+
+    # Recompute signature AFTER potential date update so it matches final content
+    data["signature"] = compute_signature(data)
+    save_model(filename, data)
     
     # Save a .sig file with the signature (remove the .json extension)
     with open(filename.removesuffix(".json") + ".sig", "w") as file:
@@ -93,4 +95,4 @@ if __name__ == "__main__":
     for arg in sys.argv:
         if arg.endswith(".json"):
             print(f"Checking {arg}")
-            update_threat_model_header(arg)
+            update_model_header(arg)
