@@ -102,6 +102,7 @@ jobs:
           if [[ $(git status --porcelain | grep -E 'blacklists-db\.(json|sig)') ]]; then
             echo "changes=true" >> $GITHUB_OUTPUT
             echo "Changes detected in blacklists database files"
+            # Date & signature are already handled by build-blacklists.py
           else
             echo "changes=false" >> $GITHUB_OUTPUT
             echo "No changes detected in blacklists database files"

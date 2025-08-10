@@ -151,6 +151,7 @@ jobs:
           if [[ $(git status --porcelain | grep -E 'lanscan-(port|vendor)-vulns-db\.(json|sig)') ]]; then
             echo "changes=true" >> $GITHUB_OUTPUT
             echo "Changes detected in vulnerability database files"
+            # Date & signature are already handled by build scripts
           else
             echo "changes=false" >> $GITHUB_OUTPUT
             echo "No changes detected in vulnerability database files"

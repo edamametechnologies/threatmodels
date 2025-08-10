@@ -130,7 +130,14 @@ All EDAMAME databases include:
 Validation and update rules:
 
 - The validator recomputes the signature by hashing the JSON with the `signature` field blanked (sorted keys) and compares it to the stored value and `.sig` sidecar.
-- The update tool (`src/publish/update-models.py`) only updates the `date` and `signature` when the content has changed; if content is unchanged, both remain intact. When content changes, the `date` is updated first, then the signature is recomputed over the final JSON.
+
+**Important – manual step required**: after *any* change to a database or threat-model JSON file, you **must** run the update script locally before committing:
+
+```bash
+python3 src/publish/update-models.py <file1.json> [file2.json ...]
+```
+
+This script refreshes the `date`, recomputes the cryptographic `signature`, and writes/updates the `.sig` side-car file. The CI validation workflow will fail if these values are stale or missing.
 
 These databases are designed to be updated seamlessly from trusted sources while maintaining user privacy and security.
 
