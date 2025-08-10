@@ -139,36 +139,6 @@
                   ],
                   "type": "AND"
                 }
-              },
-              {
-                "Node": {
-                  "sub_conditions": [
-                    {
-                      "Leaf": {
-                        "mdns_services": [
-                          "raop",
-                          "airplay"
-                        ]
-                      }
-                    },
-                    {
-                      "Leaf": {
-                        "mdns_services": [
-                          "mediaremotetv"
-                        ],
-                        "negate": true
-                      }
-                    },
-                    {
-                      "Leaf": {
-                        "vendors": [
-                          "apple"
-                        ]
-                      }
-                    }
-                  ],
-                  "type": "AND"
-                }
               }
             ],
             "type": "OR"
@@ -660,5 +630,5 @@
       "device_type": "NetworkDevice"
     }
   ],
-  "signature": "51a5389180826bccf905dc46c3623ba7f61077208deda65f0d0c9022fc518f0c"
+  "signature": "4b9db3cccb17ca3bcbe489883f938567942c12d48dfeff01d7a4259533638590"
 }
