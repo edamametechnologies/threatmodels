@@ -84,6 +84,11 @@ The `lanscan-profiles-db.json` file contains rules for identifying device types 
 3. Implements complex condition trees using AND/OR logical operators
 4. Supports negation of conditions for more precise matching
 
+Evaluation semantics:
+
+- Rules are evaluated strictly in the JSON order; the engine returns the first matching `device_type` (first-match-wins).
+- To avoid ambiguous classifications, design rules so only one `device_type` matches a given device. The validation script flags overlapping matches across multiple device types.
+
 This database powers EDAMAME's device identification capabilities, allowing it to recognize and categorize devices on local networks.
 
 ### Whitelist Database
@@ -118,9 +123,14 @@ This database enables EDAMAME to identify connections to potentially harmful IP 
 ### Database Integrity and Updates
 
 All EDAMAME databases include:
-- A timestamp indicating when they were last updated
-- A cryptographic signature for integrity verification
+- A timestamp (`date`) indicating when they were last updated (format: `Month DDth YYYY`)
+- A cryptographic signature (`signature`) for integrity verification, plus a `.sig` sidecar file containing the same value
 - A structured format that supports easy parsing and validation
+
+Validation and update rules:
+
+- The validator recomputes the signature by hashing the JSON with the `signature` field blanked (sorted keys) and compares it to the stored value and `.sig` sidecar.
+- The update tool (`src/publish/update-models.py`) only updates the `date` and `signature` when the content has changed; if content is unchanged, both remain intact. When content changes, the `date` is updated first, then the signature is recomputed over the final JSON.
 
 These databases are designed to be updated seamlessly from trusted sources while maintaining user privacy and security.
 
