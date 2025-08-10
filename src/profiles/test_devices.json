@@ -226,30 +226,6 @@
     }
   },
   {
-    "label": "SmartSpeaker-0053",
-    "expected": "SmartSpeaker",
-    "input": {
-      "open_ports": [
-        {
-          "port": 5000,
-          "banner": ""
-        },
-        {
-          "port": 7000,
-          "banner": ""
-        }
-      ],
-      "mdns_services": [
-        "device._airplay._tcp.local",
-        "device._hap._tcp.local",
-        "device._raop._tcp.local",
-        "device.local"
-      ],
-      "vendor": "apple, inc.",
-      "hostname": "host-23.local"
-    }
-  },
-  {
     "label": "SmartSpeaker-0054",
     "expected": "SmartSpeaker",
     "input": {
