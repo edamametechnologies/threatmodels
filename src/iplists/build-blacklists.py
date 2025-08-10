@@ -7,6 +7,14 @@ import hashlib
 import os
 import base64
 
+def get_ordinal_suffix(day):
+    """Get the ordinal suffix for a day number (1st, 2nd, 3rd, 4th, etc.)"""
+    if 10 <= day % 100 <= 20:
+        suffix = 'th'
+    else:
+        suffix = {1: 'st', 2: 'nd', 3: 'rd'}.get(day % 10, 'th')
+    return suffix
+
 def download_blocklist(url):
     """Download the blocklist from the given URL."""
     response = requests.get(url)
@@ -80,21 +88,40 @@ def main():
         blacklists.append(blacklist)
         print(f"Processed {source['name']} with {len(ip_ranges)} IP ranges")
     
-    # Create the final JSON structure (with today's date initially)
+    # Create the final JSON structure (with a blank signature initially)
     blacklists_data = create_blacklist_json(blacklists)
-    new_signature = blacklists_data["signature"]
-    
-    # Check if content has changed by comparing signatures
-    if original_signature and original_signature == new_signature and original_date:
-        print("Content unchanged - keeping original date.")
-        blacklists_data["date"] = original_date
+
+    # ------------------------------------------------------------------
+    # Compute hash of content with signature blanked to detect changes
+    tmp_copy = blacklists_data.copy()
+    tmp_copy["signature"] = ""
+    new_content_hash = hashlib.sha256(json.dumps(tmp_copy, sort_keys=True).encode("utf-8")).hexdigest()
+
+    # Decide whether to bump the date based on content change
+    if not original_signature or original_signature != new_content_hash:
+        now = datetime.datetime.now()
+        day = now.day
+        suffix = get_ordinal_suffix(day)
+        blacklists_data["date"] = now.strftime(f"%B {day}{suffix} %Y")
     else:
-        print("Content changed or new file - using today's date.")
-    
-    # Write to files
-    with open(output_file, "w") as f:
-        json.dump(blacklists_data, f, indent=2)
-    
+        # Preserve previous date when content identical
+        if original_date:
+            blacklists_data["date"] = original_date
+
+    # Compute FINAL signature including (potentially updated) date
+    final_copy = blacklists_data.copy()
+    final_copy["signature"] = ""
+    blacklists_data["signature"] = hashlib.sha256(json.dumps(final_copy, sort_keys=True).encode("utf-8")).hexdigest()
+
+    # Write updated JSON to disk (sorted keys for stability)
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(blacklists_data, f, indent=2, sort_keys=True)
+
+    # Write signature side-car .sig file
+    sig_file = output_file.removesuffix(".json") + ".sig"
+    with open(sig_file, "w", encoding="utf-8") as sf:
+        sf.write(blacklists_data["signature"])
+
     print(f"Created {output_file} with {len(blacklists)} blacklists")
 
 if __name__ == "__main__":
