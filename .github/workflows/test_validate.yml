@@ -173,56 +173,7 @@ jobs:
    if: always()
    runs-on: ubuntu-latest
    timeout-minutes: 90
-
    steps:
-      - name: Setup EDAMAME Posture
-        uses: edamametechnologies/edamame_posture_action@v0
-        with:
-          edamame_user: ${{ vars.EDAMAME_POSTURE_USER }}
-          edamame_domain: ${{ vars.EDAMAME_POSTURE_DOMAIN }}
-          edamame_pin: ${{ secrets.EDAMAME_POSTURE_PIN }}
-          edamame_id: ${{ github.run_id }}
-          checkout: true
-          
-      - name: Update models hash and date (only on main branch after successful tests)
-        if: github.ref == 'refs/heads/main' && needs.validate.result == 'success'
-        run: | 
-          pip install -r requirements.txt
-
-          # Update hash and date only for models whose tests passed
-          if [ "${{ needs.test-ubuntu.result }}" == "success" ]; then
-            python3 src/publish/update-models.py threatmodel-Linux.json
-          fi
-          if [ "${{ needs.test-windows.result }}" == "success" ]; then
-            python3 src/publish/update-models.py threatmodel-Windows.json
-          fi
-          if [ "${{ needs.test-macos.result }}" == "success" ]; then
-            python3 src/publish/update-models.py threatmodel-macOS.json
-          fi
-          
-          # Always update iOS and Android (no specific tests for these)
-          python3 src/publish/update-models.py threatmodel-iOS.json
-          python3 src/publish/update-models.py threatmodel-Android.json
-          
-          # Update other model types (only if validation passed)
-          echo "Updating other model types signatures..."
-          python3 src/publish/update-models.py whitelists-db.json
-          python3 src/publish/update-models.py blacklists-db.json
-          python3 src/publish/update-models.py lanscan-profiles-db.json
-          python3 src/publish/update-models.py lanscan-port-vulns-db.json
-          python3 src/publish/update-models.py lanscan-vendor-vulns-db.json
-          
-          git config user.email "dev@edamame.tech"
-          git config user.name "EDAMAME Dev"
-          # Commit & push only when there are actual changes.
-          # If no changes, exit successfully; if push fails, fail the step.
-          if git diff-index --quiet HEAD --; then
-            echo "No changes to commit"
-          else
-            git commit -a -m "Updated models hash and date [skip ci]"
-            git push --set-upstream origin main
-          fi
-
       - name: Slack final report
         uses: slackapi/slack-github-action@v1.26.0
         with:
