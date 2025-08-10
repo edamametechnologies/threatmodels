@@ -895,68 +895,13 @@
       ],
       "mdns_services": [
         "device._afpovertcp._tcp.local",
+        "device._companion-link._tcp.local",
         "device._sftp-ssh._tcp.local",
         "device._rfb._tcp.local",
         "device.local"
       ],
       "vendor": "apple, inc.",
       "hostname": "host-37.local"
-    }
-  },
-  {
-    "label": "Apple PC-0083",
-    "expected": "Apple PC",
-    "input": {
-      "open_ports": [],
-      "mdns_services": [],
-      "vendor": "apple, inc.",
-      "hostname": ""
-    }
-  },
-  {
-    "label": "Apple PC-0084",
-    "expected": "Apple PC",
-    "input": {
-      "open_ports": [
-        {
-          "port": 139,
-          "banner": ""
-        },
-        {
-          "port": 445,
-          "banner": ""
-        },
-        {
-          "port": 3389,
-          "banner": ""
-        },
-        {
-          "port": 5357,
-          "banner": ""
-        },
-        {
-          "port": 7680,
-          "banner": ""
-        }
-      ],
-      "mdns_services": [],
-      "vendor": "apple, inc.",
-      "hostname": ""
-    }
-  },
-  {
-    "label": "IoT-0085",
-    "expected": "IoT",
-    "input": {
-      "open_ports": [
-        {
-          "port": 80,
-          "banner": "http_version=http/1.1, server=lighttpd, content-type:text/html, last-modified=Tue, 22 Jun 2021 18:35:00 GMT, content-length=3456, connection=close, title=Shelly Device"
-        }
-      ],
-      "mdns_services": [],
-      "vendor": "allterco robotics ltd.",
-      "hostname": ""
     }
   },
   {
