@@ -82,6 +82,75 @@ def classify_device(db: Dict[str, Any], device: Dict[str, Any]) -> str:
     return "Unknown"
 
 
+def matching_device_types(db: Dict[str, Any], device: Dict[str, Any]) -> List[str]:
+    """Return all device_types whose rules would match the given device.
+
+    Uses last-write-wins effective profile set (same as classify_device) but
+    does not stop at first match, to detect overlapping rules.
+    """
+    profiles_list = db.get("profiles", [])
+    last_index: Dict[str, int] = {}
+    for idx, prof in enumerate(profiles_list):
+        dt = prof.get("device_type")
+        if isinstance(dt, str) and dt:
+            last_index[dt] = idx
+
+    # Normalize inputs (same as classify_device)
+    vendor = (device.get("vendor") or "").lower()
+    hostname = (device.get("hostname") or "").lower()
+    mdns = [(s or "").lower() for s in device.get("mdns_services", [])]
+    ports = set()
+    banners = []
+    for p in device.get("open_ports", []) or []:
+        if isinstance(p, dict):
+            if isinstance(p.get("port"), int):
+                ports.add(p["port"]) 
+            if isinstance(p.get("banner"), str):
+                banners.append(p["banner"].lower())
+
+    def leaf_matches(attrs: Dict[str, Any]) -> bool:
+        result = True
+        if "open_ports" in attrs and isinstance(attrs["open_ports"], list):
+            op = attrs["open_ports"]
+            result = result and all(isinstance(x, int) and x in ports for x in op)
+        if "mdns_services" in attrs and isinstance(attrs["mdns_services"], list) and attrs["mdns_services"]:
+            result = result and any(any(s in m for m in mdns) for s in attrs["mdns_services"])
+        if "vendors" in attrs and isinstance(attrs["vendors"], list) and attrs["vendors"]:
+            result = result and any((v or "").lower() in vendor for v in attrs["vendors"])
+        if "hostnames" in attrs and isinstance(attrs["hostnames"], list) and attrs["hostnames"]:
+            result = result and any((h or "").lower() in hostname for h in attrs["hostnames"])
+        if "banners" in attrs and isinstance(attrs["banners"], list) and attrs["banners"]:
+            result = result and any(any(bfrag in b for b in banners) for bfrag in attrs["banners"])
+        if attrs.get("negate") is True:
+            result = not result
+        return result
+
+    def cond_matches(cond: Dict[str, Any]) -> bool:
+        if "Leaf" in cond and isinstance(cond["Leaf"], dict):
+            return leaf_matches(cond["Leaf"])
+        if "Node" in cond and isinstance(cond["Node"], dict):
+            ctype = cond["Node"].get("type")
+            subs = cond["Node"].get("sub_conditions") or []
+            if ctype == "AND":
+                return all(cond_matches(s) for s in subs)
+            if ctype == "OR":
+                return any(cond_matches(s) for s in subs)
+        return False
+
+    matches: List[str] = []
+    for idx, prof in enumerate(profiles_list):
+        dt = prof.get("device_type")
+        if not (isinstance(dt, str) and dt):
+            continue
+        if last_index.get(dt, idx) != idx:
+            continue
+        for cond in prof.get("conditions", []):
+            if cond_matches(cond):
+                matches.append(dt)
+                break
+    return matches
+
+
 def run_classification_tests(db: Dict[str, Any], test_path: str) -> int:
     with open(test_path, "r", encoding="utf-8") as f:
         tests = json.load(f)
@@ -90,6 +159,10 @@ def run_classification_tests(db: Dict[str, Any], test_path: str) -> int:
         expected = t.get("expected", "")
         device = t.get("input", {})
         got = classify_device(db, device)
+        overlaps = matching_device_types(db, device)
+        if len(overlaps) > 1:
+            print(f"[FAIL] Overlapping match for {t.get('label','device')}: matches={overlaps}")
+            failures += 1
         if expected and got != expected:
             print(f"[FAIL] Classification mismatch for {t.get('label','device')}: expected={expected}, got={got}")
             failures += 1
