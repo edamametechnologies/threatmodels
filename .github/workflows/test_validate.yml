@@ -214,9 +214,14 @@ jobs:
           
           git config user.email "dev@edamame.tech"
           git config user.name "EDAMAME Dev"
-          git commit -a -m "Updated models hash and date [skip ci]" && \
-          git push --set-upstream origin main || \
-          echo "No changes to commit"
+          # Commit & push only when there are actual changes.
+          # If no changes, exit successfully; if push fails, fail the step.
+          if git diff-index --quiet HEAD --; then
+            echo "No changes to commit"
+          else
+            git commit -a -m "Updated models hash and date [skip ci]"
+            git push --set-upstream origin main
+          fi
 
       - name: Slack final report
         uses: slackapi/slack-github-action@v1.26.0
