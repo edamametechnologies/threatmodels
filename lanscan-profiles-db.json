@@ -593,6 +593,15 @@
                           "ubuntu"
                         ]
                       }
+                    },
+                    {
+                      "Leaf": {
+                        "open_ports": [
+                          135,
+                          139,
+                          445
+                        ]
+                      }
                     }
                   ],
                   "type": "OR"
@@ -651,5 +660,5 @@
       "device_type": "NetworkDevice"
     }
   ],
-  "signature": "6265417e4407b3e7d17e7daf489c9ae9243477cc4d544969946c61669b249f7d"
+  "signature": "51a5389180826bccf905dc46c3623ba7f61077208deda65f0d0c9022fc518f0c"
 }
