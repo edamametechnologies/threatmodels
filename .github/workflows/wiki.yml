@@ -20,6 +20,8 @@ jobs:
             edamame_pin: ${{ secrets.EDAMAME_POSTURE_PIN }}
             edamame_id: ${{ github.run_id }}
             checkout: true
+            # We need to wait for the API access to be granted as we require protected access
+            wait_for_api: true
 
         - name: Setup Python
           uses: actions/setup-python@v3.1.4
