@@ -359,9 +359,13 @@ def validate_threat_model(filename: str) -> None:
                         # Sometime head request is not allowed, try with get
                         response = requests.get(impl['target'])
                         if not response.ok:
-                            error_msg = f"Invalid URL '{impl['target']}' in target field at '{metric['name']} -> {key}'. Reason: {response.status_code} {response.reason}"
-                            print(error_msg)
-                            raise ValueError(error_msg)
+                            # Only warn for wikipedia URLs 403 responses
+                            if not ("wikipedia.org/wiki/" in impl['target'] and response.status_code == 403):
+                                error_msg = f"Invalid URL '{impl['target']}' in target field at '{metric['name']} -> {key}'. Reason: {response.status_code} {response.reason}"
+                                print(error_msg)
+                                raise ValueError(error_msg)
+                            else:
+                                print(f"Warning: 403 response for Wikipedia URL '{impl['target']}' in target field at '{metric['name']} -> {key}'.")
 
             # If we have a youtube class, check the URL is a valid youtube video
             if impl['class'] == 'youtube':
@@ -392,9 +396,13 @@ def validate_threat_model(filename: str) -> None:
                             # Sometime head request is not allowed, try with get
                             response = requests.get(education['target'])
                             if not response.ok:
-                                error_msg = f"Invalid URL '{education['target']}' in target field at '{metric['name']} -> {key} -> education[{k}]'. Reason: {response.status_code} {response.reason}"
-                                print(error_msg)
-                                raise ValueError(error_msg)
+                                # Only warn for wikipedia URLs 403 responses
+                                if not ("wikipedia.org/wiki/" in education['target'] and response.status_code == 403):
+                                    error_msg = f"Invalid URL '{education['target']}' in target field at '{metric['name']} -> {key} -> education[{k}]'. Reason: {response.status_code} {response.reason}"
+                                    print(error_msg)
+                                    raise ValueError(error_msg)
+                                else:
+                                    print(f"Warning: 403 response for Wikipedia URL '{education['target']}' in target field at '{metric['name']} -> {key} -> education[{k}]'.")
 
                     # If we have a youtube class, check the URL is a valid youtube video
                     if education['class'] == 'youtube':
