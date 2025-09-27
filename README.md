@@ -104,7 +104,7 @@ Currently, the database defines the following key whitelists:
 - `edamame`: Base list for core application connections (backend APIs, analytics, IP services).
 - `builder`: Extends `edamame` for development environments (package repositories, cloud services, CDNs).
 - `github`: Extends `builder` for GitHub-related connections (GitHub domains, Azure IPs for Actions).
-- `github_macos`, `github_linux`, `github_windows`: Extend `github` with platform-specific connections needed in CI/CD environments (e.g., Homebrew/Apple services for macOS, Ubuntu/Microsoft repositories for Linux).
+- `github_macos`, `github_ubuntu`, `github_windows`: Extend `github` with platform-specific connections needed in CI/CD environments (e.g., Homebrew/Apple services for macOS, Ubuntu/Microsoft repositories for Linux).
 
 ### Blacklist Database
 
