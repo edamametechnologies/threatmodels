@@ -92,7 +92,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "/usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode | grep disabled"
+        "target": "/usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode | grep -E 'disabled|is off'"
       },
       "metrictype": "bool",
       "name": "response to ping enabled",
@@ -1031,24 +1031,23 @@
         "target": "spctl --global-enable"
       },
       "rollback": {
-        "class": "cli",
+        "class": "education",
         "education": [
           {
             "class": "html",
             "locale": "EN",
-            "target": "Disabling Gatekeeper allows unsigned applications to run on your macOS system, which can be necessary for certain software not available through the App Store. Be cautious and ensure you trust any unsigned applications you choose to run, as this increases the risk of installing potentially harmful software."
+            "target": "To disable Gatekeeper, open System Settings > Privacy & Security > Security section, and change \"Allow applications downloaded from\" to \"Anywhere\" (or \"App Store and identified developers\"). Note: Disabling Gatekeeper allows unsigned applications to run on your macOS system, which can be necessary for certain software not available through the App Store. Be cautious and ensure you trust any unsigned applications you choose to run, as this increases the risk of installing potentially harmful software."
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "Désactiver Gatekeeper permet à des applications non signées de s'exécuter sur votre système macOS, ce qui peut être nécessaire pour certains logiciels non disponibles via l'App Store. Soyez prudent et assurez-vous de faire confiance à toutes les applications non signées que vous choisissez d'exécuter, car cela augmente le risque d'installer des logiciels potentiellement dangereux."
+            "target": "Pour désactiver Gatekeeper, ouvrez Réglages Système > Confidentialité et sécurité > section Sécurité, et changez \"Autoriser les applications téléchargées depuis\" en \"N'importe où\" (ou \"App Store et développeurs identifiés\"). Note : Désactiver Gatekeeper permet à des applications non signées de s'exécuter sur votre système macOS, ce qui peut être nécessaire pour certains logiciels non disponibles via l'App Store. Soyez prudent et assurez-vous de faire confiance à toutes les applications non signées que vous choisissez d'exécuter, car cela augmente le risque d'installer des logiciels potentiellement dangereux."
           }
         ],
         "elevation": "system",
         "maxversion": 0,
         "minversion": 12,
-        "system": "macOS",
-        "target": "spctl --global-disable"
+        "system": "macOS"
       },
       "scope": "generic",
       "severity": 4,

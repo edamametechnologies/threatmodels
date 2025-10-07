@@ -183,7 +183,7 @@ jobs:
             Validation: ${{ needs.validate.result }}
             Tests Ubuntu: ${{ needs.test-ubuntu.outputs.report }}
             Tests Windows: ${{ needs.test-windows.outputs.report }}
-            Tests MacOS: ${{ needs.test-macos.outputs.report }}
+            Tests macOS: ${{ needs.test-macos.outputs.report }}
             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
