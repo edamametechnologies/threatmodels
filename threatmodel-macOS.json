@@ -92,7 +92,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "/usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode | grep -E 'disabled|is off'"
+        "target": "/usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode | grep -E \"disabled|is off\""
       },
       "metrictype": "bool",
       "name": "response to ping enabled",
@@ -2039,5 +2039,5 @@
     }
   ],
   "name": "threat model macOS",
-  "signature": "0ec6f3fced17dd587ea06671b8cd1ee12ab788358e536d82999cb3a61a03b791"
+  "signature": "c9160bd7425e108d872b7fd013397a3600c9fda8b8f3ed8a6353168f8109c7d3"
 }
