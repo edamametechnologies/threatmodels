@@ -24,7 +24,7 @@ class Model(object):
         if platform == "linux" or platform == "linux2":
             return "Linux"
         elif platform == "darwin":
-            return "MacOS"
+            return "macOS"
         elif platform == "win32":
             return "Windows"
         else:
