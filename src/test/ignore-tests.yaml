@@ -15,7 +15,7 @@ ignore:
       tests: [ "remediation", "rollback" ]
     - metric_name: "latest os"
       tests: [ "remediation", "rollback" ]
-  MacOS:
+  macOS:
     - metric_name: "remote login enabled"
       tests: [ "remediation", "rollback" ]
     - metric_name: "WOL enabled"
@@ -26,4 +26,5 @@ ignore:
       tests: ["rollback"]
     - metric_name: "remote events enabled"
       tests: ["rollback"]
-
+    - metric_name: "unsigned applications allowed"
+      tests: ["rollback"]
