@@ -1,5 +1,5 @@
 {
-  "date": "September 27th 2025",
+  "date": "October 07th 2025",
   "extends": "none",
   "metrics": [
     {
@@ -2038,5 +2038,5 @@
     }
   ],
   "name": "threat model macOS",
-  "signature": "ba7e723f2c93666736708f021eaa15b1b4b03643bc09b414a832df6cd9cd0102"
+  "signature": "1465cae5b7fb2d116114f604fb045ec67012ecd2da329c3385ae1d07c96cd295"
 }
