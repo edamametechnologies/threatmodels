@@ -1047,7 +1047,8 @@
         "elevation": "system",
         "maxversion": 0,
         "minversion": 12,
-        "system": "macOS"
+        "system": "macOS",
+        "target": ""
       },
       "scope": "generic",
       "severity": 4,
@@ -2038,5 +2039,5 @@
     }
   ],
   "name": "threat model macOS",
-  "signature": "1465cae5b7fb2d116114f604fb045ec67012ecd2da329c3385ae1d07c96cd295"
+  "signature": "0ec6f3fced17dd587ea06671b8cd1ee12ab788358e536d82999cb3a61a03b791"
 }
