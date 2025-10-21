@@ -1,5 +1,5 @@
 {
-  "date": "October 07th 2025",
+  "date": "October 21th 2025",
   "extends": "none",
   "metrics": [
     {
@@ -1293,7 +1293,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "([ -d \"/Applications/1Password.app\" ] || [ -d \"/Applications/LastPass.app\" ] || [ -d \"/Applications/KeePassXC.app\" ] || [ -d \"/Applications/Bitwarden.app\" ]) >/dev/null 2>&1 || echo \"No password manager installed\""
+        "target": "([ -d \"/Applications/1Password.app\" ] || [ -d \"/Applications/LastPass.app\" ] || [ -d \"/Applications/KeePassXC.app\" ] || [ -d \"/Applications/1Password7.app\" ] || [ -d \"/Applications/Bitwarden.app\" ]) >/dev/null 2>&1 || echo \"No password manager installed\""
       },
       "metrictype": "bool",
       "name": "no password manager",
@@ -2039,5 +2039,5 @@
     }
   ],
   "name": "threat model macOS",
-  "signature": "c9160bd7425e108d872b7fd013397a3600c9fda8b8f3ed8a6353168f8109c7d3"
+  "signature": "049f15ed9d47701eda69b07e73e81491256f84b9efc4af5472ad17dcf0d992f7"
 }
