@@ -1293,7 +1293,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "([ -d \"/Applications/1Password.app\" ] || [ -d \"/Applications/LastPass.app\" ] || [ -d \"/Applications/KeePassXC.app\" ] || [ -d \"/Applications/1Password7.app\" ] || [ -d \"/Applications/Bitwarden.app\" ]) >/dev/null 2>&1 || echo \"No password manager installed\""
+        "target": "([ -d \"/Applications/1Password.app\" ] || [ -d \"/Applications/LastPass.app\" ] || [ -d \"/Applications/KeePassXC.app\" ] || [ -d \"/Applications/1Password7.app\" ] || [ -d \"$HOME/Applications/Chrome Apps.localized/Google Password Manager.app\" ] || [ -d \"/Applications/Bitwarden.app\" ]) >/dev/null 2>&1 || echo \"No password manager installed\""
       },
       "metrictype": "bool",
       "name": "no password manager",
@@ -2039,5 +2039,5 @@
     }
   ],
   "name": "threat model macOS",
-  "signature": "049f15ed9d47701eda69b07e73e81491256f84b9efc4af5472ad17dcf0d992f7"
+  "signature": "39e05535cad0aff514def001e1e053b428ef5e52c6f33d39417bc83521504cee"
 }
