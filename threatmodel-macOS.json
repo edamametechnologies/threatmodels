@@ -1221,7 +1221,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "if ! { pgrep BDLDaemon >/dev/null || pgrep RTProtectionDaemon >/dev/null || sentinelctl version 2>/dev/null | grep -q \"SentinelOne\" || { xprotect status 2>/dev/null | grep -q \"launch scans: enabled\" && xprotect status 2>/dev/null | grep -q \"background scans: enabled\" }; }; then echo \"epp_disabled\" fi"
+        "target": "if ! ( pgrep BDLDaemon >/dev/null || pgrep RTProtectionDaemon >/dev/null || sentinelctl version 2>/dev/null | grep -q \"SentinelOne\" || ( xprotect status 2>/dev/null | grep -q \"launch scans: enabled\" && xprotect status 2>/dev/null | grep -q \"background scans: enabled\" ) ); then echo \"epp_disabled\" fi"
       },
       "metrictype": "bool",
       "name": "no EPP",
@@ -2039,5 +2039,5 @@
     }
   ],
   "name": "threat model macOS",
-  "signature": "a6e38a7ed72a6ac586a678038c46db044fe1ac04a7e5784ed75442d08ef83ee3"
+  "signature": "07dd7556eb371cc45f0c027abcab6251052c8fcee1b8c58cc591ebb56d92c1a7"
 }
