@@ -1,5 +1,5 @@
 {
-  "date": "October 21th 2025",
+  "date": "October 24th 2025",
   "extends": "none",
   "metrics": [
     {
@@ -1221,7 +1221,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "if ! { pgrep BDLDaemon >/dev/null || pgrep RTProtectionDaemon >/dev/null || sentinelctl version 2>/dev/null | grep -q \"SentinelOne\"; }; then echo epp_disabled; fi"
+        "target": "if ! { pgrep BDLDaemon >/dev/null || pgrep RTProtectionDaemon >/dev/null || sentinelctl version 2>/dev/null | grep -q \"SentinelOne\" || { xprotect status 2>/dev/null | grep -q \"launch scans: enabled\" && xprotect status 2>/dev/null | grep -q \"background scans: enabled\"; }; }; then echo \"epp_disabled\" fi"
       },
       "metrictype": "bool",
       "name": "no EPP",
@@ -2039,5 +2039,5 @@
     }
   ],
   "name": "threat model macOS",
-  "signature": "39e05535cad0aff514def001e1e053b428ef5e52c6f33d39417bc83521504cee"
+  "signature": "1434b9ea7327c3aa35e59c08eb005dce92bb15c0d5b69c7eec3192521ab01eab"
 }
