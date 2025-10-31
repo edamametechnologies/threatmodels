@@ -1,5 +1,5 @@
 {
-  "date": "August 09th 2025",
+  "date": "October 31th 2025",
   "extends": "none",
   "metrics": [
     {
@@ -1839,5 +1839,5 @@
     }
   ],
   "name": "threat model Windows",
-  "signature": "035cc0e5b95a8271d6362fab8826846e579252a87b163662c319ad8958cb722c"
+  "signature": "fb1f7a0331092a8ac9942142146af7dc709ba7bad77de8cb7a4811accef22e7e"
 }
