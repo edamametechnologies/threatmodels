@@ -2054,11 +2054,11 @@
       "implementation": {
         "class": "cli",
         "education": [],
-        "elevation": "system",
+        "elevation": "user",
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "if grep -q \"BEGIN RESTRICT_ZSH_NONADMINS\" /etc/zshrc; then echo \"[OK] zsh block installed\"; else echo \"[MISS] zsh block not installed\"; fi; if id -Gn | grep -qw admin; then echo \"[INFO] you are admin → not blocked\"; else echo \"[INFO] you are non-admin → testing interactive zsh...\"; zsh -i -c \"true\" >/dev/null 2>&1 && echo \"[MISS] interactive zsh allowed\" || echo \"[OK] interactive zsh blocked\"; fi"
+        "target": "! grep -q \"BEGIN RESTRICT_ZSH_NONADMINS\" /etc/zshrc"
       },
       "metrictype": "bool",
       "name": "CLI not restricted for standard users",
@@ -2110,5 +2110,5 @@
     }
   ],
   "name": "threat model macOS",
-  "signature": "6b82f3662530c454c65a6908489d5e300c88eff6bd399a0c0ed25be45e6d5321"
+  "signature": "dd3290ff6f6ff231494d0860ad4e31c02f34d7caa5c4ec7025758db7c23fb442"
 }
