@@ -2080,7 +2080,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "grep -q \"BEGIN RESTRICT_ZSH_NONADMINS\" /etc/zshrc || printf \"# BEGIN RESTRICT_ZSH_NONADMINS\\n## Prevent non-admin users from using interactive zsh shells\\nif [[ -t 1 ]]; then\\n  if ! id -Gn | grep -qw admin; then\\n    echo \\\"\\\\nCommand-line access is restricted by your administrator.\\\"\\n    osascript -e 'display alert \\\"Access Restricted\\\" message \\\"Command-line tools are blocked for standard users.\\\" buttons {\\\"OK\\\"}' 2>/dev/null || true\\n    exit 1\\n  fi\\nfi\\n# END RESTRICT_ZSH_NONADMINS\" >> /etc/zshrc"
+        "target": "grep -q \"BEGIN RESTRICT_ZSH_NONADMINS\" /etc/zshrc || printf \"# BEGIN RESTRICT_ZSH_NONADMINS\\n## Prevent non-admin users from using interactive zsh shells\\nif [[ -t 1 ]]; then\\n  if ! id -Gn | grep -qw admin; then\\n    echo \\\"\\\\nCommand-line access is restricted by your administrator.\\\"\\n    osascript -e \\\"display alert \\\\\\\"Access Restricted\\\\\\\" message \\\\\\\"Command-line tools are blocked for standard users.\\\\\\\" buttons {\\\\\\\"OK\\\\\\\"}\\\" 2>/dev/null || true\\n    exit 1\\n  fi\\nfi\\n# END RESTRICT_ZSH_NONADMINS\" >> /etc/zshrc"
       },
       "rollback": {
         "class": "cli",
@@ -2110,5 +2110,5 @@
     }
   ],
   "name": "threat model macOS",
-  "signature": "795621c58082f106ccf556b9e142d2e54a90eea76d36db981e0ecf7fcdc06df5"
+  "signature": "6b82f3662530c454c65a6908489d5e300c88eff6bd399a0c0ed25be45e6d5321"
 }
