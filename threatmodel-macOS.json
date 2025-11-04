@@ -2100,7 +2100,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "printf 'lines=open(\\\"/etc/zshrc\\\").readlines();skip=False;out=[]\\nfor line in lines:\\n if \\\"BEGIN RESTRICT_ZSH_NONADMINS\\\" in line:skip=True\\n if not skip:out.append(line)\\n if \\\"END RESTRICT_ZSH_NONADMINS\\\" in line:skip=False\\nopen(\\\"/etc/zshrc\\\",\\\"w\\\").writelines(out)' | python3 && echo \\\"[OK] zsh block removed\\\""
+        "target": "python3 - <<\"PY\"\nskip = False\nlines = []\nwith open(\"/etc/zshrc\") as src:\n    for line in src:\n        if \"BEGIN RESTRICT_ZSH_NONADMINS\" in line:\n            skip = True\n            continue\n        if \"END RESTRICT_ZSH_NONADMINS\" in line:\n            skip = False\n            continue\n        if not skip:\n            lines.append(line)\nwith open(\"/etc/zshrc\", \"w\") as dst:\n    dst.writelines(lines)\nprint(\"[OK] zsh block removed\")\nPY\n"
       },
       "scope": "macOS",
       "severity": 3,
@@ -2110,5 +2110,5 @@
     }
   ],
   "name": "threat model macOS",
-  "signature": "9d2c6f35cb412f319e69613d7779e3088c4ce539e5904bcf08e13ec96e6ea0eb"
+  "signature": "fee820b7748ab35cb56eb00259ac7ad541a3e1d5709534205049652902388fc4"
 }
