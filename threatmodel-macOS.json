@@ -2100,7 +2100,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "ex -sc 'g/BEGIN RESTRICT_ZSH_NONADMINS/,/END RESTRICT_ZSH_NONADMINS/d' -cx /etc/zshrc"
+        "target": "cat > /tmp/clean.py << 'PYSCRIPT'\nwith open('/etc/zshrc') as f:\n    lines = f.readlines()\nskip = False\nout = []\nfor line in lines:\n    if 'BEGIN RESTRICT_ZSH_NONADMINS' in line:\n        skip = True\n    if not skip:\n        out.append(line)\n    if 'END RESTRICT_ZSH_NONADMINS' in line:\n        skip = False\nwith open('/etc/zshrc', 'w') as f:\n    f.writelines(out)\nPYSCRIPT\npython3 /tmp/clean.py && rm /tmp/clean.py && echo \"[OK] zsh block removed\""
       },
       "scope": "macOS",
       "severity": 3,
