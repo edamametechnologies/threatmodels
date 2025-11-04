@@ -2058,7 +2058,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "! grep -q \"BEGIN RESTRICT_ZSH_NONADMINS\" /etc/zshrc"
+        "target": "grep -q \"BEGIN RESTRICT_ZSH_NONADMINS\" /etc/zshrc || echo CLI not restricted"
       },
       "metrictype": "bool",
       "name": "CLI not restricted for standard users",
@@ -2100,7 +2100,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "cat > /tmp/clean.py << 'PYSCRIPT'\nwith open('/etc/zshrc') as f:\n    lines = f.readlines()\nskip = False\nout = []\nfor line in lines:\n    if 'BEGIN RESTRICT_ZSH_NONADMINS' in line:\n        skip = True\n    if not skip:\n        out.append(line)\n    if 'END RESTRICT_ZSH_NONADMINS' in line:\n        skip = False\nwith open('/etc/zshrc', 'w') as f:\n    f.writelines(out)\nPYSCRIPT\npython3 /tmp/clean.py && rm /tmp/clean.py && echo \"[OK] zsh block removed\""
+        "target": "cat > /tmp/clean.py << 'PYSCRIPT' with open('/etc/zshrc') as f: lines = f.readlines() skip = False out = [] for line in lines: if 'BEGIN RESTRICT_ZSH_NONADMINS' in line: skip = True if not skip: out.append(line) if 'END RESTRICT_ZSH_NONADMINS' in line: skip = False with open('/etc/zshrc', 'w') as f: f.writelines(out) PYSCRIPT python3 /tmp/clean.py && rm /tmp/clean.py && echo \"[OK] zsh block removed\""
       },
       "scope": "macOS",
       "severity": 3,
@@ -2110,5 +2110,5 @@
     }
   ],
   "name": "threat model macOS",
-  "signature": "707b471f3717f8c0db91bc5cd19cf4c93593dc27211994f7f29946429ee9beec"
+  "signature": "a4a858c62dbf38bb1a6046697f4bc221eb7423e8a3aa817c67c91c16fa8ea34b"
 }
