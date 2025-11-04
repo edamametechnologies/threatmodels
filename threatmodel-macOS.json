@@ -2100,7 +2100,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "sed -i.bak '\\#BEGIN RESTRICT_ZSH_NONADMINS#,\\#END RESTRICT_ZSH_NONADMINS#d' /etc/zshrc && rm -f /etc/zshrc.bak && echo \"[OK] zsh block removed\""
+        "target": "sed '/BEGIN RESTRICT_ZSH_NONADMINS/,/END RESTRICT_ZSH_NONADMINS/d' /etc/zshrc > /tmp/zshrc.tmp && mv /tmp/zshrc.tmp /etc/zshrc && echo \"[OK] zsh block removed\""
       },
       "scope": "macOS",
       "severity": 3,
@@ -2110,5 +2110,5 @@
     }
   ],
   "name": "threat model macOS",
-  "signature": "8a7460a13dce93aefbc3b56f83ee4154313d09bc29cdf0845f3a37e777e565f9"
+  "signature": "c7d6a9a9d288c5542fe39b60cd5fb14232949fe7305ddb658d5c45e5180fa9f2"
 }
