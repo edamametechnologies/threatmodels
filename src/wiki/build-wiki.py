@@ -2,7 +2,6 @@
 
 from mdutils.mdutils import MdUtils
 import json
-import html
 import re
 
 def print_action(loc, elevation, target, osName, osVersion):
@@ -17,14 +16,16 @@ def print_action(loc, elevation, target, osName, osVersion):
         action = "Ligne de commande"
 
     mdFile.new_line()
-    mdFile.new_table(columns=4, rows=2, text=[systemHeader, actionHeader, elevationHeader, targetHeader, osName + " " + str(osVersion), action, elevation, target], text_align='left')
+    mdFile.new_table(columns=3, rows=2, text=[systemHeader, actionHeader, elevationHeader, osName + " " + str(osVersion), action, elevation], text_align='left')
+    mdFile.new_line()
+    mdFile.new_paragraph("**" + targetHeader + "**")
+    mdFile.file_data_text += "\n" + md_sanitize(target) + "\n"
+    mdFile.new_line()
 
 def md_sanitize(text):
-    # Render commands in HTML code blocks to keep table layout stable
+    # Convert literal \n sequences to real newlines and wrap in a fenced code block
     text = text.replace("\\n", "\n")
-    text = html.escape(text)
-    text = text.replace("|", "&#124;")
-    return "<pre><code>" + text + "</code></pre>"
+    return "```sh\n" + text + "\n```"
 
 sources = ['Windows', 'macOS', 'iOS', 'Linux', 'Android']
 for source in sources:
@@ -135,11 +136,11 @@ for source in sources:
                     break
 
             mdFile.new_header(level=2, title=implemationHeader)
-            print_action(loc, metric["implementation"]["elevation"], md_sanitize(metric["implementation"]["target"]), metric["implementation"]["system"], metric["implementation"]["minversion"])
+            print_action(loc, metric["implementation"]["elevation"], metric["implementation"]["target"], metric["implementation"]["system"], metric["implementation"]["minversion"])
 
             mdFile.new_header(level=2, title=remedediationHeader)
             if metric["remediation"]["target"] != "":
-                print_action(loc, metric["remediation"]["elevation"], md_sanitize(metric["remediation"]["target"]), metric["remediation"]["system"], metric["remediation"]["minversion"])
+                print_action(loc, metric["remediation"]["elevation"], metric["remediation"]["target"], metric["remediation"]["system"], metric["remediation"]["minversion"])
             else:
                 for localized in metric["remediation"]["education"]:
                     if localized["locale"] == loc:
@@ -148,7 +149,7 @@ for source in sources:
 
             mdFile.new_header(level=2, title=rollbackHeader)
             if metric["rollback"]["target"] != "":
-                print_action(loc, metric["rollback"]["elevation"], md_sanitize(metric["rollback"]["target"]), metric["rollback"]["system"], metric["rollback"]["minversion"])
+                print_action(loc, metric["rollback"]["elevation"], metric["rollback"]["target"], metric["rollback"]["system"], metric["rollback"]["minversion"])
             else:
                 for localized in metric["rollback"]["education"]:
                     if localized["locale"] == loc:
