@@ -2,6 +2,7 @@
 
 from mdutils.mdutils import MdUtils
 import json
+import html
 import re
 
 def print_action(loc, elevation, target, osName, osVersion):
@@ -19,11 +20,11 @@ def print_action(loc, elevation, target, osName, osVersion):
     mdFile.new_table(columns=4, rows=2, text=[systemHeader, actionHeader, elevationHeader, targetHeader, osName + " " + str(osVersion), action, elevation, target], text_align='left')
 
 def md_sanitize(text):
-    # Create an markdown block code by fronting it with ``` and ending it with ```
-    # Convert literal \n to actual newlines for proper formatting
+    # Render commands in HTML code blocks to keep table layout stable
     text = text.replace("\\n", "\n")
-    text = "```" + text + "```"
-    return text
+    text = html.escape(text)
+    text = text.replace("|", "&#124;")
+    return "<pre><code>" + text + "</code></pre>"
 
 sources = ['Windows', 'macOS', 'iOS', 'Linux', 'Android']
 for source in sources:
