@@ -20,6 +20,8 @@ def print_action(loc, elevation, target, osName, osVersion):
 
 def md_sanitize(text):
     # Create an markdown block code by fronting it with ``` and ending it with ```
+    # Convert literal \n to actual newlines for proper formatting
+    text = text.replace("\\n", "\n")
     text = "```" + text + "```"
     return text
 
