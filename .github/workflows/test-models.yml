@@ -16,7 +16,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                os: [macos-latest, macos-15, macos-14]
+                os: [macos-26, macos-15, macos-14]
 
         steps:
         - uses: actions/checkout@v4
@@ -88,11 +88,11 @@ jobs:
         if: always()
         runs-on: ubuntu-latest
         steps:
-          - name: Download macOS latest report
+          - name: Download macOS 26 report
             uses: actions/download-artifact@v4
             with:
-              name: macos-report-macos-latest
-              path: macos-report-macos-latest
+              name: macos-report-macos-26
+              path: macos-report-macos-26
             continue-on-error: true
           - name: Download macOS 15 report
             uses: actions/download-artifact@v4
@@ -108,23 +108,23 @@ jobs:
             continue-on-error: true
           - id: assemble_macos_reports
             run: |
-              LATEST=$(cat macos-report-macos-latest/report-results.txt 2>/dev/null || echo "N/A")
+              V26=$(cat macos-report-macos-26/report-results.txt 2>/dev/null || echo "N/A")
               V15=$(cat macos-report-macos-15/report-results.txt 2>/dev/null || echo "N/A")
               V14=$(cat macos-report-macos-14/report-results.txt 2>/dev/null || echo "N/A")
-              echo "latest=$LATEST" >> "$GITHUB_OUTPUT"
+              echo "v26=$V26" >> "$GITHUB_OUTPUT"
               echo "v15=$V15" >> "$GITHUB_OUTPUT"
               echo "v14=$V14" >> "$GITHUB_OUTPUT"
           - env:
               WINDOWS_REPORT: ${{needs.tests-windows.outputs.windows-report}}
               UBUNTU_REPORT: ${{needs.tests-ubuntu.outputs.ubuntu-report}}
-              MACOS_LATEST_REPORT: ${{ steps.assemble_macos_reports.outputs.latest }}
+              MACOS_26_REPORT: ${{ steps.assemble_macos_reports.outputs.v26 }}
               MACOS_15_REPORT: ${{ steps.assemble_macos_reports.outputs.v15 }}
               MACOS_14_REPORT: ${{ steps.assemble_macos_reports.outputs.v14 }}
-            run: echo "Reports Windows=$WINDOWS_REPORT macOS(latest)=$MACOS_LATEST_REPORT macOS(15)=$MACOS_15_REPORT macOS(14)=$MACOS_14_REPORT Ubuntu=$UBUNTU_REPORT"
+            run: echo "Reports Windows=$WINDOWS_REPORT macOS(26)=$MACOS_26_REPORT macOS(15)=$MACOS_15_REPORT macOS(14)=$MACOS_14_REPORT Ubuntu=$UBUNTU_REPORT"
           - name: slack-send
             uses: slackapi/slack-github-action@v1.24.0
             with:
               channel-id: 'C07127YECN4'
-              slack-message: "GitHub threat models tests result on branch ${{ github.ref }}:\nmacOS (latest): ${{ steps.assemble_macos_reports.outputs.latest }}\nmacOS (15): ${{ steps.assemble_macos_reports.outputs.v15 }}\nmacOS (14): ${{ steps.assemble_macos_reports.outputs.v14 }}\nWindows: ${{ needs.tests-windows.outputs.windows-report }}\nUbuntu: ${{ needs.tests-ubuntu.outputs.ubuntu-report }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              slack-message: "GitHub threat models tests result on branch ${{ github.ref }}:\nmacOS (26): ${{ steps.assemble_macos_reports.outputs.v26 }}\nmacOS (15): ${{ steps.assemble_macos_reports.outputs.v15 }}\nmacOS (14): ${{ steps.assemble_macos_reports.outputs.v14 }}\nWindows: ${{ needs.tests-windows.outputs.windows-report }}\nUbuntu: ${{ needs.tests-ubuntu.outputs.ubuntu-report }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             env:
                 SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
