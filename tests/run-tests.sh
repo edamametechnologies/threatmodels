@@ -1,0 +1,169 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+WORKFLOW_FILE=".github/workflows/test_models.yml"
+WORKFLOW_NAME="$(basename "${WORKFLOW_FILE}")"
+
+err() {
+  echo "[$(basename "$0")] $*" >&2
+}
+
+require_cmd() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    err "Missing required command '$1'. Please install it first."
+    exit 1
+  fi
+}
+
+require_cmd git
+require_cmd gh
+
+if ! gh auth status >/dev/null 2>&1; then
+  err "GitHub CLI is not authenticated. Run 'gh auth login' first."
+  exit 1
+fi
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+if [[ ! -f "$WORKFLOW_FILE" ]]; then
+  err "Unable to find workflow file $WORKFLOW_FILE. Are you in the threatmodels repo?"
+  exit 1
+fi
+
+if [[ -n "$(git status --porcelain)" ]]; then
+  err "Working tree has uncommitted changes. Please commit/push them before triggering remote tests."
+  git status --short
+  exit 1
+fi
+
+HEAD_SHA="$(git rev-parse HEAD)"
+TMP_BRANCH="ci/test-models-$(date +%s)"
+
+cleanup() {
+  set +e
+  git push origin --delete "$TMP_BRANCH" >/dev/null 2>&1
+  git branch -D "$TMP_BRANCH" >/dev/null 2>&1
+}
+trap cleanup EXIT
+
+if git show-ref --verify --quiet "refs/heads/$TMP_BRANCH"; then
+  git branch -D "$TMP_BRANCH"
+fi
+
+git branch "$TMP_BRANCH" "$HEAD_SHA"
+git push origin "$TMP_BRANCH":"$TMP_BRANCH"
+
+echo "Triggering workflow '$WORKFLOW_NAME' on branch '$TMP_BRANCH'..."
+gh workflow run "$WORKFLOW_NAME" --ref "$TMP_BRANCH"
+
+echo "Waiting for the workflow run associated with commit $HEAD_SHA to appear..."
+RUN_ID=""
+for _ in {1..30}; do
+  RUN_ID="$(gh run list \
+    --workflow "$WORKFLOW_NAME" \
+    --branch "$TMP_BRANCH" \
+    --limit 20 \
+    --json databaseId,headSha,status,createdAt \
+    --jq "map(select(.headSha == \"$HEAD_SHA\"))[0].databaseId")"
+  if [[ -n "${RUN_ID}" && "${RUN_ID}" != "null" ]]; then
+    break
+  fi
+  sleep 3
+done
+
+if [[ -z "${RUN_ID}" || "${RUN_ID}" == "null" ]]; then
+  err "Could not determine the workflow run ID. Verify the workflow was created on GitHub."
+  exit 1
+fi
+
+echo "Watching workflow run ${RUN_ID}..."
+gh run watch "${RUN_ID}" --exit-status
+
+echo "Workflow completed. Cleaning up temporary branch..."
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+WORKFLOW_FILE=".github/workflows/test_models.yml"
+WORKFLOW_NAME="$(basename "${WORKFLOW_FILE}")"
+
+err() {
+  echo "[$(basename "$0")] $*" >&2
+}
+
+require_cmd() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    err "Missing required command '$1'. Please install it first."
+    exit 1
+  fi
+}
+
+require_cmd git
+require_cmd gh
+
+if ! gh auth status >/dev/null 2>&1; then
+  err "GitHub CLI is not authenticated. Run 'gh auth login' first."
+  exit 1
+fi
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+if [[ ! -f "$WORKFLOW_FILE" ]]; then
+  err "Unable to find workflow file $WORKFLOW_FILE. Are you in the threatmodels repo?"
+  exit 1
+fi
+
+if [[ -n "$(git status --porcelain)" ]]; then
+  err "Working tree has uncommitted changes. Please commit/push them before triggering remote tests."
+  git status --short
+  exit 1
+fi
+
+HEAD_SHA="$(git rev-parse HEAD)"
+TMP_BRANCH="ci/test-models-$(date +%s)"
+
+cleanup() {
+  set +e
+  git push origin --delete "$TMP_BRANCH" >/dev/null 2>&1
+  git branch -D "$TMP_BRANCH" >/dev/null 2>&1
+}
+trap cleanup EXIT
+
+if git show-ref --verify --quiet "refs/heads/$TMP_BRANCH"; then
+  git branch -D "$TMP_BRANCH"
+fi
+
+git branch "$TMP_BRANCH" "$HEAD_SHA"
+git push origin "$TMP_BRANCH":"$TMP_BRANCH"
+
+echo "Triggering workflow '$WORKFLOW_NAME' on branch '$TMP_BRANCH'..."
+gh workflow run "$WORKFLOW_NAME" --ref "$TMP_BRANCH"
+
+echo "Waiting for the workflow run associated with commit $HEAD_SHA to appear..."
+RUN_ID=""
+for _ in {1..30}; do
+  RUN_ID="$(gh run list \
+    --workflow "$WORKFLOW_NAME" \
+    --branch "$TMP_BRANCH" \
+    --limit 20 \
+    --json databaseId,headSha,status,createdAt \
+    --jq "map(select(.headSha == \"$HEAD_SHA\"))[0].databaseId")"
+  if [[ -n "${RUN_ID}" && "${RUN_ID}" != "null" ]]; then
+    break
+  fi
+  sleep 3
+done
+
+if [[ -z "${RUN_ID}" || "${RUN_ID}" == "null" ]]; then
+  err "Could not determine the workflow run ID. Verify the workflow was created on GitHub."
+  exit 1
+fi
+
+echo "Watching workflow run ${RUN_ID}..."
+gh run watch "${RUN_ID}" --exit-status
+
+echo "Workflow completed. Cleaning up temporary branch..."
+
