@@ -1,4 +1,5 @@
 import subprocess
+import textwrap
 
 # Command timeout in seconds
 CMD_TIMEOUT = 120
@@ -7,11 +8,12 @@ CMD_TIMEOUT = 120
 class Metric(object):
     '''Representation of a metric with associated functions to perform tests'''
 
-    def __init__(self, info, source, logger, ignore_list):
+    def __init__(self, info, source, logger, ignore_list, username):
         self.info = info
         self.source = source
         self.logger = logger
         self.ignore_list = ignore_list
+        self.username = username
 
         self.report = {
             "implementation": {},
@@ -127,6 +129,57 @@ class Metric(object):
 
         return need_remediation
 
+    def _target_elevation(self, target_type):
+        return self.info[target_type].get("elevation", "").lower()
+
+    def _needs_personate(self, target_type):
+        return self._target_elevation(target_type) == "admin"
+
+    def _default_permissions_required(self, target_type):
+        elevation = self._target_elevation(target_type)
+        return elevation != "user"
+
+    def _escape_pwsh_single(self, value):
+        return value.replace("'", "''")
+
+    def _build_windows_env_block(self):
+        if not self.username:
+            return ""
+        escaped_username = self._escape_pwsh_single(self.username)
+        user_segment = self.username.split("\\")[-1].split("/")[-1]
+        escaped_segment = self._escape_pwsh_single(user_segment)
+        template = """
+        $edamameUser = '{username}'
+        $edamameUserFolder = '{segment}'
+        $userProfilePath = Join-Path $env:SystemDrive ('Users\\' + $edamameUserFolder)
+        if (-not (Test-Path $userProfilePath)) {{
+          try {{
+            $profileObj = Get-CimInstance Win32_UserProfile -ErrorAction Stop |
+              Where-Object {{ $_.LocalPath -like "*\\{segment}" }} |
+              Select-Object -First 1
+            if ($profileObj -and (Test-Path $profileObj.LocalPath)) {{
+              $userProfilePath = $profileObj.LocalPath
+            }}
+          }} catch {{ }}
+        }}
+        if (-not (Test-Path $userProfilePath)) {{
+          $userProfilePath = Join-Path $env:SystemDrive ('Users\\' + $edamameUserFolder)
+        }}
+        $env:USERPROFILE = $userProfilePath
+        try {{
+          $env:HOMEDRIVE = Split-Path $userProfilePath -Qualifier
+          $env:HOMEPATH = $userProfilePath.Substring($env:HOMEDRIVE.Length)
+        }} catch {{
+          $env:HOMEDRIVE = $env:SystemDrive
+          $env:HOMEPATH = $userProfilePath.Substring($env:HOMEDRIVE.Length)
+        }}
+        $env:LOCALAPPDATA = Join-Path $userProfilePath 'AppData\\Local'
+        $env:APPDATA = Join-Path $userProfilePath 'AppData\\Roaming'
+        """
+        return textwrap.dedent(template).format(
+            username=escaped_username, segment=escaped_segment
+        ).strip()
+
     def execute_target(self, target_type, permissions=None):
         '''
         Execute a target on the corresponding platform and returns the result
@@ -141,31 +194,52 @@ class Metric(object):
         # Try to load target permissions if permissions argument is not
         # specified
         if permissions is None:
-            permissions = self.info[target_type]["elevation"] != "user"
+            permissions = self._default_permissions_required(target_type)
 
         # Gets the corresponding target command
         command = self.info[target_type]["target"]
 
-        # Add powershell call on windows
+        needs_personate = self._needs_personate(target_type)
+
         if self.source == "Windows":
-            command = f"powershell.exe -Command \"{command}\""
-
-        # Add sudo when permissions argument is True
-        if permissions:
-            if self.source == "Windows":
-                # In the github actions Windows virtual machines the python
-                # script is already ran with privileges.
-                pass
-            else:
+            script = command
+            if needs_personate:
+                env_block = self._build_windows_env_block()
+                if not env_block:
+                    raise TargetExecutionError("username required for admin elevation tests")
+                script = f"{env_block}\n{script}"
+            ps_args = [
+                "powershell.exe",
+                "-NoProfile",
+                "-NonInteractive",
+                "-Command",
+                script,
+            ]
+            result = subprocess.run(
+                ps_args,
+                shell=False,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                timeout=CMD_TIMEOUT,
+            )
+        else:
+            # Unix: use sudo for admin and higher elevations
+            # Admin mimics production: sudo -H -u <user> to impersonate with elevated rights
+            if needs_personate:
+                if not self.username:
+                    raise TargetExecutionError("username required for admin elevation tests")
+                command = f"sudo -H -u {self.username} /bin/bash -c '{command}'"
+            elif permissions:
                 command = f"sudo -- sh -c '{command}'"
-
-        # Run the command
-        result = subprocess.run(
-            command,
-            shell=True,
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
-            timeout=CMD_TIMEOUT
-        )
+            result = subprocess.run(
+                command,
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                timeout=CMD_TIMEOUT,
+            )
 
         # Raise an exception if the execution failed
         if is_error(result):
