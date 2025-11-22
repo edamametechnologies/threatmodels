@@ -18,6 +18,7 @@
   - [System Checks](#system-checks)
   - [Command Line Checks](#command-line-checks)
   - [Business Rules](#business-rules)
+- [How to Develop and Test Threat Models](#how-to-develop-and-test-threat-models)
 - [Platform Coverage](#platform-coverage)
 - [Security Assessment](#security-assessment)
   - [Severity Classification](#severity-classification)
@@ -234,3 +235,38 @@ Safe, predefined commands that gather information about the system state. These 
 
 ### Business Rules
 Specialized checks that execute local scripts in userspace, leveraging the `EDAMAME_BUSINESS_RULES_CMD`
+
+## How to Develop and Test Threat Models
+
+The CLI export/import utilities and the GitHub-based test workflow let you edit metrics with full fidelity while validating them on hosted runners.
+
+1. **Export scripts for editing**
+   ```bash
+   python3 src/cli/export.py threatmodel-macOS.json
+   python3 src/cli/export.py threatmodel-Windows.json
+   ```
+   Each metric’s `implementation`, `remediation`, and `rollback` blocks are written to `threat model */<metric>/` with preserved formatting, comments, and shebangs.
+
+2. **Modify the extracted scripts**
+   Edit the generated `.sh` / `.ps` files locally. Keep comments around non-trivial logic to help future reviewers.
+
+3. **Re-import scripts into the JSON**
+   ```bash
+   python3 src/cli/import.py threatmodel-macOS.json
+   python3 src/cli/import.py threatmodel-Windows.json
+   ```
+   The importer normalizes newlines, strips shell headers before embedding them back into JSON, and ensures multi-line commands are stored losslessly.
+
+4. **Run the hosted test suite**
+   ```bash
+   ./tests/run-tests.sh
+   ```
+   This helper script checks for `git`/`gh`, snapshots your working tree (even with uncommitted changes), pushes a temporary branch, triggers `.github/workflows/test_models.yml`, streams the run, and prints any `[ERROR]`/`Error:` lines found in the CI logs before cleaning up.
+
+5. **Refresh signatures before committing**
+   ```bash
+   python3 src/publish/update-models.py threatmodel-macOS.json threatmodel-Windows.json
+   ```
+   This updates the `date`, `signature`, and `.sig` sidecars required by CI.
+
+Following this loop keeps the JSON models, extracted scripts, and CI validation in sync.
