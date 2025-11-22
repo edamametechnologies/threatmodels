@@ -110,15 +110,31 @@ gh run watch "${RUN_ID}" --exit-status
 echo "Workflow completed. Cleaning up temporary branch..."
 
 echo "Collecting logs for run ${RUN_ID}..."
-LOG_FILE="$(mktemp)"
-if gh run view "${RUN_ID}" --log > "${LOG_FILE}"; then
-  echo "---- Extracted error lines ----"
-  if ! grep -E '(\[ERROR\]|^Error:)' "${LOG_FILE}"; then
-    echo "(no error lines found)"
+JOB_JSON="$(mktemp)"
+if gh run view "${RUN_ID}" --json jobs > "${JOB_JSON}"; then
+  FAILING_JOBS=$(jq -r '.jobs[] | select(.conclusion != "success") | "\(.databaseId)__SEP__\(.name)"' "${JOB_JSON}")
+  if [[ -z "${FAILING_JOBS}" ]]; then
+    echo "All jobs succeeded; no error logs to display."
+  else
+    echo "---- Extracted error lines ----"
+    while IFS="__SEP__" read -r JOB_ID JOB_NAME; do
+      [[ -z "${JOB_ID}" ]] && continue
+      JOB_NAME="${JOB_NAME:-unknown}"
+      echo "[Job ${JOB_ID}] ${JOB_NAME}"
+      JOB_LOG="$(mktemp)"
+      if gh run view "${RUN_ID}" --job "${JOB_ID}" --log > "${JOB_LOG}"; then
+        if ! grep -E '(\[ERROR\]|^Error:)' "${JOB_LOG}"; then
+          echo "(no error lines found)"
+        fi
+      else
+        echo "(failed to download logs)"
+      fi
+      rm -f "${JOB_LOG}"
+      echo "--------------------------------"
+    done <<< "${FAILING_JOBS}"
   fi
-  echo "--------------------------------"
 else
-  err "Failed to retrieve logs for run ${RUN_ID}"
+  err "Failed to retrieve job metadata for run ${RUN_ID}"
 fi
 
-rm -f "${LOG_FILE}"
+rm -f "${JOB_JSON}"
