@@ -112,14 +112,13 @@ echo "Workflow completed. Cleaning up temporary branch..."
 echo "Collecting logs for run ${RUN_ID}..."
 JOB_JSON="$(mktemp)"
 if gh run view "${RUN_ID}" --json jobs > "${JOB_JSON}"; then
-  FAILING_JOBS=$(jq -r '.jobs[] | select(.conclusion != "success") | "\(.databaseId)__SEP__\(.name)"' "${JOB_JSON}")
+  FAILING_JOBS=$(jq -r '.jobs[] | select(.conclusion != "success") | "\(.databaseId)\t\(.name // "unknown")"' "${JOB_JSON}")
   if [[ -z "${FAILING_JOBS}" ]]; then
     echo "All jobs succeeded; no error logs to display."
   else
     echo "---- Extracted error lines ----"
-    while IFS="__SEP__" read -r JOB_ID JOB_NAME; do
+    while IFS=$'\t' read -r JOB_ID JOB_NAME; do
       [[ -z "${JOB_ID}" ]] && continue
-      JOB_NAME="${JOB_NAME:-unknown}"
       echo "[Job ${JOB_ID}] ${JOB_NAME}"
       JOB_LOG="$(mktemp)"
       if gh run view "${RUN_ID}" --job "${JOB_ID}" --log > "${JOB_LOG}"; then
