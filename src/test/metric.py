@@ -225,13 +225,13 @@ class Metric(object):
             )
         else:
             # Unix: use sudo for admin and higher elevations
-            # Admin mimics production: sudo -H -u <user> to impersonate with elevated rights
-            if needs_personate:
-                if not self.username:
-                    raise TargetExecutionError("username required for admin elevation tests")
-                command = f"sudo -H -u {self.username} /bin/bash -c '{command}'"
-            elif permissions:
-                command = f"sudo -- sh -c '{command}'"
+            # In tests, admin metrics still require root access (e.g. fdesetup)
+            # but we can't truly impersonate with sudo -u since runner user lacks privileges
+            # So we use plain sudo and let $HOME remain as runner's home
+            if permissions:
+                # Escape single quotes for shell -c '...' wrapper
+                escaped_cmd = command.replace("'", "'\"'\"'")
+                command = f"sudo -- sh -c '{escaped_cmd}'"
             result = subprocess.run(
                 command,
                 shell=True,
