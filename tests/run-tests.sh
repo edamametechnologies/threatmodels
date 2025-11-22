@@ -108,3 +108,17 @@ echo "Watching workflow run ${RUN_ID}..."
 gh run watch "${RUN_ID}" --exit-status
 
 echo "Workflow completed. Cleaning up temporary branch..."
+
+echo "Collecting logs for run ${RUN_ID}..."
+LOG_FILE="$(mktemp)"
+if gh run view "${RUN_ID}" --log > "${LOG_FILE}"; then
+  echo "---- Extracted error lines ----"
+  if ! grep -E '(\[ERROR\]|^Error:)' "${LOG_FILE}"; then
+    echo "(no error lines found)"
+  fi
+  echo "--------------------------------"
+else
+  err "Failed to retrieve logs for run ${RUN_ID}"
+fi
+
+rm -f "${LOG_FILE}"
