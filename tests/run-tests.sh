@@ -119,15 +119,34 @@ if gh run view "${RUN_ID}" --json jobs > "${JOB_JSON}"; then
   if [[ -z "${FAILING_JOBS}" ]]; then
     echo "All jobs succeeded; no error logs to display."
   else
-    echo "---- Extracted error lines ----"
+    echo "---- Extracted error blocks ----"
     while IFS=$'\t' read -r JOB_ID JOB_NAME; do
       [[ -z "${JOB_ID}" ]] && continue
       echo "[Job ${JOB_ID}] ${JOB_NAME}"
       JOB_LOG="$(mktemp)"
       if gh run view "${RUN_ID}" --job "${JOB_ID}" --log > "${JOB_LOG}"; then
-        if ! grep -E '(\[ERROR\]|^Error:)' "${JOB_LOG}"; then
-          echo "(no error lines found)"
-        fi
+        # Extract blocks: from "[INFO] Running ..." up to (but not including) the next "[INFO]" if errors exist
+        awk '
+          /\[INFO\] Running .* tests/ {
+            if (block_has_error && buffer != "") {
+              print buffer
+            }
+            buffer = $0 "\n"
+            block_has_error = 0
+            next
+          }
+          {
+            buffer = buffer $0 "\n"
+            if (/\[ERROR\]/ || /^Error:/) {
+              block_has_error = 1
+            }
+          }
+          END {
+            if (block_has_error && buffer != "") {
+              print buffer
+            }
+          }
+        ' "${JOB_LOG}"
       else
         echo "(failed to download logs)"
       fi
