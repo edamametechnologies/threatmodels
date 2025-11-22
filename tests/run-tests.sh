@@ -105,9 +105,12 @@ if [[ -z "${RUN_ID}" || "${RUN_ID}" == "null" ]]; then
 fi
 
 echo "Watching workflow run ${RUN_ID}..."
+set +e
 gh run watch "${RUN_ID}" --exit-status
+WATCH_EXIT=$?
+set -e
 
-echo "Workflow completed. Cleaning up temporary branch..."
+echo "Workflow completed. Collecting logs..."
 
 echo "Collecting logs for run ${RUN_ID}..."
 JOB_JSON="$(mktemp)"
@@ -137,3 +140,5 @@ else
 fi
 
 rm -f "${JOB_JSON}"
+
+exit $WATCH_EXIT
