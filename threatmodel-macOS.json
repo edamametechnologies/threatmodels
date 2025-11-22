@@ -376,7 +376,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "defaults write /Library/Preferences/com.apple.commerce.plist AutoUpdate -bool true; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallAppUpdates -bool true; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool true"
+        "target": "defaults write /Library/Preferences/com.apple.commerce.plist AutoUpdate -bool true;\ndefaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallAppUpdates -bool true;\ndefaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool true"
       },
       "rollback": {
         "class": "cli",
@@ -396,7 +396,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "defaults write /Library/Preferences/com.apple.commerce.plist AutoUpdate -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallAppUpdates -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool false"
+        "target": "defaults write /Library/Preferences/com.apple.commerce.plist AutoUpdate -bool false;\ndefaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallAppUpdates -bool false;\ndefaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool false"
       },
       "scope": "generic",
       "severity": 3,
@@ -762,7 +762,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist && defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server.plist EnabledServices -array disk"
+        "target": "launchctl load -w /System/Library/LaunchDaemons/com.apple.smbd.plist &&\ndefaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server.plist EnabledServices -array disk"
       },
       "scope": "generic",
       "severity": 4,
@@ -933,7 +933,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "system_profiler SPHardwareDataType | grep -q 'Virtual' || fdesetup isactive | grep false"
+        "target": "system_profiler SPHardwareDataType | grep -q 'Virtual' ||\nfdesetup isactive | grep false"
       },
       "metrictype": "bool",
       "name": "encrypted disk disabled",
@@ -1077,7 +1077,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates 2>/dev/null | grep -q 1 || echo macosupdate_disabled"
+        "target": "defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates 2>/dev/null | grep -q 1 ||\necho macosupdate_disabled"
       },
       "metrictype": "bool",
       "name": "manual system updates",
@@ -1099,7 +1099,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool true; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool true; defaults write /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall -bool true; defaults write /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall -bool true; softwareupdate --schedule on"
+        "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true;\ndefaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool true;\ndefaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool true;\ndefaults write /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall -bool true;\ndefaults write /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall -bool true;\nsoftwareupdate --schedule on"
       },
       "rollback": {
         "class": "cli",
@@ -1119,7 +1119,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall -bool false; defaults write /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall -bool false; softwareupdate --schedule off"
+        "target": "defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -bool false;\ndefaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload -bool false;\ndefaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticallyInstallMacOSUpdates -bool false;\ndefaults write /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall -bool false;\ndefaults write /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall -bool false;\nsoftwareupdate --schedule off"
       },
       "scope": "generic",
       "severity": 4,
@@ -1221,7 +1221,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "if ! ( pgrep BDLDaemon >/dev/null || pgrep RTProtectionDaemon >/dev/null || sentinelctl version 2>/dev/null | grep -q \"SentinelOne\" || ( xprotect status 2>/dev/null | grep -q \"launch scans: enabled\" && xprotect status 2>/dev/null | grep -q \"background scans: enabled\" ) ); then echo \"epp_disabled\"; fi;"
+        "target": "# Extended EDR/EPP presence check for macOS\n# Prints \"epp_disabled\" if no recognized EDR/EPP is active/installed.\n\nset -euo pipefail\n\nis_proc()  { pgrep -x \"$1\" >/dev/null 2>&1; }\nis_fproc() { pgrep -f \"$1\" >/dev/null 2>&1; }\n\nhas_crowdstrike() {\n  # CrowdStrike Falcon (system extension + app/CLI)\n  [[ -e \"/Library/LaunchDaemons/com.crowdstrike.falcon.Agent.plist\" ]] && return 0\n  command -v systemextensionsctl >/dev/null 2>&1 && \\\n    systemextensionsctl list 2>/dev/null | grep -Fq \"com.crowdstrike.falcon.Agent\" && return 0\n  [[ -x \"/Applications/Falcon.app/Contents/Resources/falconctl\" ]] && return 0\n  return 1\n}\n\nhas_carbonblack() {\n  # VMware Carbon Black Cloud / EDR (daemon plist names)\n  [[ -e \"/Library/LaunchDaemons/com.vmware.carbonblack.cloud.daemon.plist\" ]] && return 0\n  [[ -e \"/Library/LaunchDaemons/com.carbonblack.daemon.plist\" ]] && return 0\n  command -v systemextensionsctl >/dev/null 2>&1 && \\\n    systemextensionsctl list 2>/dev/null | grep -iq \"carbonblack\" && return 0\n  return 1\n}\n\nhas_ms_defender() {\n  # Microsoft Defender for Endpoint\n  if command -v mdatp >/dev/null 2>&1; then\n    # Prefer a health probe if available\n    ( mdatp health --field real_time_protection_enabled 2>/dev/null | grep -qi \"true\" ) && return 0\n    ( mdatp health --field healthy 2>/dev/null | grep -qi \"true\" ) && return 0\n  fi\n  is_fproc \"wdavdaemon\" && return 0\n  return 1\n}\n\nhas_sophos() {\n  # Sophos Intercept X / Endpoint\n  is_proc \"SophosScanD\" && return 0\n  is_fproc \"com.sophos\" && return 0\n  return 1\n}\n\nhas_symantec() {\n  # Symantec Endpoint Protection\n  is_proc \"SymDaemon\" && return 0\n  return 1\n}\n\nhas_trendmicro() {\n  # Trend Micro Apex One (macOS)\n  is_proc \"iCoreService\" && return 0\n  command -v systemextensionsctl >/dev/null 2>&1 && \\\n    systemextensionsctl list 2>/dev/null | grep -Fq \"com.trendmicro.icore.es\" && return 0\n  return 1\n}\n\nhas_cortex_xdr() {\n  # Palo Alto Networks Cortex XDR (aka Traps)\n  [[ -x \"/Library/Application Support/PaloAltoNetworks/Traps/bin/cytool\" ]] && return 0\n  is_fproc \"/Library/Application Support/PaloAltoNetworks/Traps/bin/pmd\" && return 0\n  [[ -e \"/Library/LaunchDaemons/com.paloaltonetworks.cortex.pmd.plist\" ]] && return 0\n  return 1\n}\n\nhas_jamf_protect() {\n  is_proc \"JamfProtectAgent\" && return 0\n  # protectctl exists but may not be on PATH everywhere\n  if [[ -x \"/usr/local/bin/protectctl\" ]]; then /usr/local/bin/protectctl version >/dev/null 2>&1 && return 0; fi\n  if command -v protectctl >/dev/null 2>&1; then protectctl version >/dev/null 2>&1 && return 0; fi\n  return 1\n}\n\nhas_cylance() {\n  # Cylance / BlackBerry Protect\n  [[ -e \"/Library/LaunchDaemons/com.cylance.agent_service.plist\" ]] && return 0\n  is_fproc \"CylanceSvc\" && return 0\n  return 1\n}\n\nhas_eset() {\n  # ESET Endpoint Security for macOS\n  is_proc \"esets_daemon\" && return 0\n  return 1\n}\n\nhas_bitdefender() { is_proc \"BDLDaemon\" && return 0; return 1; }   # Bitdefender\nhas_malwarebytes() { is_proc \"RTProtectionDaemon\" && return 0; return 1; } # Malwarebytes\nhas_sentinelone() { command -v sentinelctl >/dev/null 2>&1 && sentinelctl version 2>/dev/null | grep -q \"SentinelOne\" && return 0; return 1; }\n\nhas_xprotect() {\n  # Apple XProtect Remediator (built-in)\n  if command -v xprotect >/dev/null 2>&1; then\n    xprotect status 2>/dev/null | grep -Fq \"launch scans: enabled\" || return 1\n    xprotect status 2>/dev/null | grep -Fq \"background scans: enabled\" || return 1\n    return 0\n  fi\n\n  # Fallback for older macOS versions where only the XProtect process exists\n  is_fproc \"xprotect\" && return 0\n  is_proc \"XProtect\" && return 0\n  return 1\n}\n\nhas_any_edr() {\n  has_bitdefender      && return 0\n  has_malwarebytes     && return 0\n  has_sentinelone      && return 0\n  has_crowdstrike      && return 0\n  has_carbonblack      && return 0\n  has_ms_defender      && return 0\n  has_sophos           && return 0\n  has_symantec         && return 0\n  has_trendmicro       && return 0\n  has_cortex_xdr       && return 0\n  has_jamf_protect     && return 0\n  has_cylance          && return 0\n  has_eset             && return 0\n  has_xprotect         && return 0  # treat “good XProtect status” as EPP present\n  return 1\n}\n\nif ! has_any_edr; then\n  echo \"epp_disabled\"\nfi"
       },
       "metrictype": "bool",
       "name": "no EPP",
@@ -1293,7 +1293,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "([ -d \"/Applications/1Password.app\" ] || [ -d \"/Applications/LastPass.app\" ] || [ -d \"/Applications/KeePassXC.app\" ] || [ -d \"/Applications/1Password7.app\" ] || [ -d \"$HOME/Applications/Chrome Apps.localized/Google Password Manager.app\" ] || [ -d \"/Applications/Bitwarden.app\" ]) >/dev/null 2>&1 || echo \"No password manager installed\""
+        "target": "# Detects common password managers via native apps and browser extensions.\n# Prints \"No password manager installed\" if none are found.\n\nset -euo pipefail\n\nfound_pm=0\n\n# --- Native (desktop or App Store “container” apps incl. Safari extensions) ---\napp_paths=(\n  \"/Applications/1Password.app\"\n  \"/Applications/1Password 7.app\"      # legacy\n  \"/Applications/1Password7.app\"       # legacy naming\n  \"/Applications/1Password for Safari.app\"\n  \"/Applications/Bitwarden.app\"\n  \"/Applications/LastPass.app\"\n  \"/Applications/LastPass for Safari.app\"\n  \"/Applications/Dashlane.app\"\n  \"/Applications/Keeper Password Manager.app\"\n  \"/Applications/Keeper for Safari.app\"\n  \"/Applications/Enpass.app\"\n  \"/Applications/KeePassXC.app\"\n  \"/Applications/NordPass.app\"\n  \"/Applications/RoboForm.app\"\n  \"/Applications/Zoho Vault.app\"\n  \"/Applications/Proton Pass.app\"\n  \"$HOME/Applications/Chrome Apps.localized/Google Password Manager.app\"\n)\n\nfor p in \"${app_paths[@]}\"; do\n  if [[ -d \"$p\" ]]; then\n    found_pm=1; break\n  fi\ndone\n\n# --- Chromium-family extensions (Chrome, Edge, Brave, Vivaldi) ---\n# Known extension IDs\nchrome_ids=(\n  \"aeblfdkhhhdcdjpifhhbdiojplfjncoa\"   # 1Password – Password Manager (stable)\n  \"khgocmkkpikpnmmkgmdnfckapcdkgfaf\"   # 1Password Beta\n  \"nngceckbapebfimnlniiiahkandclblb\"   # Bitwarden\n  \"hdokiejnpimakedhajhdlcegeplioahd\"   # LastPass\n  \"fdjamakpfbbddfjaooikfcpapjohcfmg\"   # Dashlane\n  \"bfogiafebfohielmmehodmfbbebbbpei\"   # Keeper\n  \"igkpcodhieompeloncfnbekccinhapdb\"   # Zoho Vault\n  \"eiaeiblijfjekdanodkjadfinkhbfgcd\"   # NordPass\n  \"pnlccmojcmeohlpggmfnbbiapkmbliob\"   # RoboForm\n  \"oboonakemofpalcgghocfoadofidjkkk\"   # KeePassXC-Browser\n  \"kmcfomidfpdkfieipokbalgegidffkal\"   # Enpass\n  \"ghmbeldphafepmbegfdlkpapadhbakde\"   # Proton Pass\n)\n\nchromium_bases=(\n  \"$HOME/Library/Application Support/Google/Chrome\"\n  \"$HOME/Library/Application Support/Microsoft Edge\"\n  \"$HOME/Library/Application Support/BraveSoftware/Brave-Browser\"\n  \"$HOME/Library/Application Support/Vivaldi\"\n)\n\nif [[ $found_pm -eq 0 ]]; then\n  for base in \"${chromium_bases[@]}\"; do\n    [[ -d \"$base\" ]] || continue\n    for profile in \"$base\"/*; do\n      [[ -d \"$profile/Extensions\" ]] || continue\n      for id in \"${chrome_ids[@]}\"; do\n        if [[ -d \"$profile/Extensions/$id\" ]]; then\n          found_pm=1; break\n        fi\n      done\n      [[ $found_pm -eq 1 ]] && break\n    done\n    [[ $found_pm -eq 1 ]] && break\n  done\nfi\n\n# --- Firefox extensions (look for known names in extensions.json) ---\nif [[ $found_pm -eq 0 ]]; then\n  ff_root=\"$HOME/Library/Application Support/Firefox/Profiles\"\n  if [[ -d \"$ff_root\" ]]; then\n    for prof in \"$ff_root\"/*; do\n      ej=\"$prof/extensions.json\"\n      if [[ -f \"$ej\" ]] && \\\n         grep -Eiq '\"name\".*\"(1Password|Bitwarden|LastPass|Dashlane|Keeper|Enpass|NordPass|Zoho Vault|Proton Pass|KeePassXC)\"' \"$ej\"; then\n        found_pm=1; break\n      fi\n    done\n  fi\nfi\n\n# --- Result ---\nif [[ $found_pm -eq 0 ]]; then\n  echo \"No password manager installed\"\nfi"
       },
       "metrictype": "bool",
       "name": "no password manager",
@@ -1587,7 +1587,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "security authorizationdb read system.preferences > /tmp/system.preferences.plist; /usr/libexec/PlistBuddy -c \"Set :shared false\" /tmp/system.preferences.plist; security authorizationdb write system.preferences < /tmp/system.preferences.plist"
+        "target": "security authorizationdb read system.preferences > /tmp/system.preferences.plist;\n/usr/libexec/PlistBuddy -c \"Set :shared false\" /tmp/system.preferences.plist;\nsecurity authorizationdb write system.preferences < /tmp/system.preferences.plist"
       },
       "rollback": {
         "class": "cli",
@@ -1607,7 +1607,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "security authorizationdb read system.preferences > /tmp/system.preferences.plist; /usr/libexec/PlistBuddy -c \"Set :shared true\" /tmp/system.preferences.plist; security authorizationdb write system.preferences < /tmp/system.preferences.plist"
+        "target": "security authorizationdb read system.preferences > /tmp/system.preferences.plist;\n/usr/libexec/PlistBuddy -c \"Set :shared true\" /tmp/system.preferences.plist;\nsecurity authorizationdb write system.preferences < /tmp/system.preferences.plist"
       },
       "scope": "macOS",
       "severity": 3,
@@ -1920,7 +1920,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "defaults read /Applications/Google\\ Chrome.app/Contents/Info.plist CFBundleShortVersionString &>/dev/null && { local_version=$(defaults read /Applications/Google\\ Chrome.app/Contents/Info.plist CFBundleShortVersionString); latest_version=$(curl -s \"https://formulae.brew.sh/api/cask/google-chrome.json\" | sed -n 's/.*\\\"version\\\": \\\"\\([^\\\"]*\\)\\\".*/\\1/p'); if [ \"$(printf '%s\\n%s\\n' \"$local_version\" \"$latest_version\" | sort -V | tail -n1)\" = \"$latest_version\" ] && [ \"$local_version\" != \"$latest_version\" ]; then echo \"Chrome is not up to date (Installed: $local_version, Latest: $latest_version)\"; fi; }"
+        "target": "defaults read /Applications/Google\\ Chrome.app/Contents/Info.plist CFBundleShortVersionString &>/dev/null &&\n{ local_version=$(defaults read /Applications/Google\\ Chrome.app/Contents/Info.plist CFBundleShortVersionString);\nlatest_version=$(curl -s \"https://formulae.brew.sh/api/cask/google-chrome.json\" | sed -n 's/.*\\\"version\\\": \\\"\\([^\\\"]*\\)\\\".*/\\1/p');\nif [ \"$(printf '%s\\n%s\\n' \"$local_version\" \"$latest_version\" | sort -V | tail -n1)\" = \"$latest_version\" ] &&\n[ \"$local_version\" != \"$latest_version\" ];\nthen echo \"Chrome is not up to date (Installed: $local_version, Latest: $latest_version)\";\nfi;\n}"
       },
       "metrictype": "bool",
       "name": "Chrome not uptodate",
@@ -2058,7 +2058,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "grep -q \"BEGIN RESTRICT_ZSH_NONADMINS\" /etc/zshrc || echo CLI not restricted"
+        "target": "grep -q \"BEGIN RESTRICT_ZSH_NONADMINS\" /etc/zshrc ||\necho CLI not restricted"
       },
       "metrictype": "bool",
       "name": "CLI not restricted for standard users",
@@ -2080,7 +2080,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "grep -q \"BEGIN RESTRICT_ZSH_NONADMINS\" /etc/zshrc || cat <<'EOF' >> /etc/zshrc\n# BEGIN RESTRICT_ZSH_NONADMINS\n## Prevent non-admin users from using interactive zsh shells\nif [[ -t 1 ]]; then\n  if ! id -Gn | grep -qw admin; then\n    echo \"\"\n    echo \"Command-line access is restricted by your administrator.\"\n    osascript -e \"display alert \\\"Access Restricted\\\" message \\\"Command-line tools are blocked for standard users.\\\" buttons {\\\"OK\\\"}\" 2>/dev/null || true\n    exit 1\n  fi\nfi\n# END RESTRICT_ZSH_NONADMINS\nEOF"
+        "target": "grep -q \"BEGIN RESTRICT_ZSH_NONADMINS\" /etc/zshrc ||\ncat <<'EOF' >> /etc/zshrc\n# BEGIN RESTRICT_ZSH_NONADMINS\n## Prevent non-admin users from using interactive zsh shells\nif [[ -t 1 ]];\nthen\n  if ! id -Gn | grep -qw admin;\nthen\n    echo \"\"\n    echo \"Command-line access is restricted by your administrator.\"\n    osascript -e \"display alert \\\"Access Restricted\\\" message \\\"Command-line tools are blocked for standard users.\\\" buttons {\\\"OK\\\"}\" 2>/dev/null ||\ntrue\n    exit 1\n  fi\nfi\n# END RESTRICT_ZSH_NONADMINS\nEOF"
       },
       "rollback": {
         "class": "cli",
@@ -2100,7 +2100,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "python3 - <<'PY'\nskip = False\nlines = []\nwith open(\"/etc/zshrc\") as src:\n    for line in src:\n        if \"BEGIN RESTRICT_ZSH_NONADMINS\" in line:\n            skip = True\n            continue\n        if \"END RESTRICT_ZSH_NONADMINS\" in line:\n            skip = False\n            continue\n        if not skip:\n            lines.append(line)\nwith open(\"/etc/zshrc\", \"w\") as dst:\n    dst.writelines(lines)\nprint(\"[OK] zsh block removed\")\nPY\n"
+        "target": "python3 - <<'PY'\nskip = False\nlines = []\nwith open(\"/etc/zshrc\") as src:\n    for line in src:\n        if \"BEGIN RESTRICT_ZSH_NONADMINS\" in line:\n            skip = True\n            continue\n        if \"END RESTRICT_ZSH_NONADMINS\" in line:\n            skip = False\n            continue\n        if not skip:\n            lines.append(line)\nwith open(\"/etc/zshrc\", \"w\") as dst:\n    dst.writelines(lines)\nprint(\"[OK] zsh block removed\")\nPY"
       },
       "scope": "macOS",
       "severity": 3,

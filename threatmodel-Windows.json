@@ -163,7 +163,7 @@
         "maxversion": 0,
         "minversion": 10,
         "system": "Windows",
-        "target": "Function Get-AVStatus { [cmdletbinding()] Param() Process { $AV = Get-CimInstance -Namespace 'root/SecurityCenter2' -ClassName 'AntivirusProduct'; $enabledAVs = $AV | Where-Object { $productState = '0x{0:x}' -f $_.ProductState; $enabled = $productState.Substring(3, 2) -match '10|11'; return $enabled }; if (-not $enabledAVs) { Write-Output 'epp_disabled' } } }; Get-AVStatus"
+        "target": "Function Get-AVStatus {\n  [CmdletBinding()]\n  Param()\n  Process {\n    # 1) Primary: Windows Security Center (workstations; some Server SKUs won’t populate this)\n    $enabledAVs = @()\n    try {\n      $av = Get-CimInstance -Namespace 'root/SecurityCenter2' -ClassName 'AntivirusProduct' -ErrorAction Stop\n      foreach ($p in $av) {\n        $productStateHex = ('0x{0:x}' -f $p.ProductState)\n        # Your logic: \"enabled\" when the 3rd byte is 0x10 or 0x11\n        if ($productStateHex.Length -ge 5) {\n          $enabled = $productStateHex.Substring(3,2) -match '10|11'\n          if ($enabled) { $enabledAVs += $p }\n        }\n      }\n    } catch {\n      # SecurityCenter2 may not exist (e.g., some Server editions) – rely on fallbacks below\n    }\n\n    if ($enabledAVs) { return }  # at least one AV registered as enabled\n\n    # 2) Defender explicit health (if present)\n    $defenderOn = $false\n    try {\n      $mp = Get-MpComputerStatus -ErrorAction Stop\n      if ($mp.RealTimeProtectionEnabled -and $mp.AntiSpywareEnabled -and $mp.AntivirusEnabled) { $defenderOn = $true }\n    } catch { }\n    if ($defenderOn) { return }\n\n    # 3) EDR/EPP fallbacks: services/processes/known install dirs\n    $svcNames = @(\n      # Microsoft Defender AV/XDR\n      'WinDefend'                                  # MsMpEng.exe service backend\n      # SentinelOne\n      'SentinelAgent'\n      # CrowdStrike\n      'CSFalconService'\n      # Sophos\n      'SEDService','SSPService'\n      # Symantec Endpoint Protection\n      'SepMasterService','sepWscSvc'\n      # Trend Micro Apex One\n      'TMBMSRV','TmPfw','ntrtscan'\n      # Palo Alto Cortex XDR / Traps (old/new)\n      'cyserver','CyveraService'\n      # Cylance / BlackBerry Protect\n      'CylanceSvc'\n      # ESET\n      'ekrn'\n      # Trellix / McAfee Endpoint Security platform bits\n      'mfemms','mfevtps','mfefire'\n      # Malwarebytes\n      'MBAMService'\n      # Bitdefender (service object name sometimes bdservicehost)\n      'bdservicehost'\n    )\n\n    foreach ($svc in $svcNames) {\n      $s = Get-Service -Name $svc -ErrorAction SilentlyContinue\n      if ($s -and $s.Status -eq 'Running') { return }\n    }\n\n    # Also consider key processes when service name varies by version\n    $procNames = @('MsMpEng','SentinelAgent','CSFalconService','ekrn','MBAMService','bdservicehost','ntrtscan')\n    foreach ($pn in $procNames) {\n      if (Get-Process -Name $pn -ErrorAction SilentlyContinue) { return }\n    }\n\n    # Known install directories that strongly indicate an EDR/EPP\n    $edrDirs = @(\n      'C:\\Program Files\\Confer',                                 # VMware Carbon Black Cloud/Defense (RepCLI path)\n      'C:\\Program Files\\SentinelOne',                            # SentinelOne Agent\n      'C:\\Program Files\\Palo Alto Networks\\Traps',               # Cortex XDR / Traps\n      'C:\\Windows\\System32\\drivers\\CrowdStrike',                 # CrowdStrike driver directory\n      'C:\\Program Files\\CrowdStrike'                             # some CS installers\n    )\n    foreach ($d in $edrDirs) {\n      if (Test-Path -LiteralPath $d) { return }\n    }\n\n    # If nothing matched, treat as missing EPP\n    Write-Output 'epp_disabled'\n  }\n}\nGet-AVStatus"
       },
       "metrictype": "bool",
       "name": "no EPP",
@@ -236,7 +236,7 @@
         "maxversion": 0,
         "minversion": 10,
         "system": "Windows",
-        "target": "$installed = @(Get-ItemProperty HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*, HKLM:\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -match '1Password|LastPass|KeePass|Bitwarden|Dashlane' }).Count; if ($installed -eq 0) { Write-Output 'No password manager installed' }"
+        "target": "# Prints \"No password manager installed\" if none is found.\n\n# ------------ Settings ------------\n# App name patterns (installed programs and Store apps)\n$pmNameRegex = '(1Password|Bitwarden|LastPass|Dashlane|Keeper|Enpass|KeePass|KeePassXC|NordPass|RoboForm|Zoho Vault|Proton Pass|Sticky Password|Kaspersky Password Manager)'\n\n# Known Chromium extension IDs (Chrome/Edge/Brave/Vivaldi/Opera based)\n#   Chrome Web Store IDs:\n$chromeIds = @(\n  'aeblfdkhhhdcdjpifhhbdiojplfjncoa', # 1Password – Password Manager\n  'khgocmkkpikpnmmkgmdnfckapcdkgfaf', # 1Password Beta\n  'nngceckbapebfimnlniiiahkandclblb', # Bitwarden (Chrome)\n  'hdokiejnpimakedhajhdlcegeplioahd', # LastPass (Chrome)\n  'fdjamakpfbbddfjaooikfcpapjohcfmg', # Dashlane (Chrome)\n  'bfogiafebfohielmmehodmfbbebbbpei', # Keeper (Chrome)\n  'igkpcodhieompeloncfnbekccinhapdb', # Zoho Vault (Chrome)\n  'eiaeiblijfjekdanodkjadfinkhbfgcd', # NordPass (Chrome)\n  'pnlccmojcmeohlpggmfnbbiapkmbliob', # RoboForm (Chrome)\n  'oboonakemofpalcgghocfoadofidjkkk', # KeePassXC-Browser (Chrome)\n  'kmcfomidfpdkfieipokbalgegidffkal', # Enpass (Chrome)\n  'ghmbeldphafepmbegfdlkpapadhbakde'  # Proton Pass (Chrome)\n)\n#   Microsoft Edge Add-ons IDs (where they differ from Chrome):\n$edgeIds = @(\n  'dppgmdbiimibapkepcbdbmkaabgiofem', # 1Password (Edge store)\n  'jbkfoedolllekgbhcbcoahefnbanhhlh', # Bitwarden (Edge store)\n  'pdffhmdngciaglkoonimfcmckehcpafo'  # KeePassXC-Browser (Edge store)\n)\n\n# Browser profile base directories\n$chromiumBases = @(\n  \"$env:LOCALAPPDATA\\Google\\Chrome\\User Data\",\n  \"$env:LOCALAPPDATA\\Microsoft\\Edge\\User Data\",\n  \"$env:LOCALAPPDATA\\BraveSoftware\\Brave-Browser\\User Data\",\n  \"$env:LOCALAPPDATA\\Vivaldi\\User Data\",\n  \"$env:APPDATA\\Opera Software\\Opera Stable\"  # Opera keeps profiles under %AppData%\n)\n\n# Name pattern fallback for extension manifests (catches Edge-store IDs we didn’t hardcode)\n$namePatterns = @('1Password','Bitwarden','LastPass','Dashlane','Keeper','Enpass','NordPass','RoboForm','Zoho Vault','KeePassXC','Proton Pass')\n\n# ------------ Impl ------------\n$found = $false\n\n# 1) Native installs (machine + per-user), 32/64-bit\n$uninstallHives = @(\n  'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*',\n  'HKLM:\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*',\n  'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*'\n)\nforeach ($h in $uninstallHives) {\n  $items = Get-ItemProperty $h -ErrorAction SilentlyContinue |\n           Where-Object { $_.DisplayName -match $pmNameRegex }\n  if ($items) { $found = $true; break }\n}\n\n# 2) Microsoft Store apps (best-effort; may require user context)\nif (-not $found) {\n  $keywords = @('1password','bitwarden','lastpass','dashlane','keeper','enpass','nordpass','roboform','zoho','proton pass','keepass','keepassxc')\n  foreach ($k in $keywords) {\n    if (Get-AppxPackage -AllUsers \"*$k*\" -ErrorAction SilentlyContinue) { $found = $true; break }\n  }\n}\n\n# Helper: scan Chromium profiles for known IDs, else scan manifest.json names\nfunction Test-ChromiumPM {\n  param([string[]]$Bases, [string[]]$Ids, [string[]]$Names)\n  foreach ($base in $Bases) {\n    if (-not (Test-Path $base)) { continue }\n    foreach ($profile in Get-ChildItem -Path $base -Directory -ErrorAction SilentlyContinue) {\n      $extRoot = Join-Path $profile.FullName 'Extensions'\n      if (-not (Test-Path $extRoot)) { continue }\n\n      # a) direct ID match\n      foreach ($id in $Ids) {\n        if (Test-Path (Join-Path $extRoot $id)) { return $true }\n      }\n\n      # b) manifest \"name\" fallback (covers Edge add-ons with different IDs)\n      $manifests = Get-ChildItem -Path $extRoot -Recurse -Filter manifest.json -ErrorAction SilentlyContinue -Depth 2\n      foreach ($m in $manifests) {\n        try {\n          $json = Get-Content -Raw -Path $m.FullName | ConvertFrom-Json\n          foreach ($n in $Names) { if ($json.name -match $n) { return $true } }\n        } catch { }\n      }\n    }\n  }\n  return $false\n}\n\n# 3) Chromium-family extensions (Chrome, Edge, Brave, Vivaldi, Opera)\nif (-not $found) {\n  $allIds = $chromeIds + $edgeIds\n  if (Test-ChromiumPM -Bases $chromiumBases -Ids $allIds -Names $namePatterns) { $found = $true }\n}\n\n# 4) Firefox extensions (parse extensions.json in each profile)\nif (-not $found) {\n  $ffRoot = Join-Path $env:APPDATA 'Mozilla\\Firefox\\Profiles'\n  if (Test-Path $ffRoot) {\n    foreach ($p in Get-ChildItem -Path $ffRoot -Directory -ErrorAction SilentlyContinue) {\n      $ej = Join-Path $p.FullName 'extensions.json'\n      if (Test-Path $ej) {\n        try {\n          $data = Get-Content -Raw $ej | ConvertFrom-Json\n          $addons = @()\n          if ($data.addons) { $addons = $data.addons }\n          if ($addons | Where-Object {\n                ($_.defaultLocale.name -match $pmNameRegex) -or\n                ($_.name -match $pmNameRegex) }) { $found = $true; break }\n        } catch { }\n      }\n    }\n  }\n}\n\nif (-not $found) { Write-Output 'No password manager installed' }"
       },
       "metrictype": "bool",
       "name": "no password manager",
@@ -870,7 +870,7 @@
         "maxversion": 0,
         "minversion": 10,
         "system": "Windows",
-        "target": "$registryPath = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU'; $noAutoUpdate = (Get-ItemProperty -Path $registryPath -Name NoAutoUpdate -ErrorAction SilentlyContinue).NoAutoUpdate; $useWUServer = (Get-ItemProperty -Path $registryPath -Name UseWUServer -ErrorAction SilentlyContinue).UseWUServer; Write-Output ($(if ($noAutoUpdate -eq 0 -or $useWUServer -eq 1) { '' } else { $messages = @(); if ($noAutoUpdate -ne 0) {$messages += 'NoAutoUpdate is set.'}; if ($useWUServer -ne 1) {$messages += 'Updates are not managed through GPO.'}; $messages -join ' ' }))"
+        "target": "$registryPath = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU'\n$noAutoUpdate = (Get-ItemProperty -Path $registryPath -Name NoAutoUpdate -ErrorAction SilentlyContinue).NoAutoUpdate\n$useWUServer = (Get-ItemProperty -Path $registryPath -Name UseWUServer -ErrorAction SilentlyContinue).UseWUServer\nWrite-Output ($(if ($noAutoUpdate -eq 0 -or $useWUServer -eq 1) { '' } else { $messages = @()\nif ($noAutoUpdate -ne 0) {$messages += 'NoAutoUpdate is set.'}\nif ($useWUServer -ne 1) {$messages += 'Updates are not managed through GPO.'}\n$messages -join ' ' }))"
       },
       "metrictype": "bool",
       "name": "manual system updates",
@@ -941,7 +941,7 @@
         "maxversion": 0,
         "minversion": 10,
         "system": "Windows",
-        "target": "$guestAccount = Get-LocalUser | Where-Object {$_.SID -like '*-501'}; if ($guestAccount.Enabled) {'Guest account is active'} else {''}"
+        "target": "$guestAccount = Get-LocalUser | Where-Object {$_.SID -like '*-501'}\nif ($guestAccount.Enabled) {'Guest account is active'} else {''}"
       },
       "metrictype": "bool",
       "name": "guest account enabled",
@@ -963,7 +963,7 @@
         "maxversion": 0,
         "minversion": 10,
         "system": "Windows",
-        "target": "$guestAccount = Get-LocalUser | Where-Object {$_.SID -like '*-501'}; if ($guestAccount.Enabled) {Disable-LocalUser -Name $guestAccount.Name}"
+        "target": "$guestAccount = Get-LocalUser | Where-Object {$_.SID -like '*-501'}\nif ($guestAccount.Enabled) {Disable-LocalUser -Name $guestAccount.Name}"
       },
       "rollback": {
         "class": "cli",
@@ -983,7 +983,7 @@
         "maxversion": 0,
         "minversion": 10,
         "system": "Windows",
-        "target": "$guestAccount = Get-LocalUser | Where-Object {$_.SID -like '*-501'}; if (-not $guestAccount.Enabled) {Enable-LocalUser -Name $guestAccount.Name}"
+        "target": "$guestAccount = Get-LocalUser | Where-Object {$_.SID -like '*-501'}\nif (-not $guestAccount.Enabled) {Enable-LocalUser -Name $guestAccount.Name}"
       },
       "scope": "generic",
       "severity": 4,
@@ -1012,7 +1012,7 @@
         "maxversion": 0,
         "minversion": 10,
         "system": "Windows",
-        "target": "$adminAccount = Get-LocalUser | Where-Object {$_.SID -like '*-500'}; if ($adminAccount.Enabled) {'Built-in Administrator account enabled'} else {''}"
+        "target": "$adminAccount = Get-LocalUser | Where-Object {$_.SID -like '*-500'}\nif ($adminAccount.Enabled) {'Built-in Administrator account enabled'} else {''}"
       },
       "metrictype": "bool",
       "name": "root user enabled",
@@ -1034,7 +1034,7 @@
         "maxversion": 0,
         "minversion": 10,
         "system": "Windows",
-        "target": "$adminAccount = Get-LocalUser | Where-Object {$_.SID -like '*-500'}; if ($adminAccount.Enabled) {Disable-LocalUser -Name $adminAccount.Name}"
+        "target": "$adminAccount = Get-LocalUser | Where-Object {$_.SID -like '*-500'}\nif ($adminAccount.Enabled) {Disable-LocalUser -Name $adminAccount.Name}"
       },
       "rollback": {
         "class": "cli",
@@ -1054,7 +1054,7 @@
         "maxversion": 0,
         "minversion": 10,
         "system": "Windows",
-        "target": "$adminAccount = Get-LocalUser | Where-Object {$_.SID -like '*-500'}; if (-not $adminAccount.Enabled) {Enable-LocalUser -Name $adminAccount.Name}"
+        "target": "$adminAccount = Get-LocalUser | Where-Object {$_.SID -like '*-500'}\nif (-not $adminAccount.Enabled) {Enable-LocalUser -Name $adminAccount.Name}"
       },
       "scope": "generic",
       "severity": 5,
@@ -1247,7 +1247,7 @@
         "maxversion": 0,
         "minversion": 0,
         "system": "Windows",
-        "target": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\LSA' -Name 'LMCompatibilityLevel' -Value '5' -Type DWord; Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\LSA\\MSV1_0' -Name 'NtlmMinClientSec' -Value '537395200' -Type DWord; Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\LSA\\MSV1_0' -Name 'NtlmMinServerSec' -Value '537395200' -Type DWord"
+        "target": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\LSA' -Name 'LMCompatibilityLevel' -Value '5' -Type DWord\nSet-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\LSA\\MSV1_0' -Name 'NtlmMinClientSec' -Value '537395200' -Type DWord\nSet-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\LSA\\MSV1_0' -Name 'NtlmMinServerSec' -Value '537395200' -Type DWord"
       },
       "rollback": {
         "class": "cli",
@@ -1267,7 +1267,7 @@
         "maxversion": 0,
         "minversion": 0,
         "system": "Windows",
-        "target": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\LSA' -Name 'LmCompatibilityLevel' -Value '1' -Type DWord; Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\LSA\\MSV1_0' -Name 'NtlmMinClientSec' -Value '262144' -Type DWord; Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\LSA\\MSV1_0' -Name 'NtlmMinServerSec' -Value '537395200' -Type DWord"
+        "target": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\LSA' -Name 'LmCompatibilityLevel' -Value '1' -Type DWord\nSet-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\LSA\\MSV1_0' -Name 'NtlmMinClientSec' -Value '262144' -Type DWord\nSet-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\LSA\\MSV1_0' -Name 'NtlmMinServerSec' -Value '537395200' -Type DWord"
       },
       "scope": "generic",
       "severity": 5,
@@ -1367,7 +1367,7 @@
         "maxversion": 0,
         "minversion": 10,
         "system": "Windows",
-        "target": "$currentUserPolicy= Get-ExecutionPolicy -Scope CurrentUser; if($currentUserPolicy -eq 'Unrestricted') { 'Execution Policy is unrestricted' } else { '' }"
+        "target": "$currentUserPolicy= Get-ExecutionPolicy -Scope CurrentUser\nif($currentUserPolicy -eq 'Unrestricted') { 'Execution Policy is unrestricted' } else { '' }"
       },
       "metrictype": "bool",
       "name": "PS execution policy unrestricted",
@@ -1438,7 +1438,7 @@
         "maxversion": 0,
         "minversion": 10,
         "system": "Windows",
-        "target": "$path = 'HKLM:\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Google Chrome'; if (Test-Path $path) { $local_version = (Get-ItemProperty -Path $path).DisplayVersion; $web_content = Invoke-WebRequest -UseBasicParsing 'https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Windows&num=1'; $latest_version = ($web_content.Content | ConvertFrom-Json)[0].version; if ([version]$latest_version -le [version]$local_version) { Write-Output '' } else { Write-Output 'Chrome is not up to date (Installed: $local_version, Latest: $latest_version)'; } } else { Write-Output '' }"
+        "target": "$path = 'HKLM:\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Google Chrome'\nif (Test-Path $path) { $local_version = (Get-ItemProperty -Path $path).DisplayVersion\n$web_content = Invoke-WebRequest -UseBasicParsing 'https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Windows&num=1'\n$latest_version = ($web_content.Content | ConvertFrom-Json)[0].version\nif ([version]$latest_version -le [version]$local_version) { Write-Output '' } else { Write-Output 'Chrome is not up to date (Installed: $local_version, Latest: $latest_version)'\n} } else { Write-Output '' }"
       },
       "metrictype": "bool",
       "name": "Chrome not uptodate",
@@ -1578,7 +1578,7 @@
         "maxversion": 0,
         "minversion": 10,
         "system": "Windows",
-        "target": "$lastLoggedOnProvider = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\LogonUI' -Name 'LastLoggedOnProvider' -ErrorAction SilentlyContinue).LastLoggedOnProvider; if ($null -eq $lastLoggedOnProvider) { 'Registry entry not present' } elseif ($lastLoggedOnProvider -like '*NgcPin*') { $pinLength = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\PassportForWork\\PINComplexity' -Name 'MinimumPINLength' -ErrorAction SilentlyContinue).MinimumPINLength; if ($pinLength -lt 6) { 'Windows Hello PIN does not meet the minimum length requirement.' } else { '' } } else { '' }"
+        "target": "$lastLoggedOnProvider = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\LogonUI' -Name 'LastLoggedOnProvider' -ErrorAction SilentlyContinue).LastLoggedOnProvider\nif ($null -eq $lastLoggedOnProvider) { 'Registry entry not present' } elseif ($lastLoggedOnProvider -like '*NgcPin*') { $pinLength = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\PassportForWork\\PINComplexity' -Name 'MinimumPINLength' -ErrorAction SilentlyContinue).MinimumPINLength\nif ($pinLength -lt 6) { 'Windows Hello PIN does not meet the minimum length requirement.' } else { '' } } else { '' }"
       },
       "metrictype": "bool",
       "name": "no sign-in options protection",
@@ -1716,7 +1716,7 @@
         "maxversion": 0,
         "minversion": 10,
         "system": "Windows",
-        "target": "$screensaverTimeout = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaveTimeOut' -ErrorAction SilentlyContinue).ScreenSaveTimeOut; $screensaverActive = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaveActive' -ErrorAction SilentlyContinue).ScreenSaveActive; $secureScreensaver = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaverIsSecure' -ErrorAction SilentlyContinue).ScreenSaverIsSecure; if ($screensaverActive -eq '1' -and $secureScreensaver -eq '1' -and $screensaverTimeout -le 600) { '' } else { 'Screensaver lock is not properly configured.' }"
+        "target": "$screensaverTimeout = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaveTimeOut' -ErrorAction SilentlyContinue).ScreenSaveTimeOut\n$screensaverActive = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaveActive' -ErrorAction SilentlyContinue).ScreenSaveActive\n$secureScreensaver = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaverIsSecure' -ErrorAction SilentlyContinue).ScreenSaverIsSecure\nif ($screensaverActive -eq '1' -and $secureScreensaver -eq '1' -and $screensaverTimeout -le 600) { '' } else { 'Screensaver lock is not properly configured.' }"
       },
       "metrictype": "bool",
       "name": "too slow or disabled screensaver lock",
@@ -1738,7 +1738,7 @@
         "maxversion": 0,
         "minversion": 10,
         "system": "Windows",
-        "target": "Set-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaveTimeOut' -Value 600; Set-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaveActive' -Value 1; Set-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaverIsSecure' -Value 1"
+        "target": "Set-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaveTimeOut' -Value 600\nSet-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaveActive' -Value 1\nSet-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ScreenSaverIsSecure' -Value 1"
       },
       "rollback": {
         "class": "link",
