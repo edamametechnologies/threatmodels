@@ -38,27 +38,61 @@ if [[ -n "$(git status --porcelain)" ]]; then
   exit 1
 fi
 
+BASE_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+if [[ "$BASE_BRANCH" == "HEAD" ]]; then
+  err "Detached HEAD state is not supported. Please switch to a branch."
+  exit 1
+fi
+
 HEAD_SHA="$(git rev-parse HEAD)"
 TMP_BRANCH="ci/test-models-$(date +%s)"
+STASH_REF=""
 
 cleanup() {
   set +e
   git push origin --delete "$TMP_BRANCH" >/dev/null 2>&1
   git branch -D "$TMP_BRANCH" >/dev/null 2>&1
+  if [[ -n "$STASH_REF" ]]; then
+    git checkout "$BASE_BRANCH" >/dev/null 2>&1
+    git stash apply "$STASH_REF" >/dev/null 2>&1
+    git stash drop "$STASH_REF" >/dev/null 2>&1
+  fi
 }
 trap cleanup EXIT
 
 if git show-ref --verify --quiet "refs/heads/$TMP_BRANCH"; then
-  git branch -D "$TMP_BRANCH"
+  git branch -D "$TMP_BRANCH" >/dev/null 2>&1
 fi
 
-git branch "$TMP_BRANCH" "$HEAD_SHA"
-git push origin "$TMP_BRANCH":"$TMP_BRANCH"
+if [[ -n "$(git status --porcelain)" ]]; then
+  STASH_NAME="run-tests-$(date +%s)"
+  git stash push --include-untracked -m "$STASH_NAME" >/dev/null
+  STASH_REF="$(git stash list | grep "$STASH_NAME" | head -n1 | cut -d: -f1)"
+fi
+
+git branch "$TMP_BRANCH" "$BASE_BRANCH" >/dev/null 2>&1
+git checkout "$TMP_BRANCH" >/dev/null 2>&1
+
+if [[ -n "$STASH_REF" ]]; then
+  git stash apply "$STASH_REF" >/dev/null
+  git add -A
+  git commit -m "[run-tests] temporary snapshot for CI" >/dev/null
+fi
+
+PUSH_SHA="$(git rev-parse HEAD)"
+git push origin "$TMP_BRANCH":"$TMP_BRANCH" >/dev/null 2>&1
+
+git checkout "$BASE_BRANCH" >/dev/null 2>&1
+if [[ -n "$STASH_REF" ]]; then
+  git stash apply "$STASH_REF" >/dev/null
+  git stash drop "$STASH_REF" >/dev/null
+  STASH_REF=""
+fi
 
 echo "Triggering workflow '$WORKFLOW_NAME' on branch '$TMP_BRANCH'..."
 gh workflow run "$WORKFLOW_NAME" --ref "$TMP_BRANCH"
 
-echo "Waiting for the workflow run associated with commit $HEAD_SHA to appear..."
+echo "Waiting for the workflow run associated with commit $PUSH_SHA to appear..."
 RUN_ID=""
 for _ in {1..30}; do
   RUN_ID="$(gh run list \
@@ -66,7 +100,7 @@ for _ in {1..30}; do
     --branch "$TMP_BRANCH" \
     --limit 20 \
     --json databaseId,headSha,status,createdAt \
-    --jq "map(select(.headSha == \"$HEAD_SHA\"))[0].databaseId")"
+    --jq "map(select(.headSha == \"$PUSH_SHA\"))[0].databaseId")"
   if [[ -n "${RUN_ID}" && "${RUN_ID}" != "null" ]]; then
     break
   fi
