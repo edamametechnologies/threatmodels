@@ -1,0 +1,86 @@
+Function Get-AVStatus {
+  [CmdletBinding()]
+  Param()
+  Process {
+    # 1) Primary: Windows Security Center (workstations; some Server SKUs won’t populate this)
+    $enabledAVs = @()
+    try {
+      $av = Get-CimInstance -Namespace 'root/SecurityCenter2' -ClassName 'AntivirusProduct' -ErrorAction Stop
+      foreach ($p in $av) {
+        $productStateHex = ('0x{0:x}' -f $p.ProductState)
+        # Your logic: "enabled" when the 3rd byte is 0x10 or 0x11
+        if ($productStateHex.Length -ge 5) {
+          $enabled = $productStateHex.Substring(3,2) -match '10|11'
+          if ($enabled) { $enabledAVs += $p }
+        }
+      }
+    } catch {
+      # SecurityCenter2 may not exist (e.g., some Server editions) – rely on fallbacks below
+    }
+
+    if ($enabledAVs) { return }  # at least one AV registered as enabled
+
+    # 2) Defender explicit health (if present)
+    $defenderOn = $false
+    try {
+      $mp = Get-MpComputerStatus -ErrorAction Stop
+      if ($mp.RealTimeProtectionEnabled -and $mp.AntiSpywareEnabled -and $mp.AntivirusEnabled) { $defenderOn = $true }
+    } catch { }
+    if ($defenderOn) { return }
+
+    # 3) EDR/EPP fallbacks: services/processes/known install dirs
+    $svcNames = @(
+      # Microsoft Defender AV/XDR
+      'WinDefend'                                  # MsMpEng.exe service backend
+      # SentinelOne
+      'SentinelAgent'
+      # CrowdStrike
+      'CSFalconService'
+      # Sophos
+      'SEDService','SSPService'
+      # Symantec Endpoint Protection
+      'SepMasterService','sepWscSvc'
+      # Trend Micro Apex One
+      'TMBMSRV','TmPfw','ntrtscan'
+      # Palo Alto Cortex XDR / Traps (old/new)
+      'cyserver','CyveraService'
+      # Cylance / BlackBerry Protect
+      'CylanceSvc'
+      # ESET
+      'ekrn'
+      # Trellix / McAfee Endpoint Security platform bits
+      'mfemms','mfevtps','mfefire'
+      # Malwarebytes
+      'MBAMService'
+      # Bitdefender (service object name sometimes bdservicehost)
+      'bdservicehost'
+    )
+
+    foreach ($svc in $svcNames) {
+      $s = Get-Service -Name $svc -ErrorAction SilentlyContinue
+      if ($s -and $s.Status -eq 'Running') { return }
+    }
+
+    # Also consider key processes when service name varies by version
+    $procNames = @('MsMpEng','SentinelAgent','CSFalconService','ekrn','MBAMService','bdservicehost','ntrtscan')
+    foreach ($pn in $procNames) {
+      if (Get-Process -Name $pn -ErrorAction SilentlyContinue) { return }
+    }
+
+    # Known install directories that strongly indicate an EDR/EPP
+    $edrDirs = @(
+      'C:\Program Files\Confer',                                 # VMware Carbon Black Cloud/Defense (RepCLI path)
+      'C:\Program Files\SentinelOne',                            # SentinelOne Agent
+      'C:\Program Files\Palo Alto Networks\Traps',               # Cortex XDR / Traps
+      'C:\Windows\System32\drivers\CrowdStrike',                 # CrowdStrike driver directory
+      'C:\Program Files\CrowdStrike'                             # some CS installers
+    )
+    foreach ($d in $edrDirs) {
+      if (Test-Path -LiteralPath $d) { return }
+    }
+
+    # If nothing matched, treat as missing EPP
+    Write-Output 'epp_disabled'
+  }
+}
+Get-AVStatus

@@ -4,6 +4,70 @@ import json
 import os
 import sys
 import re
+import shlex
+
+
+def _decode_shell_wrapper(command: str):
+    """Reverse the printf|bash encoding produced by import.py."""
+    trimmed = command.strip()
+    suffixes = ["| /bin/bash", "| bash"]
+
+    for suffix in suffixes:
+        if not trimmed.endswith(suffix):
+            continue
+        body = trimmed[: -len(suffix)].strip()
+        prefix = "printf '%s\\n' "
+        if not body.startswith(prefix):
+            continue
+        arg_str = body[len(prefix):].strip()
+        if not arg_str:
+            return ""
+        try:
+            lines = shlex.split(arg_str, posix=True)
+        except ValueError:
+            return None
+        return "\n".join(lines)
+    return None
+
+
+def _decode_powershell_wrapper(command: str):
+    """Reverse the PowerShell array encoding produced by import.py."""
+    trimmed = command.strip()
+    prefix = "$__EDAMAME_LINES = @("
+    suffix = "); $__EDAMAME_SCRIPT = $__EDAMAME_LINES -join \"`n\"; Invoke-Expression $__EDAMAME_SCRIPT"
+
+    if not (trimmed.startswith(prefix) and trimmed.endswith(suffix)):
+        return None
+
+    inner = trimmed[len(prefix):-len(suffix)]
+
+    entries = []
+    i = 0
+    length = len(inner)
+    while i < length:
+        ch = inner[i]
+        if ch.isspace() or ch == ",":
+            i += 1
+            continue
+        if ch != "'":
+            # Unexpected token; bail out so we fall back to legacy expansion.
+            return None
+        i += 1
+        buf = []
+        while i < length:
+            ch = inner[i]
+            if ch == "'":
+                if i + 1 < length and inner[i + 1] == "'":
+                    buf.append("'")
+                    i += 2
+                    continue
+                i += 1
+                break
+            buf.append(ch)
+            i += 1
+        entries.append("".join(buf))
+
+    return "\n".join(entries)
 
 def expand_command(command: str, system: str) -> str:
     """
@@ -87,12 +151,25 @@ def main(json_file_path):
                 out_file_name = f"{block_name}{ext}"
                 out_file_path = os.path.join(subfolder_path, out_file_name)
 
+                script_body = None
+                if ext == ".sh":
+                    script_body = _decode_shell_wrapper(target_str)
+                elif ext == ".ps":
+                    script_body = _decode_powershell_wrapper(target_str)
+
+                if script_body is None:
+                    script_body = expand_command(target_str, sys_val)
+
+                script_body = script_body.rstrip("\n")
+                if script_body:
+                    script_body += "\n"
+
                 # Write the command
                 with open(out_file_path, 'w', encoding='utf-8') as out_f:
                     if ext == ".sh":
                         out_f.write("#!/bin/bash\n\n")
 
-                    out_f.write(expand_command(target_str, sys_val) + "\n")
+                    out_f.write(script_body)
 
                 print(f"Created: {out_file_path}")
 

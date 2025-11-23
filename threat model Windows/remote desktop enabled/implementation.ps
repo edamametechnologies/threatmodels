@@ -1,0 +1,1 @@
+if((Get-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name fDenyTSConnections -ErrorAction SilentlyContinue).fDenyTSConnections -eq 0) { 'Terminal Services connections allowed' } else { '' }

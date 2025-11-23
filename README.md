@@ -18,6 +18,7 @@
   - [System Checks](#system-checks)
   - [Command Line Checks](#command-line-checks)
   - [Business Rules](#business-rules)
+- [How to Develop and Test Threat Models](#how-to-develop-and-test-threat-models)
 - [Platform Coverage](#platform-coverage)
 - [Security Assessment](#security-assessment)
   - [Severity Classification](#severity-classification)
@@ -234,3 +235,44 @@ Safe, predefined commands that gather information about the system state. These 
 
 ### Business Rules
 Specialized checks that execute local scripts in userspace, leveraging the `EDAMAME_BUSINESS_RULES_CMD`
+
+## How to Develop and Test Threat Models
+
+The CLI export/import utilities and the GitHub-based test workflow let you edit metrics with full fidelity while validating them on hosted runners.
+
+1. **Edit the tracked scripts directly**
+   The repository already contains every metric script under `threat model */<metric>/implementation.(sh|ps)` (and remediation/rollback counterparts). Treat these files as the source of truth—add comments, restructure logic, and test locally as needed. Only run `export.py` if you need to regenerate the folders from a pristine JSON (e.g., initial checkout) or to diff what changed; the normal workflow never requires exporting again.
+
+2. **Re-import scripts into the JSON**
+   ```bash
+   python3 src/cli/import.py threatmodel-macOS.json
+   python3 src/cli/import.py threatmodel-Windows.json
+   ```
+   The importer normalizes newlines, strips shell headers before embedding them back into JSON, and ensures multi-line commands are stored losslessly. Because legacy agents expect a single-line `target`, the importer wraps each script in a reversible launcher:
+   - macOS/Linux: `printf '%s\n' … | /bin/bash` prints every original line verbatim and pipes it into `bash`, so heredocs, comments, and arrays survive the round trip intact.
+   - Windows: a PowerShell array of quoted lines is joined with `` `n `` newlines and passed to `Invoke-Expression`, yielding the original script text before execution.
+   The exporter detects these wrappers and recreates the readable `.sh`/`.ps` files automatically, so you never need to hand-edit JSON.
+
+3. **Run the hosted test suite**
+   ```bash
+   ./tests/run-tests.sh
+   ```
+   This helper script checks for `git`/`gh`, snapshots your working tree (even with uncommitted changes), pushes a temporary branch, triggers `.github/workflows/test_models.yml`, streams the run, and prints any `[ERROR]`/`Error:` lines found in the CI logs before cleaning up.
+
+4. **Refresh signatures before committing**
+   ```bash
+   python3 src/publish/update-models.py threatmodel-macOS.json threatmodel-Windows.json
+   ```
+   This updates the `date`, `signature`, and `.sig` sidecars required by CI.
+
+5. **(Optional) Bake local models into `edamame_foundation` for development**
+   If you want to test the new JSONs inside the Rust binaries before publishing them, run the embedding script from the `edamame_foundation` repo:
+   ```bash
+   cd ../edamame_foundation
+   ./update-threats.sh --local macOS
+   ./update-threats.sh --local Linux
+   ./update-threats.sh --local Windows
+   ```
+   The `--local` flag tells the script to read the sibling `../threatmodels/threatmodel-*.json` files instead of fetching from GitHub, so you can immediately `cargo check`/`cargo test` against your edits. You can omit the OS argument to regenerate every platform in one go.
+
+Following this loop keeps the JSON models, extracted scripts, and CI validation in sync.
