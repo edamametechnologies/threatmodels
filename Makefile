@@ -1,7 +1,7 @@
 .PHONY: tests
 
 update:
-	python3 src/publish/update-models.py threatmodel-macOS.json threatmodel-Windows.json
+	python3 src/publish/update-models.py threatmodel-macOS.json threatmodel-Windows.json threatmodel-Linux.json threatmodel-iOS.json threatmodel-Android.json
 
 validate:
 	python3 src/publish/validate-models.py threatmodel-*.json
