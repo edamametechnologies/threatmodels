@@ -86,7 +86,8 @@ jobs:
     slack:
         # Wait test job to finish
         needs: [tests-macos, tests-windows, tests-ubuntu]
-        if: always()
+        # Only for main branch (and always - i.e. in case of failure)
+        if: github.ref == 'refs/heads/main' || always()
         runs-on: ubuntu-latest
         steps:
           - name: Download macOS 26 report
