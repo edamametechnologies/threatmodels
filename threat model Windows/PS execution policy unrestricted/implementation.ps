@@ -1,0 +1,2 @@
+$currentUserPolicy= Get-ExecutionPolicy -Scope CurrentUser
+if($currentUserPolicy -eq 'Unrestricted') { 'Execution Policy is unrestricted' } else { '' }

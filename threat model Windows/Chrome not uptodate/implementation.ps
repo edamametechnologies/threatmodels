@@ -1,0 +1,6 @@
+$path = 'HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Google Chrome'
+if (Test-Path $path) { $local_version = (Get-ItemProperty -Path $path).DisplayVersion
+$web_content = Invoke-WebRequest -UseBasicParsing 'https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Windows&num=1'
+$latest_version = ($web_content.Content | ConvertFrom-Json)[0].version
+if ([version]$latest_version -le [version]$local_version) { Write-Output '' } else { Write-Output 'Chrome is not up to date (Installed: $local_version, Latest: $latest_version)'
+} } else { Write-Output '' }

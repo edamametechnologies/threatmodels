@@ -1,0 +1,2 @@
+$guestAccount = Get-LocalUser | Where-Object {$_.SID -like '*-501'}
+if (-not $guestAccount.Enabled) {Enable-LocalUser -Name $guestAccount.Name}
