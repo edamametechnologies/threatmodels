@@ -4,7 +4,89 @@ import json
 import os
 import sys
 
+from typing import List
+
 VALID_BLOCKS = ["implementation", "remediation", "rollback"]
+
+
+def _normalize_newlines(value: str) -> str:
+    """Normalize CRLF/CR line endings to LF for consistent storage."""
+    return value.replace('\r\n', '\n').replace('\r', '\n')
+
+
+def _read_script_file(path: str) -> str:
+    """
+    Read a CLI script file preserving indentation, comments, and blank lines.
+    """
+    with open(path, 'r', encoding='utf-8') as f_in:
+        return f_in.read()
+
+
+def _escape_sh_line(line: str) -> str:
+    """Escape single quotes for safe embedding inside a shell '...'
+    argument."""
+    return line.replace("'", "'\"'\"'")
+
+
+def _encode_shell_script(lines: List[str]) -> str:
+    """
+    Encode a shell script as a portable one-liner that reconstructs the
+    original content via printf piped into /bin/bash. This preserves comments,
+    heredocs, arrays, etc. while keeping JSON targets single-line for legacy
+    clients.
+    """
+    if not lines:
+        return ""
+
+    escaped = ["'{}'".format(_escape_sh_line(line)) for line in lines]
+    args = " ".join(escaped) if escaped else "''"
+    return f"printf '%s\\n' {args} | /bin/bash"
+
+
+def _encode_powershell_script(lines: List[str]) -> str:
+    """
+    Encode a PowerShell script as a one-liner by building an array of lines,
+    joining with `n newlines, and piping into Invoke-Expression.
+    """
+    if not lines:
+        return ""
+
+    escaped = ["'{}'".format(line.replace("'", "''")) for line in lines]
+    joined = ", ".join(escaped)
+    return (
+        "$__EDAMAME_LINES = @(" + joined + "); "
+        "$__EDAMAME_SCRIPT = $__EDAMAME_LINES -join \"`n\"; "
+        "Invoke-Expression $__EDAMAME_SCRIPT"
+    )
+
+
+def _prepare_target_content(content: str, extension: str) -> str:
+    """
+    Prepare script content for JSON storage:
+      * normalize newlines
+      * remove shebang/header for shell scripts
+      * trim trailing newlines
+      * encode the script as a backwards-compatible one-liner that rebuilds
+        the original multiline body right before execution.
+    """
+    normalized = _normalize_newlines(content)
+
+    if extension.lower() == ".sh" and normalized.startswith("#!"):
+        # Drop the shebang line and any immediate blank line after it
+        _, _, remainder = normalized.partition("\n")
+        normalized = remainder.lstrip("\n")
+
+    normalized = normalized.rstrip("\n")
+    lines = normalized.split("\n") if normalized else []
+
+    if extension.lower() == ".sh":
+        return _encode_shell_script(lines)
+
+    if extension.lower() == ".ps":
+        return _encode_powershell_script(lines)
+
+    # Fallback: simple whitespace-collapsed command
+    return " ".join(line.strip() for line in lines if line.strip())
 
 def import_cli_scripts(json_file_path):
     """
@@ -51,48 +133,29 @@ def import_cli_scripts(json_file_path):
             ps_file = os.path.join(metric_path, f"{block_name}.ps")
             sh_file = os.path.join(metric_path, f"{block_name}.sh")
 
+            script_path = None
             if os.path.isfile(ps_file):
-                # read content
-                with open(ps_file, 'r', encoding='utf-8') as f_in:
-                    content = f_in.read().rstrip("\n")
-
-                # Join lines back into one-liner, use ";" on Windows
-                one_liner = content.replace("\n", "; ")
-
-                # store into metric_data[block_name]
-                block_data = metric_data.get(block_name, {})
-                block_data["class"] = "cli"
-                block_data["target"] = one_liner
-
-                metric_data[block_name] = block_data
-                print(f"[INFO] Imported {ps_file} into metric '{metric_folder}' -> {block_name}")
-
+                script_path = ps_file
             elif os.path.isfile(sh_file):
-                # read content
-                with open(sh_file, 'r', encoding='utf-8') as f_in:
-                    lines = f_in.readlines()
+                script_path = sh_file
 
-                # Remove shebang and comments
-                content = []
-                for line in lines:
-                    line = line.strip()
-                    if line.startswith("#"):
-                        continue
-                    if line:
-                        content.append(line)
+            if not script_path:
+                continue
 
-                # Join lines back into one-liner
-                one_liner = " ".join(content)
+            raw_script = _read_script_file(script_path)
+            ext = os.path.splitext(script_path)[1]
+            script_content = _prepare_target_content(raw_script, ext)
 
-                block_data = metric_data.get(block_name, {})
-                block_data["class"] = "cli"
-                block_data["target"] = one_liner
+            if not script_content.strip():
+                print(f"[WARNING] Script '{script_path}' is empty. Skipping.")
+                continue
 
-                metric_data[block_name] = block_data
-                print(f"[INFO] Imported {sh_file} into metric '{metric_folder}' -> {block_name}")
-            else:
-                # no script file for this block, do nothing
-                pass
+            block_data = metric_data.get(block_name, {})
+            block_data["class"] = "cli"
+            block_data["target"] = script_content
+
+            metric_data[block_name] = block_data
+            print(f"[INFO] Imported {script_path} into metric '{metric_folder}' -> {block_name}")
 
     # 5) Write updated JSON to the same file
     updated_json_path = json_file_path

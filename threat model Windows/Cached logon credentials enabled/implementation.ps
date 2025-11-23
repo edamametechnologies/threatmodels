@@ -1,0 +1,1 @@
+if(((Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\CredUI' -Name 'DisablePasswordCaching' -ErrorAction SilentlyContinue).DisablePasswordCaching) -ne 1) { 'Password caching is not disabled' } else { '' }

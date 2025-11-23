@@ -1,0 +1,7 @@
+$registryPath = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU'
+$noAutoUpdate = (Get-ItemProperty -Path $registryPath -Name NoAutoUpdate -ErrorAction SilentlyContinue).NoAutoUpdate
+$useWUServer = (Get-ItemProperty -Path $registryPath -Name UseWUServer -ErrorAction SilentlyContinue).UseWUServer
+Write-Output ($(if ($noAutoUpdate -eq 0 -or $useWUServer -eq 1) { '' } else { $messages = @()
+if ($noAutoUpdate -ne 0) {$messages += 'NoAutoUpdate is set.'}
+if ($useWUServer -ne 1) {$messages += 'Updates are not managed through GPO.'}
+$messages -join ' ' }))

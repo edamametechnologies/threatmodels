@@ -1,0 +1,3 @@
+$lastLoggedOnProvider = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI' -Name 'LastLoggedOnProvider' -ErrorAction SilentlyContinue).LastLoggedOnProvider
+if ($null -eq $lastLoggedOnProvider) { 'Registry entry not present' } elseif ($lastLoggedOnProvider -like '*NgcPin*') { $pinLength = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\PassportForWork\PINComplexity' -Name 'MinimumPINLength' -ErrorAction SilentlyContinue).MinimumPINLength
+if ($pinLength -lt 6) { 'Windows Hello PIN does not meet the minimum length requirement.' } else { '' } } else { '' }
