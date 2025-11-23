@@ -1,0 +1,2 @@
+$guestAccount = Get-LocalUser | Where-Object {$_.SID -like '*-501'}
+if ($guestAccount.Enabled) {'Guest account is active'} else {''}

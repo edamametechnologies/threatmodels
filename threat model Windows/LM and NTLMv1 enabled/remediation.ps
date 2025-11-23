@@ -1,0 +1,3 @@
+Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\LSA' -Name 'LMCompatibilityLevel' -Value '5' -Type DWord
+Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\LSA\MSV1_0' -Name 'NtlmMinClientSec' -Value '537395200' -Type DWord
+Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\LSA\MSV1_0' -Name 'NtlmMinServerSec' -Value '537395200' -Type DWord
