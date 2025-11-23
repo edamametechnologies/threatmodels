@@ -2,6 +2,10 @@
 
 set -euo pipefail
 
+if [[ -z "${HOME:-}" ]]; then
+  HOME="$(eval echo "~$(id -un)")"
+fi
+
 found_pm=0
 
 # --- Native CLIs / desktop apps (best-effort) ---
