@@ -1,0 +1,116 @@
+# ------------ Settings ------------
+# App name patterns (installed programs and Store apps)
+$pmNameRegex = '(1Password|Bitwarden|LastPass|Dashlane|Keeper|Enpass|KeePass|KeePassXC|NordPass|RoboForm|Zoho Vault|Proton Pass|Sticky Password|Kaspersky Password Manager)'
+
+# Known Chromium extension IDs (Chrome/Edge/Brave/Vivaldi/Opera based)
+#   Chrome Web Store IDs:
+$chromeIds = @(
+  'aeblfdkhhhdcdjpifhhbdiojplfjncoa', # 1Password – Password Manager
+  'khgocmkkpikpnmmkgmdnfckapcdkgfaf', # 1Password Beta
+  'nngceckbapebfimnlniiiahkandclblb', # Bitwarden (Chrome)
+  'hdokiejnpimakedhajhdlcegeplioahd', # LastPass (Chrome)
+  'fdjamakpfbbddfjaooikfcpapjohcfmg', # Dashlane (Chrome)
+  'bfogiafebfohielmmehodmfbbebbbpei', # Keeper (Chrome)
+  'igkpcodhieompeloncfnbekccinhapdb', # Zoho Vault (Chrome)
+  'eiaeiblijfjekdanodkjadfinkhbfgcd', # NordPass (Chrome)
+  'pnlccmojcmeohlpggmfnbbiapkmbliob', # RoboForm (Chrome)
+  'oboonakemofpalcgghocfoadofidjkkk', # KeePassXC-Browser (Chrome)
+  'kmcfomidfpdkfieipokbalgegidffkal', # Enpass (Chrome)
+  'ghmbeldphafepmbegfdlkpapadhbakde'  # Proton Pass (Chrome)
+)
+#   Microsoft Edge Add-ons IDs (where they differ from Chrome):
+$edgeIds = @(
+  'dppgmdbiimibapkepcbdbmkaabgiofem', # 1Password (Edge store)
+  'jbkfoedolllekgbhcbcoahefnbanhhlh', # Bitwarden (Edge store)
+  'pdffhmdngciaglkoonimfcmckehcpafo'  # KeePassXC-Browser (Edge store)
+)
+
+# Browser profile base directories
+$chromiumBases = @(
+  "$env:LOCALAPPDATA\Google\Chrome\User Data",
+  "$env:LOCALAPPDATA\Microsoft\Edge\User Data",
+  "$env:LOCALAPPDATA\BraveSoftware\Brave-Browser\User Data",
+  "$env:LOCALAPPDATA\Vivaldi\User Data",
+  "$env:APPDATA\Opera Software\Opera Stable"  # Opera keeps profiles under %AppData%
+)
+
+# Name pattern fallback for extension manifests (catches Edge-store IDs we didn’t hardcode)
+$namePatterns = @('1Password','Bitwarden','LastPass','Dashlane','Keeper','Enpass','NordPass','RoboForm','Zoho Vault','KeePassXC','Proton Pass')
+
+# ------------ Impl ------------
+$found = $false
+
+# 1) Native installs (machine + per-user), 32/64-bit
+$uninstallHives = @(
+  'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*',
+  'HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*',
+  'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*'
+)
+foreach ($h in $uninstallHives) {
+  $items = Get-ItemProperty $h -ErrorAction SilentlyContinue |
+           Where-Object { $_.DisplayName -match $pmNameRegex }
+  if ($items) { $found = $true; break }
+}
+
+# 2) Microsoft Store apps (best-effort; may require user context)
+if (-not $found) {
+  $keywords = @('1password','bitwarden','lastpass','dashlane','keeper','enpass','nordpass','roboform','zoho','proton pass','keepass','keepassxc')
+  foreach ($k in $keywords) {
+    if (Get-AppxPackage -AllUsers "*$k*" -ErrorAction SilentlyContinue) { $found = $true; break }
+  }
+}
+
+# Helper: scan Chromium profiles for known IDs, else scan manifest.json names
+function Test-ChromiumPM {
+  param([string[]]$Bases, [string[]]$Ids, [string[]]$Names)
+  foreach ($base in $Bases) {
+    if (-not (Test-Path $base)) { continue }
+    foreach ($profile in Get-ChildItem -Path $base -Directory -ErrorAction SilentlyContinue) {
+      $extRoot = Join-Path $profile.FullName 'Extensions'
+      if (-not (Test-Path $extRoot)) { continue }
+
+      # a) direct ID match
+      foreach ($id in $Ids) {
+        if (Test-Path (Join-Path $extRoot $id)) { return $true }
+      }
+
+      # b) manifest "name" fallback (covers Edge add-ons with different IDs)
+      $manifests = Get-ChildItem -Path $extRoot -Recurse -Filter manifest.json -ErrorAction SilentlyContinue -Depth 2
+      foreach ($m in $manifests) {
+        try {
+          $json = Get-Content -Raw -Path $m.FullName | ConvertFrom-Json
+          foreach ($n in $Names) { if ($json.name -match $n) { return $true } }
+        } catch { }
+      }
+    }
+  }
+  return $false
+}
+
+# 3) Chromium-family extensions (Chrome, Edge, Brave, Vivaldi, Opera)
+if (-not $found) {
+  $allIds = $chromeIds + $edgeIds
+  if (Test-ChromiumPM -Bases $chromiumBases -Ids $allIds -Names $namePatterns) { $found = $true }
+}
+
+# 4) Firefox extensions (parse extensions.json in each profile)
+if (-not $found) {
+  $ffRoot = Join-Path $env:APPDATA 'Mozilla\Firefox\Profiles'
+  if (Test-Path $ffRoot) {
+    foreach ($p in Get-ChildItem -Path $ffRoot -Directory -ErrorAction SilentlyContinue) {
+      $ej = Join-Path $p.FullName 'extensions.json'
+      if (Test-Path $ej) {
+        try {
+          $data = Get-Content -Raw $ej | ConvertFrom-Json
+          $addons = @()
+          if ($data.addons) { $addons = $data.addons }
+          if ($addons | Where-Object {
+                ($_.defaultLocale.name -match $pmNameRegex) -or
+                ($_.name -match $pmNameRegex) }) { $found = $true; break }
+        } catch { }
+      }
+    }
+  }
+}
+
+if (-not $found) { Write-Output 'No password manager installed' }

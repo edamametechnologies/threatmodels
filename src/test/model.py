@@ -7,7 +7,7 @@ from metric import Metric, TargetIsNotACLI
 class Model(object):
     '''Perform tests over a threat model'''
 
-    def __init__(self, logger, dir_path, ignore_tests_path):
+    def __init__(self, logger, dir_path, ignore_tests_path, username):
         self.logger = logger
         # Detect platform
         self.source = self.detect_platform()
@@ -15,8 +15,18 @@ class Model(object):
         self.model = self.load_model(dir_path)
         # Loading a list of the tests that should be ignored
         self.ignore_list = self.load_ignore_list(ignore_tests_path)
+        self.username = username
         # Instantiate metrics
-        self.metrics = [Metric(metric_info, self.source, logger, self.ignore_list) for metric_info in self.model['metrics']]
+        self.metrics = [
+            Metric(
+                metric_info,
+                self.source,
+                logger,
+                self.ignore_list,
+                self.username,
+            )
+            for metric_info in self.model['metrics']
+        ]
         # Initialize an empty array for reports
         self.reports = []
 

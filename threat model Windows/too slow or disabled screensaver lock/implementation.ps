@@ -1,0 +1,4 @@
+$screensaverTimeout = (Get-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -Name 'ScreenSaveTimeOut' -ErrorAction SilentlyContinue).ScreenSaveTimeOut
+$screensaverActive = (Get-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -Name 'ScreenSaveActive' -ErrorAction SilentlyContinue).ScreenSaveActive
+$secureScreensaver = (Get-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -Name 'ScreenSaverIsSecure' -ErrorAction SilentlyContinue).ScreenSaverIsSecure
+if ($screensaverActive -eq '1' -and $secureScreensaver -eq '1' -and $screensaverTimeout -le 600) { '' } else { 'Screensaver lock is not properly configured.' }
