@@ -2,9 +2,28 @@
 
 set -euo pipefail
 
-if [[ -z "${HOME:-}" ]]; then
-  HOME="$(eval echo "~$(id -un)")"
-fi
+ensure_home() {
+  if [[ -n "${HOME:-}" && -d "${HOME}" ]]; then
+    return
+  fi
+
+  local user
+  user="$(id -un)"
+
+  if HOME="$(getent passwd "${user}" | cut -d: -f6)"; then
+    if [[ -n "${HOME}" && -d "${HOME}" ]]; then
+      return
+    fi
+  fi
+
+  if HOME="$(eval echo "~${user}")" && [[ -n "${HOME}" && -d "${HOME}" ]]; then
+    return
+  fi
+
+  HOME="/root"
+}
+
+ensure_home
 
 found_pm=0
 
