@@ -2,9 +2,31 @@
 
 set -euo pipefail
 
-if [[ -z "${HOME:-}" ]]; then
-  HOME="$(eval echo "~$(id -un)")"
-fi
+ensure_home() {
+  if [[ -n "${HOME:-}" && -d "${HOME}" ]]; then
+    return
+  fi
+
+  local user
+  user="$(id -un)"
+
+  # macOS: prefer dscl lookup
+  if HOME="$(/usr/bin/dscl . -read "/Users/${user}" NFSHomeDirectory 2>/dev/null | awk '{print $2}')"; then
+    if [[ -n "${HOME}" && -d "${HOME}" ]]; then
+      return
+    fi
+  fi
+
+  # Fallback to tilde expansion
+  if HOME="$(eval echo "~${user}")" && [[ -n "${HOME}" && -d "${HOME}" ]]; then
+    return
+  fi
+
+  # Absolute last resort
+  HOME="/var/root"
+}
+
+ensure_home
 
 found_pm=0
 
