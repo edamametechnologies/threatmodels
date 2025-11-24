@@ -1,5 +1,5 @@
 {
-  "date": "November 23th 2025",
+  "date": "November 24th 2025",
   "extends": "none",
   "metrics": [
     {
@@ -1304,6 +1304,11 @@
             "class": "link",
             "locale": "EN",
             "target": "https://en.wikipedia.org/wiki/Password_manager"
+          },
+          {
+            "class": "link",
+            "locale": "FR",
+            "target": "https://fr.wikipedia.org/wiki/Gestionnaire_de_mots_de_passe"
           }
         ],
         "elevation": "",
@@ -1315,6 +1320,11 @@
       "rollback": {
         "class": "",
         "education": [
+          {
+            "class": "link",
+            "locale": "EN",
+            "target": "https://en.wikipedia.org/wiki/Password_manager"
+          },
           {
             "class": "link",
             "locale": "FR",
@@ -2110,5 +2120,5 @@
     }
   ],
   "name": "threat model macOS",
-  "signature": "39033f4069e0b43f13c30c8c41576d67adc31d5207deb247cc4c27773d90fdc4"
+  "signature": "26a075778bc7cfc60c4bc2b69ca55bbdc4f7caad3d2bc1cf29e12a03f2b87147"
 }
