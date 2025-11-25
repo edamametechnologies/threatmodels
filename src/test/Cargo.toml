@@ -1,0 +1,13 @@
+[package]
+name = "threatmodels-test-runner"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "run_cli_test"
+path = "run_cli_test.rs"
+
+[dependencies]
+edamame_foundation = { path = "../../../edamame_foundation" }
+tokio = { version = "1", features = ["full"] }
+serde_json = "1"
