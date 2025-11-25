@@ -5,3 +5,5 @@ __pycache__/
 /port_vulns_db_*.json
 /venv/
 report-results.txt
+/src/test/target/
+/src/test/Cargo.lock

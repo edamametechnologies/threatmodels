@@ -1,8 +1,16 @@
 import subprocess
 import textwrap
+import os
+import sys
+import platform
+from pathlib import Path
 
 # Command timeout in seconds
 CMD_TIMEOUT = 120
+
+# Path to the Rust test binary (relative to threatmodels root)
+RUST_BINARY_NAME = "run_cli_test.exe" if platform.system() == "Windows" else "run_cli_test"
+RUST_BINARY_PATH = (Path("src/test/target/release") / RUST_BINARY_NAME).absolute()
 
 
 class Metric(object):
@@ -135,111 +143,41 @@ class Metric(object):
     def _needs_personate(self, target_type):
         return self._target_elevation(target_type) == "admin"
 
-    def _default_permissions_required(self, target_type):
-        elevation = self._target_elevation(target_type)
-        return elevation != "user"
-
-    def _escape_pwsh_single(self, value):
-        return value.replace("'", "''")
-
-    def _build_windows_env_block(self):
-        if not self.username:
-            return ""
-        escaped_username = self._escape_pwsh_single(self.username)
-        user_segment = self.username.split("\\")[-1].split("/")[-1]
-        escaped_segment = self._escape_pwsh_single(user_segment)
-        template = """
-        $edamameUser = '{username}'
-        $edamameUserFolder = '{segment}'
-        $userProfilePath = Join-Path $env:SystemDrive ('Users\\' + $edamameUserFolder)
-        if (-not (Test-Path $userProfilePath)) {{
-          try {{
-            $profileObj = Get-CimInstance Win32_UserProfile -ErrorAction Stop |
-              Where-Object {{ $_.LocalPath -like "*\\{segment}" }} |
-              Select-Object -First 1
-            if ($profileObj -and (Test-Path $profileObj.LocalPath)) {{
-              $userProfilePath = $profileObj.LocalPath
-            }}
-          }} catch {{ }}
-        }}
-        if (-not (Test-Path $userProfilePath)) {{
-          $userProfilePath = Join-Path $env:SystemDrive ('Users\\' + $edamameUserFolder)
-        }}
-        $env:USERPROFILE = $userProfilePath
-        try {{
-          $env:HOMEDRIVE = Split-Path $userProfilePath -Qualifier
-          $env:HOMEPATH = $userProfilePath.Substring($env:HOMEDRIVE.Length)
-        }} catch {{
-          $env:HOMEDRIVE = $env:SystemDrive
-          $env:HOMEPATH = $userProfilePath.Substring($env:HOMEDRIVE.Length)
-        }}
-        $env:LOCALAPPDATA = Join-Path $userProfilePath 'AppData\\Local'
-        $env:APPDATA = Join-Path $userProfilePath 'AppData\\Roaming'
-        """
-        return textwrap.dedent(template).format(
-            username=escaped_username, segment=escaped_segment
-        ).strip()
-
     def execute_target(self, target_type, permissions=None):
         '''
-        Execute a target on the corresponding platform and returns the result
+        Execute a target using the Rust binary which uses edamame_foundation's run_cli.
         Raises subprocess.TimeoutExpired and TargetExecutionException
 
         Parameters:
             target_type: implementation / remediation / rollback
-            permissions: set to True to run the target with permissions
+            permissions: unused (kept for compatibility)
         Returns:
             subprocess result or None if timeout
         '''
-        # Try to load target permissions if permissions argument is not
-        # specified
-        if permissions is None:
-            permissions = self._default_permissions_required(target_type)
-
         # Gets the corresponding target command
         command = self.info[target_type]["target"]
-
         needs_personate = self._needs_personate(target_type)
 
-        if self.source == "Windows":
-            script = command
-            if needs_personate:
-                env_block = self._build_windows_env_block()
-                if not env_block:
-                    raise TargetExecutionError("username required for admin elevation tests")
-                script = f"{env_block}\n{script}"
-            ps_args = [
-                "powershell.exe",
-                "-NoProfile",
-                "-NonInteractive",
-                "-Command",
-                script,
-            ]
-            result = subprocess.run(
-                ps_args,
-                shell=False,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                timeout=CMD_TIMEOUT,
-            )
-        else:
-            # Unix: use sudo for admin and higher elevations
-            # In tests, admin metrics still require root access (e.g. fdesetup)
-            # but we can't truly impersonate with sudo -u since runner user lacks privileges
-            # So we use plain sudo and let $HOME remain as runner's home
-            if permissions:
-                # Escape single quotes for shell -c '...' wrapper
-                escaped_cmd = command.replace("'", "'\"'\"'")
-                command = f"sudo -- sh -c '{escaped_cmd}'"
-            result = subprocess.run(
-                command,
-                shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                timeout=CMD_TIMEOUT,
-            )
+        # Build arguments for the Rust binary: <command> <username> [personate] [timeout]
+        args = [
+            str(RUST_BINARY_PATH),
+            command,
+            self.username if self.username else "",
+            "true" if needs_personate else "false",
+            str(CMD_TIMEOUT),
+        ]
+
+        # On Unix, we need to run the Rust binary with sudo since it needs elevated permissions
+        if self.source != "Windows":
+            args = ["sudo"] + args
+
+        result = subprocess.run(
+            args,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            timeout=CMD_TIMEOUT,
+        )
 
         # Raise an exception if the execution failed
         if is_error(result):
@@ -316,6 +254,9 @@ class Metric(object):
                                f"successfuly at the attempt {i}")
 
     def should_ignore(self, metric_name, test_type):
+        # Handle case where ignore_list is None (empty YAML entry)
+        if not self.ignore_list:
+            return False
         for item in self.ignore_list:
             if item['metric_name'] == metric_name and (test_type in item['tests'] or 'all' in item['tests']):
                 return True
@@ -403,8 +344,7 @@ def is_error(result):
 
 
 def need_remediation_logic(result, platform):
-    if platform == "Windows":
-        # Windows returns \n when the command succeed
-        return result.stdout != "\n"
-    else:
-        return result.stdout != ""
+    # Since we're using the Rust binary which calls runner_cli,
+    # and runner_cli strips newlines (line 76), both Windows and Unix
+    # return empty string when no issues are found (no remediation needed)
+    return result.stdout != ""
