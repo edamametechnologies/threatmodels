@@ -47,7 +47,9 @@ class Model(object):
     def load_ignore_list(self, ignore_tests_path):
         with open(ignore_tests_path, 'r') as file:
             config = yaml.safe_load(file)
-            return config.get('ignore', {}).get(self.source, [])
+            ignore_list = config.get('ignore', {}).get(self.source, [])
+            # Handle case where YAML has empty entry (becomes None instead of [])
+            return ignore_list if ignore_list is not None else []
 
     def run_metrics_sequentially(self, implementation_only=False):
         '''
