@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-stat /etc/group | grep -q '(0644/-rw-r--r--)' ||
+perms=$(stat -c %a /etc/group 2>/dev/null)
+if [ "$perms" != "644" ]; then
 echo bad_permissions
+fi

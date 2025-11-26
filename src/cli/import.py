@@ -28,10 +28,22 @@ def _escape_sh_line(line: str) -> str:
     return line.replace("'", "'\"'\"'")
 
 
-def _encode_shell_script(lines: List[str]) -> str:
+def _strip_comments(lines: List[str], comment_prefix: str) -> List[str]:
+    cleaned = []
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.startswith(comment_prefix):
+            continue
+        cleaned.append(stripped)
+    return cleaned
+
+
+def _encode_shell_script(lines: List[str], shell: str = "/bin/bash") -> str:
     """
     Encode a shell script as a portable one-liner that reconstructs the
-    original content via printf piped into /bin/bash. This preserves comments,
+    original content via printf piped into the target shell. This preserves comments,
     heredocs, arrays, etc. while keeping JSON targets single-line for legacy
     clients.
     """
@@ -40,27 +52,21 @@ def _encode_shell_script(lines: List[str]) -> str:
 
     escaped = ["'{}'".format(_escape_sh_line(line)) for line in lines]
     args = " ".join(escaped) if escaped else "''"
-    return f"printf '%s\\n' {args} | /bin/bash"
+    return f"printf '%s\\n' {args} | {shell}"
 
 
 def _encode_powershell_script(lines: List[str]) -> str:
     """
-    Encode a PowerShell script as a one-liner by building an array of lines,
-    joining with `n newlines, and piping into Invoke-Expression.
+    Convert a PowerShell script into a comment-free one-liner joined with ;.
     """
     if not lines:
         return ""
 
-    escaped = ["'{}'".format(line.replace("'", "''")) for line in lines]
-    joined = ", ".join(escaped)
-    return (
-        "$__EDAMAME_LINES = @(" + joined + "); "
-        "$__EDAMAME_SCRIPT = $__EDAMAME_LINES -join \"`n\"; "
-        "Invoke-Expression $__EDAMAME_SCRIPT"
-    )
+    cleaned = _strip_comments(lines, "#")
+    return "; ".join(cleaned)
 
 
-def _prepare_target_content(content: str, extension: str) -> str:
+def _prepare_target_content(content: str, extension: str, shell: str = "/bin/bash") -> str:
     """
     Prepare script content for JSON storage:
       * normalize newlines
@@ -80,7 +86,7 @@ def _prepare_target_content(content: str, extension: str) -> str:
     lines = normalized.split("\n") if normalized else []
 
     if extension.lower() == ".sh":
-        return _encode_shell_script(lines)
+        return _encode_shell_script(lines, shell=shell)
 
     if extension.lower() == ".ps":
         return _encode_powershell_script(lines)
@@ -115,6 +121,11 @@ def import_cli_scripts(json_file_path):
     # Key = metric_name (exact match), Value = the metric dict
     metric_lookup = {m.get("name"): m for m in metrics}
 
+    # Determine target shell based on model name
+    target_shell = "/bin/bash"
+    if "linux" in model_name.lower():
+        target_shell = "/bin/sh"
+
     # 2) For each subfolder in model_name/
     model_subfolders = os.listdir(model_name)
     for metric_folder in model_subfolders:
@@ -144,7 +155,7 @@ def import_cli_scripts(json_file_path):
 
             raw_script = _read_script_file(script_path)
             ext = os.path.splitext(script_path)[1]
-            script_content = _prepare_target_content(raw_script, ext)
+            script_content = _prepare_target_content(raw_script, ext, shell=target_shell)
 
             if not script_content.strip():
                 print(f"[WARNING] Script '{script_path}' is empty. Skipping.")

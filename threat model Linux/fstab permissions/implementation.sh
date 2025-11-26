@@ -1,4 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 
-stat /etc/fstab | grep -q '(0644/-rw-r--r--)' ||
+# Use stat -c %a for portable permission check (works on GNU and Busybox)
+perms=$(stat -c %a /etc/fstab 2>/dev/null)
+if [ "$perms" != "644" ]; then
 echo bad_permissions
+fi
