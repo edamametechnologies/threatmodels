@@ -41,6 +41,7 @@ jobs:
           working-directory: threatmodels/src/test
           run: |
             cargo build --release
+            cargo test --release -- --nocapture
             chmod +x target/release/run_cli_test
         - name: Run tests
           working-directory: threatmodels
@@ -86,6 +87,7 @@ jobs:
           working-directory: threatmodels/src/test
           run: |
             cargo build --release
+            cargo test --release -- --nocapture
             chmod +x target/release/run_cli_test
         - name: Run tests
           run: |
@@ -127,6 +129,7 @@ jobs:
           working-directory: threatmodels/src/test
           run: |
             cargo build --release
+            cargo test --release -- --nocapture
             chmod +x target/release/run_cli_test
         - name: Run tests
           working-directory: threatmodels
@@ -138,9 +141,90 @@ jobs:
           working-directory: threatmodels
           run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
             
+    tests-alpine:
+        if: always()
+        runs-on: ubuntu-latest
+        timeout-minutes: 240
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - arch: x86_64
+                      target: x86_64-unknown-linux-musl
+        outputs:
+            alpine-report: ${{ steps.read_output.outputs.report }}
+            
+        steps:
+        - name: Setup Alpine Linux
+          uses: jirutka/setup-alpine@v1
+          with:
+            arch: ${{ matrix.arch }}
+            branch: v3.15
+            
+        - name: Install dependencies with apk
+          run: |
+            apk add --no-cache \
+                build-base \
+                protobuf-dev \
+                libpcap-dev \
+                git \
+                curl \
+                pkgconf \
+                eudev-dev \
+                perl \
+                python3 \
+                py3-pip
+          shell: alpine.sh --root {0}
+
+        - name: Manual checkout
+          run: |
+            mkdir temp
+            cd temp
+            git clone https://github.com/${{ github.repository }}.git .
+            git checkout "${{ github.head_ref || github.ref_name }}"
+            # Rename folder to match structure expected by scripts
+            mkdir -p threatmodels
+            mv * threatmodels/ 2>/dev/null || true
+            # Checkout edamame_foundation
+            git clone https://github.com/edamametechnologies/edamame_foundation.git
+          shell: alpine.sh {0}
+
+        - name: Install Rust
+          run: |
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+            echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          shell: alpine.sh {0}
+
+        - name: Build Rust test binary
+          run: |
+            cd temp/threatmodels/src/test
+            source $HOME/.cargo/env
+            cargo build --release
+            cargo test --release -- --nocapture
+            chmod +x target/release/run_cli_test
+          shell: alpine.sh --root {0}
+
+        - name: Run tests
+          run: |
+            cd temp/threatmodels
+            # Create venv to avoid breaking system python
+            python3 -m venv .venv
+            source .venv/bin/activate
+            pip install -r requirements.txt
+            source $HOME/.cargo/env
+            python3 src/test/main.py
+          shell: alpine.sh --root {0}
+
+        - id: read_output
+          if: always()
+          run: |
+            cd temp/threatmodels
+            echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
+          shell: alpine.sh --root {0}
+
     slack:
         # Wait test job to finish
-        needs: [tests-macos, tests-windows, tests-ubuntu]
+        needs: [tests-macos, tests-windows, tests-ubuntu, tests-alpine]
         # Only for main branch (and always - i.e. in case of failure)
         if: github.ref == 'refs/heads/main' || always()
         runs-on: ubuntu-latest
@@ -174,14 +258,23 @@ jobs:
           - env:
               WINDOWS_REPORT: ${{needs.tests-windows.outputs.windows-report}}
               UBUNTU_REPORT: ${{needs.tests-ubuntu.outputs.ubuntu-report}}
+              ALPINE_REPORT: ${{needs.tests-alpine.outputs.alpine-report}}
               MACOS_26_REPORT: ${{ steps.assemble_macos_reports.outputs.v26 }}
               MACOS_15_REPORT: ${{ steps.assemble_macos_reports.outputs.v15 }}
               MACOS_14_REPORT: ${{ steps.assemble_macos_reports.outputs.v14 }}
-            run: echo "Reports Windows=$WINDOWS_REPORT macOS(26)=$MACOS_26_REPORT macOS(15)=$MACOS_15_REPORT macOS(14)=$MACOS_14_REPORT Ubuntu=$UBUNTU_REPORT"
+            run: echo "Reports Windows=$WINDOWS_REPORT macOS(26)=$MACOS_26_REPORT macOS(15)=$MACOS_15_REPORT macOS(14)=$MACOS_14_REPORT Ubuntu=$UBUNTU_REPORT Alpine=$ALPINE_REPORT"
           - name: slack-send
             uses: slackapi/slack-github-action@v1.24.0
             with:
               channel-id: 'C07127YECN4'
-              slack-message: "GitHub threat models tests result on branch ${{ github.ref }}:\nmacOS (26): ${{ steps.assemble_macos_reports.outputs.v26 }}\nmacOS (15): ${{ steps.assemble_macos_reports.outputs.v15 }}\nmacOS (14): ${{ steps.assemble_macos_reports.outputs.v14 }}\nWindows: ${{ needs.tests-windows.outputs.windows-report }}\nUbuntu: ${{ needs.tests-ubuntu.outputs.ubuntu-report }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              slack-message: |
+                GitHub threat models tests result on branch ${{ github.ref }}:
+                macOS (26): ${{ steps.assemble_macos_reports.outputs.v26 }}
+                macOS (15): ${{ steps.assemble_macos_reports.outputs.v15 }}
+                macOS (14): ${{ steps.assemble_macos_reports.outputs.v14 }}
+                Windows: ${{ needs.tests-windows.outputs.windows-report }}
+                Ubuntu: ${{ needs.tests-ubuntu.outputs.ubuntu-report }}
+                Alpine: ${{ needs.tests-alpine.outputs.alpine-report }}
+                ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             env:
                 SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
