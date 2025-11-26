@@ -57,13 +57,19 @@ def _encode_shell_script(lines: List[str], shell: str = "/bin/bash") -> str:
 
 def _encode_powershell_script(lines: List[str]) -> str:
     """
-    Convert a PowerShell script into a comment-free one-liner joined with ;.
+    Encode a PowerShell script as a one-liner by building an array of lines,
+    joining with `n newlines, and piping into Invoke-Expression.
     """
     if not lines:
         return ""
 
-    cleaned = _strip_comments(lines, "#")
-    return "; ".join(cleaned)
+    escaped = ["'{}'".format(line.replace("'", "''")) for line in lines]
+    joined = ", ".join(escaped)
+    return (
+        "$__EDAMAME_LINES = @(" + joined + "); "
+        "$__EDAMAME_SCRIPT = $__EDAMAME_LINES -join \"`n\"; "
+        "Invoke-Expression $__EDAMAME_SCRIPT"
+    )
 
 
 def _prepare_target_content(content: str, extension: str, shell: str = "/bin/bash") -> str:
