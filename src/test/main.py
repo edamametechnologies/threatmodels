@@ -50,7 +50,21 @@ def test_env_vars_with_elevation(platform, username):
     if platform == "macOS" or platform == "Linux":
         # Test script for Unix - simple one-liner to avoid arg parsing issues
         test_script = "test -n \"$HOME\" && test -d \"$HOME\" && test -n \"$USER\" && test -n \"$LOGNAME\""
-        args = ["sudo", str(binary_path), test_script, username, "true", "10"]
+        
+        # Check if sudo is available
+        has_sudo = False
+        try:
+            subprocess.run(["which", "sudo"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+            has_sudo = True
+        except subprocess.CalledProcessError:
+            pass
+            
+        if has_sudo:
+            args = ["sudo", str(binary_path), test_script, username, "true", "10"]
+        else:
+            # Running as root or without sudo available (e.g. Alpine container)
+            # Just run the binary directly
+            args = [str(binary_path), test_script, username, "true", "10"]
         
     elif platform == "Windows":
         # Test script for Windows

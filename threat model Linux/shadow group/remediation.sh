@@ -1,3 +1,3 @@
-#!/bin/bash
+#!/bin/sh
 
 chown root:shadow /etc/shadow

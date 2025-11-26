@@ -15,6 +15,20 @@ ignore:
       tests: [ "remediation", "rollback" ]
     - metric_name: "latest os"
       tests: [ "remediation", "rollback" ]
+  Alpine:
+    - metric_name: "remote login enabled"
+      tests: [ "remediation", "rollback" ]
+    - metric_name: "remote desktop enabled"
+      tests: [ "remediation", "rollback" ]
+    - metric_name: "file sharing enabled"
+      tests: [ "remediation", "rollback" ]
+    - metric_name: "too slow or disabled screensaver lock"
+      tests: [ "remediation", "rollback" ]
+    - metric_name: "latest os"
+      tests: [ "remediation", "rollback" ]
+    # Alpine-specific ignores (e.g. ufw missing issues or kernel module limits in containers)
+    - metric_name: "local firewall disabled"
+      tests: [ "remediation", "rollback" ]
   macOS:
     - metric_name: "remote login enabled"
       tests: [ "remediation", "rollback" ]

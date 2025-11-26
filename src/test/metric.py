@@ -167,9 +167,18 @@ class Metric(object):
             str(CMD_TIMEOUT),
         ]
 
-        # On Unix, we need to run the Rust binary with sudo since it needs elevated permissions
+        # On Unix, we generally run with sudo, but check availability first
         if self.source != "Windows":
-            args = ["sudo"] + args
+            has_sudo = False
+            try:
+                subprocess.run(["which", "sudo"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+                has_sudo = True
+            except subprocess.CalledProcessError:
+                pass
+
+            if has_sudo:
+                args = ["sudo"] + args
+            # Else: run without sudo (e.g. root in container)
 
         result = subprocess.run(
             args,

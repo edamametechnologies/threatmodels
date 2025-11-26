@@ -32,6 +32,13 @@ class Model(object):
 
     def detect_platform(self):
         if platform == "linux" or platform == "linux2":
+            # Check if it's Alpine
+            try:
+                with open("/etc/os-release", "r") as f:
+                    if "ID=alpine" in f.read():
+                        return "Alpine"
+            except Exception:
+                pass
             return "Linux"
         elif platform == "darwin":
             return "macOS"
@@ -41,7 +48,9 @@ class Model(object):
             return "Unknown"
 
     def load_model(self, dir_path):
-        with open(f'{dir_path}/threatmodel-{self.source}.json', 'r') as file:
+        # Map Alpine to Linux model since they share the same JSON
+        model_platform = "Linux" if self.source == "Alpine" else self.source
+        with open(f'{dir_path}/threatmodel-{model_platform}.json', 'r') as file:
             return json.load(file)
 
     def load_ignore_list(self, ignore_tests_path):
