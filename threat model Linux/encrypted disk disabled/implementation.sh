@@ -1,10 +1,8 @@
 #!/bin/sh
 
 if command -v apk >/dev/null 2>&1; then
-    apk update >/dev/null 2>&1
     apk add virt-what util-linux >/dev/null 2>&1
 else
-    apt update -qq > /dev/null 2>&1 || true
     apt install virt-what -y > /dev/null 2>&1
 fi
 
