@@ -1,6 +1,5 @@
 #!/bin/sh
 
-# Remove bashisms
 service_active() {
   # systemd, sysvinit, openrc
   if command -v systemctl >/dev/null 2>&1; then
