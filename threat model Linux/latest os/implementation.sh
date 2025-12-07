@@ -7,6 +7,5 @@ if command -v apk >/dev/null 2>&1; then
 echo os_outdated
     fi
 else
-    LANG=C apt update -qq > /dev/null 2>&1 || true
-    apt list --upgradeable 2>/dev/null | grep -q 'upgradable' && echo os_outdated
+    LANG=C apt list --upgradeable 2>/dev/null | grep -q 'upgradable' && echo os_outdated
 fi

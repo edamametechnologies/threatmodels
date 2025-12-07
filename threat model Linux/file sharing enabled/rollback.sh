@@ -10,7 +10,6 @@ if command -v apk >/dev/null 2>&1; then
         rc-update add nfs default
     fi
 else
-    apt update -qq > /dev/null 2>&1 || true
     apt install samba -y > /dev/null 2>&1
     systemctl start smbd
     systemctl enable smbd

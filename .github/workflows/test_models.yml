@@ -176,6 +176,7 @@ jobs:
                 py3-pip
           shell: alpine.sh --root {0}
 
+        # Manual checkout in Alpine VM
         - name: Manual checkout
           run: |
             mkdir temp
