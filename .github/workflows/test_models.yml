@@ -11,271 +11,264 @@ on:
       - 'main'
 
 jobs:
-    tests-macos:
+  tests-native:
+    if: always()
+    runs-on: ${{ matrix.runs-on }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # macOS
+          - os: macos
+            runs-on: macos-26
+            name: macos-26
+          - os: macos
+            runs-on: macos-15
+            name: macos-15
+          - os: macos
+            runs-on: macos-14
+            name: macos-14
+          # Windows
+          - os: windows
+            runs-on: windows-latest
+            name: windows
+          # Ubuntu x86_64
+          - os: ubuntu
+            runs-on: ubuntu-latest
+            arch: x86_64
+            name: ubuntu-x86_64
+          # Ubuntu aarch64
+          - os: ubuntu
+            runs-on: ubuntu-24.04-arm
+            arch: aarch64
+            name: ubuntu-aarch64
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: threatmodels
+
+      - name: Checkout edamame_foundation
+        uses: actions/checkout@v4
+        with:
+          repository: edamametechnologies/edamame_foundation
+          path: edamame_foundation
+
+      - name: Setup Python
+        uses: actions/setup-python@v3.1.4
+        with:
+          python-version: 3.11.3
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install protoc (macOS)
+        if: matrix.os == 'macos'
+        run: brew install protobuf
+
+      - name: Install protoc (Windows)
+        if: matrix.os == 'windows'
+        run: choco install protoc -y
+
+      - name: Install protoc (Ubuntu)
+        if: matrix.os == 'ubuntu'
+        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler
+
+      - name: Build Rust test binary
+        working-directory: threatmodels/src/test
+        shell: bash
+        run: |
+          cargo build --release
+          cargo test --release -- --nocapture
+          chmod +x target/release/run_cli_test || true
+
+      - name: Run tests
+        working-directory: threatmodels
+        shell: bash
+        run: |
+          pip install -r requirements.txt
+          python3 src/test/main.py
+
+      - id: read_output
         if: always()
-        runs-on: ${{ matrix.os }}
-        strategy:
-            fail-fast: false
-            matrix:
-                os: [macos-26, macos-15, macos-14]
+        working-directory: threatmodels
+        shell: bash
+        run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
 
-        steps:
-        - uses: actions/checkout@v4
-          with:
-            path: threatmodels
-        - name: Checkout edamame_foundation
-          uses: actions/checkout@v4
-          with:
-            repository: edamametechnologies/edamame_foundation
-            path: edamame_foundation
-        - name: Setup Python
-          uses: actions/setup-python@v3.1.4
-          with:
-            # Version range or exact version of a Python version to use, using SemVer's version range syntax.
-            python-version: 3.11.3
-        - name: Setup Rust
-          uses: dtolnay/rust-toolchain@stable
-        - name: Install protoc
-          run: brew install protobuf
-        - name: Build Rust test binary
-          working-directory: threatmodels/src/test
-          run: |
-            cargo build --release
-            cargo test --release -- --nocapture
-            chmod +x target/release/run_cli_test
-        - name: Run tests
-          working-directory: threatmodels
-          run: |
-            pip install -r requirements.txt
-            python3 src/test/main.py
-        - id: read_output
-          if: always()
-          working-directory: threatmodels
-          run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
-        - name: Upload macOS report artifact
-          if: always()
-          uses: actions/upload-artifact@v4
-          with:
-            name: macos-report-${{ matrix.os }}
-            path: threatmodels/report-results.txt
-            
-    tests-windows:
+      - name: Upload report artifact
         if: always()
-        runs-on: windows-latest
-        outputs:
-          windows-report: ${{ steps.read_output.outputs.report }}
-          
-        steps:
-        - uses: actions/checkout@v4
-          with:
-            path: threatmodels
-        - name: Checkout edamame_foundation
-          uses: actions/checkout@v4
-          with:
-            repository: edamametechnologies/edamame_foundation
-            path: edamame_foundation
-        - name: Setup Python
-          uses: actions/setup-python@v3.1.4
-          with:
-            # Version range or exact version of a Python version to use, using SemVer's version range syntax.
-            python-version: 3.11.3
-        - name: Setup Rust
-          uses: dtolnay/rust-toolchain@stable
-        - name: Install protoc
-          run: choco install protoc -y
-        - name: Build Rust test binary
-          working-directory: threatmodels/src/test
-          run: |
-            cargo build --release
-            cargo test --release -- --nocapture
-            chmod +x target/release/run_cli_test
-        - name: Run tests
-          run: |
-            cd threatmodels
-            pip install -r requirements.txt
-            python3 src/test/main.py
-        - id: read_output
-          if: always()
-          shell: pwsh
-          run: |
-            cd threatmodels
-            echo "::set-output name=report::$(cat report-results.txt)"
-            
-    tests-ubuntu:
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-${{ matrix.name }}
+          path: threatmodels/report-results.txt
+
+  tests-alpine:
+    if: always()
+    runs-on: ${{ matrix.runs-on }}
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            target: x86_64-unknown-linux-musl
+            runs-on: ubuntu-latest
+            name: alpine-x86_64
+            apk_tools_url: 'https://gitlab.alpinelinux.org/api/v4/projects/5/packages/generic/v2.14.7/x86_64/apk.static#!sha256!bdd044e0fd6cc388c5e571e1093efa5f35f7767cc5aa338b0a2576a429009a62'
+          - arch: aarch64
+            target: aarch64-unknown-linux-musl
+            runs-on: ubuntu-24.04-arm
+            name: alpine-aarch64
+            apk_tools_url: 'https://gitlab.alpinelinux.org/api/v4/projects/5/packages/generic/v2.14.7/aarch64/apk.static#!sha256!27a975638ddc95a411c9f17c63383e335da9edf6bb7de2281d950c291a11f878'
+
+    steps:
+      - name: Setup Alpine Linux
+        uses: jirutka/setup-alpine@v1
+        with:
+          arch: ${{ matrix.arch }}
+          apk-tools-url: ${{ matrix.apk_tools_url }}
+
+      - name: Install dependencies with apk
+        run: |
+          apk add --no-cache \
+              build-base \
+              protobuf-dev \
+              libpcap-dev \
+              git \
+              curl \
+              pkgconf \
+              eudev-dev \
+              perl \
+              python3 \
+              py3-pip
+        shell: alpine.sh --root {0}
+
+      # Manual checkout in Alpine VM
+      - name: Manual checkout
+        run: |
+          mkdir temp
+          cd temp
+          git clone https://github.com/${{ github.repository }}.git .
+          git checkout "${{ github.head_ref || github.ref_name }}"
+          # Rename folder to match structure expected by scripts
+          mkdir -p threatmodels
+          mv * threatmodels/ 2>/dev/null || true
+          # Checkout edamame_foundation
+          git clone https://github.com/edamametechnologies/edamame_foundation.git
+        shell: alpine.sh {0}
+
+      - name: Install Rust
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        shell: alpine.sh {0}
+
+      - name: Build Rust test binary
+        run: |
+          cd temp/threatmodels/src/test
+          source $HOME/.cargo/env
+          cargo build --release
+          cargo test --release -- --nocapture
+          chmod +x target/release/run_cli_test
+        shell: alpine.sh --root {0}
+
+      - name: Run tests
+        run: |
+          cd temp/threatmodels
+          # Create venv to avoid breaking system python
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip install -r requirements.txt
+          source $HOME/.cargo/env
+          python3 src/test/main.py
+        shell: alpine.sh --root {0}
+
+      - id: read_output
         if: always()
-        runs-on: ubuntu-latest
-        outputs:
-          ubuntu-report: ${{ steps.read_output.outputs.report }}
+        run: |
+          cd temp/threatmodels
+          echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
+        shell: alpine.sh --root {0}
 
-        steps:
-        - uses: actions/checkout@v4
-          with:
-            path: threatmodels
-        - name: Checkout edamame_foundation
-          uses: actions/checkout@v4
-          with:
-            repository: edamametechnologies/edamame_foundation
-            path: edamame_foundation
-        - name: Setup Python
-          uses: actions/setup-python@v3.1.4
-          with:
-            # Version range or exact version of a Python version to use, using SemVer's version range syntax.
-            python-version: 3.11.3
-        - name: Setup Rust
-          uses: dtolnay/rust-toolchain@stable
-        - name: Install protoc
-          run: sudo apt-get update && sudo apt-get install -y protobuf-compiler
-        - name: Build Rust test binary
-          working-directory: threatmodels/src/test
-          run: |
-            cargo build --release
-            cargo test --release -- --nocapture
-            chmod +x target/release/run_cli_test
-        - name: Run tests
-          working-directory: threatmodels
-          run: |
-            pip install -r requirements.txt
-            python3 src/test/main.py
-        - id: read_output
-          if: always()
-          working-directory: threatmodels
-          run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
-            
-    tests-alpine:
+      - name: Upload report artifact
         if: always()
-        runs-on: ubuntu-latest
-        timeout-minutes: 240
-        strategy:
-            fail-fast: false
-            matrix:
-                include:
-                    - arch: x86_64
-                      target: x86_64-unknown-linux-musl
-        outputs:
-            alpine-report: ${{ steps.read_output.outputs.report }}
-            
-        steps:
-        - name: Setup Alpine Linux
-          uses: jirutka/setup-alpine@v1
-          with:
-            arch: ${{ matrix.arch }}
-            apk-tools-url: ${{ startsWith(matrix.arch, 'x86') && 'https://gitlab.alpinelinux.org/api/v4/projects/5/packages/generic/v2.14.7/x86_64/apk.static#!sha256!bdd044e0fd6cc388c5e571e1093efa5f35f7767cc5aa338b0a2576a429009a62' || 'https://gitlab.alpinelinux.org/api/v4/projects/5/packages/generic/v2.14.7/aarch64/apk.static#!sha256!27a975638ddc95a411c9f17c63383e335da9edf6bb7de2281d950c291a11f878' }}
-            
-        - name: Install dependencies with apk
-          run: |
-            apk add --no-cache \
-                build-base \
-                protobuf-dev \
-                libpcap-dev \
-                git \
-                curl \
-                pkgconf \
-                eudev-dev \
-                perl \
-                python3 \
-                py3-pip
-          shell: alpine.sh --root {0}
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-${{ matrix.name }}
+          path: temp/threatmodels/report-results.txt
 
-        # Manual checkout in Alpine VM
-        - name: Manual checkout
-          run: |
-            mkdir temp
-            cd temp
-            git clone https://github.com/${{ github.repository }}.git .
-            git checkout "${{ github.head_ref || github.ref_name }}"
-            # Rename folder to match structure expected by scripts
-            mkdir -p threatmodels
-            mv * threatmodels/ 2>/dev/null || true
-            # Checkout edamame_foundation
-            git clone https://github.com/edamametechnologies/edamame_foundation.git
-          shell: alpine.sh {0}
+  slack:
+    # Wait for all test jobs to finish
+    needs: [tests-native, tests-alpine]
+    # Only for main branch (and always - i.e. in case of failure)
+    if: github.ref == 'refs/heads/main' || always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: report-*
+          path: reports
+          merge-multiple: false
+        continue-on-error: true
 
-        - name: Install Rust
-          run: |
-            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-            echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-          shell: alpine.sh {0}
+      - id: assemble_reports
+        run: |
+          # Read each report
+          MACOS_26=$(cat reports/report-macos-26/report-results.txt 2>/dev/null || echo "N/A")
+          MACOS_15=$(cat reports/report-macos-15/report-results.txt 2>/dev/null || echo "N/A")
+          MACOS_14=$(cat reports/report-macos-14/report-results.txt 2>/dev/null || echo "N/A")
+          WINDOWS=$(cat reports/report-windows/report-results.txt 2>/dev/null || echo "N/A")
+          UBUNTU_X86=$(cat reports/report-ubuntu-x86_64/report-results.txt 2>/dev/null || echo "N/A")
+          UBUNTU_ARM=$(cat reports/report-ubuntu-aarch64/report-results.txt 2>/dev/null || echo "N/A")
+          ALPINE_X86=$(cat reports/report-alpine-x86_64/report-results.txt 2>/dev/null || echo "N/A")
+          ALPINE_ARM=$(cat reports/report-alpine-aarch64/report-results.txt 2>/dev/null || echo "N/A")
 
-        - name: Build Rust test binary
-          run: |
-            cd temp/threatmodels/src/test
-            source $HOME/.cargo/env
-            cargo build --release
-            cargo test --release -- --nocapture
-            chmod +x target/release/run_cli_test
-          shell: alpine.sh --root {0}
+          echo "macos_26=$MACOS_26" >> "$GITHUB_OUTPUT"
+          echo "macos_15=$MACOS_15" >> "$GITHUB_OUTPUT"
+          echo "macos_14=$MACOS_14" >> "$GITHUB_OUTPUT"
+          echo "windows=$WINDOWS" >> "$GITHUB_OUTPUT"
+          echo "ubuntu_x86=$UBUNTU_X86" >> "$GITHUB_OUTPUT"
+          echo "ubuntu_arm=$UBUNTU_ARM" >> "$GITHUB_OUTPUT"
+          echo "alpine_x86=$ALPINE_X86" >> "$GITHUB_OUTPUT"
+          echo "alpine_arm=$ALPINE_ARM" >> "$GITHUB_OUTPUT"
 
-        - name: Run tests
-          run: |
-            cd temp/threatmodels
-            # Create venv to avoid breaking system python
-            python3 -m venv .venv
-            source .venv/bin/activate
-            pip install -r requirements.txt
-            source $HOME/.cargo/env
-            python3 src/test/main.py
-          shell: alpine.sh --root {0}
+      - name: Print reports summary
+        env:
+          MACOS_26_REPORT: ${{ steps.assemble_reports.outputs.macos_26 }}
+          MACOS_15_REPORT: ${{ steps.assemble_reports.outputs.macos_15 }}
+          MACOS_14_REPORT: ${{ steps.assemble_reports.outputs.macos_14 }}
+          WINDOWS_REPORT: ${{ steps.assemble_reports.outputs.windows }}
+          UBUNTU_X86_REPORT: ${{ steps.assemble_reports.outputs.ubuntu_x86 }}
+          UBUNTU_ARM_REPORT: ${{ steps.assemble_reports.outputs.ubuntu_arm }}
+          ALPINE_X86_REPORT: ${{ steps.assemble_reports.outputs.alpine_x86 }}
+          ALPINE_ARM_REPORT: ${{ steps.assemble_reports.outputs.alpine_arm }}
+        run: |
+          echo "Reports:"
+          echo "  macOS (26): $MACOS_26_REPORT"
+          echo "  macOS (15): $MACOS_15_REPORT"
+          echo "  macOS (14): $MACOS_14_REPORT"
+          echo "  Windows: $WINDOWS_REPORT"
+          echo "  Ubuntu (x86_64): $UBUNTU_X86_REPORT"
+          echo "  Ubuntu (aarch64): $UBUNTU_ARM_REPORT"
+          echo "  Alpine (x86_64): $ALPINE_X86_REPORT"
+          echo "  Alpine (aarch64): $ALPINE_ARM_REPORT"
 
-        - id: read_output
-          if: always()
-          run: |
-            cd temp/threatmodels
-            echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
-          shell: alpine.sh --root {0}
-
-    slack:
-        # Wait test job to finish
-        needs: [tests-macos, tests-windows, tests-ubuntu, tests-alpine]
-        # Only for main branch (and always - i.e. in case of failure)
-        if: github.ref == 'refs/heads/main' || always()
-        runs-on: ubuntu-latest
-        steps:
-          - name: Download macOS 26 report
-            uses: actions/download-artifact@v4
-            with:
-              name: macos-report-macos-26
-              path: macos-report-macos-26
-            continue-on-error: true
-          - name: Download macOS 15 report
-            uses: actions/download-artifact@v4
-            with:
-              name: macos-report-macos-15
-              path: macos-report-macos-15
-            continue-on-error: true
-          - name: Download macOS 14 report
-            uses: actions/download-artifact@v4
-            with:
-              name: macos-report-macos-14
-              path: macos-report-macos-14
-            continue-on-error: true
-          - id: assemble_macos_reports
-            run: |
-              V26=$(cat macos-report-macos-26/report-results.txt 2>/dev/null || echo "N/A")
-              V15=$(cat macos-report-macos-15/report-results.txt 2>/dev/null || echo "N/A")
-              V14=$(cat macos-report-macos-14/report-results.txt 2>/dev/null || echo "N/A")
-              echo "v26=$V26" >> "$GITHUB_OUTPUT"
-              echo "v15=$V15" >> "$GITHUB_OUTPUT"
-              echo "v14=$V14" >> "$GITHUB_OUTPUT"
-          - env:
-              WINDOWS_REPORT: ${{needs.tests-windows.outputs.windows-report}}
-              UBUNTU_REPORT: ${{needs.tests-ubuntu.outputs.ubuntu-report}}
-              ALPINE_REPORT: ${{needs.tests-alpine.outputs.alpine-report}}
-              MACOS_26_REPORT: ${{ steps.assemble_macos_reports.outputs.v26 }}
-              MACOS_15_REPORT: ${{ steps.assemble_macos_reports.outputs.v15 }}
-              MACOS_14_REPORT: ${{ steps.assemble_macos_reports.outputs.v14 }}
-            run: echo "Reports Windows=$WINDOWS_REPORT macOS(26)=$MACOS_26_REPORT macOS(15)=$MACOS_15_REPORT macOS(14)=$MACOS_14_REPORT Ubuntu=$UBUNTU_REPORT Alpine=$ALPINE_REPORT"
-          - name: slack-send
-            uses: slackapi/slack-github-action@v1.24.0
-            with:
-              channel-id: 'C07127YECN4'
-              slack-message: |
-                GitHub threat models tests result on branch ${{ github.ref }}:
-                macOS (26): ${{ steps.assemble_macos_reports.outputs.v26 }}
-                macOS (15): ${{ steps.assemble_macos_reports.outputs.v15 }}
-                macOS (14): ${{ steps.assemble_macos_reports.outputs.v14 }}
-                Windows: ${{ needs.tests-windows.outputs.windows-report }}
-                Ubuntu: ${{ needs.tests-ubuntu.outputs.ubuntu-report }}
-                Alpine: ${{ needs.tests-alpine.outputs.alpine-report }}
-                ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            env:
-                SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      - name: slack-send
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: 'C07127YECN4'
+          slack-message: |
+            GitHub threat models tests result on branch ${{ github.ref }}:
+            macOS (26): ${{ steps.assemble_reports.outputs.macos_26 }}
+            macOS (15): ${{ steps.assemble_reports.outputs.macos_15 }}
+            macOS (14): ${{ steps.assemble_reports.outputs.macos_14 }}
+            Windows: ${{ steps.assemble_reports.outputs.windows }}
+            Ubuntu (x86_64): ${{ steps.assemble_reports.outputs.ubuntu_x86 }}
+            Ubuntu (aarch64): ${{ steps.assemble_reports.outputs.ubuntu_arm }}
+            Alpine (x86_64): ${{ steps.assemble_reports.outputs.alpine_x86 }}
+            Alpine (aarch64): ${{ steps.assemble_reports.outputs.alpine_arm }}
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
