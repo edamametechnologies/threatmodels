@@ -8,19 +8,23 @@ if command -v apk >/dev/null 2>&1; then
     apk add virt-what util-linux >/dev/null 2>&1
     [ -n "$(virt-what 2>/dev/null)" ] && is_virtual="yes"
 elif [ "$(uname -m)" = "aarch64" ]; then
-    # Debian/Ubuntu aarch64: virt-what not available, use alternatives
-    apt install util-linux -y > /dev/null 2>&1
-    if command -v systemd-detect-virt >/dev/null 2>&1; then
-        virt_type=$(systemd-detect-virt 2>/dev/null)
-        [ "$virt_type" != "none" ] && [ -n "$virt_type" ] && is_virtual="yes"
-    elif [ -d /sys/hypervisor ]; then
+    # Debian/Ubuntu aarch64: virt-what not available, use fast file-based detection
+    # Check /sys/hypervisor (Xen)
+    if [ -d /sys/hypervisor ]; then
         is_virtual="yes"
-    elif cat /sys/class/dmi/id/sys_vendor 2>/dev/null | grep -qiE "qemu|kvm|vmware|virtualbox|xen|microsoft|amazon"; then
+    # Check DMI vendor info
+    elif grep -qiE "qemu|kvm|vmware|virtualbox|xen|microsoft|amazon" /sys/class/dmi/id/sys_vendor 2>/dev/null; then
         is_virtual="yes"
-    elif cat /sys/class/dmi/id/product_name 2>/dev/null | grep -qiE "virtual|vm|kvm|qemu"; then
+    # Check DMI product name
+    elif grep -qiE "virtual|vm|kvm|qemu" /sys/class/dmi/id/product_name 2>/dev/null; then
         is_virtual="yes"
+    # Check device tree (ARM VMs)
     elif grep -qiE "qemu|kvm|xen" /sys/firmware/devicetree/base/compatible 2>/dev/null; then
         is_virtual="yes"
+    # Last resort: systemd-detect-virt with timeout
+    elif command -v systemd-detect-virt >/dev/null 2>&1; then
+        virt_type=$(timeout 5 systemd-detect-virt 2>/dev/null)
+        [ "$virt_type" != "none" ] && [ -n "$virt_type" ] && is_virtual="yes"
     fi
 else
     # Debian/Ubuntu x86_64: virt-what available
