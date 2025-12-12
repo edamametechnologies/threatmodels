@@ -73,6 +73,7 @@ jobs:
 
       - name: Install protoc (Ubuntu)
         if: matrix.os == 'ubuntu'
+        shell: bash
         run: |
           wait_for_apt_locks() {
             echo "Checking for apt/dpkg locks..."
