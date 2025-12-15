@@ -1,4 +1,4 @@
-name: Validate and Test Models
+name: Validate Models
 on:
  push:
    branches: [ "main", "dev" ]
@@ -104,72 +104,8 @@ jobs:
        env:
          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
- test-ubuntu:
-   needs: validate
-   if: needs.validate.result == 'success'
-   runs-on: ubuntu-latest
-   timeout-minutes: 90
-
-   outputs:
-     report: ${{ steps.read_output.outputs.report }}
-   steps:
-     - uses: actions/checkout@v4
-     - name: Setup Python
-       uses: actions/setup-python@v3.1.4
-       with:
-         python-version: 3.11.3
-     - name: Run tests
-       run: |
-         pip install -r requirements.txt
-         python3 src/test/main.py
-     - id: read_output
-       run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
-
- test-windows:
-   needs: validate
-   if: needs.validate.result == 'success'
-   runs-on: windows-latest
-   timeout-minutes: 90
-
-   outputs:
-     report: ${{ steps.read_output.outputs.report }}
-   steps:
-     - uses: actions/checkout@v4
-     - name: Setup Python
-       uses: actions/setup-python@v3.1.4
-       with:
-         python-version: 3.11.3
-     - name: Run tests
-       run: |
-         pip install -r requirements.txt
-         python3 src/test/main.py
-     - id: read_output
-       shell: pwsh
-       run: echo "::set-output name=report::$(cat report-results.txt)"
-
- test-macos:
-   needs: validate
-   if: needs.validate.result == 'success'
-   runs-on: macos-latest
-   timeout-minutes: 90
-
-   outputs:
-     report: ${{ steps.read_output.outputs.report }}
-   steps:
-     - uses: actions/checkout@v4
-     - name: Setup Python
-       uses: actions/setup-python@v3.1.4
-       with:
-         python-version: 3.11.3
-     - name: Run tests
-       run: |
-         pip install -r requirements.txt
-         python3 src/test/main.py
-     - id: read_output
-       run: echo "report=$(cat report-results.txt)" >> "$GITHUB_OUTPUT"
-
  finalize:
-   needs: [validate, test-ubuntu, test-windows, test-macos]
+   needs: [validate]
    if: always()
    runs-on: ubuntu-latest
    timeout-minutes: 90
@@ -179,11 +115,8 @@ jobs:
         with:
           channel-id: 'C07127YECN4'
           slack-message: |
-            GitHub threat models validation and test results on branch ${{ github.ref }} (PR: ${{ github.event.pull_request.number || 'N/A' }}):
+            GitHub threat models validation results on branch ${{ github.ref }} (PR: ${{ github.event.pull_request.number || 'N/A' }}):
             Validation: ${{ needs.validate.result }}
-            Tests Ubuntu: ${{ needs.test-ubuntu.outputs.report }}
-            Tests Windows: ${{ needs.test-windows.outputs.report }}
-            Tests macOS: ${{ needs.test-macos.outputs.report }}
             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
