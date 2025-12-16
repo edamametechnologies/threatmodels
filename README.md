@@ -54,7 +54,7 @@ The `lanscan-port-vulns-db.json` database catalogs vulnerabilities associated wi
 
 The database is updated **monthly** via a scheduled GitHub Actions workflow (`.github/workflows/update_vulns_db.yml`).
 
-The port vulnerability database enables EDAMAME to identify potentially vulnerable services running on endpoints within a network scan.
+The port vulnerability database enables EDAMAME Security to identify potentially vulnerable services running on endpoints within a network scan.
 
 ### Vendor Vulnerability Database
 
@@ -69,7 +69,7 @@ Similarly, the `lanscan-vendor-vulns-db.json` database tracks vulnerabilities as
 
 Like the port vulnerability database, this database is updated **monthly** via the same GitHub Actions workflow (`.github/workflows/update_vulns_db.yml`).
 
-This database helps EDAMAME evaluate potential risks associated with specific hardware vendors detected on the network.
+This database helps EDAMAME Security evaluate potential risks associated with specific hardware vendors detected on the network.
 
 ### Device Profile Database
 
@@ -90,7 +90,7 @@ Evaluation semantics:
 - Rules are evaluated strictly in the JSON order; the engine returns the first matching `device_type` (first-match-wins).
 - To avoid ambiguous classifications, design rules so only one `device_type` matches a given device. The validation script flags overlapping matches across multiple device types.
 
-This database powers EDAMAME's device identification capabilities, allowing it to recognize and categorize devices on local networks.
+This database powers EDAMAME Security's device identification capabilities, allowing it to recognize and categorize devices on local networks.
 
 ### Whitelist Database
 
@@ -119,7 +119,7 @@ The `blacklists-db.json` database catalogs known malicious or unwanted IP addres
 
 The database is updated **daily** via a scheduled GitHub Actions workflow (`.github/workflows/update_blacklists_db.yml`).
 
-This database enables EDAMAME to identify connections to potentially harmful IP addresses.
+This database enables EDAMAME Security to identify connections to potentially harmful IP addresses.
 
 ### Database Integrity and Updates
 
