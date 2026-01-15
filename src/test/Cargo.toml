@@ -8,6 +8,6 @@ name = "run_cli_test"
 path = "run_cli_test.rs"
 
 [dependencies]
-edamame_foundation = { git = "https://github.com/edamametechnologies/edamame_foundation", branch = "main", features = [ "packetcapture" ] }
+edamame_foundation = { git = "https://github.com/edamametechnologies/edamame_foundation", branch = "main", default-features = false }
 tokio = { version = "1", features = ["full"] }
 serde_json = "1"
