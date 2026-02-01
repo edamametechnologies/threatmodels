@@ -1,6 +1,6 @@
 {
-    "date": "January 30th 2026",
-    "signature": "cdcea8c3d46802052fa3c25369eafc64ebfdfe6c5e7c076defeb0ba8fd42b6a3",
+    "date": "February 1st 2026",
+    "signature": "f5f6e4fb7980c8083c504324bdf0d5fcd7e453d683c2e88bba589238178ea3e4",
     "vulnerabilities": [
         {
             "count": 1,
@@ -104,16 +104,12 @@
             "vulnerabilities": []
         },
         {
-            "count": 4,
+            "count": 3,
             "description": "Secure Shell Login",
             "name": "ssh",
             "port": 22,
             "protocol": "tcp",
             "vulnerabilities": [
-                {
-                    "description": "The Motorola ACE1000 RTU through 2022-05-02 has default credentials. It exposes an SSH interface on port 22/TCP. This interface is used for remote maintenance and for SFTP file-transfer operations that are part of engineering software functionality. Access to this interface is controlled by 5 preconfigured accounts (root, abuilder, acelogin, cappl, ace), all of which come with default credentials. Although the ACE1000 documentation mentions the root, abuilder and acelogin accounts and instructs users to change the default credentials, the cappl and ace accounts remain undocumented and thus are unlikely to have their credentials changed.",
-                    "name": "CVE-2022-30270"
-                },
                 {
                     "description": "An OpenSSH daemon listens on TCP port 22. There is a hard-coded entry in the '/etc/shadow' file in the firmware image for the 'root' user. However, in the default SSH configuration the 'PermitRootLogin' is disabled, preventing the root user from logging in via SSH. This configuration can be bypassed/changed by an attacker through multiple paths though.",
                     "name": "CVE-2025-48416"
@@ -539,23 +535,15 @@
             "vulnerabilities": []
         },
         {
-            "count": 49,
+            "count": 46,
             "description": "World Wide Web HTTP",
             "name": "http",
             "port": 80,
             "protocol": "http",
             "vulnerabilities": [
                 {
-                    "description": "This vulnerability allows network-adjacent attackers to disclose sensitive information on affected installations of TP-Link TL-WR940N 6_211111 3.20.1(US) routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the httpd service, which listens on TCP port 80 by default. The issue results from the incorrect implementation of the authentication algorithm. An attacker can leverage this vulnerability to disclose stored credentials, leading to further compromise. Was ZDI-CAN-17332.",
-                    "name": "CVE-2022-43635"
-                },
-                {
                     "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of TP-Link TL-WR940N 3.20.1 Build 200316 Rel.34392n (5553) routers. Authentication is required to exploit this vulnerability. The specific flaw exists within the httpd service, which listens on TCP port 80 by default. The issue results from the lack of proper validation of the length of user-supplied data prior to copying it to a fixed-length stack-based buffer. An attacker can leverage this vulnerability to execute code in the context of root. Was ZDI-CAN-13992.",
                     "name": "CVE-2022-24973"
-                },
-                {
-                    "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of TP-Link TL-WR940N 3.20.1 Build 200316 Rel.34392n (5553) routers. Authentication is required to exploit this vulnerability. The specific flaw exists within the httpd service, which listens on TCP port 80 by default. The issue results from the lack of proper validation of the length of user-supplied data prior to copying it to a fixed-length stack-based buffer. An attacker can leverage this vulnerability to execute code in the context of root. Was ZDI-CAN-13993.",
-                    "name": "CVE-2022-0650"
                 },
                 {
                     "description": "D-Link G416 flupl self Command Injection Remote Code Execution Vulnerability. This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of D-Link G416 wireless routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the HTTP service listening on TCP port 80. The issue results from the lack of proper validation of a user-supplied string before using it to execute a system call. An attacker can leverage this vulnerability to execute code in the context of root. Was ZDI-CAN-21294.",
@@ -734,10 +722,6 @@
                     "name": "CVE-2024-51977"
                 },
                 {
-                    "description": "Fresenius Kabi Agilia Link + version 3.0 does not enforce transport layer encryption. Therefore, transmitted data may be sent in cleartext. Transport layer encryption is offered on Port TCP/443, but the affected service does not perform an automated redirect from the unencrypted service on Port TCP/80 to the encrypted service.",
-                    "name": "CVE-2021-41835"
-                },
-                {
                     "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of NETGEAR R6020, R6080, R6120, R6220, R6260, R6700v2, R6800, R6900v2, R7450, JNR3210, WNR2020, Nighthawk AC2100, and Nighthawk AC2400 routers. Although authentication is required to exploit this vulnerability, the existing authentication mechanism can be bypassed. The specific flaw exists within the mini_httpd service, which listens on TCP port 80 by default. When parsing the funjsq_access_token parameter, the process does not properly validate a user-supplied string before using it to execute a system call. An attacker can leverage this vulnerability to execute code in the context of root. Was ZDI-CAN-11653.",
                     "name": "CVE-2020-27867"
                 }
@@ -912,7 +896,7 @@
             "vulnerabilities": []
         },
         {
-            "count": 4,
+            "count": 3,
             "description": "tsap ISO-TSAP Class 0 | ISO-TSAP Class 0",
             "name": "iso-tsap",
             "port": 102,
@@ -925,10 +909,6 @@
                 {
                     "description": "A vulnerability has been identified in SIMATIC S7-1200 CPU 1211C AC/DC/Rly (6ES7211-1BE40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1211C DC/DC/DC (6ES7211-1AE40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1211C DC/DC/Rly (6ES7211-1HE40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1212C AC/DC/Rly (6ES7212-1BE40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1212C DC/DC/DC (6ES7212-1AE40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1212C DC/DC/Rly (6ES7212-1HE40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1212FC DC/DC/DC (6ES7212-1AF40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1212FC DC/DC/Rly (6ES7212-1HF40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1214C AC/DC/Rly (6ES7214-1BG40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1214C DC/DC/DC (6ES7214-1AG40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1214C DC/DC/Rly (6ES7214-1HG40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1214FC DC/DC/DC (6ES7214-1AF40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1214FC DC/DC/Rly (6ES7214-1HF40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1215C AC/DC/Rly (6ES7215-1BG40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1215C DC/DC/DC (6ES7215-1AG40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1215C DC/DC/Rly (6ES7215-1HG40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1215FC DC/DC/DC (6ES7215-1AF40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1215FC DC/DC/Rly (6ES7215-1HF40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1217C DC/DC/DC (6ES7217-1AG40-0XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212 AC/DC/RLY (6AG1212-1BE40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212 AC/DC/RLY (6AG1212-1BE40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212 DC/DC/RLY (6AG1212-1HE40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212 DC/DC/RLY (6AG1212-1HE40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212C DC/DC/DC (6AG1212-1AE40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212C DC/DC/DC (6AG1212-1AE40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212C DC/DC/DC RAIL (6AG2212-1AE40-1XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 AC/DC/RLY (6AG1214-1BG40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 AC/DC/RLY (6AG1214-1BG40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 AC/DC/RLY (6AG1214-1BG40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 DC/DC/DC (6AG1214-1AG40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 DC/DC/DC (6AG1214-1AG40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 DC/DC/DC (6AG1214-1AG40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 DC/DC/RLY (6AG1214-1HG40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 DC/DC/RLY (6AG1214-1HG40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 DC/DC/RLY (6AG1214-1HG40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214C DC/DC/DC RAIL (6AG2214-1AG40-1XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214FC DC/DC/DC (6AG1214-1AF40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214FC DC/DC/RLY (6AG1214-1HF40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 AC/DC/RLY (6AG1215-1BG40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 AC/DC/RLY (6AG1215-1BG40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 AC/DC/RLY (6AG1215-1BG40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 DC/DC/DC (6AG1215-1AG40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 DC/DC/DC (6AG1215-1AG40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 DC/DC/RLY (6AG1215-1HG40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 DC/DC/RLY (6AG1215-1HG40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 DC/DC/RLY (6AG1215-1HG40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215C DC/DC/DC (6AG1215-1AG40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215FC DC/DC/DC (6AG1215-1AF40-5XB0) (All versions < V4.7). Affected devices do not process correctly certain special crafted packets sent to port 102/tcp, which could allow an attacker to cause a denial of service in the device.",
                     "name": "CVE-2025-24812"
-                },
-                {
-                    "description": "Affected devices don't process correctly certain special crafted packets sent to port 102/tcp, which could allow an attacker to cause a denial of service in the device.",
-                    "name": "CVE-2021-44695"
                 },
                 {
                     "description": "A vulnerability has been identified in SIMATIC Drive Controller family (All versions >= V2.9.2 < V2.9.4), SIMATIC ET 200SP Open Controller CPU 1515SP PC2 (incl. SIPLUS variants) (All versions >= V21.9 < V21.9.4), SIMATIC S7-1200 CPU family (incl. SIPLUS variants) (All versions >= V4.5.0 < V4.5.2), SIMATIC S7-1500 CPU family (incl. related ET200 CPUs and SIPLUS variants) (All versions >= V2.9.2 < V2.9.4), SIMATIC S7-1500 Software Controller (All versions >= V21.9 < V21.9.4), SIMATIC S7-PLCSIM Advanced (All versions >= V4.0 < V4.0 SP1), SIPLUS TIM 1531 IRC (All versions < V2.3.6), TIM 1531 IRC (All versions < V2.3.6). An unauthenticated attacker could cause a denial-of-service condition in a PLC when sending specially prepared packets over port 102/tcp. A restart of the affected device is needed to restore normal operations.",
@@ -2478,7 +2458,7 @@
             "vulnerabilities": []
         },
         {
-            "count": 11,
+            "count": 10,
             "description": "secure http (SSL)",
             "name": "https",
             "port": 443,
@@ -2487,10 +2467,6 @@
                 {
                     "description": "A vulnerability has been identified in CP-8031 MASTER MODULE (All versions < CPCI85 V05), CP-8050 MASTER MODULE (All versions < CPCI85 V05). Affected devices are vulnerable to command injection via the web server port 443/tcp, if the parameter &#8220;Remote Operation&#8221; is enabled. The parameter is disabled by default. The vulnerability could allow an unauthenticated remote attacker to perform arbitrary code execution on the device.",
                     "name": "CVE-2023-28489"
-                },
-                {
-                    "description": "A vulnerability has been identified in POWER METER SICAM Q200 family (All versions < V2.70), SICAM P850 (All versions < V3.10), SICAM P850 (All versions < V3.10), SICAM P850 (All versions < V3.10), SICAM P850 (All versions < V3.10), SICAM P850 (All versions < V3.10), SICAM P850 (All versions < V3.10), SICAM P850 (All versions < V3.10), SICAM P850 (All versions < V3.10), SICAM P850 (All versions < V3.10), SICAM P850 (All versions < V3.10), SICAM P850 (All versions < V3.10), SICAM P850 (All versions < V3.10), SICAM P850 (All versions < V3.10), SICAM P850 (All versions < V3.10), SICAM P850 (All versions < V3.10), SICAM P850 (All versions < V3.10), SICAM P850 (All versions < V3.10), SICAM P850 (All versions < V3.10), SICAM P855 (All versions < V3.10), SICAM P855 (All versions < V3.10), SICAM P855 (All versions < V3.10), SICAM P855 (All versions < V3.10), SICAM P855 (All versions < V3.10), SICAM P855 (All versions < V3.10), SICAM P855 (All versions < V3.10), SICAM P855 (All versions < V3.10), SICAM P855 (All versions < V3.10), SICAM P855 (All versions < V3.10), SICAM P855 (All versions < V3.10), SICAM P855 (All versions < V3.10), SICAM P855 (All versions < V3.10), SICAM P855 (All versions < V3.10), SICAM P855 (All versions < V3.10), SICAM P855 (All versions < V3.10), SICAM P855 (All versions < V3.10), SICAM P855 (All versions < V3.10). Affected devices do not properly validate the RecordType-parameter in requests to the web interface on port 443/tcp. This could allow an authenticated remote attacker to crash the device (followed by an automatic reboot) or to execute arbitrary code on the device.",
-                    "name": "CVE-2022-43545"
                 },
                 {
                     "description": "Logsign Unified SecOps Platform Incorrect Authorization Authentication Bypass Vulnerability. This vulnerability allows local attackers to bypass authentication on affected installations of Logsign Unified SecOps Platform. Authentication is required to exploit this vulnerability. The specific flaw exists within the HTTP API service, which listens on TCP port 443 by default. The issue results from the lack of proper validation of the user's license expiration date. An attacker can leverage this vulnerability to bypass authentication on the system. Was ZDI-CAN-25029.",
@@ -20624,23 +20600,15 @@
             "vulnerabilities": []
         },
         {
-            "count": 4,
+            "count": 2,
             "description": "Location Tracking Protocol",
             "name": "ltp",
             "port": 4044,
             "protocol": "tcp",
             "vulnerabilities": [
                 {
-                    "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of D-Link DIR-825 1.0.9/EE routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the Vimeo plugin for the xupnpd service, which listens on TCP port 4044. The issue results from the lack of proper validation of a user-supplied string before using it to execute a system call. An attacker can leverage this vulnerability to execute code in the context of the admin user. Was ZDI-CAN-19463.",
-                    "name": "CVE-2022-43646"
-                },
-                {
                     "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of D-Link DIR-825 1.0.9/EE routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the Dreambox plugin for the xupnpd service, which listens on TCP port 4044. The issue results from the lack of proper validation of a user-supplied string before using it to execute a system call. An attacker can leverage this vulnerability to execute code in the context of the admin user. Was ZDI-CAN-19461.",
                     "name": "CVE-2022-43644"
-                },
-                {
-                    "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of D-Link DIR-825 1.0.9/EE routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the YouTube plugin for the xupnpd service, which listens on TCP port 4044. The issue results from the lack of proper validation of a user-supplied string before using it to execute a system call. An attacker can leverage this vulnerability to execute code in the context of the admin user. Was ZDI-CAN-19222.",
-                    "name": "CVE-2022-43642"
                 },
                 {
                     "description": "This vulnerability allows network-adjacent attackers to execute arbitrary commands on affected installations of D-Link DIR-2150 4.0.1 routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the xupnpd_generic.lua plugin for the xupnpd service, which listens on TCP port 4044 by default. When parsing the feed parameter, the process does not properly validate a user-supplied string before using it to execute a system call. An attacker can leverage this vulnerability to execute code in the context of the service account. Was ZDI-CAN-15906.",
@@ -34506,16 +34474,12 @@
             "vulnerabilities": []
         },
         {
-            "count": 2,
+            "count": 1,
             "description": "ddi-udp-1 | ddi-tcp-1 | Sun Answerbook HTTP server.  Or gnump3d streaming music server | NewsEDGE server TCP (TCP 1) | NewsEDGE server UDP (UDP 1)",
             "name": "sun-answerbook",
             "port": 8888,
             "protocol": "http",
             "vulnerabilities": [
-                {
-                    "description": "An issue was discovered in FC46-WebBridge on GE Grid Solutions MS3000 devices before 3.7.6.25p0_3.2.2.17p0_4.7p0. A vulnerability in the web server allows arbitrary files and configurations to be read via directory traversal over TCP port 8888.",
-                    "name": "CVE-2022-43975"
-                },
                 {
                     "description": "The affected device expose a network service called 'rftest' that is vulnerable to unauthenticated command injection on ports TCP/8888, TCP/8889, and TCP/8890. By successfully exploiting this flaw, remote unauthenticated attacker can gain arbitrary command execution on the device with elevated privileges.This issue affects Archer C4500X: through 1_1.1.6.",
                     "name": "CVE-2024-5035"
@@ -37803,17 +37767,12 @@
             "vulnerabilities": []
         },
         {
-            "count": 1,
+            "count": 0,
             "description": "",
             "name": "",
             "port": 15017,
             "protocol": "tcp",
-            "vulnerabilities": [
-                {
-                    "description": "Istio is an open platform to connect, manage, and secure microservices. In affected versions the Istio control plane, istiod, is vulnerable to a request processing error, allowing a malicious attacker that sends a specially crafted message which results in the control plane crashing when the validating webhook for a cluster is exposed publicly. This endpoint is served over TLS port 15017, but does not require any authentication from the attacker. For simple installations, Istiod is typically only reachable from within the cluster, limiting the blast radius. However, for some deployments, especially [external istiod](https://istio.io/latest/docs/setup/install/external-controlplane/) topologies, this port is exposed over the public internet. This issue has been patched in versions 1.13.2, 1.12.5 and 1.11.8. Users are advised to upgrade. Users unable to upgrade should disable access to a validating webhook that is exposed to the public internet or restrict the set of IP addresses that can query it to a set of known, trusted entities.",
-                    "name": "CVE-2022-24726"
-                }
-            ]
+            "vulnerabilities": []
         },
         {
             "count": 0,
