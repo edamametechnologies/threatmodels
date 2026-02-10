@@ -29,6 +29,7 @@
   - [Internationalization](#internationalization)
   - [Implementation Details](#implementation-details)
   - [Remediation Guidance](#remediation-guidance)
+- [Score Calculator](#score-calculator)
 - [EDAMAME Ecosystem](#edamame-ecosystem)
 
 ## Overview
@@ -276,3 +277,26 @@ The CLI export/import utilities and the GitHub-based test workflow let you edit 
    The `--local` flag tells the script to read the sibling `../threatmodels/threatmodel-*.json` files instead of fetching from GitHub, so you can immediately `cargo check`/`cargo test` against your edits. You can omit the OS argument to regenerate every platform in one go.
 
 Following this loop keeps the JSON models, extracted scripts, and CI validation in sync.
+
+## Score Calculator
+
+The [score_calculator](https://github.com/edamametechnologies/score_calculator) repository provides a standalone Python utility that computes the EDAMAME Security Score from these threat models. It implements the same severity-weighted scoring algorithm as the production Rust code in `edamame_foundation`, producing identical results.
+
+Given a platform and a set of check results (which threats are active vs. inactive), it computes:
+
+- **Per-dimension scores** (0-100%) for each of the 5 security dimensions
+- **Overall score** (0-100%) and **star rating** (0.0-5.0)
+- **Compliance percentages** per tag prefix (CIS Benchmark, ISO 27001/2, SOC 2, etc.)
+
+```bash
+# Fetch the macOS threat model and compute the score with specific threats remediated
+python score_calculator.py --platform macOS --inactive "local firewall disabled" "SIP disabled"
+
+# Best case score
+python score_calculator.py --platform macOS --all-inactive
+
+# JSON output
+python score_calculator.py --platform macOS --all-inactive --json
+```
+
+See the [score_calculator README](https://github.com/edamametechnologies/score_calculator#readme) for full usage documentation.
