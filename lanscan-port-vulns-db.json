@@ -1,6 +1,6 @@
 {
-    "date": "February 1st 2026",
-    "signature": "f5f6e4fb7980c8083c504324bdf0d5fcd7e453d683c2e88bba589238178ea3e4",
+    "date": "March 1st 2026",
+    "signature": "4a8b5e5721711539b08c96d7eed2cbe8daaac56589a941852ca94b28b57672a8",
     "vulnerabilities": [
         {
             "count": 1,
@@ -535,16 +535,12 @@
             "vulnerabilities": []
         },
         {
-            "count": 46,
+            "count": 44,
             "description": "World Wide Web HTTP",
             "name": "http",
             "port": 80,
             "protocol": "http",
             "vulnerabilities": [
-                {
-                    "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of TP-Link TL-WR940N 3.20.1 Build 200316 Rel.34392n (5553) routers. Authentication is required to exploit this vulnerability. The specific flaw exists within the httpd service, which listens on TCP port 80 by default. The issue results from the lack of proper validation of the length of user-supplied data prior to copying it to a fixed-length stack-based buffer. An attacker can leverage this vulnerability to execute code in the context of root. Was ZDI-CAN-13992.",
-                    "name": "CVE-2022-24973"
-                },
                 {
                     "description": "D-Link G416 flupl self Command Injection Remote Code Execution Vulnerability. This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of D-Link G416 wireless routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the HTTP service listening on TCP port 80. The issue results from the lack of proper validation of a user-supplied string before using it to execute a system call. An attacker can leverage this vulnerability to execute code in the context of root. Was ZDI-CAN-21294.",
                     "name": "CVE-2024-5295"
@@ -720,10 +716,6 @@
                 {
                     "description": "An unauthenticated attacker who can access either the HTTP service (TCP port 80), the HTTPS service (TCP port 443), or the IPP service (TCP port 631), can leak several pieces of sensitive information from a vulnerable device. The URI path /etc/mnt_info.csv can be accessed via a GET request and no authentication is required. The returned result is a comma separated value (CSV) table of information. The leaked information includes the device&#8217;s model, firmware version, IP address, and serial number.",
                     "name": "CVE-2024-51977"
-                },
-                {
-                    "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of NETGEAR R6020, R6080, R6120, R6220, R6260, R6700v2, R6800, R6900v2, R7450, JNR3210, WNR2020, Nighthawk AC2100, and Nighthawk AC2400 routers. Although authentication is required to exploit this vulnerability, the existing authentication mechanism can be bypassed. The specific flaw exists within the mini_httpd service, which listens on TCP port 80 by default. When parsing the funjsq_access_token parameter, the process does not properly validate a user-supplied string before using it to execute a system call. An attacker can leverage this vulnerability to execute code in the context of root. Was ZDI-CAN-11653.",
-                    "name": "CVE-2020-27867"
                 }
             ]
         },
@@ -896,7 +888,7 @@
             "vulnerabilities": []
         },
         {
-            "count": 3,
+            "count": 2,
             "description": "tsap ISO-TSAP Class 0 | ISO-TSAP Class 0",
             "name": "iso-tsap",
             "port": 102,
@@ -909,10 +901,6 @@
                 {
                     "description": "A vulnerability has been identified in SIMATIC S7-1200 CPU 1211C AC/DC/Rly (6ES7211-1BE40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1211C DC/DC/DC (6ES7211-1AE40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1211C DC/DC/Rly (6ES7211-1HE40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1212C AC/DC/Rly (6ES7212-1BE40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1212C DC/DC/DC (6ES7212-1AE40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1212C DC/DC/Rly (6ES7212-1HE40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1212FC DC/DC/DC (6ES7212-1AF40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1212FC DC/DC/Rly (6ES7212-1HF40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1214C AC/DC/Rly (6ES7214-1BG40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1214C DC/DC/DC (6ES7214-1AG40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1214C DC/DC/Rly (6ES7214-1HG40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1214FC DC/DC/DC (6ES7214-1AF40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1214FC DC/DC/Rly (6ES7214-1HF40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1215C AC/DC/Rly (6ES7215-1BG40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1215C DC/DC/DC (6ES7215-1AG40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1215C DC/DC/Rly (6ES7215-1HG40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1215FC DC/DC/DC (6ES7215-1AF40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1215FC DC/DC/Rly (6ES7215-1HF40-0XB0) (All versions < V4.7), SIMATIC S7-1200 CPU 1217C DC/DC/DC (6ES7217-1AG40-0XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212 AC/DC/RLY (6AG1212-1BE40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212 AC/DC/RLY (6AG1212-1BE40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212 DC/DC/RLY (6AG1212-1HE40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212 DC/DC/RLY (6AG1212-1HE40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212C DC/DC/DC (6AG1212-1AE40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212C DC/DC/DC (6AG1212-1AE40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1212C DC/DC/DC RAIL (6AG2212-1AE40-1XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 AC/DC/RLY (6AG1214-1BG40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 AC/DC/RLY (6AG1214-1BG40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 AC/DC/RLY (6AG1214-1BG40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 DC/DC/DC (6AG1214-1AG40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 DC/DC/DC (6AG1214-1AG40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 DC/DC/DC (6AG1214-1AG40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 DC/DC/RLY (6AG1214-1HG40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 DC/DC/RLY (6AG1214-1HG40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214 DC/DC/RLY (6AG1214-1HG40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214C DC/DC/DC RAIL (6AG2214-1AG40-1XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214FC DC/DC/DC (6AG1214-1AF40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1214FC DC/DC/RLY (6AG1214-1HF40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 AC/DC/RLY (6AG1215-1BG40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 AC/DC/RLY (6AG1215-1BG40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 AC/DC/RLY (6AG1215-1BG40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 DC/DC/DC (6AG1215-1AG40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 DC/DC/DC (6AG1215-1AG40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 DC/DC/RLY (6AG1215-1HG40-2XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 DC/DC/RLY (6AG1215-1HG40-4XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215 DC/DC/RLY (6AG1215-1HG40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215C DC/DC/DC (6AG1215-1AG40-5XB0) (All versions < V4.7), SIPLUS S7-1200 CPU 1215FC DC/DC/DC (6AG1215-1AF40-5XB0) (All versions < V4.7). Affected devices do not process correctly certain special crafted packets sent to port 102/tcp, which could allow an attacker to cause a denial of service in the device.",
                     "name": "CVE-2025-24812"
-                },
-                {
-                    "description": "A vulnerability has been identified in SIMATIC Drive Controller family (All versions >= V2.9.2 < V2.9.4), SIMATIC ET 200SP Open Controller CPU 1515SP PC2 (incl. SIPLUS variants) (All versions >= V21.9 < V21.9.4), SIMATIC S7-1200 CPU family (incl. SIPLUS variants) (All versions >= V4.5.0 < V4.5.2), SIMATIC S7-1500 CPU family (incl. related ET200 CPUs and SIPLUS variants) (All versions >= V2.9.2 < V2.9.4), SIMATIC S7-1500 Software Controller (All versions >= V21.9 < V21.9.4), SIMATIC S7-PLCSIM Advanced (All versions >= V4.0 < V4.0 SP1), SIPLUS TIM 1531 IRC (All versions < V2.3.6), TIM 1531 IRC (All versions < V2.3.6). An unauthenticated attacker could cause a denial-of-service condition in a PLC when sending specially prepared packets over port 102/tcp. A restart of the affected device is needed to restore normal operations.",
-                    "name": "CVE-2021-37185"
                 }
             ]
         },
@@ -20600,16 +20588,12 @@
             "vulnerabilities": []
         },
         {
-            "count": 2,
+            "count": 1,
             "description": "Location Tracking Protocol",
             "name": "ltp",
             "port": 4044,
             "protocol": "tcp",
             "vulnerabilities": [
-                {
-                    "description": "This vulnerability allows network-adjacent attackers to execute arbitrary code on affected installations of D-Link DIR-825 1.0.9/EE routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the Dreambox plugin for the xupnpd service, which listens on TCP port 4044. The issue results from the lack of proper validation of a user-supplied string before using it to execute a system call. An attacker can leverage this vulnerability to execute code in the context of the admin user. Was ZDI-CAN-19461.",
-                    "name": "CVE-2022-43644"
-                },
                 {
                     "description": "This vulnerability allows network-adjacent attackers to execute arbitrary commands on affected installations of D-Link DIR-2150 4.0.1 routers. Authentication is not required to exploit this vulnerability. The specific flaw exists within the xupnpd_generic.lua plugin for the xupnpd service, which listens on TCP port 4044 by default. When parsing the feed parameter, the process does not properly validate a user-supplied string before using it to execute a system call. An attacker can leverage this vulnerability to execute code in the context of the service account. Was ZDI-CAN-15906.",
                     "name": "CVE-2022-40719"
