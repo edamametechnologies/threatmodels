@@ -1,5 +1,5 @@
 {
-  "date": "March 09th 2026",
+  "date": "March 18th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -933,7 +933,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "printf '%s\\n' 'system_profiler SPHardwareDataType 2>/dev/null | grep -q '\"'\"'Virtual'\"'\"' ||' 'fdesetup isactive | grep false' | /bin/bash"
+        "target": "printf '%s\\n' 'system_profiler SPHardwareDataType 2>/dev/null | grep -v '\"'\"'hw\\.cpufamily'\"'\"' | grep -q '\"'\"'Virtual'\"'\"' ||' 'fdesetup isactive | grep false' | /bin/bash"
       },
       "metrictype": "bool",
       "name": "encrypted disk disabled",
@@ -2191,5 +2191,5 @@
     }
   ],
   "name": "threat model macOS",
-  "signature": "7557f37970c2d9810f2efa7f9eb2409084c8108fde7daa3e5094c72fdc2865c4"
+  "signature": "8d8fd5c0dcaa08b80bf45e67c0e92d810a6d6ca1a4ae54ebac164491e419905f"
 }
