@@ -685,6 +685,113 @@ def validate_vendor_vulns(filename: str) -> None:
 
     print("Vendor vulnerabilities validation successful")
 
+def validate_sensitive_paths(filename: str) -> None:
+    """Validate sensitive-paths-db.json structure."""
+    allowed_top_keys = {'date', 'signature', 'common_patterns', 'platform_patterns', 'labels'}
+
+    with open(filename, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+
+    if not isinstance(data, dict):
+        raise ValueError("Data is not a valid JSON object")
+
+    actual_keys = set(data.keys())
+    if actual_keys != allowed_top_keys:
+        unexpected = actual_keys - allowed_top_keys
+        missing = allowed_top_keys - actual_keys
+        raise ValueError(f"Unexpected keys {unexpected}, missing keys {missing}")
+
+    _validate_date_string(data.get('date'), 'sensitive-paths')
+    _validate_signature_and_sidecar(filename, data, signature_required=True)
+
+    if not isinstance(data['common_patterns'], list):
+        raise ValueError("'common_patterns' must be a list")
+    for i, pat in enumerate(data['common_patterns']):
+        if not isinstance(pat, str):
+            raise ValueError(f"common_patterns[{i}] must be a string")
+
+    if not isinstance(data['platform_patterns'], dict):
+        raise ValueError("'platform_patterns' must be a dict")
+    allowed_platforms = {'macos', 'windows', 'linux', 'ios', 'android'}
+    for platform, patterns in data['platform_patterns'].items():
+        if platform not in allowed_platforms:
+            raise ValueError(f"Unknown platform '{platform}' in platform_patterns")
+        if not isinstance(patterns, list):
+            raise ValueError(f"platform_patterns['{platform}'] must be a list")
+        for i, pat in enumerate(patterns):
+            if not isinstance(pat, str):
+                raise ValueError(f"platform_patterns['{platform}'][{i}] must be a string")
+
+    if not isinstance(data['labels'], dict):
+        raise ValueError("'labels' must be a dict")
+    for label, patterns in data['labels'].items():
+        if not isinstance(label, str):
+            raise ValueError(f"Label key must be a string, got {type(label)}")
+        if not isinstance(patterns, list):
+            raise ValueError(f"labels['{label}'] must be a list")
+        for i, pat in enumerate(patterns):
+            if not isinstance(pat, str):
+                raise ValueError(f"labels['{label}'][{i}] must be a string")
+
+    print("Sensitive paths validation successful")
+
+
+def validate_cve_detection_params(filename: str) -> None:
+    """Validate cve-detection-params-db.json structure."""
+    allowed_top_keys = {
+        'date', 'signature', 'gateway_port', 'checks',
+        'generic_reuse_tokens', 'generic_application_tokens',
+        'init_process_names', 'suspicious_parent_path_patterns',
+    }
+    allowed_check_keys = {'severity', 'description', 'reference'}
+    required_checks = {'gateway_binding', 'token_exfiltration', 'skill_supply_chain', 'sandbox_exploitation'}
+    allowed_severities = {'CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO'}
+
+    with open(filename, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+
+    if not isinstance(data, dict):
+        raise ValueError("Data is not a valid JSON object")
+
+    actual_keys = set(data.keys())
+    if actual_keys != allowed_top_keys:
+        unexpected = actual_keys - allowed_top_keys
+        missing = allowed_top_keys - actual_keys
+        raise ValueError(f"Unexpected keys {unexpected}, missing keys {missing}")
+
+    _validate_date_string(data.get('date'), 'cve-detection-params')
+    _validate_signature_and_sidecar(filename, data, signature_required=True)
+
+    if not isinstance(data['gateway_port'], int) or not (1 <= data['gateway_port'] <= 65535):
+        raise ValueError("'gateway_port' must be an integer between 1 and 65535")
+
+    if not isinstance(data['checks'], dict):
+        raise ValueError("'checks' must be a dict")
+    if set(data['checks'].keys()) != required_checks:
+        missing = required_checks - set(data['checks'].keys())
+        extra = set(data['checks'].keys()) - required_checks
+        raise ValueError(f"Missing checks {missing}, unexpected checks {extra}")
+    for check_name, check_data in data['checks'].items():
+        if set(check_data.keys()) != allowed_check_keys:
+            raise ValueError(f"check '{check_name}' has unexpected keys: {set(check_data.keys()) - allowed_check_keys}")
+        if check_data['severity'] not in allowed_severities:
+            raise ValueError(f"check '{check_name}' has invalid severity: {check_data['severity']}")
+        if not isinstance(check_data['description'], str):
+            raise ValueError(f"check '{check_name}' description must be a string")
+        if not isinstance(check_data['reference'], str):
+            raise ValueError(f"check '{check_name}' reference must be a string")
+
+    for list_key in ('generic_reuse_tokens', 'generic_application_tokens',
+                     'init_process_names', 'suspicious_parent_path_patterns'):
+        if not isinstance(data[list_key], list):
+            raise ValueError(f"'{list_key}' must be a list")
+        for i, item in enumerate(data[list_key]):
+            if not isinstance(item, str):
+                raise ValueError(f"{list_key}[{i}] must be a string")
+
+    print("CVE detection params validation successful")
+
+
 if __name__ == "__main__":
     validation_errors = []
     for arg in sys.argv[1:]: # Skip the script name itself
@@ -702,6 +809,10 @@ if __name__ == "__main__":
                  validate_blacklist(arg)
             elif arg.startswith("lanscan-vendor-vulns"):
                  validate_vendor_vulns(arg)
+            elif arg.startswith("sensitive-paths"):
+                 validate_sensitive_paths(arg)
+            elif arg.startswith("cve-detection-params"):
+                 validate_cve_detection_params(arg)
             else:
                 print(f"Warning: No specific validation logic found for prefix of file '{arg}'. Skipping.")
             print(f"Validation successful for {arg}")
