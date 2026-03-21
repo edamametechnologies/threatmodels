@@ -90,8 +90,34 @@ jobs:
            exit 1
          fi
 
+     - name: Validate sensitive paths
+       id: validate_sensitive_paths
+       run: |
+         echo "Validating sensitive paths"
+         set -o pipefail
+         if ! python3 src/publish/validate-models.py sensitive-paths-db.json 2>&1 | tee validate_sensitive_paths_output.txt; then
+           echo "Validation Failed!"
+           echo "error_message_sensitive_paths<<EOF" >> $GITHUB_OUTPUT
+           head -n 10 validate_sensitive_paths_output.txt >> $GITHUB_OUTPUT
+           echo "EOF" >> $GITHUB_OUTPUT
+           exit 1
+         fi
+
+     - name: Validate CVE detection params
+       id: validate_cve_params
+       run: |
+         echo "Validating CVE detection params"
+         set -o pipefail
+         if ! python3 src/publish/validate-models.py cve-detection-params-db.json 2>&1 | tee validate_cve_params_output.txt; then
+           echo "Validation Failed!"
+           echo "error_message_cve_params<<EOF" >> $GITHUB_OUTPUT
+           head -n 10 validate_cve_params_output.txt >> $GITHUB_OUTPUT
+           echo "EOF" >> $GITHUB_OUTPUT
+           exit 1
+         fi
+
      - name: Slack alert for validation failure
-       if: steps.validate.outcome == 'failure' || steps.validate_whitelist.outcome == 'failure' || steps.validate_blacklist.outcome == 'failure' || steps.validate_lanscan.outcome == 'failure'
+       if: steps.validate.outcome == 'failure' || steps.validate_whitelist.outcome == 'failure' || steps.validate_blacklist.outcome == 'failure' || steps.validate_lanscan.outcome == 'failure' || steps.validate_sensitive_paths.outcome == 'failure' || steps.validate_cve_params.outcome == 'failure'
        uses: slackapi/slack-github-action@v1.26.0
        with:
          channel-id: 'C072J0U9TH7'
@@ -101,6 +127,8 @@ jobs:
            Whitelist: ${{ steps.validate_whitelist.outcome }} ${{ steps.validate_whitelist.outcome == 'failure' && format(': {0}', steps.validate_whitelist.outputs.error_message_whitelist) || '' }}
            Blacklist: ${{ steps.validate_blacklist.outcome }} ${{ steps.validate_blacklist.outcome == 'failure' && format(': {0}', steps.validate_blacklist.outputs.error_message_blacklist) || '' }}
            Lanscan: ${{ steps.validate_lanscan.outcome }} ${{ steps.validate_lanscan.outcome == 'failure' && format(': {0}', steps.validate_lanscan.outputs.error_message_lanscan) || '' }}
+           Sensitive Paths: ${{ steps.validate_sensitive_paths.outcome }} ${{ steps.validate_sensitive_paths.outcome == 'failure' && format(': {0}', steps.validate_sensitive_paths.outputs.error_message_sensitive_paths) || '' }}
+           CVE Params: ${{ steps.validate_cve_params.outcome }} ${{ steps.validate_cve_params.outcome == 'failure' && format(': {0}', steps.validate_cve_params.outputs.error_message_cve_params) || '' }}
        env:
          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
