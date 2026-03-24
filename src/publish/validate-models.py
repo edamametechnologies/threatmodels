@@ -739,12 +739,12 @@ def validate_sensitive_paths(filename: str) -> None:
 def validate_cve_detection_params(filename: str) -> None:
     """Validate cve-detection-params-db.json structure."""
     allowed_top_keys = {
-        'date', 'signature', 'gateway_port', 'checks',
+        'date', 'signature', 'checks',
         'generic_reuse_tokens', 'generic_application_tokens',
         'init_process_names', 'suspicious_parent_path_patterns',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
-    required_checks = {'gateway_binding', 'token_exfiltration', 'skill_supply_chain', 'sandbox_exploitation'}
+    required_checks = {'token_exfiltration', 'skill_supply_chain', 'sandbox_exploitation'}
     allowed_severities = {'CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO'}
 
     with open(filename, 'r', encoding='utf-8') as file:
@@ -761,9 +761,6 @@ def validate_cve_detection_params(filename: str) -> None:
 
     _validate_date_string(data.get('date'), 'cve-detection-params')
     _validate_signature_and_sidecar(filename, data, signature_required=True)
-
-    if not isinstance(data['gateway_port'], int) or not (1 <= data['gateway_port'] <= 65535):
-        raise ValueError("'gateway_port' must be an integer between 1 and 65535")
 
     if not isinstance(data['checks'], dict):
         raise ValueError("'checks' must be a dict")
