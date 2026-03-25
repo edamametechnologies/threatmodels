@@ -1,83 +1,131 @@
 {
-    "common_patterns": [
-        "/.ssh/",
-        "/.gnupg/",
-        "/.aws/credentials",
-        "/.aws/config",
-        "/.kube/config",
-        "/.docker/config.json",
-        "/.npmrc",
-        "/.env",
-        "/.netrc",
-        "/.pgpass",
-        "/.pypirc",
-        "/credentials.json",
-        "/id_rsa",
-        "/id_ed25519",
-        "/id_ecdsa",
-        "/id_dsa",
-        "/Login Data",
-        "/Cookies",
-        "/Web Data"
+  "common_patterns": [
+    "/.ssh/",
+    "/.gnupg/",
+    "/.aws/credentials",
+    "/.aws/config",
+    "/.kube/config",
+    "/.docker/config.json",
+    "/.npmrc",
+    "/.env",
+    "/.netrc",
+    "/.pgpass",
+    "/.pypirc",
+    "/credentials.json",
+    "/id_rsa",
+    "/id_ed25519",
+    "/id_ecdsa",
+    "/id_dsa",
+    "/Login Data",
+    "/Cookies",
+    "/Web Data",
+    "/.git-credentials",
+    "/.vault-token",
+    "/.config/gcloud/application_default_credentials.json",
+    "/.azure/",
+    "/.my.cnf",
+    "/.bitcoin/",
+    "/.ethereum/keystore/",
+    "/.config/solana/id.json",
+    "/.bitmonero/",
+    "/.litecoin/",
+    "/.dogecoin/"
+  ],
+  "date": "March 25th 2026",
+  "labels": {
+    "aws": [
+      "/.aws/"
     ],
-    "date": "March 20th 2026",
-    "labels": {
-        "aws": [
-            "/.aws/"
-        ],
-        "browser_store": [
-            "/cookies",
-            "/login data",
-            "/web data"
-        ],
-        "claude": [
-            "/.claude/"
-        ],
-        "credentials_json": [
-            "/credentials.json"
-        ],
-        "docker": [
-            "/.docker/"
-        ],
-        "env": [
-            "/.env"
-        ],
-        "keychain": [
-            "/library/keychains/"
-        ],
-        "kube": [
-            "/.kube/"
-        ],
-        "openclaw": [
-            "/openclaw.json"
-        ],
-        "ssh": [
-            "/.ssh/",
-            "/id_rsa",
-            "/id_ed25519",
-            "/id_ecdsa",
-            "/id_dsa"
-        ]
-    },
-    "platform_patterns": {
-        "linux": [
-            "/etc/shadow",
-            "/etc/gshadow",
-            "/etc/security/opasswd"
-        ],
-        "macos": [
-            "/Library/Keychains/",
-            "/MobileSyncBackup/"
-        ],
-        "windows": [
-            "/AppData/Roaming/Microsoft/Credentials/",
-            "/AppData/Roaming/Microsoft/Protect/",
-            "/Windows/System32/config/SAM",
-            "/Windows/System32/config/SECURITY",
-            "/Windows/NTDS/ntds.dit",
-            "/AppData/Local/Google/Chrome/User Data/",
-            "/AppData/Roaming/Mozilla/Firefox/Profiles/"
-        ]
-    },
-    "signature": "97b8c0c2b6a711d5d733e200d372d6b6a39c1d0f8c5a640f4b6c535420651711"
+    "azure": [
+      "/.azure/"
+    ],
+    "browser_store": [
+      "/cookies",
+      "/login data",
+      "/web data"
+    ],
+    "claude": [
+      "/.claude/"
+    ],
+    "credentials_json": [
+      "/credentials.json"
+    ],
+    "crypto": [
+      "/.bitcoin/",
+      "/.ethereum/",
+      "/.config/solana/",
+      "/.bitmonero/",
+      "/.litecoin/",
+      "/.dogecoin/",
+      "/application support/bitcoin/",
+      "/application support/ethereum/",
+      "/appdata/local/bitcoin/",
+      "/appdata/local/ethereum/"
+    ],
+    "docker": [
+      "/.docker/"
+    ],
+    "env": [
+      "/.env"
+    ],
+    "gcp": [
+      "/.config/gcloud/"
+    ],
+    "git": [
+      "/.git-credentials"
+    ],
+    "keychain": [
+      "/library/keychains/"
+    ],
+    "kube": [
+      "/.kube/"
+    ],
+    "mysql": [
+      "/.my.cnf"
+    ],
+    "openclaw": [
+      "/openclaw.json"
+    ],
+    "ssh": [
+      "/.ssh/",
+      "/id_rsa",
+      "/id_ed25519",
+      "/id_ecdsa",
+      "/id_dsa"
+    ],
+    "vault": [
+      "/.vault-token"
+    ]
+  },
+  "platform_patterns": {
+    "linux": [
+      "/etc/shadow",
+      "/etc/gshadow",
+      "/etc/security/opasswd"
+    ],
+    "macos": [
+      "/Library/Keychains/",
+      "/MobileSyncBackup/",
+      "/Library/Application Support/Bitcoin/",
+      "/Library/Application Support/Ethereum/keystore/",
+      "/Library/Application Support/Litecoin/",
+      "/Library/Application Support/Dogecoin/",
+      "/Library/Application Support/Monero/"
+    ],
+    "windows": [
+      "/AppData/Roaming/Microsoft/Credentials/",
+      "/AppData/Roaming/Microsoft/Protect/",
+      "/Windows/System32/config/SAM",
+      "/Windows/System32/config/SECURITY",
+      "/Windows/NTDS/ntds.dit",
+      "/AppData/Local/Google/Chrome/User Data/",
+      "/AppData/Roaming/Mozilla/Firefox/Profiles/",
+      "/AppData/Local/Bitcoin/",
+      "/AppData/Local/Ethereum/keystore/",
+      "/AppData/Roaming/Litecoin/",
+      "/AppData/Roaming/Dogecoin/",
+      "/AppData/Local/bitmonero/"
+    ]
+  },
+  "signature": "a5564cd83a710aea65d6ca99221b2be8e65198b7d2adb25f9039dcd1bc0afc30"
 }
