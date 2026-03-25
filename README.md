@@ -7,6 +7,7 @@
   - [Vendor Vulnerability Database](#vendor-vulnerability-database)
   - [Device Profile Database](#device-profile-database)
   - [Whitelist Database](#whitelist-database)
+  - [Sensitive Path Database](#sensitive-path-database)
   - [Blacklist Database](#blacklist-database)
   - [Database Integrity and Updates](#database-integrity-and-updates)
 - [Threat Dimensions](#threat-dimensions)
@@ -107,6 +108,20 @@ Currently, the database defines the following key whitelists:
 - `builder`: Extends `edamame` for development environments (package repositories, cloud services, CDNs).
 - `github`: Extends `builder` for GitHub-related connections (GitHub domains, Azure IPs for Actions).
 - `github_macos`, `github_ubuntu`, `github_windows`: Extend `github` with platform-specific connections needed in CI/CD environments (e.g., Homebrew/Apple services for macOS, Ubuntu/Microsoft repositories for Linux).
+
+### Sensitive Path Database
+
+The `sensitive-paths-db.json` database defines file paths that indicate credential stores, secrets, and other high-value targets on a host. The EDAMAME vulnerability detector correlates these paths with network session data: when a process has sensitive files open while making anomalous or blacklisted network connections, this triggers `token_exfiltration` or `skill_supply_chain` findings.
+
+The database contains three sections:
+
+1. **`common_patterns`**: Cross-platform paths matched against L7 `open_files` in captured sessions. Covers SSH keys, cloud credentials (AWS, GCP, Azure), container configs (Docker, Kubernetes), package manager tokens (npm, PyPI), database credentials (PostgreSQL, MySQL), secret managers (Vault), git credentials, browser credential stores, and environment files.
+2. **`labels`**: Semantic groupings of paths (e.g. `ssh`, `aws`, `gcp`, `vault`) used by the vulnerability detector to classify which credential categories a process is accessing. Multi-label findings (e.g. ssh + aws + kube simultaneously) indicate broad credential harvesting such as supply chain infostealers.
+3. **`platform_patterns`**: OS-specific paths (e.g. `/etc/shadow` on Linux, Keychain on macOS, SAM/NTDS on Windows).
+
+The path list is informed by real-world supply chain attacks including the [litellm 1.82.8 PyPI compromise](https://github.com/BerriAI/litellm/issues/24512) (March 2026), AMOS infostealer campaigns, and MCPTox tool poisoning research.
+
+This database is maintained manually. After editing, run `python3 src/publish/update-models.py sensitive-paths-db.json` to refresh the date and signature.
 
 ### Blacklist Database
 
