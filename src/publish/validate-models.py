@@ -740,11 +740,12 @@ def validate_cve_detection_params(filename: str) -> None:
     """Validate cve-detection-params-db.json structure."""
     allowed_top_keys = {
         'date', 'signature', 'checks',
+        'credential_harvest_min_labels',
         'generic_reuse_tokens', 'generic_application_tokens',
         'init_process_names', 'suspicious_parent_path_patterns',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
-    required_checks = {'token_exfiltration', 'skill_supply_chain', 'sandbox_exploitation'}
+    required_checks = {'credential_harvest', 'token_exfiltration', 'skill_supply_chain', 'sandbox_exploitation'}
     allowed_severities = {'CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO'}
 
     with open(filename, 'r', encoding='utf-8') as file:
