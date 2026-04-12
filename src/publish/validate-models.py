@@ -741,12 +741,74 @@ def validate_cve_detection_params(filename: str) -> None:
     allowed_top_keys = {
         'date', 'signature', 'checks',
         'credential_harvest_min_labels',
+        'benign_temp_artifact_suffixes',
+        'application_storage_patterns',
+        'credential_store_patterns',
+        'trusted_credential_helpers',
         'generic_reuse_tokens', 'generic_application_tokens',
         'init_process_names', 'suspicious_parent_path_patterns',
+        'packaged_application_contains_patterns',
+        'packaged_application_starts_with_patterns',
+        'packaged_application_ends_with_patterns',
+        'fim_hash_size_threshold', 'fim_temp_executable_patterns',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
-    required_checks = {'credential_harvest', 'token_exfiltration', 'skill_supply_chain', 'sandbox_exploitation'}
+    required_checks = {
+        'credential_harvest',
+        'token_exfiltration',
+        'skill_supply_chain',
+        'sandbox_exploitation',
+        'file_system_tampering',
+    }
     allowed_severities = {'CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO'}
+
+    def validate_string_list(value, key_name: str) -> None:
+        if not isinstance(value, list):
+            raise ValueError(f"'{key_name}' must be a list")
+        for i, item in enumerate(value):
+            if not isinstance(item, str):
+                raise ValueError(f"{key_name}[{i}] must be a string")
+
+    def validate_platform_string_lists(value, key_name: str) -> None:
+        expected_keys = {'macos', 'linux', 'windows'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for platform in sorted(expected_keys):
+            validate_string_list(value[platform], f"{key_name}['{platform}']")
+
+    def validate_helper_matcher_config(value, key_name: str) -> None:
+        expected_keys = {
+            'exact_paths',
+            'path_contains',
+            'path_starts_with',
+            'path_ends_with',
+            'compact_names',
+            'compact_leaf_names',
+            'leaf_trusted_dir_prefixes',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for matcher_key in sorted(expected_keys):
+            validate_string_list(value[matcher_key], f"{key_name}['{matcher_key}']")
+
+    def validate_platform_helper_matchers(value, key_name: str) -> None:
+        expected_keys = {'generic_git', 'macos', 'linux', 'windows'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for platform in sorted(expected_keys):
+            validate_helper_matcher_config(value[platform], f"{key_name}['{platform}']")
 
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
@@ -779,13 +841,27 @@ def validate_cve_detection_params(filename: str) -> None:
         if not isinstance(check_data['reference'], str):
             raise ValueError(f"check '{check_name}' reference must be a string")
 
-    for list_key in ('generic_reuse_tokens', 'generic_application_tokens',
-                     'init_process_names', 'suspicious_parent_path_patterns'):
-        if not isinstance(data[list_key], list):
-            raise ValueError(f"'{list_key}' must be a list")
-        for i, item in enumerate(data[list_key]):
-            if not isinstance(item, str):
-                raise ValueError(f"{list_key}[{i}] must be a string")
+    if not isinstance(data['credential_harvest_min_labels'], int) or data['credential_harvest_min_labels'] < 1:
+        raise ValueError("'credential_harvest_min_labels' must be a positive integer")
+    if not isinstance(data['fim_hash_size_threshold'], int) or data['fim_hash_size_threshold'] < 0:
+        raise ValueError("'fim_hash_size_threshold' must be a non-negative integer")
+
+    for list_key in (
+        'benign_temp_artifact_suffixes',
+        'application_storage_patterns',
+        'generic_reuse_tokens',
+        'generic_application_tokens',
+        'init_process_names',
+        'suspicious_parent_path_patterns',
+        'packaged_application_contains_patterns',
+        'packaged_application_starts_with_patterns',
+        'packaged_application_ends_with_patterns',
+        'fim_temp_executable_patterns',
+    ):
+        validate_string_list(data[list_key], list_key)
+
+    validate_platform_string_lists(data['credential_store_patterns'], 'credential_store_patterns')
+    validate_platform_helper_matchers(data['trusted_credential_helpers'], 'trusted_credential_helpers')
 
     print("CVE detection params validation successful")
 

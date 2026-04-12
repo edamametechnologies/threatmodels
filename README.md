@@ -133,11 +133,15 @@ The `cve-detection-params-db.json` database stores check metadata and tuning par
 
 - **`checks`**: Metadata (description template, severity, reference) for each vulnerability check: `token_exfiltration`, `skill_supply_chain`, `credential_harvest`, `sandbox_exploitation`.
 - **`credential_harvest_min_labels`**: Minimum number of distinct credential label categories a process must access to trigger the `credential_harvest` finding (default: 3). This threshold can be tuned without shipping a new binary.
-- **`suspicious_parent_path_patterns`**: Path prefixes (e.g. `/tmp/`, `/../`) that trigger `sandbox_exploitation`.
+- **`suspicious_parent_path_patterns`**: Path prefixes that trigger `sandbox_exploitation` (for example `/tmp/`, `/var/tmp/`, `\Temp\`).
 - **`generic_reuse_tokens`** / **`generic_application_tokens`**: Tokens filtered from process identity during finding deduplication and self-access suppression.
 - **`init_process_names`**: Process names excluded from sandbox lineage checks (e.g. `launchd`, `systemd`).
+- **`benign_temp_artifact_suffixes`**: File suffixes treated as routine FIM churn unless the writing process lineage is suspicious.
+- **`application_storage_patterns`** / **`packaged_application_*_patterns`**: App-owned storage roots and install-layout heuristics used for self-access suppression.
+- **`credential_store_patterns`**: Platform-specific credential-store path buckets for Keychain, keyring, KWallet, and Windows Vault detection.
+- **`trusted_credential_helpers`**: Configurable allowlists for platform credential helpers and system daemons (for example `securityd`, `assistantd`, `CommCenter`, `networkserviceproxy`) so benign OS maintenance can be tuned from the model instead of hardcoded in Rust.
 
-After editing, run `python3 src/publish/update-models.py cve-detection-params-db.json` to refresh the date and signature, then update the fallback embed in `edamame_core/src/agentic/cve_detection_params_db.rs`.
+After editing, run `python3 src/publish/update-models.py cve-detection-params-db.json` to refresh the date and signature, then update the fallback embed in `edamame_foundation/src/cve_detection_params_db.rs`.
 
 ### Blacklist Database
 
