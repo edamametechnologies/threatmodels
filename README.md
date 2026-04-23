@@ -131,8 +131,10 @@ This database is maintained manually. After editing, run `python3 src/publish/up
 
 The `cve-detection-params-db.json` database stores check metadata and tuning parameters for the EDAMAME vulnerability detector. It is a cloud model updated via the same signature mechanism as other databases. Key contents:
 
-- **`checks`**: Metadata (description template, severity, reference) for each vulnerability check: `token_exfiltration`, `skill_supply_chain`, `credential_harvest`, `sandbox_exploitation`.
+- **`checks`**: Metadata (description template, severity, reference) for each vulnerability check: `token_exfiltration`, `skill_supply_chain`, `credential_harvest`, `sandbox_exploitation`, `file_system_tampering`, and `sensitive_material_egress`.
 - **`credential_harvest_min_labels`**: Minimum number of distinct credential label categories a process must access to trigger the `credential_harvest` finding (default: 3). This threshold can be tuned without shipping a new binary.
+- **`secret_content_scan_max_bytes`** / **`secret_content_min_hits`** / **`recent_sensitive_open_file_ttl_secs`**: Tunables for secret-like content scanning and how long recent sensitive open-file evidence remains eligible for correlation.
+- **`ci_runner_process_name_prefixes`**: CI provisioning daemon name prefixes (for example `provjobd`) that the sandbox lineage detector may suppress when the matching process is also running from a suspicious temp lineage on ephemeral build hosts.
 - **`suspicious_parent_path_patterns`**: Path prefixes that trigger `sandbox_exploitation` (for example `/tmp/`, `/var/tmp/`, `\Temp\`).
 - **`generic_reuse_tokens`** / **`generic_application_tokens`**: Tokens filtered from process identity during finding deduplication and self-access suppression.
 - **`init_process_names`**: Process names excluded from sandbox lineage checks (e.g. `launchd`, `systemd`).

@@ -741,6 +741,10 @@ def validate_cve_detection_params(filename: str) -> None:
     allowed_top_keys = {
         'date', 'signature', 'checks',
         'credential_harvest_min_labels',
+        'secret_content_scan_max_bytes',
+        'secret_content_min_hits',
+        'recent_sensitive_open_file_ttl_secs',
+        'ci_runner_process_name_prefixes',
         'benign_temp_artifact_suffixes',
         'application_storage_patterns',
         'credential_store_patterns',
@@ -759,6 +763,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'skill_supply_chain',
         'sandbox_exploitation',
         'file_system_tampering',
+        'sensitive_material_egress',
     }
     allowed_severities = {'CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO'}
 
@@ -843,10 +848,17 @@ def validate_cve_detection_params(filename: str) -> None:
 
     if not isinstance(data['credential_harvest_min_labels'], int) or data['credential_harvest_min_labels'] < 1:
         raise ValueError("'credential_harvest_min_labels' must be a positive integer")
+    if not isinstance(data['secret_content_scan_max_bytes'], int) or data['secret_content_scan_max_bytes'] < 0:
+        raise ValueError("'secret_content_scan_max_bytes' must be a non-negative integer")
+    if not isinstance(data['secret_content_min_hits'], int) or data['secret_content_min_hits'] < 1:
+        raise ValueError("'secret_content_min_hits' must be a positive integer")
+    if not isinstance(data['recent_sensitive_open_file_ttl_secs'], int) or data['recent_sensitive_open_file_ttl_secs'] < 0:
+        raise ValueError("'recent_sensitive_open_file_ttl_secs' must be a non-negative integer")
     if not isinstance(data['fim_hash_size_threshold'], int) or data['fim_hash_size_threshold'] < 0:
         raise ValueError("'fim_hash_size_threshold' must be a non-negative integer")
 
     for list_key in (
+        'ci_runner_process_name_prefixes',
         'benign_temp_artifact_suffixes',
         'application_storage_patterns',
         'generic_reuse_tokens',
