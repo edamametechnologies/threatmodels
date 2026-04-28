@@ -186,11 +186,17 @@ Security threats are categorized along 5 key dimensions:
 
 | Dimension | Description |
 |-----------|-------------|
-| **Applications** | Application authorizations, EPP/antivirus, ... |
+| **Applications** | Application authorizations, EPP/antivirus, AI agent posture (`unsecured_<agent>` family), ... |
 | **Network** | Network configuration, exposed services, ... |
 | **Credentials** | Password policies, biometrics, 2FA, ... |
 | **System Integrity** | MDM profiles, jailbreaking, 3rd party administrative access, ... |
 | **System Services** | System configuration, service vulnerabilities, ... |
+
+> The `unsecured_cursor`, `unsecured_claude_code`, `unsecured_claude_desktop`,
+> and `unsecured_openclaw`, and `unsecured_codex` threats track AI agent posture: each is active when
+> the named agent plugin is installed AND its EDAMAME-side transcript observer
+> is paused. These threats are defined in macOS, Windows, and Linux
+> threatmodels and tagged `AI Agent Posture`.
 
 ## Naming Conventions
 
