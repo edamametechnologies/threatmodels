@@ -745,6 +745,8 @@ def validate_cve_detection_params(filename: str) -> None:
         'secret_content_min_hits',
         'recent_sensitive_open_file_ttl_secs',
         'ci_runner_process_name_prefixes',
+        'ci_workspace_path_patterns',
+        'keychain_transactional_filename_patterns',
         'benign_temp_artifact_suffixes',
         'application_storage_patterns',
         'credential_store_patterns',
@@ -859,6 +861,8 @@ def validate_cve_detection_params(filename: str) -> None:
 
     for list_key in (
         'ci_runner_process_name_prefixes',
+        'ci_workspace_path_patterns',
+        'keychain_transactional_filename_patterns',
         'benign_temp_artifact_suffixes',
         'application_storage_patterns',
         'generic_reuse_tokens',
