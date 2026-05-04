@@ -753,6 +753,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'trusted_credential_helpers',
         'generic_reuse_tokens', 'generic_application_tokens',
         'init_process_names', 'suspicious_parent_path_patterns',
+        'non_sensitive_browser_data_subtrees',
         'packaged_application_contains_patterns',
         'packaged_application_starts_with_patterns',
         'packaged_application_ends_with_patterns',
@@ -817,6 +818,27 @@ def validate_cve_detection_params(filename: str) -> None:
         for platform in sorted(expected_keys):
             validate_helper_matcher_config(value[platform], f"{key_name}['{platform}']")
 
+    def validate_browser_data_subtrees(value, key_name: str) -> None:
+        # Lists of case-insensitive substring patterns that the
+        # vulnerability detector matches against FIM `path` to suppress
+        # browser-cache / browser-state findings (see
+        # ../edamame_core/FALSEPOSITIVES.md FP-WIN-1/2/5).
+        expected_keys = {
+            'chromium_family',
+            'chromium_state_files_routine',
+            'chromium_user_data_root_markers',
+            'firefox_family_subtrees',
+            'firefox_user_data_root_markers',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for subkey in sorted(expected_keys):
+            validate_string_list(value[subkey], f"{key_name}['{subkey}']")
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -878,6 +900,10 @@ def validate_cve_detection_params(filename: str) -> None:
 
     validate_platform_string_lists(data['credential_store_patterns'], 'credential_store_patterns')
     validate_platform_helper_matchers(data['trusted_credential_helpers'], 'trusted_credential_helpers')
+    validate_browser_data_subtrees(
+        data['non_sensitive_browser_data_subtrees'],
+        'non_sensitive_browser_data_subtrees',
+    )
 
     print("CVE detection params validation successful")
 
