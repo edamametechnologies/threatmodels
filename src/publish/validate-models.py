@@ -757,6 +757,9 @@ def validate_cve_detection_params(filename: str) -> None:
         'packaged_application_contains_patterns',
         'packaged_application_starts_with_patterns',
         'packaged_application_ends_with_patterns',
+        'platform_metadata_endpoints',
+        'platform_self_state_directories',
+        'platform_self_state_processes',
         'fim_hash_size_threshold', 'fim_temp_executable_patterns',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
@@ -903,6 +906,18 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_browser_data_subtrees(
         data['non_sensitive_browser_data_subtrees'],
         'non_sensitive_browser_data_subtrees',
+    )
+    validate_platform_string_lists(
+        data['platform_metadata_endpoints'],
+        'platform_metadata_endpoints',
+    )
+    validate_platform_string_lists(
+        data['platform_self_state_directories'],
+        'platform_self_state_directories',
+    )
+    validate_platform_string_lists(
+        data['platform_self_state_processes'],
+        'platform_self_state_processes',
     )
 
     print("CVE detection params validation successful")
