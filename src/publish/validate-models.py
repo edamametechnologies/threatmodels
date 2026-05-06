@@ -757,7 +757,11 @@ def validate_cve_detection_params(filename: str) -> None:
         'packaged_application_contains_patterns',
         'packaged_application_starts_with_patterns',
         'packaged_application_ends_with_patterns',
+        'installer_toolchain_temp_path_patterns',
+        'package_manager_temp_path_patterns',
+        'package_manager_temp_writers',
         'platform_metadata_endpoints',
+        'platform_runtime_probe_filename_patterns',
         'platform_self_state_directories',
         'platform_self_state_processes',
         'fim_hash_size_threshold', 'fim_temp_executable_patterns',
@@ -908,8 +912,24 @@ def validate_cve_detection_params(filename: str) -> None:
         'non_sensitive_browser_data_subtrees',
     )
     validate_platform_string_lists(
+        data['installer_toolchain_temp_path_patterns'],
+        'installer_toolchain_temp_path_patterns',
+    )
+    validate_platform_string_lists(
+        data['package_manager_temp_path_patterns'],
+        'package_manager_temp_path_patterns',
+    )
+    validate_platform_string_lists(
+        data['package_manager_temp_writers'],
+        'package_manager_temp_writers',
+    )
+    validate_platform_string_lists(
         data['platform_metadata_endpoints'],
         'platform_metadata_endpoints',
+    )
+    validate_platform_string_lists(
+        data['platform_runtime_probe_filename_patterns'],
+        'platform_runtime_probe_filename_patterns',
     )
     validate_platform_string_lists(
         data['platform_self_state_directories'],
