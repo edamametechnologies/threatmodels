@@ -743,6 +743,8 @@ def validate_cve_detection_params(filename: str) -> None:
         'credential_harvest_min_labels',
         'secret_content_scan_max_bytes',
         'secret_content_min_hits',
+        'secret_content_network_command_tokens',
+        'secret_content_script_extensions',
         'recent_sensitive_open_file_ttl_secs',
         'ci_runner_process_name_prefixes',
         'ci_workspace_path_patterns',
@@ -902,6 +904,8 @@ def validate_cve_detection_params(filename: str) -> None:
         'packaged_application_starts_with_patterns',
         'packaged_application_ends_with_patterns',
         'fim_temp_executable_patterns',
+        'secret_content_network_command_tokens',
+        'secret_content_script_extensions',
     ):
         validate_string_list(data[list_key], list_key)
 
