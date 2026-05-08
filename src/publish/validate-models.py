@@ -763,6 +763,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'installer_toolchain_temp_path_patterns',
         'package_manager_temp_path_patterns',
         'package_manager_temp_writers',
+        'edamame_daemon_self_telemetry_writers',
         'platform_metadata_endpoints',
         'platform_runtime_probe_filename_patterns',
         'platform_self_state_directories',
@@ -928,6 +929,10 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_platform_string_lists(
         data['package_manager_temp_writers'],
         'package_manager_temp_writers',
+    )
+    validate_platform_string_lists(
+        data['edamame_daemon_self_telemetry_writers'],
+        'edamame_daemon_self_telemetry_writers',
     )
     validate_platform_string_lists(
         data['platform_metadata_endpoints'],
