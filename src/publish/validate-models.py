@@ -757,6 +757,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'generic_reuse_tokens', 'generic_application_tokens',
         'init_process_names', 'suspicious_parent_path_patterns',
         'non_sensitive_browser_data_subtrees',
+        'browser_appdata_unknown_writer',
         'packaged_application_contains_patterns',
         'packaged_application_starts_with_patterns',
         'packaged_application_ends_with_patterns',
@@ -764,6 +765,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'package_manager_temp_path_patterns',
         'package_manager_temp_writers',
         'edamame_daemon_self_telemetry_writers',
+        'edamame_daemon_self_telemetry_install_prefixes',
         'platform_metadata_endpoints',
         'platform_runtime_probe_filename_patterns',
         'platform_self_state_directories',
@@ -850,6 +852,23 @@ def validate_cve_detection_params(filename: str) -> None:
         for subkey in sorted(expected_keys):
             validate_string_list(value[subkey], f"{key_name}['{subkey}']")
 
+    def validate_browser_appdata_unknown_writer(value, key_name: str) -> None:
+        expected_keys = {
+            'chromium_user_data_root_markers',
+            'firefox_user_data_root_markers',
+            'chromium_process_names',
+            'firefox_process_names',
+            'directory_target_names',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for subkey in sorted(expected_keys):
+            validate_string_list(value[subkey], f"{key_name}['{subkey}']")
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -918,6 +937,10 @@ def validate_cve_detection_params(filename: str) -> None:
         data['non_sensitive_browser_data_subtrees'],
         'non_sensitive_browser_data_subtrees',
     )
+    validate_browser_appdata_unknown_writer(
+        data['browser_appdata_unknown_writer'],
+        'browser_appdata_unknown_writer',
+    )
     validate_platform_string_lists(
         data['installer_toolchain_temp_path_patterns'],
         'installer_toolchain_temp_path_patterns',
@@ -933,6 +956,10 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_platform_string_lists(
         data['edamame_daemon_self_telemetry_writers'],
         'edamame_daemon_self_telemetry_writers',
+    )
+    validate_platform_string_lists(
+        data['edamame_daemon_self_telemetry_install_prefixes'],
+        'edamame_daemon_self_telemetry_install_prefixes',
     )
     validate_platform_string_lists(
         data['platform_metadata_endpoints'],
@@ -957,23 +984,24 @@ def validate_cve_detection_params(filename: str) -> None:
 if __name__ == "__main__":
     validation_errors = []
     for arg in sys.argv[1:]: # Skip the script name itself
+        filename = os.path.basename(arg)
         try:
             print(f"Validating {arg}...")
-            if arg.startswith("lanscan-port-vulns"):
+            if filename.startswith("lanscan-port-vulns"):
                 validate_lanscan_port_vulns(arg)
-            elif arg.startswith("lanscan-profiles") or arg.startswith("lanscan_profiles"): # Match both patterns
+            elif filename.startswith("lanscan-profiles") or filename.startswith("lanscan_profiles"): # Match both patterns
                 validate_lanscan_profiles(arg)
-            elif arg.startswith("threatmodel"):
+            elif filename.startswith("threatmodel"):
                 validate_threat_model(arg)
-            elif arg.startswith("whitelist"):
+            elif filename.startswith("whitelist"):
                  validate_whitelist(arg)
-            elif arg.startswith("blacklist"):
+            elif filename.startswith("blacklist"):
                  validate_blacklist(arg)
-            elif arg.startswith("lanscan-vendor-vulns"):
+            elif filename.startswith("lanscan-vendor-vulns"):
                  validate_vendor_vulns(arg)
-            elif arg.startswith("sensitive-paths"):
+            elif filename.startswith("sensitive-paths"):
                  validate_sensitive_paths(arg)
-            elif arg.startswith("cve-detection-params"):
+            elif filename.startswith("cve-detection-params"):
                  validate_cve_detection_params(arg)
             else:
                 print(f"Warning: No specific validation logic found for prefix of file '{arg}'. Skipping.")
