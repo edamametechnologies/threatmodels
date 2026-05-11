@@ -748,6 +748,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'secret_content_script_extensions',
         'recent_sensitive_open_file_ttl_secs',
         'ci_runner_process_name_prefixes',
+        'ci_runner_workspace_path_patterns',
         'ci_workspace_path_patterns',
         'keychain_transactional_filename_patterns',
         'benign_temp_artifact_suffixes',
@@ -758,6 +759,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'init_process_names', 'suspicious_parent_path_patterns',
         'non_sensitive_browser_data_subtrees',
         'browser_appdata_unknown_writer',
+        'build_output_tree_self_spawn_patterns',
         'packaged_application_contains_patterns',
         'packaged_application_starts_with_patterns',
         'packaged_application_ends_with_patterns',
@@ -766,10 +768,12 @@ def validate_cve_detection_params(filename: str) -> None:
         'package_manager_temp_writers',
         'edamame_daemon_self_telemetry_writers',
         'edamame_daemon_self_telemetry_install_prefixes',
+        'platform_credential_helper_routine_destinations',
         'platform_metadata_endpoints',
         'platform_runtime_probe_filename_patterns',
         'platform_self_state_directories',
         'platform_self_state_processes',
+        'runtime_perfdata_paths',
         'fim_hash_size_threshold', 'fim_temp_executable_patterns',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
@@ -868,6 +872,86 @@ def validate_cve_detection_params(filename: str) -> None:
             raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
         for subkey in sorted(expected_keys):
             validate_string_list(value[subkey], f"{key_name}['{subkey}']")
+
+    def validate_ci_runner_workspace_paths(value, key_name: str) -> None:
+        # Path substrings are matched against a forward-slash-normalized,
+        # lowercased version of the FIM event path, so a single canonical
+        # forward-slash form covers Linux, macOS and Windows runners across
+        # every CI provider (GitHub Actions, GitLab CI, Jenkins, CircleCI,
+        # Buildkite, Travis, TeamCity, Azure DevOps, Bitbucket Pipelines,
+        # Drone, Woodpecker, Cirrus, AppVeyor, ...).
+        expected_keys = {'path_substrings', 'suppressible_basenames'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        validate_string_list(value['path_substrings'], f"{key_name}['path_substrings']")
+        validate_string_list(value['suppressible_basenames'], f"{key_name}['suppressible_basenames']")
+
+    def validate_credential_helper_destinations(value, key_name: str) -> None:
+        # Per-platform { asn_owners: [...], domain_patterns: [...] }
+        expected_platform_keys = {'macos', 'linux', 'windows'}
+        expected_subkeys = {'asn_owners', 'domain_patterns'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_platform_keys:
+            missing = expected_platform_keys - set(value.keys())
+            extra = set(value.keys()) - expected_platform_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for platform in sorted(expected_platform_keys):
+            sub = value[platform]
+            if not isinstance(sub, dict):
+                raise ValueError(f"{key_name}['{platform}'] must be a dict")
+            if set(sub.keys()) != expected_subkeys:
+                missing = expected_subkeys - set(sub.keys())
+                extra = set(sub.keys()) - expected_subkeys
+                raise ValueError(
+                    f"{key_name}['{platform}'] has missing keys {missing} and unexpected keys {extra}"
+                )
+            validate_string_list(sub['asn_owners'], f"{key_name}['{platform}']['asn_owners']")
+            validate_string_list(sub['domain_patterns'], f"{key_name}['{platform}']['domain_patterns']")
+
+    def validate_runtime_perfdata_paths(value, key_name: str) -> None:
+        # Per-platform list of {artifact_path_substring, writer_basenames, writer_path_prefixes}
+        expected_platform_keys = {'macos', 'linux', 'windows'}
+        expected_entry_keys = {
+            'artifact_path_substring',
+            'writer_basenames',
+            'writer_path_prefixes',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_platform_keys:
+            missing = expected_platform_keys - set(value.keys())
+            extra = set(value.keys()) - expected_platform_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for platform in sorted(expected_platform_keys):
+            entries = value[platform]
+            if not isinstance(entries, list):
+                raise ValueError(f"{key_name}['{platform}'] must be a list")
+            for i, entry in enumerate(entries):
+                if not isinstance(entry, dict):
+                    raise ValueError(f"{key_name}['{platform}'][{i}] must be a dict")
+                if set(entry.keys()) != expected_entry_keys:
+                    missing = expected_entry_keys - set(entry.keys())
+                    extra = set(entry.keys()) - expected_entry_keys
+                    raise ValueError(
+                        f"{key_name}['{platform}'][{i}] has missing keys {missing} and unexpected keys {extra}"
+                    )
+                if not isinstance(entry['artifact_path_substring'], str):
+                    raise ValueError(
+                        f"{key_name}['{platform}'][{i}]['artifact_path_substring'] must be a string"
+                    )
+                validate_string_list(
+                    entry['writer_basenames'],
+                    f"{key_name}['{platform}'][{i}]['writer_basenames']",
+                )
+                validate_string_list(
+                    entry['writer_path_prefixes'],
+                    f"{key_name}['{platform}'][{i}]['writer_path_prefixes']",
+                )
 
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
@@ -976,6 +1060,22 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_platform_string_lists(
         data['platform_self_state_processes'],
         'platform_self_state_processes',
+    )
+    validate_platform_string_lists(
+        data['build_output_tree_self_spawn_patterns'],
+        'build_output_tree_self_spawn_patterns',
+    )
+    validate_ci_runner_workspace_paths(
+        data['ci_runner_workspace_path_patterns'],
+        'ci_runner_workspace_path_patterns',
+    )
+    validate_credential_helper_destinations(
+        data['platform_credential_helper_routine_destinations'],
+        'platform_credential_helper_routine_destinations',
+    )
+    validate_runtime_perfdata_paths(
+        data['runtime_perfdata_paths'],
+        'runtime_perfdata_paths',
     )
 
     print("CVE detection params validation successful")
