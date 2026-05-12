@@ -34,6 +34,62 @@
     "/Local Extension Settings/aholpfdialjgjfhomihkjbmgjidlcdno/"
   ],
   "date": "May 12th 2026",
+  "fim_excluded_path_patterns": [
+    "/target/debug/",
+    "/target/release/",
+    "/target/aarch64-",
+    "/target/x86_64-",
+    "/target/i686-",
+    "/target/armv7-",
+    "/target/riscv64-",
+    "/target/wasm32-",
+    "/target/thumbv",
+    "/.cargo/registry/cache/",
+    "/.cargo/registry/index/",
+    "/.cargo/registry/src/",
+    "/.cargo/git/db/",
+    "/.cargo/git/checkouts/",
+    "/node_modules/",
+    "/.gradle/caches/",
+    "/.gradle/wrapper/",
+    "/.npm/_cacache/",
+    "/.pub-cache/",
+    "/.dart_tool/",
+    "/build/intermediates/",
+    "/build/outputs/",
+    "/build/generated/",
+    "/build/windows/x64/",
+    "/build/macos/build/",
+    "/build/ios/build/",
+    "/build/linux/x64/",
+    "/build/web/",
+    "/derived data/",
+    "/derivedsources/",
+    "/code cache/",
+    "/gpucache/",
+    "/service worker/cachestorage/",
+    "/service worker/database/",
+    "/service worker/scriptcache/",
+    "/cache/cache_data/",
+    "/local storage/leveldb/",
+    "/sessionstorage/",
+    "/file system/",
+    "/blob_storage/",
+    "/component_crx_cache/",
+    "/dawn_graphite_cache/",
+    "/dawn_webgpu_cache/",
+    "/grshadercache/",
+    "/shadercache/",
+    "/optimizationhints/",
+    "/segmentation_platform/",
+    "/safe browsing/",
+    "/cache2/",
+    "/startupcache/",
+    "/jumplistcache/",
+    "/offlinecache/",
+    "/datareporting/archived/",
+    "/saved-telemetry-pings/"
+  ],
   "labels": {
     "aws": [
       "/.aws/"
@@ -156,5 +212,27 @@
       "/AppData/Roaming/Phantom/"
     ]
   },
-  "signature": "f194c8a6829b1215f0e72de0c8098536e71784ebe40d97f63c924dea85b252d9"
+  "signature": "552068130f23a2c936a4dfd45f1f2b3b4ebafb135de3be6c057a2b81921259cf",
+  "watch_roots": {
+    "common_home_relative": [
+      ".ssh",
+      ".gnupg",
+      ".aws",
+      ".kube",
+      ".docker",
+      ".cursor",
+      ".claude"
+    ],
+    "linux_home_relative": [
+      ".config",
+      ".local/share"
+    ],
+    "macos_home_relative": [
+      "Library/Keychains"
+    ],
+    "windows_home_relative": [
+      "AppData/Roaming",
+      "AppData/Local"
+    ]
+  }
 }

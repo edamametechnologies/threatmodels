@@ -687,7 +687,10 @@ def validate_vendor_vulns(filename: str) -> None:
 
 def validate_sensitive_paths(filename: str) -> None:
     """Validate sensitive-paths-db.json structure."""
-    allowed_top_keys = {'date', 'signature', 'common_patterns', 'platform_patterns', 'labels'}
+    allowed_top_keys = {
+        'date', 'signature', 'common_patterns', 'platform_patterns', 'labels',
+        'watch_roots', 'fim_excluded_path_patterns',
+    }
 
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
@@ -732,6 +735,55 @@ def validate_sensitive_paths(filename: str) -> None:
         for i, pat in enumerate(patterns):
             if not isinstance(pat, str):
                 raise ValueError(f"labels['{label}'][{i}] must be a string")
+
+    # watch_roots: per-platform home-relative directory list consumed by the
+    # FIM watcher to bootstrap recursive watches without hardcoding paths
+    # in Rust. Keys are explicit so shape stays inspectable from the JSON.
+    allowed_watch_root_keys = {
+        'common_home_relative',
+        'linux_home_relative',
+        'macos_home_relative',
+        'windows_home_relative',
+    }
+    if not isinstance(data['watch_roots'], dict):
+        raise ValueError("'watch_roots' must be a dict")
+    actual_watch_keys = set(data['watch_roots'].keys())
+    if actual_watch_keys != allowed_watch_root_keys:
+        unexpected = actual_watch_keys - allowed_watch_root_keys
+        missing = allowed_watch_root_keys - actual_watch_keys
+        raise ValueError(
+            f"Unexpected keys {unexpected}, missing keys {missing} in 'watch_roots'"
+        )
+    for key, paths in data['watch_roots'].items():
+        if not isinstance(paths, list):
+            raise ValueError(f"watch_roots['{key}'] must be a list")
+        for i, p in enumerate(paths):
+            if not isinstance(p, str):
+                raise ValueError(f"watch_roots['{key}'][{i}] must be a string")
+            if p.startswith('/') or '\\' in p:
+                raise ValueError(
+                    f"watch_roots['{key}'][{i}] must be a HOME-relative POSIX path "
+                    f"(no leading '/' and no backslashes); got '{p}'"
+                )
+
+    # fim_excluded_path_patterns: substring patterns used by the FIM watcher to
+    # short-circuit hashing/store-insert for known build-tool churn (cargo
+    # target trees, gradle caches, node_modules, browser content caches, ...).
+    # Patterns are matched case-insensitively against forward-slash-normalized
+    # paths in flodbadd::fim, so they MUST be lowercase and use '/' separators.
+    if not isinstance(data['fim_excluded_path_patterns'], list):
+        raise ValueError("'fim_excluded_path_patterns' must be a list")
+    for i, pat in enumerate(data['fim_excluded_path_patterns']):
+        if not isinstance(pat, str):
+            raise ValueError(f"fim_excluded_path_patterns[{i}] must be a string")
+        if pat != pat.lower():
+            raise ValueError(
+                f"fim_excluded_path_patterns[{i}] must be lowercase (matched on lower(path)); got '{pat}'"
+            )
+        if '\\' in pat:
+            raise ValueError(
+                f"fim_excluded_path_patterns[{i}] must use '/' separators; got '{pat}'"
+            )
 
     print("Sensitive paths validation successful")
 
