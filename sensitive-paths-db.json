@@ -2,8 +2,7 @@
   "common_patterns": [
     "/.ssh/",
     "/.gnupg/",
-    "/.aws/credentials",
-    "/.aws/config",
+    "/.aws/",
     "/.kube/config",
     "/.docker/config.json",
     "/.npmrc",
@@ -34,7 +33,7 @@
     "/Local Extension Settings/bfnaelmomeimhlpmgjnjophhpkkoljpa/",
     "/Local Extension Settings/aholpfdialjgjfhomihkjbmgjidlcdno/"
   ],
-  "date": "April 22th 2026",
+  "date": "May 12th 2026",
   "labels": {
     "aws": [
       "/.aws/"
@@ -157,5 +156,5 @@
       "/AppData/Roaming/Phantom/"
     ]
   },
-  "signature": "3947b0b4f693ecc084a6ad3a7c2e362c3b873bb7d357c13d6a9f7c3d11207ebf"
+  "signature": "f194c8a6829b1215f0e72de0c8098536e71784ebe40d97f63c924dea85b252d9"
 }
