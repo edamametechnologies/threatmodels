@@ -815,7 +815,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'packaged_application_contains_patterns',
         'packaged_application_starts_with_patterns',
         'packaged_application_ends_with_patterns',
-        'installer_toolchain_temp_path_patterns',
+        'managed_temp_staging_patterns',
         'package_manager_temp_path_patterns',
         'package_manager_temp_writers',
         'edamame_daemon_self_telemetry_writers',
@@ -857,6 +857,17 @@ def validate_cve_detection_params(filename: str) -> None:
         for platform in sorted(expected_keys):
             validate_string_list(value[platform], f"{key_name}['{platform}']")
 
+    def validate_managed_temp_staging_patterns(value, key_name: str) -> None:
+        expected_keys = {'suppress_path_patterns', 'demote_path_patterns'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for subkey in sorted(expected_keys):
+            validate_platform_string_lists(value[subkey], f"{key_name}['{subkey}']")
+
     def validate_helper_matcher_config(value, key_name: str) -> None:
         expected_keys = {
             'exact_paths',
@@ -895,8 +906,10 @@ def validate_cve_detection_params(filename: str) -> None:
         expected_keys = {
             'chromium_family',
             'chromium_state_files_routine',
+            'chromium_profile_state_volatile',
             'chromium_user_data_root_markers',
             'firefox_family_subtrees',
+            'firefox_profile_state_volatile',
             'firefox_user_data_root_markers',
         }
         if not isinstance(value, dict):
@@ -943,9 +956,9 @@ def validate_cve_detection_params(filename: str) -> None:
         validate_string_list(value['suppressible_basenames'], f"{key_name}['suppressible_basenames']")
 
     def validate_credential_helper_destinations(value, key_name: str) -> None:
-        # Per-platform { asn_owners: [...], domain_patterns: [...] }
+        # Per-platform { asn_owners: [...], domain_patterns: [...], ip_prefixes: [...] }
         expected_platform_keys = {'macos', 'linux', 'windows'}
-        expected_subkeys = {'asn_owners', 'domain_patterns'}
+        expected_subkeys = {'asn_owners', 'domain_patterns', 'ip_prefixes'}
         if not isinstance(value, dict):
             raise ValueError(f"'{key_name}' must be a dict")
         if set(value.keys()) != expected_platform_keys:
@@ -964,6 +977,7 @@ def validate_cve_detection_params(filename: str) -> None:
                 )
             validate_string_list(sub['asn_owners'], f"{key_name}['{platform}']['asn_owners']")
             validate_string_list(sub['domain_patterns'], f"{key_name}['{platform}']['domain_patterns']")
+            validate_string_list(sub['ip_prefixes'], f"{key_name}['{platform}']['ip_prefixes']")
 
     def validate_runtime_perfdata_paths(value, key_name: str) -> None:
         # Per-platform list of {artifact_path_substring, writer_basenames, writer_path_prefixes}
@@ -1077,9 +1091,9 @@ def validate_cve_detection_params(filename: str) -> None:
         data['browser_appdata_unknown_writer'],
         'browser_appdata_unknown_writer',
     )
-    validate_platform_string_lists(
-        data['installer_toolchain_temp_path_patterns'],
-        'installer_toolchain_temp_path_patterns',
+    validate_managed_temp_staging_patterns(
+        data['managed_temp_staging_patterns'],
+        'managed_temp_staging_patterns',
     )
     validate_platform_string_lists(
         data['package_manager_temp_path_patterns'],
