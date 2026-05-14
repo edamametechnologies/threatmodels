@@ -4389,11 +4389,11 @@
         "223.254.0.0/16",
         "224.0.0.0/3"
       ],
-      "last_updated": "2026-04-04",
+      "last_updated": "2026-05-14",
       "name": "firehol_level1",
       "source_url": "https://raw.githubusercontent.com/ktsaou/blocklist-ipsets/master/firehol_level1.netset"
     }
   ],
-  "date": "April 4th 2026",
-  "signature": "353cc1e3ddc96a49321a2782d233e2d0483d3c0b2e0bed3da9f1fd10be739efb"
+  "date": "May 14th 2026",
+  "signature": "7d646140287d692b975a4292a314fe2086a1b98d936d70db31f09a0b4516bb95"
 }
