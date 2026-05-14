@@ -1,5 +1,5 @@
 {
-  "date": "May 01th 2026",
+  "date": "May 14th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -2407,7 +2407,7 @@
         {
           "locale": "EN",
           "summary": "Cursor is installed but the EDAMAME transcript observer is paused. Reasoning-plane intent is no longer correlated with system telemetry, weakening agent posture.",
-          "title": "Cursor agent unsecured (observer paused)"
+          "title": "Cursor agent unsecured"
         },
         {
           "locale": "FR",
@@ -2448,13 +2448,24 @@
         "target": "agentic_ai_settings"
       },
       "rollback": {
-        "class": "",
-        "education": [],
+        "class": "internal",
+        "education": [
+          {
+            "class": "html",
+            "locale": "EN",
+            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the AI / Config tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+          },
+          {
+            "class": "html",
+            "locale": "FR",
+            "target": "<p>Remettez en pause l'observateur EDAMAME pour cet agent dans l'onglet IA / Config. L'agent continuera de fonctionner mais l'intention ne sera plus corrélée avec la télémétrie système.</p>"
+          }
+        ],
         "elevation": "",
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": ""
+        "target": "agentic_ai_settings"
       },
       "scope": "generic",
       "severity": 2,
@@ -2467,7 +2478,7 @@
         {
           "locale": "EN",
           "summary": "Claude Code is installed but the EDAMAME transcript observer is paused. Reasoning-plane intent is no longer correlated with system telemetry, weakening agent posture.",
-          "title": "Claude Code agent unsecured (observer paused)"
+          "title": "Claude Code agent unsecured"
         },
         {
           "locale": "FR",
@@ -2508,13 +2519,24 @@
         "target": "agentic_ai_settings"
       },
       "rollback": {
-        "class": "",
-        "education": [],
+        "class": "internal",
+        "education": [
+          {
+            "class": "html",
+            "locale": "EN",
+            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the AI / Config tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+          },
+          {
+            "class": "html",
+            "locale": "FR",
+            "target": "<p>Remettez en pause l'observateur EDAMAME pour cet agent dans l'onglet IA / Config. L'agent continuera de fonctionner mais l'intention ne sera plus corrélée avec la télémétrie système.</p>"
+          }
+        ],
         "elevation": "",
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": ""
+        "target": "agentic_ai_settings"
       },
       "scope": "generic",
       "severity": 2,
@@ -2527,7 +2549,7 @@
         {
           "locale": "EN",
           "summary": "Claude Desktop is installed but the EDAMAME transcript observer is paused. Reasoning-plane intent is no longer correlated with system telemetry, weakening agent posture.",
-          "title": "Claude Desktop agent unsecured (observer paused)"
+          "title": "Claude Desktop agent unsecured"
         },
         {
           "locale": "FR",
@@ -2568,13 +2590,24 @@
         "target": "agentic_ai_settings"
       },
       "rollback": {
-        "class": "",
-        "education": [],
+        "class": "internal",
+        "education": [
+          {
+            "class": "html",
+            "locale": "EN",
+            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the AI / Config tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+          },
+          {
+            "class": "html",
+            "locale": "FR",
+            "target": "<p>Remettez en pause l'observateur EDAMAME pour cet agent dans l'onglet IA / Config. L'agent continuera de fonctionner mais l'intention ne sera plus corrélée avec la télémétrie système.</p>"
+          }
+        ],
         "elevation": "",
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": ""
+        "target": "agentic_ai_settings"
       },
       "scope": "generic",
       "severity": 2,
@@ -2587,7 +2620,7 @@
         {
           "locale": "EN",
           "summary": "OpenClaw is installed but the EDAMAME transcript observer is paused. Reasoning-plane intent is no longer correlated with system telemetry, weakening agent posture.",
-          "title": "OpenClaw agent unsecured (observer paused)"
+          "title": "OpenClaw agent unsecured"
         },
         {
           "locale": "FR",
@@ -2628,13 +2661,24 @@
         "target": "agentic_ai_settings"
       },
       "rollback": {
-        "class": "",
-        "education": [],
+        "class": "internal",
+        "education": [
+          {
+            "class": "html",
+            "locale": "EN",
+            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the AI / Config tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+          },
+          {
+            "class": "html",
+            "locale": "FR",
+            "target": "<p>Remettez en pause l'observateur EDAMAME pour cet agent dans l'onglet IA / Config. L'agent continuera de fonctionner mais l'intention ne sera plus corrélée avec la télémétrie système.</p>"
+          }
+        ],
         "elevation": "",
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": ""
+        "target": "agentic_ai_settings"
       },
       "scope": "generic",
       "severity": 2,
@@ -2647,7 +2691,7 @@
         {
           "locale": "EN",
           "summary": "Codex CLI is installed but the EDAMAME transcript observer is paused. Reasoning-plane intent is no longer correlated with system telemetry, weakening agent posture.",
-          "title": "Codex CLI agent unsecured (observer paused)"
+          "title": "Codex CLI agent unsecured"
         },
         {
           "locale": "FR",
@@ -2688,13 +2732,24 @@
         "target": "agentic_ai_settings"
       },
       "rollback": {
-        "class": "",
-        "education": [],
+        "class": "internal",
+        "education": [
+          {
+            "class": "html",
+            "locale": "EN",
+            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the AI / Config tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+          },
+          {
+            "class": "html",
+            "locale": "FR",
+            "target": "<p>Remettez en pause l'observateur EDAMAME pour cet agent dans l'onglet IA / Config. L'agent continuera de fonctionner mais l'intention ne sera plus corrélée avec la télémétrie système.</p>"
+          }
+        ],
         "elevation": "",
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": ""
+        "target": "agentic_ai_settings"
       },
       "scope": "generic",
       "severity": 2,
@@ -2704,5 +2759,5 @@
     }
   ],
   "name": "threat model macOS",
-  "signature": "3fda7632b76d9502f573efeace85a804dcc40dfa9e4ea284cb27698e1db1ab19"
+  "signature": "65a5e70b08a0927345871a217b864f080bd9c325e00ae2c3a7b1192de606ac18"
 }
