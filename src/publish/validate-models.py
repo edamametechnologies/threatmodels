@@ -816,6 +816,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'packaged_application_starts_with_patterns',
         'packaged_application_ends_with_patterns',
         'managed_temp_staging_patterns',
+        'trusted_build_temp_staging',
         'package_manager_temp_path_patterns',
         'package_manager_temp_writers',
         'edamame_daemon_self_telemetry_writers',
@@ -859,6 +860,17 @@ def validate_cve_detection_params(filename: str) -> None:
 
     def validate_managed_temp_staging_patterns(value, key_name: str) -> None:
         expected_keys = {'suppress_path_patterns', 'demote_path_patterns'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for subkey in sorted(expected_keys):
+            validate_platform_string_lists(value[subkey], f"{key_name}['{subkey}']")
+
+    def validate_trusted_build_temp_staging(value, key_name: str) -> None:
+        expected_keys = {'writer_path_patterns', 'artifact_path_patterns'}
         if not isinstance(value, dict):
             raise ValueError(f"'{key_name}' must be a dict")
         if set(value.keys()) != expected_keys:
@@ -1094,6 +1106,10 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_managed_temp_staging_patterns(
         data['managed_temp_staging_patterns'],
         'managed_temp_staging_patterns',
+    )
+    validate_trusted_build_temp_staging(
+        data['trusted_build_temp_staging'],
+        'trusted_build_temp_staging',
     )
     validate_platform_string_lists(
         data['package_manager_temp_path_patterns'],
