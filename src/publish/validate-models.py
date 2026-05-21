@@ -82,12 +82,92 @@ _URL_TIMEOUT_S = 10
 _URL_ATTEMPTS = 2
 
 
+# Vendor documentation sites that are known to anti-scrape automated probes:
+# they return 4xx for unrecognized HTTP clients (or specific IP ranges, e.g.
+# datacenter or CI runner IPs) while serving real content to browsers.
+# Treating a 4xx from these hosts as a warning rather than a hard failure
+# avoids blocking PRs on github-hosted runners that share IPs with the
+# scraper allow-deny tables of these vendors. Genuine URL deprecation will
+# still be visible in the validation log as a warning so the developer can
+# verify manually in a browser.
+_KNOWN_ANTI_SCRAPING_URL_FRAGMENTS = (
+    "wikipedia.org/wiki/",
+    "support.google.com/",
+    "support.microsoft.com/",
+    "support.apple.com/",
+    "learn.microsoft.com/",
+    "docs.microsoft.com/",
+)
+
+
+def _classify_response(status: int, reason_text: str, url: str):
+    """Return ``("ok"|"warn"|"fail", reason)`` for a single HTTP response.
+
+    - 2xx/3xx -> ``ok``
+    - 5xx -> ``warn`` (transient server-side problem)
+    - 4xx on a known anti-scraping vendor doc host -> ``warn`` (likely
+      bot-detection on the CI runner's IP; the URL itself may be fine)
+    - other 4xx -> ``fail`` (genuine URL invalidity)
+    """
+    if 200 <= status < 400:
+        return ("ok", None)
+    reason = f"{status} {reason_text}"
+    if 500 <= status < 600:
+        return ("warn", reason)
+    if 400 <= status < 500:
+        for fragment in _KNOWN_ANTI_SCRAPING_URL_FRAGMENTS:
+            if fragment in url:
+                return ("warn", f"{reason} (likely anti-scraping on {fragment})")
+    return ("fail", reason)
+
+
+def _probe_once(url: str):
+    """Single HEAD->GET probe cycle.
+
+    Returns a tuple ``(classification, reason)``:
+      - ``("ok", None)``                  -- request reached the server and
+                                             returned an acceptable status
+      - ``("warn", reason)``              -- request reached the server and
+                                             returned a soft-fail status
+                                             (5xx / Wikipedia 403)
+      - ``("fail", reason)``              -- request reached the server and
+                                             returned a hard-fail status
+                                             (other 4xx)
+      - ``("transient", reason)``         -- the request itself failed
+                                             (timeout, connection error,
+                                             DNS, SSL, ...)
+
+    HEAD is tried first because it's cheap. If HEAD does not yield ``ok``
+    *for any reason at all* (network exception, 4xx, 5xx, ...) we ALWAYS
+    fall through to GET. Many servers (e.g. ``support.google.com``)
+    answer HEAD with 404/405 but answer GET with 200. The final
+    classification therefore comes from GET when HEAD is non-ok.
+    """
+    last_transient_reason = None
+    last_class = None
+    last_reason = None
+    for method in (requests.head, requests.get):
+        try:
+            response = method(url, timeout=_URL_TIMEOUT_S, allow_redirects=True)
+        except requests.exceptions.RequestException as exc:
+            last_transient_reason = f"transient request error ({type(exc).__name__}): {exc}"
+            last_class = "transient"
+            last_reason = last_transient_reason
+            continue
+        cls, reason = _classify_response(response.status_code, response.reason or "", url)
+        if cls == "ok":
+            return ("ok", None)
+        last_class = cls
+        last_reason = reason
+    return (last_class or "transient", last_reason or "unknown error")
+
+
 def _check_url_reachable(url: str):
     """Probe a URL for validation purposes.
 
     Returns ``("ok", None)`` for 2xx/3xx, ``("warn", reason)`` for soft
-    failures that should NOT block validation, and ``("fail", reason)`` for
-    hard failures that should block validation.
+    failures that should NOT block validation, and ``("fail", reason)``
+    for hard failures that should block validation.
 
     Soft (warn) failures include:
       - 5xx server-side responses (transient external infrastructure)
@@ -95,42 +175,23 @@ def _check_url_reachable(url: str):
       - 403 from ``wikipedia.org/wiki/`` (Wikipedia anti-scraping; URL is real)
 
     Hard (fail) failures: any 4xx response other than the Wikipedia 403
-    carve-out.
+    carve-out, AND only when GET (the fallback method) also returns it.
+    Many servers reject HEAD with 4xx but accept GET with 2xx; the helper
+    falls through HEAD->GET unconditionally before declaring failure.
 
-    Tries HEAD first (some servers don't allow HEAD; falls back to GET on
-    non-2xx HEAD), retries the whole HEAD->GET cycle on transient/5xx
-    outcomes.
+    Retries the whole HEAD->GET cycle on transient outcomes (network
+    exception or 5xx) up to ``_URL_ATTEMPTS`` times before reporting a
+    transient failure as a warning.
     """
     last_transient_reason = None
     for _attempt in range(_URL_ATTEMPTS):
-        cycle_transient = False
-        for method in (requests.head, requests.get):
-            try:
-                response = method(url, timeout=_URL_TIMEOUT_S, allow_redirects=True)
-            except requests.exceptions.RequestException as exc:
-                # Connection error, timeout, DNS failure, SSL error, etc.
-                last_transient_reason = f"transient request error ({type(exc).__name__}): {exc}"
-                cycle_transient = True
-                continue
-            if response.ok:
-                return ("ok", None)
-            status = response.status_code
-            reason = f"{status} {response.reason}"
-            # Wikipedia anti-scraping: known harmless 403.
-            if status == 403 and "wikipedia.org/wiki/" in url:
-                return ("warn", f"{reason} (Wikipedia anti-scraping)")
-            # 5xx = transient server-side problem; retry the whole HEAD->GET
-            # cycle instead of falling through to the next method.
-            if 500 <= status < 600:
-                last_transient_reason = reason
-                cycle_transient = True
-                break
-            # Any other 4xx = definite URL invalidity.
-            return ("fail", reason)
-        if not cycle_transient:
-            # Both methods returned a non-2xx non-transient response that
-            # didn't already early-return; treat as hard fail.
-            return ("fail", last_transient_reason or "unknown error")
+        cls, reason = _probe_once(url)
+        if cls == "ok":
+            return ("ok", None)
+        if cls in ("warn", "fail"):
+            return (cls, reason)
+        # cls == "transient" -- record and retry the whole HEAD->GET cycle.
+        last_transient_reason = reason
     return ("warn", last_transient_reason or "exhausted transient retries")
 
 

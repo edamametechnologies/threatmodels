@@ -310,12 +310,12 @@
           {
             "class": "link",
             "locale": "EN",
-            "target": "https://support.microsoft.com/en-us/windows/turn-on-device-encryption-0c453637-bc88-7d95-5074-dc66c78d6d5b"
+            "target": "https://support.microsoft.com/en-us/windows/device-encryption-in-windows-cf7e2b6f-3e70-4882-9532-18633605b7df"
           },
           {
             "class": "link",
             "locale": "FR",
-            "target": "https://support.microsoft.com/fr-fr/windows/activer-le-chiffrement-de-l-appareil-0c453637-bc88-7d95-5074-dc66c78d6d5b"
+            "target": "https://support.microsoft.com/fr-fr/windows/chiffrement-d-appareil-dans-windows-cf7e2b6f-3e70-4882-9532-18633605b7df"
           }
         ],
         "elevation": "",
@@ -330,12 +330,12 @@
           {
             "class": "link",
             "locale": "EN",
-            "target": "https://support.microsoft.com/en-us/windows/turn-off-bitlocker-drive-encryption-0026063e-abe0-0e75-12dc-f6239c715f5d"
+            "target": "https://support.microsoft.com/en-us/windows/bitlocker-drive-encryption-76b92ac9-1040-48d6-9f5f-d14b3c5fa178"
           },
           {
             "class": "link",
             "locale": "FR",
-            "target": "https://support.microsoft.com/fr-fr/windows/d%C3%A9sactiver-bitlocker-c98bb8d0-0fe7-88d8-7436-c29e90abef0c"
+            "target": "https://support.microsoft.com/fr-fr/windows/chiffrement-de-lecteur-bitlocker-76b92ac9-1040-48d6-9f5f-d14b3c5fa178"
           }
         ],
         "elevation": "",
@@ -2478,5 +2478,5 @@
     }
   ],
   "name": "threat model Windows",
-  "signature": "051571b31060a30120b6fba7d964986dfe883bbe2f54892daf2acffa1ff3b715"
+  "signature": "57b783fa48fd9761a56b05b584260c9d7c46aea2e67c38096cc69ec05634dad8"
 }
