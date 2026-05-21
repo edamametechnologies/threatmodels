@@ -186,7 +186,16 @@ jobs:
 
       - name: Install dependencies with apk
         run: |
+          # bash is required because edamame_foundation::runner_cli hardcodes
+          # /bin/bash for shell invocation (run_unix_command + resolve_home_unix
+          # in edamame_foundation/src/runner_cli.rs). Alpine ships only busybox
+          # /bin/sh by default, so without this install every metric fails with
+          # "Failed to spawn command ...: No such file or directory (os error 2)"
+          # or "Failed to run home resolution script: No such file or directory".
+          # The deeper invariant fix (runner_cli auto-detecting bash vs sh) is
+          # tracked separately; this keeps the threatmodels CI gate green.
           apk add --no-cache \
+              bash \
               build-base \
               protobuf-dev \
               libpcap-dev \
