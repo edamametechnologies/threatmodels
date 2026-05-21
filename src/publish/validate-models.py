@@ -69,6 +69,90 @@ def _validate_signature_and_sidecar(filename: str, data: dict, *, signature_requ
         if sidecar != sig:
             raise ValueError(f"Signature sidecar {os.path.basename(sidecar_path)} does not match top-level signature")
 
+
+# --- URL reachability check (soft-fail on transient external failures) -------
+#
+# Per-request timeout. HEAD->GET fallback x 2 attempt cycles = up to 4 requests
+# per URL in the worst case, capped at ~40s of wall time per URL.
+_URL_TIMEOUT_S = 10
+# Total HEAD->GET cycles attempted before a transient failure is reported as a
+# warning. Each cycle tries HEAD first (cheap), then GET (some servers reject
+# HEAD). 2 cycles = best-effort dedup of one-off network blips without making
+# every URL check expensive.
+_URL_ATTEMPTS = 2
+
+
+def _check_url_reachable(url: str):
+    """Probe a URL for validation purposes.
+
+    Returns ``("ok", None)`` for 2xx/3xx, ``("warn", reason)`` for soft
+    failures that should NOT block validation, and ``("fail", reason)`` for
+    hard failures that should block validation.
+
+    Soft (warn) failures include:
+      - 5xx server-side responses (transient external infrastructure)
+      - request timeout / connection error / DNS failure (transient network)
+      - 403 from ``wikipedia.org/wiki/`` (Wikipedia anti-scraping; URL is real)
+
+    Hard (fail) failures: any 4xx response other than the Wikipedia 403
+    carve-out.
+
+    Tries HEAD first (some servers don't allow HEAD; falls back to GET on
+    non-2xx HEAD), retries the whole HEAD->GET cycle on transient/5xx
+    outcomes.
+    """
+    last_transient_reason = None
+    for _attempt in range(_URL_ATTEMPTS):
+        cycle_transient = False
+        for method in (requests.head, requests.get):
+            try:
+                response = method(url, timeout=_URL_TIMEOUT_S, allow_redirects=True)
+            except requests.exceptions.RequestException as exc:
+                # Connection error, timeout, DNS failure, SSL error, etc.
+                last_transient_reason = f"transient request error ({type(exc).__name__}): {exc}"
+                cycle_transient = True
+                continue
+            if response.ok:
+                return ("ok", None)
+            status = response.status_code
+            reason = f"{status} {response.reason}"
+            # Wikipedia anti-scraping: known harmless 403.
+            if status == 403 and "wikipedia.org/wiki/" in url:
+                return ("warn", f"{reason} (Wikipedia anti-scraping)")
+            # 5xx = transient server-side problem; retry the whole HEAD->GET
+            # cycle instead of falling through to the next method.
+            if 500 <= status < 600:
+                last_transient_reason = reason
+                cycle_transient = True
+                break
+            # Any other 4xx = definite URL invalidity.
+            return ("fail", reason)
+        if not cycle_transient:
+            # Both methods returned a non-2xx non-transient response that
+            # didn't already early-return; treat as hard fail.
+            return ("fail", last_transient_reason or "unknown error")
+    return ("warn", last_transient_reason or "exhausted transient retries")
+
+
+def _check_target_url(url: str, ctx: str) -> None:
+    """Apply ``_check_url_reachable`` policy for a JSON ``target`` field.
+
+    Raises ``ValueError`` on hard failures; prints a warning on soft
+    failures; silent on success.
+    """
+    if not url.startswith("http"):
+        return
+    status, reason = _check_url_reachable(url)
+    if status == "ok":
+        return
+    if status == "warn":
+        print(f"Warning: {reason} for URL '{url}' in target field at '{ctx}'.")
+        return
+    # Hard fail
+    error_msg = f"Invalid URL '{url}' in target field at '{ctx}'. Reason: {reason}"
+    print(error_msg)
+    raise ValueError(error_msg)
+
 # Validate validate_lanscan-port-vulns against this VulnerabilityInfoList Rust structure
 # #[derive(Serialize, Deserialize, Debug, Clone, Ord, Eq, PartialEq, PartialOrd)]
 # pub struct VulnerabilityInfo {
@@ -352,20 +436,7 @@ def validate_threat_model(filename: str) -> None:
 
             # If we have a class "link" or "youtube" or "installer" check the url is valid and try to access it to check if we have a 404
             if impl['class'] in ['link', 'youtube']:
-                # Only check http(s) links
-                if impl['target'].startswith("http"):
-                    response = requests.head(impl['target'])
-                    if not response.ok:
-                        # Sometime head request is not allowed, try with get
-                        response = requests.get(impl['target'])
-                        if not response.ok:
-                            # Only warn for wikipedia URLs 403 responses
-                            if not ("wikipedia.org/wiki/" in impl['target'] and response.status_code == 403):
-                                error_msg = f"Invalid URL '{impl['target']}' in target field at '{metric['name']} -> {key}'. Reason: {response.status_code} {response.reason}"
-                                print(error_msg)
-                                raise ValueError(error_msg)
-                            else:
-                                print(f"Warning: 403 response for Wikipedia URL '{impl['target']}' in target field at '{metric['name']} -> {key}'.")
+                _check_target_url(impl['target'], f"{metric['name']} -> {key}")
 
             # If we have a youtube class, check the URL is a valid youtube video
             if impl['class'] == 'youtube':
@@ -389,20 +460,10 @@ def validate_threat_model(filename: str) -> None:
 
                 # If we have a class "link" or "youtube" check the url is valid and try to access it to check if we have a 404
                 if education['class'] in ['link', 'youtube']:
-                    # Only check http(s) links
-                    if education['target'].startswith("http"):
-                        response = requests.head(education['target'])
-                        if not response.ok:
-                            # Sometime head request is not allowed, try with get
-                            response = requests.get(education['target'])
-                            if not response.ok:
-                                # Only warn for wikipedia URLs 403 responses
-                                if not ("wikipedia.org/wiki/" in education['target'] and response.status_code == 403):
-                                    error_msg = f"Invalid URL '{education['target']}' in target field at '{metric['name']} -> {key} -> education[{k}]'. Reason: {response.status_code} {response.reason}"
-                                    print(error_msg)
-                                    raise ValueError(error_msg)
-                                else:
-                                    print(f"Warning: 403 response for Wikipedia URL '{education['target']}' in target field at '{metric['name']} -> {key} -> education[{k}]'.")
+                    _check_target_url(
+                        education['target'],
+                        f"{metric['name']} -> {key} -> education[{k}]",
+                    )
 
                     # If we have a youtube class, check the URL is a valid youtube video
                     if education['class'] == 'youtube':
