@@ -12,6 +12,14 @@ on:
 
 jobs:
   tests-native:
+    # Stabilize the matrix job name so that required-status-check contexts
+    # in the branch ruleset stay valid even when matrix keys are added/removed.
+    # Without this override, GitHub auto-generates names like
+    # "tests-native (ubuntu, ubuntu-latest, x86_64, ubuntu-x86_64)" which
+    # change every time the matrix shape changes and may even be truncated
+    # with "..." when long. Pinning to matrix.name yields
+    # "tests-native (windows)", "tests-native (macos-26)", etc.
+    name: tests-native (${{ matrix.name }})
     if: always()
     runs-on: ${{ matrix.runs-on }}
     timeout-minutes: 120
@@ -159,6 +167,8 @@ jobs:
           path: threatmodels/report-results.txt
 
   tests-alpine:
+    # Stable job name for required-status-check pinning (see tests-native note).
+    name: tests-alpine (${{ matrix.name }})
     if: always()
     runs-on: ${{ matrix.runs-on }}
     timeout-minutes: 240
