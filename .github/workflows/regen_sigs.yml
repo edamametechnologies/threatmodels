@@ -1,0 +1,68 @@
+name: Regenerate signatures
+on:
+  pull_request:
+    branches: ["main", "dev"]
+    paths:
+      - 'threatmodel-*.json'
+      - 'whitelists-db.json'
+      - 'blacklists-db.json'
+      - 'lanscan-profiles-db.json'
+      - 'sensitive-paths-db.json'
+      - 'cve-detection-params-db.json'
+      - 'lanscan-port-vulns-db.json'
+      - 'lanscan-vendor-vulns-db.json'
+
+# Auto cancel previous runs if they were not completed.
+concurrency:
+  group: regen-sigs-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  regen:
+    # Skip on PRs from forks (they cannot access DEV_GITHUB_TOKEN) and on
+    # commits authored by edamamedev itself (to avoid an infinite loop if a
+    # previous run already regenerated the .sig files).
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'edamamedev'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.DEV_GITHUB_TOKEN }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v3.1.4
+        with:
+          python-version: 3.11.3
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Regenerate signatures
+        run: make update
+
+      - name: Configure git
+        run: |
+          git config user.email "dev@edamame.tech"
+          git config user.name "EDAMAME Dev"
+
+      - name: Commit + push if changed
+        run: |
+          if git diff --quiet; then
+            echo "No signature regeneration needed."
+            exit 0
+          fi
+          git add .
+          git commit -m "Regenerate signatures"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
