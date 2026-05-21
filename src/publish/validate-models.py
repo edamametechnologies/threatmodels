@@ -817,6 +817,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'packaged_application_ends_with_patterns',
         'managed_temp_staging_patterns',
         'trusted_build_temp_staging',
+        'app_self_temp_staging',
         'package_manager_temp_path_patterns',
         'package_manager_temp_writers',
         'edamame_daemon_self_telemetry_writers',
@@ -880,6 +881,64 @@ def validate_cve_detection_params(filename: str) -> None:
             raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
         for subkey in sorted(expected_keys):
             validate_platform_string_lists(value[subkey], f"{key_name}['{subkey}']")
+
+    def validate_app_self_temp_staging(value, key_name: str) -> None:
+        # Per-platform list of pair-wise writer/target allowlist entries for
+        # trusted-app self-temp-staging suppression (FP-WIN-7c). Each entry
+        # documents a single vendor's self-update / self-extract pattern as
+        # a (writer_path_patterns, target_path_patterns) pair so the
+        # deterministic suppression hook does not collapse two unrelated
+        # legitimate writers and trusted targets into a cross-match.
+        expected_platform_keys = {'macos', 'linux', 'windows'}
+        expected_entry_keys = {
+            'name', 'writer_path_patterns', 'target_path_patterns',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_platform_keys:
+            missing = expected_platform_keys - set(value.keys())
+            extra = set(value.keys()) - expected_platform_keys
+            raise ValueError(
+                f"{key_name} has missing keys {missing} and unexpected keys {extra}"
+            )
+        for platform in sorted(expected_platform_keys):
+            entries = value[platform]
+            if not isinstance(entries, list):
+                raise ValueError(f"{key_name}['{platform}'] must be a list")
+            seen_names = set()
+            for i, entry in enumerate(entries):
+                ekey = f"{key_name}['{platform}'][{i}]"
+                if not isinstance(entry, dict):
+                    raise ValueError(f"{ekey} must be a dict")
+                if set(entry.keys()) != expected_entry_keys:
+                    missing = expected_entry_keys - set(entry.keys())
+                    extra = set(entry.keys()) - expected_entry_keys
+                    raise ValueError(
+                        f"{ekey} has missing keys {missing} and unexpected keys {extra}"
+                    )
+                if not isinstance(entry['name'], str) or not entry['name']:
+                    raise ValueError(f"{ekey}['name'] must be a non-empty string")
+                if entry['name'] in seen_names:
+                    raise ValueError(
+                        f"{ekey}['name'] '{entry['name']}' duplicates a previous entry on '{platform}'"
+                    )
+                seen_names.add(entry['name'])
+                validate_string_list(
+                    entry['writer_path_patterns'],
+                    f"{ekey}['writer_path_patterns']",
+                )
+                if not entry['writer_path_patterns']:
+                    raise ValueError(
+                        f"{ekey}['writer_path_patterns'] must contain at least one pattern"
+                    )
+                validate_string_list(
+                    entry['target_path_patterns'],
+                    f"{ekey}['target_path_patterns']",
+                )
+                if not entry['target_path_patterns']:
+                    raise ValueError(
+                        f"{ekey}['target_path_patterns'] must contain at least one pattern"
+                    )
 
     def validate_helper_matcher_config(value, key_name: str) -> None:
         expected_keys = {
@@ -1115,6 +1174,10 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_trusted_build_temp_staging(
         data['trusted_build_temp_staging'],
         'trusted_build_temp_staging',
+    )
+    validate_app_self_temp_staging(
+        data['app_self_temp_staging'],
+        'app_self_temp_staging',
     )
     validate_platform_string_lists(
         data['package_manager_temp_path_patterns'],
