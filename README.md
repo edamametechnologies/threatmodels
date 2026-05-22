@@ -111,7 +111,7 @@ Currently, the database defines the following key whitelists:
 
 ### Sensitive Path Database
 
-The `sensitive-paths-db.json` database defines file paths that indicate credential stores, secrets, and other high-value targets on a host. The EDAMAME vulnerability detector correlates these paths with network session data in three ways:
+The `sensitive-paths-db.json` database defines file paths that indicate credential stores, secrets, and other high-value targets on a host. The EDAMAME attack pattern detector correlates these paths with network session data in three ways:
 
 - **`token_exfiltration`**: Fires when an **anomalous** session (flagged by the iForest anomaly detector) has sensitive files open.
 - **`skill_supply_chain`**: Fires when a **blacklisted** session (known-bad IP) has sensitive files open.
@@ -120,7 +120,7 @@ The `sensitive-paths-db.json` database defines file paths that indicate credenti
 The database contains three sections:
 
 1. **`common_patterns`**: Cross-platform paths matched against L7 `open_files` in captured sessions. Covers SSH keys, cloud credentials (AWS, GCP, Azure), container configs (Docker, Kubernetes), package manager tokens (npm, PyPI), database credentials (PostgreSQL, MySQL), secret managers (Vault), git credentials, browser credential stores, cryptocurrency wallets, and environment files.
-2. **`labels`**: Semantic groupings of paths (e.g. `ssh`, `aws`, `gcp`, `vault`, `crypto`) used by the vulnerability detector to classify which credential categories a process is accessing. The label count drives the `credential_harvest` check: multi-label findings (e.g. ssh + aws + kube simultaneously) indicate broad credential harvesting such as supply chain infostealers.
+2. **`labels`**: Semantic groupings of paths (e.g. `ssh`, `aws`, `gcp`, `vault`, `crypto`) used by the attack pattern detector to classify which credential categories a process is accessing. The label count drives the `credential_harvest` check: multi-label findings (e.g. ssh + aws + kube simultaneously) indicate broad credential harvesting such as supply chain infostealers.
 3. **`platform_patterns`**: OS-specific paths (e.g. `/etc/shadow` on Linux, Keychain on macOS, SAM/NTDS on Windows, crypto wallet Application Support / AppData paths).
 
 The path list is informed by real-world supply chain attacks including the [litellm 1.82.8 PyPI compromise](https://github.com/BerriAI/litellm/issues/24512) (March 2026), AMOS infostealer campaigns, and MCPTox tool poisoning research.
@@ -129,7 +129,7 @@ This database is maintained manually. After editing, run `python3 src/publish/up
 
 ### CVE Detection Parameters
 
-The `cve-detection-params-db.json` database stores check metadata and tuning parameters for the EDAMAME vulnerability detector. It is a cloud model updated via the same signature mechanism as other databases. Key contents:
+The `cve-detection-params-db.json` database stores check metadata and tuning parameters for the EDAMAME attack pattern detector. It is a cloud model updated via the same signature mechanism as other databases. Key contents:
 
 - **`checks`**: Metadata (description template, severity, reference) for each vulnerability check: `token_exfiltration`, `skill_supply_chain`, `credential_harvest`, `sandbox_exploitation`, `file_system_tampering`, and `sensitive_material_egress`.
 - **`credential_harvest_min_labels`**: Minimum number of distinct credential label categories a process must access to trigger the `credential_harvest` finding (default: 3). This threshold can be tuned without shipping a new binary.
