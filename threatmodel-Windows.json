@@ -1,5 +1,5 @@
 {
-  "date": "May 21th 2026",
+  "date": "May 27th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -1931,7 +1931,7 @@
         "maxversion": 0,
         "minversion": 10,
         "system": "Windows",
-        "target": "$__EDAMAME_LINES = @('if (Test-Path ''HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\Ngc\\Status'') { '''' } else { ''Windows Hello is not available.'' }'); $__EDAMAME_SCRIPT = $__EDAMAME_LINES -join \"`n\"; Invoke-Expression $__EDAMAME_SCRIPT"
+        "target": "$__EDAMAME_LINES = @('$helloAvailable = $false', '$sawHelloProvider = $false', '', '$credentialProvidersPath = ''HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\Credential Providers''', '$excludedProvidersPath = ''HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System''', '$excludedProviders = @((Get-ItemProperty -Path $excludedProvidersPath -Name ExcludedCredentialProviders -ErrorAction SilentlyContinue).ExcludedCredentialProviders)', '$helloProviderGuids = @(', '    ''{D6886603-9D2F-4EB2-B667-1971041FA96B}'', # Windows Hello PIN / NGC', '    ''{8AF662BF-65A0-4D0A-A540-A338A999D36F}'', # Facial recognition', '    ''{BEC09223-B018-416D-A0AC-523971B639F5}''  # Fingerprint recognition', ')', '', 'foreach ($providerGuid in $helloProviderGuids) {', '    $providerPath = Join-Path $credentialProvidersPath $providerGuid', '    if (Test-Path $providerPath) {', '        $sawHelloProvider = $true', '        $provider = Get-ItemProperty -Path $providerPath -Name Disabled -ErrorAction SilentlyContinue', '        $providerExcluded = $excludedProviders -contains $providerGuid', '        if (($null -eq $provider.Disabled -or [int]$provider.Disabled -ne 1) -and -not $providerExcluded) {', '            $helloAvailable = $true', '            break', '        }', '    }', '}', '', 'if (-not $helloAvailable -and -not $sawHelloProvider -and (Test-Path ''HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Authentication\\Ngc\\Status'')) {', '    $helloAvailable = $true', '}', '', 'if ($helloAvailable) { '''' } else { ''Windows Hello is not available.'' }'); $__EDAMAME_SCRIPT = $__EDAMAME_LINES -join \"`n\"; Invoke-Expression $__EDAMAME_SCRIPT"
       },
       "metrictype": "bool",
       "name": "Windows Hello availability",
@@ -2478,5 +2478,5 @@
     }
   ],
   "name": "threat model Windows",
-  "signature": "57b783fa48fd9761a56b05b584260c9d7c46aea2e67c38096cc69ec05634dad8"
+  "signature": "0c54cedf67696ebdb3514f59b577f9edc3aee746fae3c62b725c1502a14f0956"
 }
