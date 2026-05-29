@@ -1,5 +1,5 @@
 {
-  "date": "May 14th 2026",
+  "date": "May 29th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -600,7 +600,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "printf '%s\\n' 'echo yes | systemsetup -setremotelogin off' | /bin/bash"
+        "target": "printf '%s\\n' '# Disable Remote Login (SSH). Newer macOS releases no longer reliably honor' '# systemsetup -setremotelogin off, so also unload the SSH LaunchDaemon. Try' '# both approaches and ignore individual failures so at least one takes effect.' 'launchctl unload -w /System/Library/LaunchDaemons/ssh.plist 2>/dev/null' 'echo yes | systemsetup -setremotelogin off 2>/dev/null' | /bin/bash"
       },
       "rollback": {
         "class": "cli",
@@ -620,7 +620,7 @@
         "maxversion": 0,
         "minversion": 12,
         "system": "macOS",
-        "target": "printf '%s\\n' 'systemsetup -setremotelogin on' | /bin/bash"
+        "target": "printf '%s\\n' '# Enable Remote Login (SSH). Newer macOS releases no longer reliably honor' '# systemsetup -setremotelogin on, so also load the SSH LaunchDaemon. Try both' '# approaches and ignore individual failures so at least one takes effect.' 'launchctl load -w /System/Library/LaunchDaemons/ssh.plist 2>/dev/null' 'systemsetup -setremotelogin on 2>/dev/null' | /bin/bash"
       },
       "scope": "generic",
       "severity": 4,
@@ -2759,5 +2759,5 @@
     }
   ],
   "name": "threat model macOS",
-  "signature": "65a5e70b08a0927345871a217b864f080bd9c325e00ae2c3a7b1192de606ac18"
+  "signature": "b94b203f5c0acae7248c76d12d3b89e566c1344a2dd8c0f1cdcaf40a3c28ce99"
 }
