@@ -1,5 +1,5 @@
 {
-  "date": "May 27th 2026",
+  "date": "June 01th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -2475,8 +2475,79 @@
       "tags": [
         "AI Agent Posture"
       ]
+    },
+    {
+      "description": [
+        {
+          "locale": "EN",
+          "summary": "Hermes Agent is installed but the EDAMAME transcript observer is paused. Reasoning-plane intent is no longer correlated with system telemetry, weakening agent posture.",
+          "title": "Hermes agent unsecured"
+        },
+        {
+          "locale": "FR",
+          "summary": "Hermes Agent est installé mais l'observateur de transcripts EDAMAME est en pause. L'intention de l'agent n'est plus corrélée avec la télémétrie système et l'agent est moins protégé.",
+          "title": "Agent Hermes non sécurisé (observateur en pause)"
+        }
+      ],
+      "dimension": "applications",
+      "implementation": {
+        "class": "internal",
+        "education": [],
+        "elevation": "user",
+        "maxversion": 0,
+        "minversion": 10,
+        "system": "Windows",
+        "target": "unsecured_hermes"
+      },
+      "metrictype": "bool",
+      "name": "unsecured_hermes",
+      "remediation": {
+        "class": "internal",
+        "education": [
+          {
+            "class": "html",
+            "locale": "EN",
+            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the AI / Config tab, or uninstall the agent if it is no longer in use.</p>"
+          },
+          {
+            "class": "html",
+            "locale": "FR",
+            "target": "<p>Réactivez l'observateur EDAMAME pour cet agent dans l'onglet IA / Config, ou désinstallez l'agent si vous ne l'utilisez plus.</p>"
+          }
+        ],
+        "elevation": "",
+        "maxversion": 0,
+        "minversion": 10,
+        "system": "Windows",
+        "target": "agentic_ai_settings"
+      },
+      "rollback": {
+        "class": "internal",
+        "education": [
+          {
+            "class": "html",
+            "locale": "EN",
+            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the AI / Config tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+          },
+          {
+            "class": "html",
+            "locale": "FR",
+            "target": "<p>Remettez en pause l'observateur EDAMAME pour cet agent dans l'onglet IA / Config. L'agent continuera de fonctionner mais l'intention ne sera plus corrélée avec la télémétrie système.</p>"
+          }
+        ],
+        "elevation": "",
+        "maxversion": 0,
+        "minversion": 10,
+        "system": "Windows",
+        "target": "agentic_ai_settings"
+      },
+      "scope": "generic",
+      "severity": 2,
+      "tags": [
+        "AI Agent Posture"
+      ]
     }
   ],
   "name": "threat model Windows",
-  "signature": "0c54cedf67696ebdb3514f59b577f9edc3aee746fae3c62b725c1502a14f0956"
+  "signature": "30b5cc193bfd89285012c7270b0829467ee6330114c06a6f78f7af4820223503"
 }
