@@ -105,7 +105,10 @@ def _classify_response(status: int, reason_text: str, url: str):
 
     - 2xx/3xx -> ``ok``
     - 5xx -> ``warn`` (transient server-side problem)
-    - 4xx on a known anti-scraping vendor doc host -> ``warn`` (likely
+    - 403 / 429 (any host) -> ``warn`` (bot-detection / rate-limiting on the
+      CI runner's IP or user-agent; a genuinely dead link returns 404/410,
+      not 403/429, so the URL itself is almost always valid)
+    - other 4xx on a known anti-scraping vendor doc host -> ``warn`` (likely
       bot-detection on the CI runner's IP; the URL itself may be fine)
     - other 4xx -> ``fail`` (genuine URL invalidity)
     """
@@ -114,6 +117,14 @@ def _classify_response(status: int, reason_text: str, url: str):
     reason = f"{status} {reason_text}"
     if 500 <= status < 600:
         return ("warn", reason)
+    # 403 Forbidden and 429 Too Many Requests on a liveness probe signal
+    # bot-detection / rate-limiting rather than a dead link, independent of
+    # host. A truly invalid URL returns 404 Not Found or 410 Gone. Treating
+    # 403/429 as a soft warning everywhere avoids maintaining a brittle
+    # per-vendor anti-scraping allowlist that silently rots as more vendors
+    # add bot protection (e.g. jamf.com).
+    if status in (403, 429):
+        return ("warn", f"{reason} (bot-detection/rate-limit; URL likely valid)")
     if 400 <= status < 500:
         for fragment in _KNOWN_ANTI_SCRAPING_URL_FRAGMENTS:
             if fragment in url:
@@ -945,6 +956,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'edamame_daemon_self_telemetry_writers',
         'edamame_daemon_self_telemetry_install_prefixes',
         'platform_credential_helper_routine_destinations',
+        'cloud_provider_sdk_destinations',
         'platform_metadata_endpoints',
         'platform_runtime_probe_filename_patterns',
         'platform_self_state_directories',
@@ -1174,6 +1186,34 @@ def validate_cve_detection_params(filename: str) -> None:
             validate_string_list(sub['domain_patterns'], f"{key_name}['{platform}']['domain_patterns']")
             validate_string_list(sub['ip_prefixes'], f"{key_name}['{platform}']['ip_prefixes']")
 
+    def validate_cloud_provider_sdk_destinations(value, key_name: str) -> None:
+        # Provider-keyed { asn_owners: [...], domain_suffixes: [...], ip_prefixes: [...] }.
+        # Unlike the credential-helper destinations this is keyed by cloud
+        # provider (matching the sensitive-path label strings) rather than by
+        # platform, and uses domain_suffixes (strict suffix semantics) instead
+        # of domain_patterns (substring semantics).
+        expected_provider_keys = {'aws', 'azure', 'gcp'}
+        expected_subkeys = {'asn_owners', 'domain_suffixes', 'ip_prefixes'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_provider_keys:
+            missing = expected_provider_keys - set(value.keys())
+            extra = set(value.keys()) - expected_provider_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for provider in sorted(expected_provider_keys):
+            sub = value[provider]
+            if not isinstance(sub, dict):
+                raise ValueError(f"{key_name}['{provider}'] must be a dict")
+            if set(sub.keys()) != expected_subkeys:
+                missing = expected_subkeys - set(sub.keys())
+                extra = set(sub.keys()) - expected_subkeys
+                raise ValueError(
+                    f"{key_name}['{provider}'] has missing keys {missing} and unexpected keys {extra}"
+                )
+            validate_string_list(sub['asn_owners'], f"{key_name}['{provider}']['asn_owners']")
+            validate_string_list(sub['domain_suffixes'], f"{key_name}['{provider}']['domain_suffixes']")
+            validate_string_list(sub['ip_prefixes'], f"{key_name}['{provider}']['ip_prefixes']")
+
     def validate_runtime_perfdata_paths(value, key_name: str) -> None:
         # Per-platform list of {artifact_path_substring, writer_basenames, writer_path_prefixes}
         expected_platform_keys = {'macos', 'linux', 'windows'}
@@ -1349,6 +1389,10 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_credential_helper_destinations(
         data['platform_credential_helper_routine_destinations'],
         'platform_credential_helper_routine_destinations',
+    )
+    validate_cloud_provider_sdk_destinations(
+        data['cloud_provider_sdk_destinations'],
+        'cloud_provider_sdk_destinations',
     )
     validate_runtime_perfdata_paths(
         data['runtime_perfdata_paths'],
