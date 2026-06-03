@@ -105,7 +105,10 @@ def _classify_response(status: int, reason_text: str, url: str):
 
     - 2xx/3xx -> ``ok``
     - 5xx -> ``warn`` (transient server-side problem)
-    - 4xx on a known anti-scraping vendor doc host -> ``warn`` (likely
+    - 403 / 429 (any host) -> ``warn`` (bot-detection / rate-limiting on the
+      CI runner's IP or user-agent; a genuinely dead link returns 404/410,
+      not 403/429, so the URL itself is almost always valid)
+    - other 4xx on a known anti-scraping vendor doc host -> ``warn`` (likely
       bot-detection on the CI runner's IP; the URL itself may be fine)
     - other 4xx -> ``fail`` (genuine URL invalidity)
     """
@@ -114,6 +117,14 @@ def _classify_response(status: int, reason_text: str, url: str):
     reason = f"{status} {reason_text}"
     if 500 <= status < 600:
         return ("warn", reason)
+    # 403 Forbidden and 429 Too Many Requests on a liveness probe signal
+    # bot-detection / rate-limiting rather than a dead link, independent of
+    # host. A truly invalid URL returns 404 Not Found or 410 Gone. Treating
+    # 403/429 as a soft warning everywhere avoids maintaining a brittle
+    # per-vendor anti-scraping allowlist that silently rots as more vendors
+    # add bot protection (e.g. jamf.com).
+    if status in (403, 429):
+        return ("warn", f"{reason} (bot-detection/rate-limit; URL likely valid)")
     if 400 <= status < 500:
         for fragment in _KNOWN_ANTI_SCRAPING_URL_FRAGMENTS:
             if fragment in url:
