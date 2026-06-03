@@ -945,6 +945,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'edamame_daemon_self_telemetry_writers',
         'edamame_daemon_self_telemetry_install_prefixes',
         'platform_credential_helper_routine_destinations',
+        'cloud_provider_sdk_destinations',
         'platform_metadata_endpoints',
         'platform_runtime_probe_filename_patterns',
         'platform_self_state_directories',
@@ -1174,6 +1175,34 @@ def validate_cve_detection_params(filename: str) -> None:
             validate_string_list(sub['domain_patterns'], f"{key_name}['{platform}']['domain_patterns']")
             validate_string_list(sub['ip_prefixes'], f"{key_name}['{platform}']['ip_prefixes']")
 
+    def validate_cloud_provider_sdk_destinations(value, key_name: str) -> None:
+        # Provider-keyed { asn_owners: [...], domain_suffixes: [...], ip_prefixes: [...] }.
+        # Unlike the credential-helper destinations this is keyed by cloud
+        # provider (matching the sensitive-path label strings) rather than by
+        # platform, and uses domain_suffixes (strict suffix semantics) instead
+        # of domain_patterns (substring semantics).
+        expected_provider_keys = {'aws', 'azure', 'gcp'}
+        expected_subkeys = {'asn_owners', 'domain_suffixes', 'ip_prefixes'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_provider_keys:
+            missing = expected_provider_keys - set(value.keys())
+            extra = set(value.keys()) - expected_provider_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for provider in sorted(expected_provider_keys):
+            sub = value[provider]
+            if not isinstance(sub, dict):
+                raise ValueError(f"{key_name}['{provider}'] must be a dict")
+            if set(sub.keys()) != expected_subkeys:
+                missing = expected_subkeys - set(sub.keys())
+                extra = set(sub.keys()) - expected_subkeys
+                raise ValueError(
+                    f"{key_name}['{provider}'] has missing keys {missing} and unexpected keys {extra}"
+                )
+            validate_string_list(sub['asn_owners'], f"{key_name}['{provider}']['asn_owners']")
+            validate_string_list(sub['domain_suffixes'], f"{key_name}['{provider}']['domain_suffixes']")
+            validate_string_list(sub['ip_prefixes'], f"{key_name}['{provider}']['ip_prefixes']")
+
     def validate_runtime_perfdata_paths(value, key_name: str) -> None:
         # Per-platform list of {artifact_path_substring, writer_basenames, writer_path_prefixes}
         expected_platform_keys = {'macos', 'linux', 'windows'}
@@ -1349,6 +1378,10 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_credential_helper_destinations(
         data['platform_credential_helper_routine_destinations'],
         'platform_credential_helper_routine_destinations',
+    )
+    validate_cloud_provider_sdk_destinations(
+        data['cloud_provider_sdk_destinations'],
+        'cloud_provider_sdk_destinations',
     )
     validate_runtime_perfdata_paths(
         data['runtime_perfdata_paths'],
