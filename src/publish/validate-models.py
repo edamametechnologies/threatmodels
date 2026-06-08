@@ -965,6 +965,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'fim_hash_size_threshold', 'fim_temp_executable_patterns',
         'known_system_daemon_credential_maintenance_hints',
         'trusted_self_extracting_installers',
+        'os_content_indexer_processes',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     required_checks = {
@@ -1320,6 +1321,10 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_platform_string_lists(
         data['trusted_self_extracting_installers'],
         'trusted_self_extracting_installers',
+    )
+    validate_platform_string_lists(
+        data['os_content_indexer_processes'],
+        'os_content_indexer_processes',
     )
     validate_platform_helper_matchers(data['trusted_credential_helpers'], 'trusted_credential_helpers')
     validate_platform_string_lists(

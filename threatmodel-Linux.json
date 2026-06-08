@@ -1,5 +1,5 @@
 {
-  "date": "June 01th 2026",
+  "date": "June 06th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -1908,6 +1908,77 @@
       "description": [
         {
           "locale": "EN",
+          "summary": "An AI agent's capability surface (MCP servers, tools, secret bindings, or instruction files) has drifted from its approved baseline. Unapproved capability changes can indicate supply-chain tampering or privilege escalation.",
+          "title": "Agent capability surface drift detected"
+        },
+        {
+          "locale": "FR",
+          "summary": "La surface de capacites d'un agent IA (serveurs MCP, outils, liaisons de secrets ou fichiers d'instructions) a devie de sa reference approuvee. Des changements non approuves peuvent indiquer une compromission de la chaine d'approvisionnement ou une elevation de privileges.",
+          "title": "Derive de la surface de capacites de l'agent detectee"
+        }
+      ],
+      "dimension": "applications",
+      "implementation": {
+        "class": "internal",
+        "education": [],
+        "elevation": "user",
+        "maxversion": 0,
+        "minversion": 3,
+        "system": "Linux",
+        "target": "agent_sbom_drift"
+      },
+      "metrictype": "bool",
+      "name": "agent_sbom_drift",
+      "remediation": {
+        "class": "internal",
+        "education": [
+          {
+            "class": "html",
+            "locale": "EN",
+            "target": "<p>Review the agent capability-surface change against its approved baseline:</p><ul><li>Navigate to the 'AI' tab, 'Visibility' subtab.</li><li>Review the drifted MCP servers, tools, secret bindings, or instruction files.</li><li>If the change is legitimate, re-approve the baseline. Otherwise, investigate the agent for tampering.</li></ul>"
+          },
+          {
+            "class": "html",
+            "locale": "FR",
+            "target": "<p>Examinez le changement de surface de capacites de l'agent par rapport a sa reference approuvee:</p><ul><li>Allez dans l'onglet 'IA', sous-onglet 'Visibilite'.</li><li>Examinez les serveurs MCP, outils, liaisons de secrets ou fichiers d'instructions ayant devie.</li><li>Si le changement est legitime, reapprouvez la reference. Sinon, examinez l'agent pour detecter une compromission.</li></ul>"
+          }
+        ],
+        "elevation": "",
+        "maxversion": 0,
+        "minversion": 3,
+        "system": "Linux",
+        "target": "agentic_ai_settings"
+      },
+      "rollback": {
+        "class": "internal",
+        "education": [
+          {
+            "class": "html",
+            "locale": "EN",
+            "target": "<p>Review the agent capability-surface change against its approved baseline:</p><ul><li>Navigate to the 'AI' tab, 'Visibility' subtab.</li><li>Review the drifted MCP servers, tools, secret bindings, or instruction files.</li><li>If the change is legitimate, re-approve the baseline. Otherwise, investigate the agent for tampering.</li></ul>"
+          },
+          {
+            "class": "html",
+            "locale": "FR",
+            "target": "<p>Examinez le changement de surface de capacites de l'agent par rapport a sa reference approuvee:</p><ul><li>Allez dans l'onglet 'IA', sous-onglet 'Visibilite'.</li><li>Examinez les serveurs MCP, outils, liaisons de secrets ou fichiers d'instructions ayant devie.</li><li>Si le changement est legitime, reapprouvez la reference. Sinon, examinez l'agent pour detecter une compromission.</li></ul>"
+          }
+        ],
+        "elevation": "",
+        "maxversion": 0,
+        "minversion": 3,
+        "system": "Linux",
+        "target": "agentic_ai_settings"
+      },
+      "scope": "generic",
+      "severity": 3,
+      "tags": [
+        "AI Agent Posture"
+      ]
+    },
+    {
+      "description": [
+        {
+          "locale": "EN",
           "summary": "Codex CLI is installed but the EDAMAME transcript observer is paused. Reasoning-plane intent is no longer correlated with system telemetry, weakening agent posture.",
           "title": "Codex CLI agent unsecured"
         },
@@ -2048,5 +2119,5 @@
     }
   ],
   "name": "threat model Linux",
-  "signature": "c865d10e40c7a7185d3afbb49436fd7dfa01258ebc7ded237520e4259c6fc06c"
+  "signature": "f651845dd51b976e67deb7666398ddc6e1e97cdc9b20f51694a94a7670108cbb"
 }

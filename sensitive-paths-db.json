@@ -31,9 +31,14 @@
     "/.dogecoin/",
     "/Local Extension Settings/nkbihfbeogaeaoehlefnkodbefgpgknn/",
     "/Local Extension Settings/bfnaelmomeimhlpmgjnjophhpkkoljpa/",
-    "/Local Extension Settings/aholpfdialjgjfhomihkjbmgjidlcdno/"
+    "/Local Extension Settings/aholpfdialjgjfhomihkjbmgjidlcdno/",
+    "/CLAUDE.md",
+    "/AGENTS.md",
+    "/.cursorrules",
+    "/mcp.json",
+    "/.cursor/rules/"
   ],
-  "date": "May 12th 2026",
+  "date": "June 06th 2026",
   "fim_excluded_path_patterns": [
     "/target/debug/",
     "/target/release/",
@@ -147,6 +152,13 @@
     "git": [
       "/.git-credentials"
     ],
+    "instruction": [
+      "/claude.md",
+      "/agents.md",
+      "/.cursorrules",
+      "/mcp.json",
+      "/.cursor/rules/"
+    ],
     "keychain": [
       "/library/keychains/"
     ],
@@ -212,7 +224,7 @@
       "/AppData/Roaming/Phantom/"
     ]
   },
-  "signature": "552068130f23a2c936a4dfd45f1f2b3b4ebafb135de3be6c057a2b81921259cf",
+  "signature": "8b37bcb65bcba4653622dcdff824a7afd7c8048e98c8c9a21d51ebc6c01ac8cd",
   "watch_roots": {
     "common_home_relative": [
       ".ssh",
