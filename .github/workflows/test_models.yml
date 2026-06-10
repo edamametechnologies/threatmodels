@@ -191,6 +191,13 @@ jobs:
       - name: Setup Alpine Linux
         uses: jirutka/setup-alpine@v1
         with:
+          # Pin the Alpine release so the bundled Python stays on a version
+          # that has prebuilt musllinux wheels for our pinned deps. The
+          # default (latest-stable) rolled to Python 3.14, for which
+          # aiohttp==3.9.0 has no musllinux wheel and does not build from
+          # source (3.9.0 predates the 3.14 C API), breaking the gate.
+          # v3.21 ships Python 3.12 (aiohttp 3.9.0 has cp312 musllinux wheels).
+          branch: v3.21
           arch: ${{ matrix.arch }}
           apk-tools-url: ${{ matrix.apk_tools_url }}
 
@@ -215,6 +222,7 @@ jobs:
               eudev-dev \
               perl \
               python3 \
+              python3-dev \
               py3-pip
         shell: alpine.sh --root {0}
 
