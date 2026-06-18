@@ -966,6 +966,16 @@ def validate_cve_detection_params(filename: str) -> None:
         'known_system_daemon_credential_maintenance_hints',
         'trusted_self_extracting_installers',
         'os_content_indexer_processes',
+        'secret_content_powershell_dangerous_verbs',
+        'secret_content_powershell_probe_read_verbs',
+        'secret_content_signatures',
+        'agent_critical_subprocess_catalog',
+        'agent_secret_env_key_needles',
+        'agent_model_family_prefixes',
+        'agent_model_field_keys',
+        'agent_model_container_keys',
+        'agent_tool_privilege_keywords',
+        'agent_recursion_thresholds',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     required_checks = {
@@ -1255,6 +1265,98 @@ def validate_cve_detection_params(filename: str) -> None:
                     f"{key_name}['{platform}'][{i}]['writer_path_prefixes']",
                 )
 
+    def validate_secret_content_signatures(value, key_name: str) -> None:
+        # List of secret-marker signatures consumed by the secret-content
+        # scanner. Each entry contributes labels + hit weight when its
+        # markers match the (lowercased) file body.
+        expected_entry_keys = {'label', 'mode', 'hits', 'per_marker', 'markers'}
+        allowed_modes = {'any', 'all'}
+        if not isinstance(value, list):
+            raise ValueError(f"'{key_name}' must be a list")
+        for i, entry in enumerate(value):
+            if not isinstance(entry, dict):
+                raise ValueError(f"{key_name}[{i}] must be a dict")
+            if set(entry.keys()) != expected_entry_keys:
+                missing = expected_entry_keys - set(entry.keys())
+                extra = set(entry.keys()) - expected_entry_keys
+                raise ValueError(
+                    f"{key_name}[{i}] has missing keys {missing} and unexpected keys {extra}"
+                )
+            if not isinstance(entry['label'], str) or not entry['label']:
+                raise ValueError(f"{key_name}[{i}]['label'] must be a non-empty string")
+            if entry['mode'] not in allowed_modes:
+                raise ValueError(f"{key_name}[{i}]['mode'] must be one of {allowed_modes}")
+            # bool is a subclass of int -- reject it explicitly for 'hits'.
+            if isinstance(entry['hits'], bool) or not isinstance(entry['hits'], int) or entry['hits'] < 0:
+                raise ValueError(f"{key_name}[{i}]['hits'] must be a non-negative integer")
+            if not isinstance(entry['per_marker'], bool):
+                raise ValueError(f"{key_name}[{i}]['per_marker'] must be a boolean")
+            markers = entry['markers']
+            validate_string_list(markers, f"{key_name}[{i}]['markers']")
+            if not markers:
+                raise ValueError(f"{key_name}[{i}]['markers'] must be non-empty")
+
+    def validate_agent_critical_subprocess_catalog(value, key_name: str) -> None:
+        # List of critical-subprocess classes used by the agent subprocess
+        # visibility surface (blast-radius badge). Each entry maps a set of
+        # binary basenames to a category, inherent criticality, and OWASP
+        # crosswalk tags.
+        expected_entry_keys = {'names', 'category', 'criticality', 'owasp_refs'}
+        allowed_criticality = {'routine', 'elevated', 'critical'}
+        if not isinstance(value, list):
+            raise ValueError(f"'{key_name}' must be a list")
+        for i, entry in enumerate(value):
+            if not isinstance(entry, dict):
+                raise ValueError(f"{key_name}[{i}] must be a dict")
+            if set(entry.keys()) != expected_entry_keys:
+                missing = expected_entry_keys - set(entry.keys())
+                extra = set(entry.keys()) - expected_entry_keys
+                raise ValueError(
+                    f"{key_name}[{i}] has missing keys {missing} and unexpected keys {extra}"
+                )
+            names = entry['names']
+            validate_string_list(names, f"{key_name}[{i}]['names']")
+            if not names:
+                raise ValueError(f"{key_name}[{i}]['names'] must be non-empty")
+            if not isinstance(entry['category'], str) or not entry['category']:
+                raise ValueError(f"{key_name}[{i}]['category'] must be a non-empty string")
+            if entry['criticality'] not in allowed_criticality:
+                raise ValueError(
+                    f"{key_name}[{i}]['criticality'] must be one of {allowed_criticality}"
+                )
+            if not isinstance(entry['owasp_refs'], str):
+                raise ValueError(f"{key_name}[{i}]['owasp_refs'] must be a string")
+
+    def validate_agent_tool_privilege_keywords(value, key_name: str) -> None:
+        # Per-class keyword lists used to classify MCP tool privileges from
+        # tool names/descriptions/URLs.
+        expected_keys = {
+            'shell', 'filesystem_write', 'filesystem_read', 'browser',
+            'git', 'database', 'secret_access', 'network',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for subkey in sorted(expected_keys):
+            validate_string_list(value[subkey], f"{key_name}['{subkey}']")
+
+    def validate_agent_recursion_thresholds(value, key_name: str) -> None:
+        # Recursion / delegation thresholds for the agent recursion finding.
+        expected_keys = {'depth_high', 'fanout_high', 'loop_min_repeats'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for subkey in sorted(expected_keys):
+            sub = value[subkey]
+            if isinstance(sub, bool) or not isinstance(sub, int) or sub < 1:
+                raise ValueError(f"{key_name}['{subkey}'] must be a positive integer")
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -1314,6 +1416,12 @@ def validate_cve_detection_params(filename: str) -> None:
         'secret_content_network_command_tokens',
         'secret_content_scan_excluded_path_patterns',
         'secret_content_script_extensions',
+        'secret_content_powershell_dangerous_verbs',
+        'secret_content_powershell_probe_read_verbs',
+        'agent_secret_env_key_needles',
+        'agent_model_family_prefixes',
+        'agent_model_field_keys',
+        'agent_model_container_keys',
     ):
         validate_string_list(data[list_key], list_key)
 
@@ -1402,6 +1510,22 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_runtime_perfdata_paths(
         data['runtime_perfdata_paths'],
         'runtime_perfdata_paths',
+    )
+    validate_secret_content_signatures(
+        data['secret_content_signatures'],
+        'secret_content_signatures',
+    )
+    validate_agent_critical_subprocess_catalog(
+        data['agent_critical_subprocess_catalog'],
+        'agent_critical_subprocess_catalog',
+    )
+    validate_agent_tool_privilege_keywords(
+        data['agent_tool_privilege_keywords'],
+        'agent_tool_privilege_keywords',
+    )
+    validate_agent_recursion_thresholds(
+        data['agent_recursion_thresholds'],
+        'agent_recursion_thresholds',
     )
 
     print("CVE detection params validation successful")
