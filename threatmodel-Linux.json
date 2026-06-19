@@ -1,5 +1,5 @@
 {
-  "date": "June 10th 2026",
+  "date": "June 19th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -2050,6 +2050,77 @@
       "description": [
         {
           "locale": "EN",
+          "summary": "An AI coding agent on this host runs inside a recognized agent governance harness (control plane) such as AgentField or Rippletide, yet it still shows host blast-radius escape - it is unsandboxed AND can become root (passwordless sudo) and/or was observed spawning a critical subprocess (ssh, netcat, docker, a raw shell). A control plane is deployed but is not actually confining the agent, which is worse than having no harness at all: the governance layer is being bypassed. EDAMAME reads the harness footprint and the agent's host reach from disk; this clears when the breach is resolved (agent sandboxed, passwordless sudo removed).",
+          "title": "Agent escapes its governance harness boundary"
+        },
+        {
+          "locale": "FR",
+          "summary": "Un agent de codage IA sur cet hote s'execute dans un harnais de gouvernance (plan de controle) reconnu tel qu'AgentField ou Rippletide, mais presente neanmoins une evasion de son rayon d'impact sur l'hote - il n'a pas de bac a sable ET peut devenir root (sudo sans mot de passe) et/ou a ete observe en train de lancer un sous-processus critique (ssh, netcat, docker, un shell brut). Un plan de controle est deploye mais ne confine pas reellement l'agent, ce qui est pire que l'absence de harnais : la couche de gouvernance est contournee. EDAMAME lit l'empreinte du harnais et la portee de l'agent sur l'hote depuis le disque ; cela disparait quand la breche est corrigee (agent place dans un bac a sable, sudo sans mot de passe supprime).",
+          "title": "L'agent echappe a la frontiere de son harnais de gouvernance"
+        }
+      ],
+      "dimension": "applications",
+      "implementation": {
+        "class": "internal",
+        "education": [],
+        "elevation": "user",
+        "maxversion": 0,
+        "minversion": 12,
+        "system": "Linux",
+        "target": "harness_divergence"
+      },
+      "metrictype": "bool",
+      "name": "harness_divergence",
+      "remediation": {
+        "class": "internal",
+        "education": [
+          {
+            "class": "html",
+            "locale": "EN",
+            "target": "<p>A governance harness is installed but an agent still escapes its boundary. Close the gap so the control plane actually confines the agent:</p><ul><li>Navigate to the 'Agents' tab to see which agent escaped and why its blast radius is high despite the harness.</li><li>Confirm the harness (AgentField, Rippletide, ...) is configured to govern THIS agent - a harness installed but not wired to the agent enforces nothing.</li><li>Remove passwordless sudo (NOPASSWD) for the user that launches the agent, so a compromised agent cannot become root without a prompt.</li><li>Run the agent inside an OS sandbox or container so its file and command reach is bounded even if the harness policy is bypassed.</li><li>Restrict the agent from spawning critical subprocesses (ssh, netcat, docker, raw shells) that it does not need.</li></ul>"
+          },
+          {
+            "class": "html",
+            "locale": "FR",
+            "target": "<p>Un harnais de gouvernance est installe mais un agent echappe encore a sa frontiere. Comblez la lacune pour que le plan de controle confine reellement l'agent :</p><ul><li>Allez dans l'onglet 'Agents' pour voir quel agent s'est echappe et pourquoi son rayon d'impact est eleve malgre le harnais.</li><li>Verifiez que le harnais (AgentField, Rippletide, ...) est configure pour gouverner CET agent - un harnais installe mais non relie a l'agent n'applique rien.</li><li>Supprimez le sudo sans mot de passe (NOPASSWD) pour l'utilisateur qui lance l'agent, afin qu'un agent compromis ne puisse pas devenir root sans invite.</li><li>Executez l'agent dans un bac a sable ou un conteneur du systeme afin de limiter sa portee sur les fichiers et les commandes meme si la politique du harnais est contournee.</li><li>Empechez l'agent de lancer des sous-processus critiques (ssh, netcat, docker, shells bruts) dont il n'a pas besoin.</li></ul>"
+          }
+        ],
+        "elevation": "",
+        "maxversion": 0,
+        "minversion": 12,
+        "system": "Linux",
+        "target": "agentic_ai_settings"
+      },
+      "rollback": {
+        "class": "internal",
+        "education": [
+          {
+            "class": "html",
+            "locale": "EN",
+            "target": "<p>A governance harness is installed but an agent still escapes its boundary. Close the gap so the control plane actually confines the agent:</p><ul><li>Navigate to the 'Agents' tab to see which agent escaped and why its blast radius is high despite the harness.</li><li>Confirm the harness (AgentField, Rippletide, ...) is configured to govern THIS agent - a harness installed but not wired to the agent enforces nothing.</li><li>Remove passwordless sudo (NOPASSWD) for the user that launches the agent, so a compromised agent cannot become root without a prompt.</li><li>Run the agent inside an OS sandbox or container so its file and command reach is bounded even if the harness policy is bypassed.</li><li>Restrict the agent from spawning critical subprocesses (ssh, netcat, docker, raw shells) that it does not need.</li></ul>"
+          },
+          {
+            "class": "html",
+            "locale": "FR",
+            "target": "<p>Un harnais de gouvernance est installe mais un agent echappe encore a sa frontiere. Comblez la lacune pour que le plan de controle confine reellement l'agent :</p><ul><li>Allez dans l'onglet 'Agents' pour voir quel agent s'est echappe et pourquoi son rayon d'impact est eleve malgre le harnais.</li><li>Verifiez que le harnais (AgentField, Rippletide, ...) est configure pour gouverner CET agent - un harnais installe mais non relie a l'agent n'applique rien.</li><li>Supprimez le sudo sans mot de passe (NOPASSWD) pour l'utilisateur qui lance l'agent, afin qu'un agent compromis ne puisse pas devenir root sans invite.</li><li>Executez l'agent dans un bac a sable ou un conteneur du systeme afin de limiter sa portee sur les fichiers et les commandes meme si la politique du harnais est contournee.</li><li>Empechez l'agent de lancer des sous-processus critiques (ssh, netcat, docker, shells bruts) dont il n'a pas besoin.</li></ul>"
+          }
+        ],
+        "elevation": "",
+        "maxversion": 0,
+        "minversion": 12,
+        "system": "Linux",
+        "target": "agentic_ai_settings"
+      },
+      "scope": "generic",
+      "severity": 4,
+      "tags": [
+        "AI Agent Posture"
+      ]
+    },
+    {
+      "description": [
+        {
+          "locale": "EN",
           "summary": "An AI agent's capability surface (MCP servers, tools, secret bindings, or instruction files) has drifted from its approved baseline. Unapproved capability changes can indicate supply-chain tampering or privilege escalation.",
           "title": "Agent capability surface drift detected"
         },
@@ -2261,5 +2332,5 @@
     }
   ],
   "name": "threat model Linux",
-  "signature": "a8348121df6f59dcad1937a3813e306a95d5743f56c469c35b0465b3feb75aa3"
+  "signature": "41d42f0411b8370c5842d7d50ec301113ec8a38687050bf61634fe901db096a0"
 }
