@@ -957,6 +957,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'edamame_daemon_self_telemetry_install_prefixes',
         'platform_credential_helper_routine_destinations',
         'cloud_provider_sdk_destinations',
+        'software_distribution_backends',
         'platform_metadata_endpoints',
         'platform_runtime_probe_filename_patterns',
         'platform_self_state_directories',
@@ -1357,6 +1358,21 @@ def validate_cve_detection_params(filename: str) -> None:
             if isinstance(sub, bool) or not isinstance(sub, int) or sub < 1:
                 raise ValueError(f"{key_name}['{subkey}'] must be a positive integer")
 
+    def validate_software_distribution_backends(value, key_name: str) -> None:
+        # Trusted vendor software-distribution backends (GitHub / Fastly /
+        # Cloudflare release CDNs). Recognized by ASN owner, domain suffix,
+        # or IP prefix so the detector can demote benign packaged-app
+        # self-update egress (FP-MAC-14).
+        expected_keys = {'asn_owners', 'domain_suffixes', 'ip_prefixes'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for subkey in sorted(expected_keys):
+            validate_string_list(value[subkey], f"{key_name}['{subkey}']")
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -1506,6 +1522,10 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_cloud_provider_sdk_destinations(
         data['cloud_provider_sdk_destinations'],
         'cloud_provider_sdk_destinations',
+    )
+    validate_software_distribution_backends(
+        data['software_distribution_backends'],
+        'software_distribution_backends',
     )
     validate_runtime_perfdata_paths(
         data['runtime_perfdata_paths'],
