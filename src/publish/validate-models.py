@@ -977,6 +977,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'agent_model_container_keys',
         'agent_tool_privilege_keywords',
         'agent_recursion_thresholds',
+        'model_pricing',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     required_checks = {
@@ -1373,6 +1374,53 @@ def validate_cve_detection_params(filename: str) -> None:
         for subkey in sorted(expected_keys):
             validate_string_list(value[subkey], f"{key_name}['{subkey}']")
 
+    def validate_model_pricing(value, key_name: str) -> None:
+        # Per-model USD-per-1M-token price table used by the agent-transcript
+        # economics parser to estimate session cost. Resolution is by longest
+        # matching `match_substring` against the lowercased model id; the
+        # `default` entry is the fallback rate for unrecognized models.
+        rate_keys = {'input', 'output', 'cache_write', 'cache_read'}
+        entry_keys = rate_keys | {'match_substring'}
+
+        def validate_rates(entry, where: str, require_match_substring: bool) -> None:
+            if not isinstance(entry, dict):
+                raise ValueError(f"{where} must be a dict")
+            expected = entry_keys
+            if set(entry.keys()) != expected:
+                missing = expected - set(entry.keys())
+                extra = set(entry.keys()) - expected
+                raise ValueError(f"{where} has missing keys {missing} and unexpected keys {extra}")
+            ms = entry['match_substring']
+            if not isinstance(ms, str):
+                raise ValueError(f"{where}['match_substring'] must be a string")
+            if require_match_substring and not ms:
+                raise ValueError(f"{where}['match_substring'] must be non-empty")
+            for rk in sorted(rate_keys):
+                v = entry[rk]
+                if isinstance(v, bool) or not isinstance(v, (int, float)) or v < 0:
+                    raise ValueError(f"{where}['{rk}'] must be a non-negative number")
+
+        expected_top = {'default', 'entries'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_top:
+            missing = expected_top - set(value.keys())
+            extra = set(value.keys()) - expected_top
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        # `default.match_substring` is structurally present but ignored at
+        # runtime (the fallback applies when nothing matched), so it is NOT
+        # required to be non-empty.
+        validate_rates(value['default'], f"{key_name}['default']", require_match_substring=False)
+        if not isinstance(value['entries'], list):
+            raise ValueError(f"{key_name}['entries'] must be a list")
+        seen = set()
+        for i, entry in enumerate(value['entries']):
+            validate_rates(entry, f"{key_name}['entries'][{i}]", require_match_substring=True)
+            ms = entry['match_substring']
+            if ms in seen:
+                raise ValueError(f"{key_name}['entries'] has duplicate match_substring '{ms}'")
+            seen.add(ms)
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -1546,6 +1594,10 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_agent_recursion_thresholds(
         data['agent_recursion_thresholds'],
         'agent_recursion_thresholds',
+    )
+    validate_model_pricing(
+        data['model_pricing'],
+        'model_pricing',
     )
 
     print("CVE detection params validation successful")
