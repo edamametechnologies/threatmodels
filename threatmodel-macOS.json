@@ -1,5 +1,5 @@
 {
-  "date": "June 19th 2026",
+  "date": "July 13th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -2761,12 +2761,12 @@
       "description": [
         {
           "locale": "EN",
-          "summary": "AI coding agents are present on this host but none of them runs inside a recognized agent governance harness (control plane) such as AgentField or Rippletide. Without a harness there is no policy enforcement, identity, per-task budget, tool allow-listing, or audit trail wrapping the agent's actions - a gap in the 'plan' and 'design' phases of your AI-SDLC. EDAMAME detects the on-disk footprint of known harnesses; this clears once one is installed for the user running the agents.",
+          "summary": "AI coding agents are present on this host but none of them runs inside a recognized agent governance harness (control plane) such as AgentField or Rippletide. Without a harness there is no policy enforcement, identity, per-task budget, tool allow-listing, or audit trail wrapping the agent's actions - a governance gap for the AI agents running on this host. EDAMAME detects the on-disk footprint of known harnesses; this clears once one is installed for the user running the agents.",
           "title": "AI agents run without a governance harness"
         },
         {
           "locale": "FR",
-          "summary": "Des agents de codage IA sont presents sur cet hote mais aucun ne s'execute dans un harnais de gouvernance (plan de controle) reconnu tel qu'AgentField ou Rippletide. Sans harnais, aucune politique, identite, budget par tache, liste d'autorisation d'outils ni piste d'audit n'encadre les actions de l'agent - une lacune dans les phases 'plan' et 'conception' de votre AI-SDLC. EDAMAME detecte l'empreinte sur disque des harnais connus ; cela disparait des qu'un harnais est installe pour l'utilisateur qui execute les agents.",
+          "summary": "Des agents de codage IA sont presents sur cet hote mais aucun ne s'execute dans un harnais de gouvernance (plan de controle) reconnu tel qu'AgentField ou Rippletide. Sans harnais, aucune politique, identite, budget par tache, liste d'autorisation d'outils ni piste d'audit n'encadre les actions de l'agent - une lacune de gouvernance pour les agents IA qui s'executent sur cet hote. EDAMAME detecte l'empreinte sur disque des harnais connus ; cela disparait des qu'un harnais est installe pour l'utilisateur qui execute les agents.",
           "title": "Agents IA sans harnais de gouvernance"
         }
       ],
@@ -2788,12 +2788,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Close the AI-SDLC governance gap by running your AI coding agents inside a governance harness (agent control plane):</p><ul><li>Navigate to the 'Agents' tab to see which agents are present and whether a harness was detected.</li><li>Adopt an agent harness such as AgentField (agentfield.ai) or Rippletide (rippletide.com) that enforces policy, identity, per-task budgets, tool allow-lists, and an audit trail before each agent action executes.</li><li>Install the harness for the user that launches the agents so EDAMAME detects its footprint and clears this finding.</li><li>Treat harness coverage as a 'plan'/'design'-phase control: decide which agents must be governed before they are deployed.</li></ul>"
+            "target": "<p>Close the AI agent governance gap by running your AI coding agents inside a governance harness (agent control plane):</p><ul><li>Navigate to the 'Agents' tab to see which agents are present and whether a harness was detected.</li><li>Adopt an agent harness such as AgentField (agentfield.ai) or Rippletide (rippletide.com) that enforces policy, identity, per-task budgets, tool allow-lists, and an audit trail before each agent action executes.</li><li>Install the harness for the user that launches the agents so EDAMAME detects its footprint and clears this finding.</li><li>Treat harness coverage as a 'plan'/'design'-phase control: decide which agents must be governed before they are deployed.</li></ul>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Comblez la lacune de gouvernance AI-SDLC en executant vos agents de codage IA dans un harnais de gouvernance (plan de controle d'agents) :</p><ul><li>Allez dans l'onglet 'Agents' pour voir quels agents sont presents et si un harnais a ete detecte.</li><li>Adoptez un harnais d'agent tel qu'AgentField (agentfield.ai) ou Rippletide (rippletide.com) qui applique politique, identite, budgets par tache, listes d'autorisation d'outils et piste d'audit avant chaque action de l'agent.</li><li>Installez le harnais pour l'utilisateur qui lance les agents afin qu'EDAMAME detecte son empreinte et efface cette detection.</li><li>Traitez la couverture par harnais comme un controle de phase 'plan'/'conception' : decidez quels agents doivent etre gouvernes avant leur deploiement.</li></ul>"
+            "target": "<p>Comblez la lacune de gouvernance des agents IA en executant vos agents de codage IA dans un harnais de gouvernance (plan de controle d'agents) :</p><ul><li>Allez dans l'onglet 'Agents' pour voir quels agents sont presents et si un harnais a ete detecte.</li><li>Adoptez un harnais d'agent tel qu'AgentField (agentfield.ai) ou Rippletide (rippletide.com) qui applique politique, identite, budgets par tache, listes d'autorisation d'outils et piste d'audit avant chaque action de l'agent.</li><li>Installez le harnais pour l'utilisateur qui lance les agents afin qu'EDAMAME detecte son empreinte et efface cette detection.</li><li>Traitez la couverture par harnais comme un controle de phase 'plan'/'conception' : decidez quels agents doivent etre gouvernes avant leur deploiement.</li></ul>"
           }
         ],
         "elevation": "",
@@ -2808,12 +2808,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Close the AI-SDLC governance gap by running your AI coding agents inside a governance harness (agent control plane):</p><ul><li>Navigate to the 'Agents' tab to see which agents are present and whether a harness was detected.</li><li>Adopt an agent harness such as AgentField (agentfield.ai) or Rippletide (rippletide.com) that enforces policy, identity, per-task budgets, tool allow-lists, and an audit trail before each agent action executes.</li><li>Install the harness for the user that launches the agents so EDAMAME detects its footprint and clears this finding.</li><li>Treat harness coverage as a 'plan'/'design'-phase control: decide which agents must be governed before they are deployed.</li></ul>"
+            "target": "<p>Close the AI agent governance gap by running your AI coding agents inside a governance harness (agent control plane):</p><ul><li>Navigate to the 'Agents' tab to see which agents are present and whether a harness was detected.</li><li>Adopt an agent harness such as AgentField (agentfield.ai) or Rippletide (rippletide.com) that enforces policy, identity, per-task budgets, tool allow-lists, and an audit trail before each agent action executes.</li><li>Install the harness for the user that launches the agents so EDAMAME detects its footprint and clears this finding.</li><li>Treat harness coverage as a 'plan'/'design'-phase control: decide which agents must be governed before they are deployed.</li></ul>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Comblez la lacune de gouvernance AI-SDLC en executant vos agents de codage IA dans un harnais de gouvernance (plan de controle d'agents) :</p><ul><li>Allez dans l'onglet 'Agents' pour voir quels agents sont presents et si un harnais a ete detecte.</li><li>Adoptez un harnais d'agent tel qu'AgentField (agentfield.ai) ou Rippletide (rippletide.com) qui applique politique, identite, budgets par tache, listes d'autorisation d'outils et piste d'audit avant chaque action de l'agent.</li><li>Installez le harnais pour l'utilisateur qui lance les agents afin qu'EDAMAME detecte son empreinte et efface cette detection.</li><li>Traitez la couverture par harnais comme un controle de phase 'plan'/'conception' : decidez quels agents doivent etre gouvernes avant leur deploiement.</li></ul>"
+            "target": "<p>Comblez la lacune de gouvernance des agents IA en executant vos agents de codage IA dans un harnais de gouvernance (plan de controle d'agents) :</p><ul><li>Allez dans l'onglet 'Agents' pour voir quels agents sont presents et si un harnais a ete detecte.</li><li>Adoptez un harnais d'agent tel qu'AgentField (agentfield.ai) ou Rippletide (rippletide.com) qui applique politique, identite, budgets par tache, listes d'autorisation d'outils et piste d'audit avant chaque action de l'agent.</li><li>Installez le harnais pour l'utilisateur qui lance les agents afin qu'EDAMAME detecte son empreinte et efface cette detection.</li><li>Traitez la couverture par harnais comme un controle de phase 'plan'/'conception' : decidez quels agents doivent etre gouvernes avant leur deploiement.</li></ul>"
           }
         ],
         "elevation": "",
@@ -2895,77 +2895,6 @@
       },
       "scope": "generic",
       "severity": 4,
-      "tags": [
-        "AI Agent Posture"
-      ]
-    },
-    {
-      "description": [
-        {
-          "locale": "EN",
-          "summary": "An AI agent's capability surface (MCP servers, tools, secret bindings, or instruction files) has drifted from its approved baseline. Unapproved capability changes can indicate supply-chain tampering or privilege escalation.",
-          "title": "Agent capability surface drift detected"
-        },
-        {
-          "locale": "FR",
-          "summary": "La surface de capacites d'un agent IA (serveurs MCP, outils, liaisons de secrets ou fichiers d'instructions) a devie de sa reference approuvee. Des changements non approuves peuvent indiquer une compromission de la chaine d'approvisionnement ou une elevation de privileges.",
-          "title": "Derive de la surface de capacites de l'agent detectee"
-        }
-      ],
-      "dimension": "applications",
-      "implementation": {
-        "class": "internal",
-        "education": [],
-        "elevation": "user",
-        "maxversion": 0,
-        "minversion": 12,
-        "system": "macOS",
-        "target": "agent_sbom_drift"
-      },
-      "metrictype": "bool",
-      "name": "agent_sbom_drift",
-      "remediation": {
-        "class": "internal",
-        "education": [
-          {
-            "class": "html",
-            "locale": "EN",
-            "target": "<p>Review the agent capability-surface change against its approved baseline:</p><ul><li>Navigate to the 'Agents' tab.</li><li>Review the drifted MCP servers, tools, secret bindings, or instruction files.</li><li>If the change is legitimate, re-approve the baseline. Otherwise, investigate the agent for tampering.</li></ul>"
-          },
-          {
-            "class": "html",
-            "locale": "FR",
-            "target": "<p>Examinez le changement de surface de capacites de l'agent par rapport a sa reference approuvee:</p><ul><li>Allez dans l'onglet 'Agents'.</li><li>Examinez les serveurs MCP, outils, liaisons de secrets ou fichiers d'instructions ayant devie.</li><li>Si le changement est legitime, reapprouvez la reference. Sinon, examinez l'agent pour detecter une compromission.</li></ul>"
-          }
-        ],
-        "elevation": "",
-        "maxversion": 0,
-        "minversion": 12,
-        "system": "macOS",
-        "target": "agentic_ai_settings"
-      },
-      "rollback": {
-        "class": "internal",
-        "education": [
-          {
-            "class": "html",
-            "locale": "EN",
-            "target": "<p>Review the agent capability-surface change against its approved baseline:</p><ul><li>Navigate to the 'Agents' tab.</li><li>Review the drifted MCP servers, tools, secret bindings, or instruction files.</li><li>If the change is legitimate, re-approve the baseline. Otherwise, investigate the agent for tampering.</li></ul>"
-          },
-          {
-            "class": "html",
-            "locale": "FR",
-            "target": "<p>Examinez le changement de surface de capacites de l'agent par rapport a sa reference approuvee:</p><ul><li>Allez dans l'onglet 'Agents'.</li><li>Examinez les serveurs MCP, outils, liaisons de secrets ou fichiers d'instructions ayant devie.</li><li>Si le changement est legitime, reapprouvez la reference. Sinon, examinez l'agent pour detecter une compromission.</li></ul>"
-          }
-        ],
-        "elevation": "",
-        "maxversion": 0,
-        "minversion": 12,
-        "system": "macOS",
-        "target": "agentic_ai_settings"
-      },
-      "scope": "generic",
-      "severity": 3,
       "tags": [
         "AI Agent Posture"
       ]
@@ -3114,5 +3043,5 @@
     }
   ],
   "name": "threat model macOS",
-  "signature": "9baf10a0d3b3edebd7a19c8cb8d9c0b7e12d125f9c776754f1c37f58a4cab7fa"
+  "signature": "1092123c3a4701a968f105abf4b298117b974ac8a19028f2231f2442e047ead6"
 }

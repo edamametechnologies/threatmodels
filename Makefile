@@ -1,10 +1,10 @@
 .PHONY: tests
 
 update:
-	python3 src/publish/update-models.py threatmodel-macOS.json threatmodel-Windows.json threatmodel-Linux.json threatmodel-iOS.json threatmodel-Android.json sensitive-paths-db.json cve-detection-params-db.json
+	python3 src/publish/update-models.py threatmodel-macOS.json threatmodel-Windows.json threatmodel-Linux.json threatmodel-iOS.json threatmodel-Android.json sensitive-paths-db.json cve-detection-params-db.json agent-visibility-params-db.json
 
 validate:
-	python3 src/publish/validate-models.py threatmodel-*.json sensitive-paths-db.json cve-detection-params-db.json
+	python3 src/publish/validate-models.py threatmodel-*.json sensitive-paths-db.json cve-detection-params-db.json agent-visibility-params-db.json
 
 vulns:
 	python3 src/cve/build-port-vulns-db.py
