@@ -971,14 +971,6 @@ def validate_cve_detection_params(filename: str) -> None:
         'secret_content_powershell_dangerous_verbs',
         'secret_content_powershell_probe_read_verbs',
         'secret_content_signatures',
-        'agent_critical_subprocess_catalog',
-        'agent_secret_env_key_needles',
-        'agent_model_family_prefixes',
-        'agent_model_field_keys',
-        'agent_model_container_keys',
-        'agent_tool_privilege_keywords',
-        'agent_recursion_thresholds',
-        'model_pricing',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     required_checks = {
@@ -1299,67 +1291,6 @@ def validate_cve_detection_params(filename: str) -> None:
             if not markers:
                 raise ValueError(f"{key_name}[{i}]['markers'] must be non-empty")
 
-    def validate_agent_critical_subprocess_catalog(value, key_name: str) -> None:
-        # List of critical-subprocess classes used by the agent subprocess
-        # visibility surface (blast-radius badge). Each entry maps a set of
-        # binary basenames to a category, inherent criticality, and OWASP
-        # crosswalk tags.
-        expected_entry_keys = {'names', 'category', 'criticality', 'owasp_refs'}
-        allowed_criticality = {'routine', 'elevated', 'critical'}
-        if not isinstance(value, list):
-            raise ValueError(f"'{key_name}' must be a list")
-        for i, entry in enumerate(value):
-            if not isinstance(entry, dict):
-                raise ValueError(f"{key_name}[{i}] must be a dict")
-            if set(entry.keys()) != expected_entry_keys:
-                missing = expected_entry_keys - set(entry.keys())
-                extra = set(entry.keys()) - expected_entry_keys
-                raise ValueError(
-                    f"{key_name}[{i}] has missing keys {missing} and unexpected keys {extra}"
-                )
-            names = entry['names']
-            validate_string_list(names, f"{key_name}[{i}]['names']")
-            if not names:
-                raise ValueError(f"{key_name}[{i}]['names'] must be non-empty")
-            if not isinstance(entry['category'], str) or not entry['category']:
-                raise ValueError(f"{key_name}[{i}]['category'] must be a non-empty string")
-            if entry['criticality'] not in allowed_criticality:
-                raise ValueError(
-                    f"{key_name}[{i}]['criticality'] must be one of {allowed_criticality}"
-                )
-            if not isinstance(entry['owasp_refs'], str):
-                raise ValueError(f"{key_name}[{i}]['owasp_refs'] must be a string")
-
-    def validate_agent_tool_privilege_keywords(value, key_name: str) -> None:
-        # Per-class keyword lists used to classify MCP tool privileges from
-        # tool names/descriptions/URLs.
-        expected_keys = {
-            'shell', 'filesystem_write', 'filesystem_read', 'browser',
-            'git', 'database', 'secret_access', 'network',
-        }
-        if not isinstance(value, dict):
-            raise ValueError(f"'{key_name}' must be a dict")
-        if set(value.keys()) != expected_keys:
-            missing = expected_keys - set(value.keys())
-            extra = set(value.keys()) - expected_keys
-            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
-        for subkey in sorted(expected_keys):
-            validate_string_list(value[subkey], f"{key_name}['{subkey}']")
-
-    def validate_agent_recursion_thresholds(value, key_name: str) -> None:
-        # Recursion / delegation thresholds for the agent recursion finding.
-        expected_keys = {'depth_high', 'fanout_high', 'loop_min_repeats'}
-        if not isinstance(value, dict):
-            raise ValueError(f"'{key_name}' must be a dict")
-        if set(value.keys()) != expected_keys:
-            missing = expected_keys - set(value.keys())
-            extra = set(value.keys()) - expected_keys
-            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
-        for subkey in sorted(expected_keys):
-            sub = value[subkey]
-            if isinstance(sub, bool) or not isinstance(sub, int) or sub < 1:
-                raise ValueError(f"{key_name}['{subkey}'] must be a positive integer")
-
     def validate_software_distribution_backends(value, key_name: str) -> None:
         # Trusted vendor software-distribution backends (GitHub / Fastly /
         # Cloudflare release CDNs). Recognized by ASN owner, domain suffix,
@@ -1374,53 +1305,6 @@ def validate_cve_detection_params(filename: str) -> None:
             raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
         for subkey in sorted(expected_keys):
             validate_string_list(value[subkey], f"{key_name}['{subkey}']")
-
-    def validate_model_pricing(value, key_name: str) -> None:
-        # Per-model USD-per-1M-token price table used by the agent-transcript
-        # economics parser to estimate session cost. Resolution is by longest
-        # matching `match_substring` against the lowercased model id; the
-        # `default` entry is the fallback rate for unrecognized models.
-        rate_keys = {'input', 'output', 'cache_write', 'cache_read'}
-        entry_keys = rate_keys | {'match_substring'}
-
-        def validate_rates(entry, where: str, require_match_substring: bool) -> None:
-            if not isinstance(entry, dict):
-                raise ValueError(f"{where} must be a dict")
-            expected = entry_keys
-            if set(entry.keys()) != expected:
-                missing = expected - set(entry.keys())
-                extra = set(entry.keys()) - expected
-                raise ValueError(f"{where} has missing keys {missing} and unexpected keys {extra}")
-            ms = entry['match_substring']
-            if not isinstance(ms, str):
-                raise ValueError(f"{where}['match_substring'] must be a string")
-            if require_match_substring and not ms:
-                raise ValueError(f"{where}['match_substring'] must be non-empty")
-            for rk in sorted(rate_keys):
-                v = entry[rk]
-                if isinstance(v, bool) or not isinstance(v, (int, float)) or v < 0:
-                    raise ValueError(f"{where}['{rk}'] must be a non-negative number")
-
-        expected_top = {'default', 'entries'}
-        if not isinstance(value, dict):
-            raise ValueError(f"'{key_name}' must be a dict")
-        if set(value.keys()) != expected_top:
-            missing = expected_top - set(value.keys())
-            extra = set(value.keys()) - expected_top
-            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
-        # `default.match_substring` is structurally present but ignored at
-        # runtime (the fallback applies when nothing matched), so it is NOT
-        # required to be non-empty.
-        validate_rates(value['default'], f"{key_name}['default']", require_match_substring=False)
-        if not isinstance(value['entries'], list):
-            raise ValueError(f"{key_name}['entries'] must be a list")
-        seen = set()
-        for i, entry in enumerate(value['entries']):
-            validate_rates(entry, f"{key_name}['entries'][{i}]", require_match_substring=True)
-            ms = entry['match_substring']
-            if ms in seen:
-                raise ValueError(f"{key_name}['entries'] has duplicate match_substring '{ms}'")
-            seen.add(ms)
 
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
@@ -1484,10 +1368,6 @@ def validate_cve_detection_params(filename: str) -> None:
         'secret_content_script_extensions',
         'secret_content_powershell_dangerous_verbs',
         'secret_content_powershell_probe_read_verbs',
-        'agent_secret_env_key_needles',
-        'agent_model_family_prefixes',
-        'agent_model_field_keys',
-        'agent_model_container_keys',
     ):
         validate_string_list(data[list_key], list_key)
 
@@ -1585,6 +1465,279 @@ def validate_cve_detection_params(filename: str) -> None:
         data['secret_content_signatures'],
         'secret_content_signatures',
     )
+
+    print("CVE detection params validation successful")
+
+
+def validate_agent_visibility_params(filename: str) -> None:
+    """Validate agent-visibility-params-db.json structure.
+
+    Owns every agents-tab visibility tunable: critical-subprocess catalog,
+    MCP tool-privilege keywords, model pricing, transcript secret /
+    prompt-injection signatures, augmentation prompt + coach templates, and
+    the unified history-retention policy. Kept separate from the CVE
+    detection params so agent-visibility tuning never churns the attack
+    pattern detector CloudModel (and vice versa).
+    """
+    allowed_top_keys = {
+        'date', 'signature',
+        'agent_critical_subprocess_catalog',
+        'agent_secret_env_key_needles',
+        'agent_model_family_prefixes',
+        'agent_model_field_keys',
+        'agent_model_container_keys',
+        'agent_tool_privilege_keywords',
+        'agent_recursion_thresholds',
+        'model_pricing',
+        'transcript_secret_signatures',
+        'prompt_injection_signatures',
+        'augmentation_prompt_templates',
+        'augmentation_coach_templates',
+        'history_retention',
+    }
+
+    def validate_string_list(value, key_name: str) -> None:
+        if not isinstance(value, list):
+            raise ValueError(f"'{key_name}' must be a list")
+        for i, item in enumerate(value):
+            if not isinstance(item, str):
+                raise ValueError(f"{key_name}[{i}] must be a string")
+
+    def validate_signature_list(value, key_name: str) -> None:
+        # Same shape as the CVE params secret_content_signatures: label +
+        # mode + hit weight + markers.
+        expected_entry_keys = {'label', 'mode', 'hits', 'per_marker', 'markers'}
+        allowed_modes = {'any', 'all'}
+        if not isinstance(value, list):
+            raise ValueError(f"'{key_name}' must be a list")
+        for i, entry in enumerate(value):
+            if not isinstance(entry, dict):
+                raise ValueError(f"{key_name}[{i}] must be a dict")
+            if set(entry.keys()) != expected_entry_keys:
+                missing = expected_entry_keys - set(entry.keys())
+                extra = set(entry.keys()) - expected_entry_keys
+                raise ValueError(
+                    f"{key_name}[{i}] has missing keys {missing} and unexpected keys {extra}"
+                )
+            if not isinstance(entry['label'], str) or not entry['label']:
+                raise ValueError(f"{key_name}[{i}]['label'] must be a non-empty string")
+            if entry['mode'] not in allowed_modes:
+                raise ValueError(f"{key_name}[{i}]['mode'] must be one of {allowed_modes}")
+            if isinstance(entry['hits'], bool) or not isinstance(entry['hits'], int) or entry['hits'] < 0:
+                raise ValueError(f"{key_name}[{i}]['hits'] must be a non-negative integer")
+            if not isinstance(entry['per_marker'], bool):
+                raise ValueError(f"{key_name}[{i}]['per_marker'] must be a boolean")
+            markers = entry['markers']
+            validate_string_list(markers, f"{key_name}[{i}]['markers']")
+            if not markers:
+                raise ValueError(f"{key_name}[{i}]['markers'] must be non-empty")
+
+    def validate_agent_critical_subprocess_catalog(value, key_name: str) -> None:
+        # List of critical-subprocess classes used by the agent subprocess
+        # visibility surface (blast-radius badge). Each entry maps a set of
+        # binary basenames to a category, inherent criticality, and OWASP
+        # crosswalk tags.
+        expected_entry_keys = {'names', 'category', 'criticality', 'owasp_refs'}
+        allowed_criticality = {'routine', 'elevated', 'critical'}
+        if not isinstance(value, list):
+            raise ValueError(f"'{key_name}' must be a list")
+        for i, entry in enumerate(value):
+            if not isinstance(entry, dict):
+                raise ValueError(f"{key_name}[{i}] must be a dict")
+            if set(entry.keys()) != expected_entry_keys:
+                missing = expected_entry_keys - set(entry.keys())
+                extra = set(entry.keys()) - expected_entry_keys
+                raise ValueError(
+                    f"{key_name}[{i}] has missing keys {missing} and unexpected keys {extra}"
+                )
+            names = entry['names']
+            validate_string_list(names, f"{key_name}[{i}]['names']")
+            if not names:
+                raise ValueError(f"{key_name}[{i}]['names'] must be non-empty")
+            if not isinstance(entry['category'], str) or not entry['category']:
+                raise ValueError(f"{key_name}[{i}]['category'] must be a non-empty string")
+            if entry['criticality'] not in allowed_criticality:
+                raise ValueError(
+                    f"{key_name}[{i}]['criticality'] must be one of {allowed_criticality}"
+                )
+            if not isinstance(entry['owasp_refs'], str):
+                raise ValueError(f"{key_name}[{i}]['owasp_refs'] must be a string")
+
+    def validate_agent_tool_privilege_keywords(value, key_name: str) -> None:
+        # Per-class keyword lists used to classify MCP tool privileges from
+        # tool names/descriptions/URLs.
+        expected_keys = {
+            'shell', 'filesystem_write', 'filesystem_read', 'browser',
+            'git', 'database', 'secret_access', 'network',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for subkey in sorted(expected_keys):
+            validate_string_list(value[subkey], f"{key_name}['{subkey}']")
+
+    def validate_agent_recursion_thresholds(value, key_name: str) -> None:
+        # Recursion / delegation thresholds for the agent recursion finding.
+        expected_keys = {'depth_high', 'fanout_high', 'loop_min_repeats'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for subkey in sorted(expected_keys):
+            sub = value[subkey]
+            if isinstance(sub, bool) or not isinstance(sub, int) or sub < 1:
+                raise ValueError(f"{key_name}['{subkey}'] must be a positive integer")
+
+    def validate_model_pricing(value, key_name: str) -> None:
+        # Per-model USD-per-1M-token price table used by the agent-transcript
+        # economics parser to estimate session cost. Resolution is by longest
+        # matching `match_substring` against the lowercased model id; the
+        # `default` entry is the fallback rate for unrecognized models.
+        rate_keys = {'input', 'output', 'cache_write', 'cache_read'}
+        entry_keys = rate_keys | {'match_substring'}
+
+        def validate_rates(entry, where: str, require_match_substring: bool) -> None:
+            if not isinstance(entry, dict):
+                raise ValueError(f"{where} must be a dict")
+            expected = entry_keys
+            if set(entry.keys()) != expected:
+                missing = expected - set(entry.keys())
+                extra = set(entry.keys()) - expected
+                raise ValueError(f"{where} has missing keys {missing} and unexpected keys {extra}")
+            ms = entry['match_substring']
+            if not isinstance(ms, str):
+                raise ValueError(f"{where}['match_substring'] must be a string")
+            if require_match_substring and not ms:
+                raise ValueError(f"{where}['match_substring'] must be non-empty")
+            for rk in sorted(rate_keys):
+                v = entry[rk]
+                if isinstance(v, bool) or not isinstance(v, (int, float)) or v < 0:
+                    raise ValueError(f"{where}['{rk}'] must be a non-negative number")
+
+        expected_top = {'default', 'entries'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_top:
+            missing = expected_top - set(value.keys())
+            extra = set(value.keys()) - expected_top
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        # `default.match_substring` is structurally present but ignored at
+        # runtime (the fallback applies when nothing matched), so it is NOT
+        # required to be non-empty.
+        validate_rates(value['default'], f"{key_name}['default']", require_match_substring=False)
+        if not isinstance(value['entries'], list):
+            raise ValueError(f"{key_name}['entries'] must be a list")
+        seen = set()
+        for i, entry in enumerate(value['entries']):
+            validate_rates(entry, f"{key_name}['entries'][{i}]", require_match_substring=True)
+            ms = entry['match_substring']
+            if ms in seen:
+                raise ValueError(f"{key_name}['entries'] has duplicate match_substring '{ms}'")
+            seen.add(ms)
+
+    def validate_prompt_templates(value, key_name: str) -> None:
+        # Deterministic next-step prompt templates: id + title + prompt body
+        # with {placeholder} tokens rendered client-side.
+        expected_entry_keys = {'id', 'title', 'prompt'}
+        if not isinstance(value, list):
+            raise ValueError(f"'{key_name}' must be a list")
+        seen = set()
+        for i, entry in enumerate(value):
+            if not isinstance(entry, dict):
+                raise ValueError(f"{key_name}[{i}] must be a dict")
+            if set(entry.keys()) != expected_entry_keys:
+                missing = expected_entry_keys - set(entry.keys())
+                extra = set(entry.keys()) - expected_entry_keys
+                raise ValueError(
+                    f"{key_name}[{i}] has missing keys {missing} and unexpected keys {extra}"
+                )
+            for k in ('id', 'title', 'prompt'):
+                if not isinstance(entry[k], str) or not entry[k]:
+                    raise ValueError(f"{key_name}[{i}]['{k}'] must be a non-empty string")
+            if entry['id'] in seen:
+                raise ValueError(f"{key_name} has duplicate id '{entry['id']}'")
+            seen.add(entry['id'])
+
+    def validate_coach_templates(value, key_name: str) -> None:
+        # Enlightenment Coach templates: id + version + title + focus. The
+        # version participates in the insight cache key so a template bump
+        # invalidates cached envelopes.
+        expected_entry_keys = {'id', 'version', 'title', 'focus'}
+        if not isinstance(value, list):
+            raise ValueError(f"'{key_name}' must be a list")
+        seen = set()
+        for i, entry in enumerate(value):
+            if not isinstance(entry, dict):
+                raise ValueError(f"{key_name}[{i}] must be a dict")
+            if set(entry.keys()) != expected_entry_keys:
+                missing = expected_entry_keys - set(entry.keys())
+                extra = set(entry.keys()) - expected_entry_keys
+                raise ValueError(
+                    f"{key_name}[{i}] has missing keys {missing} and unexpected keys {extra}"
+                )
+            for k in ('id', 'title', 'focus'):
+                if not isinstance(entry[k], str) or not entry[k]:
+                    raise ValueError(f"{key_name}[{i}]['{k}'] must be a non-empty string")
+            v = entry['version']
+            if isinstance(v, bool) or not isinstance(v, int) or v < 1:
+                raise ValueError(f"{key_name}[{i}]['version'] must be a positive integer")
+            if entry['id'] in seen:
+                raise ValueError(f"{key_name} has duplicate id '{entry['id']}'")
+            seen.add(entry['id'])
+
+    def validate_history_retention(value, key_name: str) -> None:
+        # Unified history-retention policy applied across agents-tab history
+        # stores (divergence verdicts/incidents, behavioral models,
+        # subprocess exposure, visibility operator logs, coach insight
+        # cache). Age limit in days plus per-store entry caps.
+        expected_keys = {
+            'history_retention_days',
+            'divergence_verdict_max_entries',
+            'divergence_incident_max_entries',
+            'behavioral_model_max_entries',
+            'subprocess_max_observations',
+            'visibility_log_max_entries',
+            'coach_max_cached_insights',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for subkey in sorted(expected_keys):
+            sub = value[subkey]
+            if isinstance(sub, bool) or not isinstance(sub, int) or sub < 1:
+                raise ValueError(f"{key_name}['{subkey}'] must be a positive integer")
+
+    with open(filename, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+
+    if not isinstance(data, dict):
+        raise ValueError("Data is not a valid JSON object")
+
+    actual_keys = set(data.keys())
+    if actual_keys != allowed_top_keys:
+        unexpected = actual_keys - allowed_top_keys
+        missing = allowed_top_keys - actual_keys
+        raise ValueError(f"Unexpected keys {unexpected}, missing keys {missing}")
+
+    _validate_date_string(data.get('date'), 'agent-visibility-params')
+    _validate_signature_and_sidecar(filename, data, signature_required=True)
+
+    for list_key in (
+        'agent_secret_env_key_needles',
+        'agent_model_family_prefixes',
+        'agent_model_field_keys',
+        'agent_model_container_keys',
+    ):
+        validate_string_list(data[list_key], list_key)
+
     validate_agent_critical_subprocess_catalog(
         data['agent_critical_subprocess_catalog'],
         'agent_critical_subprocess_catalog',
@@ -1601,8 +1754,28 @@ def validate_cve_detection_params(filename: str) -> None:
         data['model_pricing'],
         'model_pricing',
     )
+    validate_signature_list(
+        data['transcript_secret_signatures'],
+        'transcript_secret_signatures',
+    )
+    validate_signature_list(
+        data['prompt_injection_signatures'],
+        'prompt_injection_signatures',
+    )
+    validate_prompt_templates(
+        data['augmentation_prompt_templates'],
+        'augmentation_prompt_templates',
+    )
+    validate_coach_templates(
+        data['augmentation_coach_templates'],
+        'augmentation_coach_templates',
+    )
+    validate_history_retention(
+        data['history_retention'],
+        'history_retention',
+    )
 
-    print("CVE detection params validation successful")
+    print("Agent visibility params validation successful")
 
 
 if __name__ == "__main__":
@@ -1627,6 +1800,8 @@ if __name__ == "__main__":
                  validate_sensitive_paths(arg)
             elif filename.startswith("cve-detection-params"):
                  validate_cve_detection_params(arg)
+            elif filename.startswith("agent-visibility-params"):
+                 validate_agent_visibility_params(arg)
             else:
                 print(f"Warning: No specific validation logic found for prefix of file '{arg}'. Skipping.")
             print(f"Validation successful for {arg}")
