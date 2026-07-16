@@ -89,16 +89,25 @@ has_malwarebytes() { is_proc "RTProtectionDaemon" && return 0; return 1; } # Mal
 has_sentinelone() { command -v sentinelctl >/dev/null 2>&1 && sentinelctl version 2>/dev/null | grep -q "SentinelOne" && return 0; return 1; }
 
 has_xprotect() {
-  # Apple XProtect Remediator (built-in)
+  # Apple XProtect Remediator (built-in).
+  # macOS 15+ ships the `xprotect` CLI, which reports scan configuration state
+  # deterministically.
   if command -v xprotect >/dev/null 2>&1; then
     xprotect status 2>/dev/null | grep -Fq "launch scans: enabled" || return 1
     xprotect status 2>/dev/null | grep -Fq "background scans: enabled" || return 1
     return 0
   fi
 
-  # Fallback for older macOS versions where only the XProtect process exists
-  is_fproc "xprotect" && return 0
-  is_proc "XProtect" && return 0
+  # macOS < 15 has no `xprotect` CLI. Use STABLE signals only, never the transient
+  # scan processes: matching XProtect / XProtectRemediator* with pgrep flaps
+  # between scheduled scans (launchd runs them briefly, then they exit), which is
+  # the cause of the "No antivirus enabled" remediate/rollback flapping on macOS
+  # 13/14. macOS 14+ runs a persistent xprotectd daemon; macOS 12.3-13 only
+  # install the periodic-scan launch daemon on disk (present unless SIP is off,
+  # which is already covered by its own threat).
+  pgrep -x xprotectd >/dev/null 2>&1 && return 0
+  [[ -f "/Library/Apple/System/Library/LaunchDaemons/com.apple.XProtect.daemon.scan.plist" ]] && return 0
+  [[ -f "/Library/Apple/System/Library/LaunchDaemons/com.apple.XProtect.daemon.scan.startup.plist" ]] && return 0
   return 1
 }
 
