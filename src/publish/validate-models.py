@@ -1664,10 +1664,13 @@ def validate_agent_visibility_params(filename: str) -> None:
             seen.add(entry['id'])
 
     def validate_coach_templates(value, key_name: str) -> None:
-        # Enlightenment Coach templates: id + version + title + focus. The
-        # version participates in the insight cache key so a template bump
-        # invalidates cached envelopes.
-        expected_entry_keys = {'id', 'version', 'title', 'focus'}
+        # Coach templates: domain + id + version + title + focus. The domain
+        # ("security" or "augmentation") selects which coach payload the core
+        # builds so the Security Coach and Enlightenment Coach evidence
+        # surfaces stay disjoint. The version participates in the insight
+        # cache key so a template bump invalidates cached envelopes.
+        expected_entry_keys = {'domain', 'id', 'version', 'title', 'focus'}
+        allowed_domains = {'security', 'augmentation'}
         if not isinstance(value, list):
             raise ValueError(f"'{key_name}' must be a list")
         seen = set()
@@ -1683,6 +1686,10 @@ def validate_agent_visibility_params(filename: str) -> None:
             for k in ('id', 'title', 'focus'):
                 if not isinstance(entry[k], str) or not entry[k]:
                     raise ValueError(f"{key_name}[{i}]['{k}'] must be a non-empty string")
+            if entry['domain'] not in allowed_domains:
+                raise ValueError(
+                    f"{key_name}[{i}]['domain'] must be one of {sorted(allowed_domains)}"
+                )
             v = entry['version']
             if isinstance(v, bool) or not isinstance(v, int) or v < 1:
                 raise ValueError(f"{key_name}[{i}]['version'] must be a positive integer")

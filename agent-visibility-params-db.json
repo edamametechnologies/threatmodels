@@ -229,37 +229,43 @@
   },
   "augmentation_coach_templates": [
     {
+      "domain": "augmentation",
       "focus": "Focus on the craft_dimensions section: per-dimension prompt-maturity averages (constraints, success criteria, verification, context, specificity) and the intent-class mix. Identify the weakest one or two dimensions and recommend concrete prompt-writing habits that raise them, referencing the observed averages. Do not comment on tool reliability or security unless craft data is absent.",
       "id": "prompt_maturity_review",
       "title": "Prompt craft review",
       "version": 1
     },
     {
+      "domain": "augmentation",
       "focus": "Focus on the totals and workspaces sections: always-on context tax (tokens burned per prompt), dead always-on rules, and workspace instruction sprawl. Recommend which artifacts to demote to on-demand, merge, or delete, citing the specific counts. Weigh the craft context-provision average as supporting evidence for whether context is reaching the agent effectively.",
       "id": "context_setup_review",
       "title": "Context setup review",
       "version": 1
     },
     {
+      "domain": "augmentation",
       "focus": "Focus on workflow-hygiene signals in craft_dimensions and health_summary: stuck re-asks, frustration sessions, runaway tool loops, duplicate prompts, and the health grade distribution with its penalty counts. Diagnose the dominant failure pattern (going in circles vs runaway automation vs abandoned sessions) and recommend session-management habits that break it.",
       "id": "workflow_hygiene_review",
       "title": "Workflow hygiene review",
       "version": 1
     },
     {
+      "domain": "augmentation",
       "focus": "Focus on the failure_clusters section and the leverage sub-score: recurring tool/error-class clusters, error rates in skill-assisted vs unassisted sessions, and edit churn. Recommend which failing tool workflows to stabilize first and whether a skill would encode the fix, citing cluster session counts.",
       "id": "tool_reliability_review",
       "title": "Tool reliability review",
       "version": 1
     },
     {
-      "focus": "Focus on the skill_opportunities and skills sections: recurring no-skill failure clusters that meet the recurrence floors, dead or dormant skills, and the utilization/diversity sub-scores. Recommend the one or two highest-value skills to author or resurrect, citing the cluster evidence, and any dead weight to prune.",
+      "domain": "augmentation",
+      "focus": "Focus on the skill_opportunities and skills sections: recurring no-skill failure clusters that meet the recurrence floors, dead or dormant skills, and skill utilization signals. Recommend the one or two highest-value skills to author or resurrect, citing the cluster evidence, and any dead weight to prune.",
       "id": "skill_opportunity_review",
       "title": "Skill opportunity review",
       "version": 1
     },
     {
-      "focus": "Focus on the security_signals section: secret-exposure hits and labels, prompt-injection bait hits and labels, and context-compaction events. Treat any secret exposure as the top priority (rotation + source cleanup), injection bait second (source quarantine), compaction third (task splitting). Cite the exact hit counts and labels; do not speculate beyond the supplied signals.",
+      "domain": "security",
+      "focus": "Focus on the security_signals section: secret-exposure hits and labels, prompt-injection bait hits and labels, and context-compaction events. Treat any secret exposure as the top priority (surface each live secret and its source for the operator to rotate manually, then propose the source cleanup), injection bait second (locate the source and propose neutralizing it), compaction third (task splitting). Cite the exact hit counts and labels; do not speculate beyond the supplied signals.",
       "id": "security_hygiene_review",
       "title": "Security hygiene review",
       "version": 1
@@ -268,7 +274,7 @@
   "augmentation_prompt_templates": [
     {
       "id": "broken_ref",
-      "prompt": "My agent instruction files contain {count} reference(s) to files that do not exist:\n{items}\n\nFor each one, locate the referring rule/skill file, decide whether the target moved or was deleted, then either fix the path or remove the stale reference. Show me a diff for each file before applying.",
+      "prompt": "My agent instruction files contain {count} file(s) with unresolved reference(s) to other skills/rules:\n{items}\n\nEach bullet is `referring_file -> missing_target` (the target name/slug that does not resolve in the on-disk inventory). For each one: confirm whether the target skill/rule exists under a different path (e.g. `skills/<name>/SKILL.md`), then either fix the reference path or remove the stale reference. Do NOT rewrite unrelated short rule-to-rule links. Show me a diff for each file before applying.",
       "title": "Repair broken instruction references"
     },
     {
@@ -318,16 +324,16 @@
     },
     {
       "id": "secret_exposure",
-      "prompt": "Secret material ({labels}) was detected in {agent} transcript context. Find how it got there: check shell history exports, .env files read into prompts, and tool outputs that echo credentials. Rotate the exposed credentials, add the source files to ignore/exclusion lists, and adjust workflows so secrets are referenced by name, never pasted.",
+      "prompt": "Secret material ({labels}) was detected in {agent} transcript context. First confirm each hit is a real, live credential: a masked display, a one-time code, or a bare variable name is not a leak. Then trace how it got there: shell history exports, .env files read into prompts, and tool outputs that echo credentials. For each genuinely live secret, highlight it and its exact source and hand it to me; I will revoke or rotate it at the provider, since you cannot do that yourself. Finally, propose for my confirmation, with no edits applied yet, adding the source files to ignore/exclusion lists and reworking workflows so secrets are referenced by name, never pasted.",
       "title": "Purge secrets from agent context"
     },
     {
       "id": "prompt_injection",
-      "prompt": "Prompt-injection bait phrases ({labels}) were detected in {agent} transcript context. Locate the source: was it ingested from a file, a web page, a dependency README, or tool output? Identify the exact artifact, assess whether the agent acted on the injected instruction, and quarantine or sanitize the source.",
+      "prompt": "Prompt-injection bait phrases ({labels}) were detected in {agent} transcript context. Locate the source: was it ingested from a file, a web page, a dependency README, or tool output? Identify the exact artifact and assess whether the agent acted on the injected instruction. Then show me the offending content and propose how to neutralize it, either a sanitized rewrite or removal, and apply only after I confirm.",
       "title": "Investigate prompt-injection bait"
     }
   ],
-  "date": "July 13th 2026",
+  "date": "July 19th 2026",
   "history_retention": {
     "behavioral_model_max_entries": 100,
     "coach_max_cached_insights": 48,
@@ -503,7 +509,7 @@
       "per_marker": false
     }
   ],
-  "signature": "f6e594d74fbe004ca3ff68479b3e32e6aa4ca5f57aad0d56bb2f97c690856e17",
+  "signature": "239eb8ebc5c686900e1a1d47640763fb5e5757093b60758240fd7a4b0a68eef6",
   "transcript_secret_signatures": [
     {
       "hits": 2,
