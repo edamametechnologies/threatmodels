@@ -309,8 +309,8 @@
     },
     {
       "id": "workspace_sprawl",
-      "prompt": "Workspace {workspace} has {count} instruction artifacts spread across rules, skills and commands. Audit them as a set: build a table of name / kind / load mode / last use / overlap, then propose a consolidation plan that reduces the count while preserving capability. Apply it after I confirm.",
-      "title": "Consolidate workspace instruction sprawl"
+      "prompt": "These {count} skill(s)/command(s) were used from workspace {workspace} and also from other workspaces (cross-workspace reuse):\n{items}\n\nPropose a consolidation plan: pick a canonical home (shared agent-level skill vs one workspace copy), list which duplicates to remove or redirect, and preserve capability. Apply changes only after I confirm.",
+      "title": "Consolidate cross-workspace skill reuse"
     },
     {
       "id": "skill_opportunity",
@@ -333,7 +333,7 @@
       "title": "Investigate prompt-injection bait"
     }
   ],
-  "date": "July 19th 2026",
+  "date": "July 21th 2026",
   "history_retention": {
     "behavioral_model_max_entries": 100,
     "coach_max_cached_insights": 48,
@@ -509,7 +509,7 @@
       "per_marker": false
     }
   ],
-  "signature": "239eb8ebc5c686900e1a1d47640763fb5e5757093b60758240fd7a4b0a68eef6",
+  "signature": "28155b768f99a06370d25fef24b7ae875291bb9765df5252ca5a528093ef0726",
   "transcript_secret_signatures": [
     {
       "hits": 2,
