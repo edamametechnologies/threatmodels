@@ -1,5 +1,5 @@
 {
-  "date": "July 13th 2026",
+  "date": "July 28th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -2436,19 +2436,19 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Reduce the host blast radius of your AI coding agents:</p><ul><li>Navigate to the 'Agents' tab to see which agents are unsandboxed and why their blast radius is high.</li><li>Remove passwordless sudo (NOPASSWD) for the user that launches the agent, so a compromised agent cannot become root without a prompt.</li><li>Where possible, run the agent inside an OS sandbox or container so its file and command reach is bounded.</li><li>Restrict the agent from spawning critical subprocesses (ssh, netcat, docker, raw shells) that it does not need.</li></ul>"
+            "target": "<p>Reduce the host blast radius of your AI coding agents:</p><ul><li>Navigate to Agents / Exposure to see which agents are unsandboxed and why their blast radius is high.</li><li>Remove passwordless sudo (NOPASSWD) for the user that launches the agent, so a compromised agent cannot become root without a prompt.</li><li>Where possible, run the agent inside an OS sandbox or container so its file and command reach is bounded.</li><li>Restrict the agent from spawning critical subprocesses (ssh, netcat, docker, raw shells) that it does not need.</li></ul>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Reduisez le rayon d'impact de vos agents de codage IA sur l'hote :</p><ul><li>Allez dans l'onglet 'Agents' pour voir quels agents s'executent sans bac a sable et pourquoi leur rayon d'impact est eleve.</li><li>Supprimez le sudo sans mot de passe (NOPASSWD) pour l'utilisateur qui lance l'agent, afin qu'un agent compromis ne puisse pas devenir root sans invite.</li><li>Lorsque c'est possible, executez l'agent dans un bac a sable ou un conteneur du systeme afin de limiter sa portee sur les fichiers et les commandes.</li><li>Empechez l'agent de lancer des sous-processus critiques (ssh, netcat, docker, shells bruts) dont il n'a pas besoin.</li></ul>"
+            "target": "<p>Reduisez le rayon d'impact de vos agents de codage IA sur l'hote :</p><ul><li>Allez dans Agents / Exposure pour voir quels agents s'executent sans bac a sable et pourquoi leur rayon d'impact est eleve.</li><li>Supprimez le sudo sans mot de passe (NOPASSWD) pour l'utilisateur qui lance l'agent, afin qu'un agent compromis ne puisse pas devenir root sans invite.</li><li>Lorsque c'est possible, executez l'agent dans un bac a sable ou un conteneur du systeme afin de limiter sa portee sur les fichiers et les commandes.</li><li>Empechez l'agent de lancer des sous-processus critiques (ssh, netcat, docker, shells bruts) dont il n'a pas besoin.</li></ul>"
           }
         ],
         "elevation": "",
         "maxversion": 0,
         "minversion": 12,
         "system": "Windows",
-        "target": "agentic_ai_settings"
+        "target": "agents_exposure"
       },
       "rollback": {
         "class": "internal",
@@ -2456,19 +2456,19 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Reduce the host blast radius of your AI coding agents:</p><ul><li>Navigate to the 'Agents' tab to see which agents are unsandboxed and why their blast radius is high.</li><li>Remove passwordless sudo (NOPASSWD) for the user that launches the agent, so a compromised agent cannot become root without a prompt.</li><li>Where possible, run the agent inside an OS sandbox or container so its file and command reach is bounded.</li><li>Restrict the agent from spawning critical subprocesses (ssh, netcat, docker, raw shells) that it does not need.</li></ul>"
+            "target": "<p>Reduce the host blast radius of your AI coding agents:</p><ul><li>Navigate to Agents / Exposure to see which agents are unsandboxed and why their blast radius is high.</li><li>Remove passwordless sudo (NOPASSWD) for the user that launches the agent, so a compromised agent cannot become root without a prompt.</li><li>Where possible, run the agent inside an OS sandbox or container so its file and command reach is bounded.</li><li>Restrict the agent from spawning critical subprocesses (ssh, netcat, docker, raw shells) that it does not need.</li></ul>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Reduisez le rayon d'impact de vos agents de codage IA sur l'hote :</p><ul><li>Allez dans l'onglet 'Agents' pour voir quels agents s'executent sans bac a sable et pourquoi leur rayon d'impact est eleve.</li><li>Supprimez le sudo sans mot de passe (NOPASSWD) pour l'utilisateur qui lance l'agent, afin qu'un agent compromis ne puisse pas devenir root sans invite.</li><li>Lorsque c'est possible, executez l'agent dans un bac a sable ou un conteneur du systeme afin de limiter sa portee sur les fichiers et les commandes.</li><li>Empechez l'agent de lancer des sous-processus critiques (ssh, netcat, docker, shells bruts) dont il n'a pas besoin.</li></ul>"
+            "target": "<p>Reduisez le rayon d'impact de vos agents de codage IA sur l'hote :</p><ul><li>Allez dans Agents / Exposure pour voir quels agents s'executent sans bac a sable et pourquoi leur rayon d'impact est eleve.</li><li>Supprimez le sudo sans mot de passe (NOPASSWD) pour l'utilisateur qui lance l'agent, afin qu'un agent compromis ne puisse pas devenir root sans invite.</li><li>Lorsque c'est possible, executez l'agent dans un bac a sable ou un conteneur du systeme afin de limiter sa portee sur les fichiers et les commandes.</li><li>Empechez l'agent de lancer des sous-processus critiques (ssh, netcat, docker, shells bruts) dont il n'a pas besoin.</li></ul>"
           }
         ],
         "elevation": "",
         "maxversion": 0,
         "minversion": 12,
         "system": "Windows",
-        "target": "agentic_ai_settings"
+        "target": "agents_exposure"
       },
       "scope": "generic",
       "severity": 3,
@@ -2507,19 +2507,19 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Close the AI agent governance gap by running your AI coding agents inside a governance harness (agent control plane):</p><ul><li>Navigate to the 'Agents' tab to see which agents are present and whether a harness was detected.</li><li>Adopt an agent harness such as AgentField (agentfield.ai) or Rippletide (rippletide.com) that enforces policy, identity, per-task budgets, tool allow-lists, and an audit trail before each agent action executes.</li><li>Install the harness for the user that launches the agents so EDAMAME detects its footprint and clears this finding.</li><li>Treat harness coverage as a 'plan'/'design'-phase control: decide which agents must be governed before they are deployed.</li></ul>"
+            "target": "<p>Close the AI agent governance gap by running your AI coding agents inside a governance harness (agent control plane):</p><ul><li>Navigate to Agents / Exposure to see which agents are present and whether a harness was detected.</li><li>Adopt an agent harness such as AgentField (agentfield.ai) or Rippletide (rippletide.com) that enforces policy, identity, per-task budgets, tool allow-lists, and an audit trail before each agent action executes.</li><li>Install the harness for the user that launches the agents so EDAMAME detects its footprint and clears this finding.</li><li>Treat harness coverage as a 'plan'/'design'-phase control: decide which agents must be governed before they are deployed.</li></ul>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Comblez la lacune de gouvernance des agents IA en executant vos agents de codage IA dans un harnais de gouvernance (plan de controle d'agents) :</p><ul><li>Allez dans l'onglet 'Agents' pour voir quels agents sont presents et si un harnais a ete detecte.</li><li>Adoptez un harnais d'agent tel qu'AgentField (agentfield.ai) ou Rippletide (rippletide.com) qui applique politique, identite, budgets par tache, listes d'autorisation d'outils et piste d'audit avant chaque action de l'agent.</li><li>Installez le harnais pour l'utilisateur qui lance les agents afin qu'EDAMAME detecte son empreinte et efface cette detection.</li><li>Traitez la couverture par harnais comme un controle de phase 'plan'/'conception' : decidez quels agents doivent etre gouvernes avant leur deploiement.</li></ul>"
+            "target": "<p>Comblez la lacune de gouvernance des agents IA en executant vos agents de codage IA dans un harnais de gouvernance (plan de controle d'agents) :</p><ul><li>Allez dans Agents / Exposure pour voir quels agents sont presents et si un harnais a ete detecte.</li><li>Adoptez un harnais d'agent tel qu'AgentField (agentfield.ai) ou Rippletide (rippletide.com) qui applique politique, identite, budgets par tache, listes d'autorisation d'outils et piste d'audit avant chaque action de l'agent.</li><li>Installez le harnais pour l'utilisateur qui lance les agents afin qu'EDAMAME detecte son empreinte et efface cette detection.</li><li>Traitez la couverture par harnais comme un controle de phase 'plan'/'conception' : decidez quels agents doivent etre gouvernes avant leur deploiement.</li></ul>"
           }
         ],
         "elevation": "",
         "maxversion": 0,
         "minversion": 12,
         "system": "Windows",
-        "target": "agentic_ai_settings"
+        "target": "agents_exposure"
       },
       "rollback": {
         "class": "internal",
@@ -2527,19 +2527,19 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Close the AI agent governance gap by running your AI coding agents inside a governance harness (agent control plane):</p><ul><li>Navigate to the 'Agents' tab to see which agents are present and whether a harness was detected.</li><li>Adopt an agent harness such as AgentField (agentfield.ai) or Rippletide (rippletide.com) that enforces policy, identity, per-task budgets, tool allow-lists, and an audit trail before each agent action executes.</li><li>Install the harness for the user that launches the agents so EDAMAME detects its footprint and clears this finding.</li><li>Treat harness coverage as a 'plan'/'design'-phase control: decide which agents must be governed before they are deployed.</li></ul>"
+            "target": "<p>Close the AI agent governance gap by running your AI coding agents inside a governance harness (agent control plane):</p><ul><li>Navigate to Agents / Exposure to see which agents are present and whether a harness was detected.</li><li>Adopt an agent harness such as AgentField (agentfield.ai) or Rippletide (rippletide.com) that enforces policy, identity, per-task budgets, tool allow-lists, and an audit trail before each agent action executes.</li><li>Install the harness for the user that launches the agents so EDAMAME detects its footprint and clears this finding.</li><li>Treat harness coverage as a 'plan'/'design'-phase control: decide which agents must be governed before they are deployed.</li></ul>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Comblez la lacune de gouvernance des agents IA en executant vos agents de codage IA dans un harnais de gouvernance (plan de controle d'agents) :</p><ul><li>Allez dans l'onglet 'Agents' pour voir quels agents sont presents et si un harnais a ete detecte.</li><li>Adoptez un harnais d'agent tel qu'AgentField (agentfield.ai) ou Rippletide (rippletide.com) qui applique politique, identite, budgets par tache, listes d'autorisation d'outils et piste d'audit avant chaque action de l'agent.</li><li>Installez le harnais pour l'utilisateur qui lance les agents afin qu'EDAMAME detecte son empreinte et efface cette detection.</li><li>Traitez la couverture par harnais comme un controle de phase 'plan'/'conception' : decidez quels agents doivent etre gouvernes avant leur deploiement.</li></ul>"
+            "target": "<p>Comblez la lacune de gouvernance des agents IA en executant vos agents de codage IA dans un harnais de gouvernance (plan de controle d'agents) :</p><ul><li>Allez dans Agents / Exposure pour voir quels agents sont presents et si un harnais a ete detecte.</li><li>Adoptez un harnais d'agent tel qu'AgentField (agentfield.ai) ou Rippletide (rippletide.com) qui applique politique, identite, budgets par tache, listes d'autorisation d'outils et piste d'audit avant chaque action de l'agent.</li><li>Installez le harnais pour l'utilisateur qui lance les agents afin qu'EDAMAME detecte son empreinte et efface cette detection.</li><li>Traitez la couverture par harnais comme un controle de phase 'plan'/'conception' : decidez quels agents doivent etre gouvernes avant leur deploiement.</li></ul>"
           }
         ],
         "elevation": "",
         "maxversion": 0,
         "minversion": 12,
         "system": "Windows",
-        "target": "agentic_ai_settings"
+        "target": "agents_exposure"
       },
       "scope": "generic",
       "severity": 2,
@@ -2578,19 +2578,19 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>A governance harness is installed but an agent still escapes its boundary. Close the gap so the control plane actually confines the agent:</p><ul><li>Navigate to the 'Agents' tab to see which agent escaped and why its blast radius is high despite the harness.</li><li>Confirm the harness (AgentField, Rippletide, ...) is configured to govern THIS agent - a harness installed but not wired to the agent enforces nothing.</li><li>Remove passwordless sudo (NOPASSWD) for the user that launches the agent, so a compromised agent cannot become root without a prompt.</li><li>Run the agent inside an OS sandbox or container so its file and command reach is bounded even if the harness policy is bypassed.</li><li>Restrict the agent from spawning critical subprocesses (ssh, netcat, docker, raw shells) that it does not need.</li></ul>"
+            "target": "<p>A governance harness is installed but an agent still escapes its boundary. Close the gap so the control plane actually confines the agent:</p><ul><li>Navigate to Agents / Exposure to see which agent escaped and why its blast radius is high despite the harness.</li><li>Confirm the harness (AgentField, Rippletide, ...) is configured to govern THIS agent - a harness installed but not wired to the agent enforces nothing.</li><li>Remove passwordless sudo (NOPASSWD) for the user that launches the agent, so a compromised agent cannot become root without a prompt.</li><li>Run the agent inside an OS sandbox or container so its file and command reach is bounded even if the harness policy is bypassed.</li><li>Restrict the agent from spawning critical subprocesses (ssh, netcat, docker, raw shells) that it does not need.</li></ul>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Un harnais de gouvernance est installe mais un agent echappe encore a sa frontiere. Comblez la lacune pour que le plan de controle confine reellement l'agent :</p><ul><li>Allez dans l'onglet 'Agents' pour voir quel agent s'est echappe et pourquoi son rayon d'impact est eleve malgre le harnais.</li><li>Verifiez que le harnais (AgentField, Rippletide, ...) est configure pour gouverner CET agent - un harnais installe mais non relie a l'agent n'applique rien.</li><li>Supprimez le sudo sans mot de passe (NOPASSWD) pour l'utilisateur qui lance l'agent, afin qu'un agent compromis ne puisse pas devenir root sans invite.</li><li>Executez l'agent dans un bac a sable ou un conteneur du systeme afin de limiter sa portee sur les fichiers et les commandes meme si la politique du harnais est contournee.</li><li>Empechez l'agent de lancer des sous-processus critiques (ssh, netcat, docker, shells bruts) dont il n'a pas besoin.</li></ul>"
+            "target": "<p>Un harnais de gouvernance est installe mais un agent echappe encore a sa frontiere. Comblez la lacune pour que le plan de controle confine reellement l'agent :</p><ul><li>Allez dans Agents / Exposure pour voir quel agent s'est echappe et pourquoi son rayon d'impact est eleve malgre le harnais.</li><li>Verifiez que le harnais (AgentField, Rippletide, ...) est configure pour gouverner CET agent - un harnais installe mais non relie a l'agent n'applique rien.</li><li>Supprimez le sudo sans mot de passe (NOPASSWD) pour l'utilisateur qui lance l'agent, afin qu'un agent compromis ne puisse pas devenir root sans invite.</li><li>Executez l'agent dans un bac a sable ou un conteneur du systeme afin de limiter sa portee sur les fichiers et les commandes meme si la politique du harnais est contournee.</li><li>Empechez l'agent de lancer des sous-processus critiques (ssh, netcat, docker, shells bruts) dont il n'a pas besoin.</li></ul>"
           }
         ],
         "elevation": "",
         "maxversion": 0,
         "minversion": 12,
         "system": "Windows",
-        "target": "agentic_ai_settings"
+        "target": "agents_exposure"
       },
       "rollback": {
         "class": "internal",
@@ -2598,19 +2598,19 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>A governance harness is installed but an agent still escapes its boundary. Close the gap so the control plane actually confines the agent:</p><ul><li>Navigate to the 'Agents' tab to see which agent escaped and why its blast radius is high despite the harness.</li><li>Confirm the harness (AgentField, Rippletide, ...) is configured to govern THIS agent - a harness installed but not wired to the agent enforces nothing.</li><li>Remove passwordless sudo (NOPASSWD) for the user that launches the agent, so a compromised agent cannot become root without a prompt.</li><li>Run the agent inside an OS sandbox or container so its file and command reach is bounded even if the harness policy is bypassed.</li><li>Restrict the agent from spawning critical subprocesses (ssh, netcat, docker, raw shells) that it does not need.</li></ul>"
+            "target": "<p>A governance harness is installed but an agent still escapes its boundary. Close the gap so the control plane actually confines the agent:</p><ul><li>Navigate to Agents / Exposure to see which agent escaped and why its blast radius is high despite the harness.</li><li>Confirm the harness (AgentField, Rippletide, ...) is configured to govern THIS agent - a harness installed but not wired to the agent enforces nothing.</li><li>Remove passwordless sudo (NOPASSWD) for the user that launches the agent, so a compromised agent cannot become root without a prompt.</li><li>Run the agent inside an OS sandbox or container so its file and command reach is bounded even if the harness policy is bypassed.</li><li>Restrict the agent from spawning critical subprocesses (ssh, netcat, docker, raw shells) that it does not need.</li></ul>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Un harnais de gouvernance est installe mais un agent echappe encore a sa frontiere. Comblez la lacune pour que le plan de controle confine reellement l'agent :</p><ul><li>Allez dans l'onglet 'Agents' pour voir quel agent s'est echappe et pourquoi son rayon d'impact est eleve malgre le harnais.</li><li>Verifiez que le harnais (AgentField, Rippletide, ...) est configure pour gouverner CET agent - un harnais installe mais non relie a l'agent n'applique rien.</li><li>Supprimez le sudo sans mot de passe (NOPASSWD) pour l'utilisateur qui lance l'agent, afin qu'un agent compromis ne puisse pas devenir root sans invite.</li><li>Executez l'agent dans un bac a sable ou un conteneur du systeme afin de limiter sa portee sur les fichiers et les commandes meme si la politique du harnais est contournee.</li><li>Empechez l'agent de lancer des sous-processus critiques (ssh, netcat, docker, shells bruts) dont il n'a pas besoin.</li></ul>"
+            "target": "<p>Un harnais de gouvernance est installe mais un agent echappe encore a sa frontiere. Comblez la lacune pour que le plan de controle confine reellement l'agent :</p><ul><li>Allez dans Agents / Exposure pour voir quel agent s'est echappe et pourquoi son rayon d'impact est eleve malgre le harnais.</li><li>Verifiez que le harnais (AgentField, Rippletide, ...) est configure pour gouverner CET agent - un harnais installe mais non relie a l'agent n'applique rien.</li><li>Supprimez le sudo sans mot de passe (NOPASSWD) pour l'utilisateur qui lance l'agent, afin qu'un agent compromis ne puisse pas devenir root sans invite.</li><li>Executez l'agent dans un bac a sable ou un conteneur du systeme afin de limiter sa portee sur les fichiers et les commandes meme si la politique du harnais est contournee.</li><li>Empechez l'agent de lancer des sous-processus critiques (ssh, netcat, docker, shells bruts) dont il n'a pas besoin.</li></ul>"
           }
         ],
         "elevation": "",
         "maxversion": 0,
         "minversion": 12,
         "system": "Windows",
-        "target": "agentic_ai_settings"
+        "target": "agents_exposure"
       },
       "scope": "generic",
       "severity": 4,
@@ -2762,5 +2762,5 @@
     }
   ],
   "name": "threat model Windows",
-  "signature": "c1f8018afa01c0c26a0b9fd4b435c4f0b36460bb9946268cf9df48263c821821"
+  "signature": "e7ede103608a87fcd6133375da8e551caf39aab6513cb8a3b1bbb962bc13cfe6"
 }

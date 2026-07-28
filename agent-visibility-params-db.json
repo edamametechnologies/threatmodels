@@ -329,11 +329,11 @@
     },
     {
       "id": "prompt_injection",
-      "prompt": "Prompt-injection bait phrases ({labels}) were detected in {agent} transcript context. Locate the source: was it ingested from a file, a web page, a dependency README, or tool output? Identify the exact artifact and assess whether the agent acted on the injected instruction. Then show me the offending content and propose how to neutralize it, either a sanitized rewrite or removal, and apply only after I confirm.",
+      "prompt": "Prompt-injection bait ({labels}) was detected in {agent} transcript context.\n\nMatched exact bait phrases (case-insensitive substrings):\n{markers}\n\nOffending transcript path(s):\n{paths}\n\nGrep those paths for the quoted phrases above to locate the source turn (file read, web page, dependency README, tool output, or agent rules). Assess whether the agent acted on the injected instruction. Then show me the offending content and propose how to neutralize it, either a sanitized rewrite or removal, and apply only after I confirm.",
       "title": "Investigate prompt-injection bait"
     }
   ],
-  "date": "July 21th 2026",
+  "date": "July 28th 2026",
   "history_retention": {
     "behavioral_model_max_entries": 100,
     "coach_max_cached_insights": 48,
@@ -509,7 +509,7 @@
       "per_marker": false
     }
   ],
-  "signature": "28155b768f99a06370d25fef24b7ae875291bb9765df5252ca5a528093ef0726",
+  "signature": "29b28fa21ec43ef4ae7991d1647ac14da7a9b63cb55307a026747effadf7c36e",
   "transcript_secret_signatures": [
     {
       "hits": 2,
