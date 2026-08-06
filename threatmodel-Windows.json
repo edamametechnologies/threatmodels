@@ -1,5 +1,5 @@
 {
-  "date": "July 28th 2026",
+  "date": "August 06th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -2622,6 +2622,77 @@
       "description": [
         {
           "locale": "EN",
+          "summary": "An AI coding agent on this host declares an MCP (Model Context Protocol) server that is reachable beyond this machine without adequate protection: a local server bound to all interfaces rather than loopback and with no strong authentication, a remote endpoint contacted over cleartext http:// or ws://, or a LAN-reachable server exposing privileged tooling (shell, filesystem, containers) with no authentication at all. MCP servers execute tools on the agent's behalf, so anyone who can reach the endpoint inherits the capabilities granted to the agent - without ever compromising the agent itself. This clears once the server is bound to loopback, moved to TLS, or put behind authentication.",
+          "title": "AI agent exposes an unprotected MCP server"
+        },
+        {
+          "locale": "FR",
+          "summary": "Un agent de codage IA sur cet hote declare un serveur MCP (Model Context Protocol) joignable au-dela de cette machine sans protection adequate : un serveur local lie a toutes les interfaces plutot qu'a la boucle locale et sans authentification forte, un point de terminaison distant contacte en clair via http:// ou ws://, ou un serveur joignable sur le reseau local exposant des outils privilegies (shell, systeme de fichiers, conteneurs) sans aucune authentification. Les serveurs MCP executent des outils pour le compte de l'agent : quiconque atteint le point de terminaison herite donc des capacites accordees a l'agent, sans jamais compromettre l'agent lui-meme. Cela disparait des que le serveur est lie a la boucle locale, passe en TLS ou place derriere une authentification.",
+          "title": "Un agent IA expose un serveur MCP non protege"
+        }
+      ],
+      "dimension": "applications",
+      "implementation": {
+        "class": "internal",
+        "education": [],
+        "elevation": "user",
+        "maxversion": 0,
+        "minversion": 12,
+        "system": "Windows",
+        "target": "mcp_risk"
+      },
+      "metrictype": "bool",
+      "name": "mcp_risk",
+      "remediation": {
+        "class": "internal",
+        "education": [
+          {
+            "class": "html",
+            "locale": "EN",
+            "target": "<p>Close the exposed MCP server so only this machine can reach it:</p><ul><li>Navigate to Agents / Exposure to see which agent declares the server, its URL, and which rule fired.</li><li>Bind local MCP servers to loopback (<code>127.0.0.1</code>) instead of <code>0.0.0.0</code> or a LAN address, so only processes on this machine can connect.</li><li>If the server must be reachable from another machine, put it behind TLS (<code>https://</code> / <code>wss://</code>) and require a bearer token, OAuth, or mTLS - never plain <code>http://</code> or <code>ws://</code> across a network.</li><li>Pay particular attention to servers exposing shell, filesystem, or container tooling: an unauthenticated caller inherits every capability you granted the agent.</li><li>Edit the agent's MCP configuration (for example <code>~/.cursor/mcp.json</code> or <code>~/.claude.json</code>) and restart the agent so the change takes effect.</li></ul>"
+          },
+          {
+            "class": "html",
+            "locale": "FR",
+            "target": "<p>Fermez le serveur MCP expose afin que seule cette machine puisse l'atteindre :</p><ul><li>Allez dans Agents / Exposure pour voir quel agent declare le serveur, son URL et la regle declenchee.</li><li>Liez les serveurs MCP locaux a la boucle locale (<code>127.0.0.1</code>) plutot qu'a <code>0.0.0.0</code> ou a une adresse reseau, afin que seuls les processus de cette machine puissent s'y connecter.</li><li>Si le serveur doit etre joignable depuis une autre machine, placez-le derriere TLS (<code>https://</code> / <code>wss://</code>) et exigez un jeton bearer, OAuth ou mTLS - jamais de <code>http://</code> ni de <code>ws://</code> en clair sur un reseau.</li><li>Soyez particulierement attentif aux serveurs exposant un shell, le systeme de fichiers ou des outils de conteneurs : un appelant non authentifie herite de toutes les capacites accordees a l'agent.</li><li>Modifiez la configuration MCP de l'agent (par exemple <code>~/.cursor/mcp.json</code> ou <code>~/.claude.json</code>) puis redemarrez l'agent pour appliquer le changement.</li></ul>"
+          }
+        ],
+        "elevation": "",
+        "maxversion": 0,
+        "minversion": 12,
+        "system": "Windows",
+        "target": "agents_exposure"
+      },
+      "rollback": {
+        "class": "internal",
+        "education": [
+          {
+            "class": "html",
+            "locale": "EN",
+            "target": "<p>Close the exposed MCP server so only this machine can reach it:</p><ul><li>Navigate to Agents / Exposure to see which agent declares the server, its URL, and which rule fired.</li><li>Bind local MCP servers to loopback (<code>127.0.0.1</code>) instead of <code>0.0.0.0</code> or a LAN address, so only processes on this machine can connect.</li><li>If the server must be reachable from another machine, put it behind TLS (<code>https://</code> / <code>wss://</code>) and require a bearer token, OAuth, or mTLS - never plain <code>http://</code> or <code>ws://</code> across a network.</li><li>Pay particular attention to servers exposing shell, filesystem, or container tooling: an unauthenticated caller inherits every capability you granted the agent.</li><li>Edit the agent's MCP configuration (for example <code>~/.cursor/mcp.json</code> or <code>~/.claude.json</code>) and restart the agent so the change takes effect.</li></ul>"
+          },
+          {
+            "class": "html",
+            "locale": "FR",
+            "target": "<p>Fermez le serveur MCP expose afin que seule cette machine puisse l'atteindre :</p><ul><li>Allez dans Agents / Exposure pour voir quel agent declare le serveur, son URL et la regle declenchee.</li><li>Liez les serveurs MCP locaux a la boucle locale (<code>127.0.0.1</code>) plutot qu'a <code>0.0.0.0</code> ou a une adresse reseau, afin que seuls les processus de cette machine puissent s'y connecter.</li><li>Si le serveur doit etre joignable depuis une autre machine, placez-le derriere TLS (<code>https://</code> / <code>wss://</code>) et exigez un jeton bearer, OAuth ou mTLS - jamais de <code>http://</code> ni de <code>ws://</code> en clair sur un reseau.</li><li>Soyez particulierement attentif aux serveurs exposant un shell, le systeme de fichiers ou des outils de conteneurs : un appelant non authentifie herite de toutes les capacites accordees a l'agent.</li><li>Modifiez la configuration MCP de l'agent (par exemple <code>~/.cursor/mcp.json</code> ou <code>~/.claude.json</code>) puis redemarrez l'agent pour appliquer le changement.</li></ul>"
+          }
+        ],
+        "elevation": "",
+        "maxversion": 0,
+        "minversion": 12,
+        "system": "Windows",
+        "target": "agents_exposure"
+      },
+      "scope": "generic",
+      "severity": 3,
+      "tags": [
+        "AI Agent Posture"
+      ]
+    },
+    {
+      "description": [
+        {
+          "locale": "EN",
           "summary": "Codex CLI is installed but the EDAMAME transcript observer is paused. Reasoning-plane intent is no longer correlated with system telemetry, weakening agent posture.",
           "title": "Codex CLI agent unsecured"
         },
@@ -2762,5 +2833,5 @@
     }
   ],
   "name": "threat model Windows",
-  "signature": "e7ede103608a87fcd6133375da8e551caf39aab6513cb8a3b1bbb962bc13cfe6"
+  "signature": "1a33ff00f785440d3ba78576d699c88886f70434db7b9c7e6b34c37981af4946"
 }
