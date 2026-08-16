@@ -971,8 +971,38 @@ def validate_cve_detection_params(filename: str) -> None:
         'secret_content_powershell_dangerous_verbs',
         'secret_content_powershell_probe_read_verbs',
         'secret_content_signatures',
+        'evidence_weights',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
+    # Corroboration Risk Score signal weights. Every key is required so a
+    # publishing mistake cannot silently zero a signal's contribution -- the
+    # embedded fallback snapshot always carries the full set.
+    required_evidence_weight_keys = {
+        'session_is_anomalous',
+        'session_is_blacklisted',
+        'destination_is_blacklisted',
+        'destination_is_public_diagnostic',
+        'destination_is_routine_vendor_backend',
+        'sensitive_material_evidence_present',
+        'suspicious_lineage_present',
+        'is_system_binary_target',
+        'target_in_sensitive_path_class',
+        'invalid_signature_in_canonical_path',
+        'publisher_attestation_signed_by_canonical_publisher',
+        'process_in_trusted_credential_helper_list',
+        'process_in_generic_git_credential_manager_list',
+        'process_in_ci_runner_internal_agent_list',
+        'process_in_ide_project_config_helper_list',
+        'process_in_jvm_hsperfdata_writer_list',
+        'process_name_matches_known_system_daemon_hint',
+        'process_path_matches_packaged_application',
+        'process_path_matches_suspicious_lineage',
+        'attribution_full_path',
+        'attribution_name_only',
+        'attribution_missing',
+        'ambient_baseline_credit',
+        'ambient_external_egress',
+    }
     required_checks = {
         'credential_harvest',
         'token_exfiltration',
@@ -1291,6 +1321,29 @@ def validate_cve_detection_params(filename: str) -> None:
             if not markers:
                 raise ValueError(f"{key_name}[{i}]['markers'] must be non-empty")
 
+    def validate_evidence_weights(value, key_name: str) -> None:
+        # Corroboration Risk Score signal weights. Malicious signals carry
+        # positive weight, benign-attribution signals negative weight; the
+        # detector sums them per finding to derive severity.
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        actual = set(value.keys())
+        if actual != required_evidence_weight_keys:
+            missing = required_evidence_weight_keys - actual
+            extra = actual - required_evidence_weight_keys
+            raise ValueError(
+                f"{key_name} has missing keys {missing} and unexpected keys {extra}"
+            )
+        for weight_key in sorted(required_evidence_weight_keys):
+            weight = value[weight_key]
+            # bool is a subclass of int -- reject it explicitly.
+            if isinstance(weight, bool) or not isinstance(weight, (int, float)):
+                raise ValueError(f"{key_name}['{weight_key}'] must be a number")
+            if not -1000.0 <= float(weight) <= 1000.0:
+                raise ValueError(
+                    f"{key_name}['{weight_key}'] must be within [-1000, 1000]"
+                )
+
     def validate_software_distribution_backends(value, key_name: str) -> None:
         # Trusted vendor software-distribution backends (GitHub / Fastly /
         # Cloudflare release CDNs). Recognized by ASN owner, domain suffix,
@@ -1464,6 +1517,10 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_secret_content_signatures(
         data['secret_content_signatures'],
         'secret_content_signatures',
+    )
+    validate_evidence_weights(
+        data['evidence_weights'],
+        'evidence_weights',
     )
 
     print("CVE detection params validation successful")

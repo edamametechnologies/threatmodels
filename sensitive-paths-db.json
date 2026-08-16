@@ -36,9 +36,24 @@
     "/AGENTS.md",
     "/.cursorrules",
     "/mcp.json",
-    "/.cursor/rules/"
+    "/.cursor/rules/",
+    "/.cargo/credentials",
+    "/.gem/credentials",
+    "/.m2/settings.xml",
+    "/.gradle/gradle.properties",
+    "/.nuget/NuGet/NuGet.Config",
+    "/.config/gh/hosts.yml",
+    "/.config/op/",
+    "/.terraform.d/credentials.tfrc.json",
+    "/.terraformrc",
+    "/.config/gcloud/credentials.db",
+    "/.config/gcloud/access_tokens.db",
+    "/.config/containers/auth.json",
+    "/.config/rclone/rclone.conf",
+    "/.claude/.credentials.json",
+    "/.codex/auth.json"
   ],
-  "date": "June 06th 2026",
+  "date": "August 16th 2026",
   "fim_excluded_path_patterns": [
     "/target/debug/",
     "/target/release/",
@@ -105,10 +120,19 @@
     "browser_store": [
       "/cookies",
       "/login data",
-      "/web data"
+      "/web data",
+      "/key4.db",
+      "/logins.json"
     ],
     "claude": [
       "/.claude/"
+    ],
+    "cloud_storage": [
+      "/.config/rclone/",
+      "/appdata/roaming/rclone/"
+    ],
+    "codex": [
+      "/.codex/auth.json"
     ],
     "credentials_json": [
       "/credentials.json"
@@ -138,19 +162,35 @@
       "/appdata/roaming/phantom/",
       "/local extension settings/nkbihfbeogaeaoehlefnkodbefgpgknn/",
       "/local extension settings/bfnaelmomeimhlpmgjnjophhpkkoljpa/",
-      "/local extension settings/aholpfdialjgjfhomihkjbmgjidlcdno/"
+      "/local extension settings/aholpfdialjgjfhomihkjbmgjidlcdno/",
+      "/application support/litecoin/",
+      "/application support/dogecoin/",
+      "/application support/monero/",
+      "/appdata/roaming/litecoin/",
+      "/appdata/roaming/dogecoin/",
+      "/appdata/local/bitmonero/"
     ],
     "docker": [
-      "/.docker/"
+      "/.docker/",
+      "/.config/containers/",
+      "/appdata/roaming/containers/"
     ],
     "env": [
       "/.env"
     ],
     "gcp": [
-      "/.config/gcloud/"
+      "/.config/gcloud/",
+      "/appdata/roaming/gcloud/"
+    ],
+    "gh_cli": [
+      "/.config/gh/",
+      "/appdata/roaming/github cli/"
     ],
     "git": [
       "/.git-credentials"
+    ],
+    "gnupg": [
+      "/.gnupg/"
     ],
     "instruction": [
       "/claude.md",
@@ -160,10 +200,13 @@
       "/.cursor/rules/"
     ],
     "keychain": [
-      "/library/keychains/"
+      "/library/keychains/",
+      "/mobilesync/backup/"
     ],
     "kube": [
-      "/.kube/"
+      "/.kube/",
+      "/var/run/secrets/kubernetes.io/serviceaccount/",
+      "/run/secrets/kubernetes.io/serviceaccount/"
     ],
     "mysql": [
       "/.my.cnf"
@@ -171,12 +214,41 @@
     "openclaw": [
       "/openclaw.json"
     ],
+    "os_credential_store": [
+      "/etc/shadow",
+      "/etc/gshadow",
+      "/etc/security/opasswd",
+      "/appdata/roaming/microsoft/credentials/",
+      "/appdata/roaming/microsoft/protect/",
+      "/windows/system32/config/sam",
+      "/windows/system32/config/security",
+      "/windows/ntds/ntds.dit"
+    ],
+    "package_publish": [
+      "/.npmrc",
+      "/.pypirc",
+      "/.cargo/credentials",
+      "/.gem/credentials",
+      "/.m2/settings.xml",
+      "/.gradle/gradle.properties",
+      "/.nuget/nuget/nuget.config",
+      "/appdata/roaming/nuget/nuget.config"
+    ],
+    "password_manager": [
+      "/.config/op/",
+      "/appdata/local/op/"
+    ],
     "ssh": [
       "/.ssh/",
       "/id_rsa",
       "/id_ed25519",
       "/id_ecdsa",
       "/id_dsa"
+    ],
+    "terraform": [
+      "/.terraform.d/",
+      "/.terraformrc",
+      "/appdata/roaming/terraform.d/"
     ],
     "vault": [
       "/.vault-token"
@@ -190,11 +262,14 @@
       "/.config/Exodus/",
       "/.config/exodus.wallet/",
       "/.config/atomic/",
-      "/.config/Phantom/"
+      "/.config/Phantom/",
+      "/var/run/secrets/kubernetes.io/serviceaccount/",
+      "/run/secrets/kubernetes.io/serviceaccount/",
+      "/run/secrets/"
     ],
     "macos": [
       "/Library/Keychains/",
-      "/MobileSyncBackup/",
+      "/MobileSync/Backup/",
       "/Library/Application Support/Bitcoin/",
       "/Library/Application Support/Ethereum/keystore/",
       "/Library/Application Support/Litecoin/",
@@ -221,10 +296,17 @@
       "/AppData/Roaming/Exodus/",
       "/AppData/Roaming/exodus.wallet/",
       "/AppData/Roaming/atomic/",
-      "/AppData/Roaming/Phantom/"
+      "/AppData/Roaming/Phantom/",
+      "/AppData/Roaming/GitHub CLI/",
+      "/AppData/Roaming/gcloud/",
+      "/AppData/Roaming/terraform.d/",
+      "/AppData/Roaming/NuGet/NuGet.Config",
+      "/AppData/Local/op/",
+      "/AppData/Roaming/rclone/rclone.conf",
+      "/AppData/Roaming/containers/auth.json"
     ]
   },
-  "signature": "8b37bcb65bcba4653622dcdff824a7afd7c8048e98c8c9a21d51ebc6c01ac8cd",
+  "signature": "3fc3182070eed87a352c2be9c047765611e8ef6b6b806e14ce770c7ed6828c33",
   "watch_roots": {
     "common_home_relative": [
       ".ssh",
