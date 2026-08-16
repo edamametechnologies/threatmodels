@@ -120,7 +120,9 @@
     "browser_store": [
       "/cookies",
       "/login data",
-      "/web data"
+      "/web data",
+      "/key4.db",
+      "/logins.json"
     ],
     "claude": [
       "/.claude/"
@@ -160,7 +162,13 @@
       "/appdata/roaming/phantom/",
       "/local extension settings/nkbihfbeogaeaoehlefnkodbefgpgknn/",
       "/local extension settings/bfnaelmomeimhlpmgjnjophhpkkoljpa/",
-      "/local extension settings/aholpfdialjgjfhomihkjbmgjidlcdno/"
+      "/local extension settings/aholpfdialjgjfhomihkjbmgjidlcdno/",
+      "/application support/litecoin/",
+      "/application support/dogecoin/",
+      "/application support/monero/",
+      "/appdata/roaming/litecoin/",
+      "/appdata/roaming/dogecoin/",
+      "/appdata/local/bitmonero/"
     ],
     "docker": [
       "/.docker/",
@@ -181,6 +189,9 @@
     "git": [
       "/.git-credentials"
     ],
+    "gnupg": [
+      "/.gnupg/"
+    ],
     "instruction": [
       "/claude.md",
       "/agents.md",
@@ -189,7 +200,8 @@
       "/.cursor/rules/"
     ],
     "keychain": [
-      "/library/keychains/"
+      "/library/keychains/",
+      "/mobilesync/backup/"
     ],
     "kube": [
       "/.kube/",
@@ -201,6 +213,16 @@
     ],
     "openclaw": [
       "/openclaw.json"
+    ],
+    "os_credential_store": [
+      "/etc/shadow",
+      "/etc/gshadow",
+      "/etc/security/opasswd",
+      "/appdata/roaming/microsoft/credentials/",
+      "/appdata/roaming/microsoft/protect/",
+      "/windows/system32/config/sam",
+      "/windows/system32/config/security",
+      "/windows/ntds/ntds.dit"
     ],
     "package_publish": [
       "/.npmrc",
@@ -247,7 +269,7 @@
     ],
     "macos": [
       "/Library/Keychains/",
-      "/MobileSyncBackup/",
+      "/MobileSync/Backup/",
       "/Library/Application Support/Bitcoin/",
       "/Library/Application Support/Ethereum/keystore/",
       "/Library/Application Support/Litecoin/",
@@ -284,7 +306,7 @@
       "/AppData/Roaming/containers/auth.json"
     ]
   },
-  "signature": "37dd878beecc2f2caa3d745c517e1d3d66dcadd103300e21b85674b3a59f9ce8",
+  "signature": "3fc3182070eed87a352c2be9c047765611e8ef6b6b806e14ce770c7ed6828c33",
   "watch_roots": {
     "common_home_relative": [
       ".ssh",
