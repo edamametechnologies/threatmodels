@@ -7,3 +7,8 @@ __pycache__/
 report-results.txt
 /src/test/target/
 /src/test/Cargo.lock
+
+# AI rules: dev-only symlinks into ../edamame_rules, recreated by edamame_rules/setup.sh
+.claude/
+CLAUDE.md
+AGENTS.md
