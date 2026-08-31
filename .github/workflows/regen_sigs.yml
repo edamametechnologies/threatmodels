@@ -1,4 +1,4 @@
-name: Regenerate signatures
+name: Verify generated threatmodel artifacts
 on:
   pull_request:
     branches: ["main", "dev"]
@@ -9,35 +9,24 @@ on:
       - 'lanscan-profiles-db.json'
       - 'sensitive-paths-db.json'
       - 'cve-detection-params-db.json'
+      - 'agent-visibility-params-db.json'
       - 'lanscan-port-vulns-db.json'
       - 'lanscan-vendor-vulns-db.json'
 
-# Auto cancel previous runs if they were not completed.
 concurrency:
-  group: regen-sigs-${{ github.event.pull_request.number }}
+  group: verify-generated-artifacts-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   regen:
-    # Skip on PRs from forks (they cannot access DEV_GITHUB_TOKEN) and on
-    # commits authored by edamamedev itself (to avoid an infinite loop if a
-    # previous run already regenerated the .sig files).
-    if: |
-      github.event.pull_request.head.repo.full_name == github.repository &&
-      github.actor != 'edamamedev'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Checkout PR head
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.DEV_GITHUB_TOKEN }}
-          ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v3.1.4
@@ -49,20 +38,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Regenerate signatures
+      - name: Regenerate artifacts
         run: make update
 
-      - name: Configure git
+      - name: Verify generated artifacts are current
         run: |
-          git config user.email "dev@edamame.tech"
-          git config user.name "EDAMAME Dev"
-
-      - name: Commit + push if changed
-        run: |
-          if git diff --quiet; then
-            echo "No signature regeneration needed."
-            exit 0
+          if [[ -n "$(git status --porcelain --untracked-files=all)" ]]; then
+            echo "Generated threatmodel artifacts are out of date."
+            echo "Run 'make update' locally and commit the resulting changes."
+            git status --short
+            exit 1
           fi
-          git add .
-          git commit -m "Regenerate signatures"
-          git push origin HEAD:${{ github.event.pull_request.head.ref }}

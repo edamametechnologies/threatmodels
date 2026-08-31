@@ -972,6 +972,15 @@ def validate_cve_detection_params(filename: str) -> None:
         'secret_content_powershell_probe_read_verbs',
         'secret_content_signatures',
         'evidence_weights',
+        # ARCH-4 literal migration (AUDIT-2026-08 Inc 7): suppression-relevant
+        # matcher lists moved out of hardcoded edamame_core tables.
+        'system_binary_path_roots',
+        'system_binary_path_excludes',
+        'public_diagnostic_destination_tokens',
+        'credential_class_path_patterns',
+        'packaged_developer_tool_identity_tokens',
+        'random_temp_scratch_path_prefixes',
+        'temp_installer_shell_names',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1421,6 +1430,14 @@ def validate_cve_detection_params(filename: str) -> None:
         'secret_content_script_extensions',
         'secret_content_powershell_dangerous_verbs',
         'secret_content_powershell_probe_read_verbs',
+        # ARCH-4 literal migration lists (flat string lists)
+        'system_binary_path_roots',
+        'system_binary_path_excludes',
+        'public_diagnostic_destination_tokens',
+        'credential_class_path_patterns',
+        'packaged_developer_tool_identity_tokens',
+        'random_temp_scratch_path_prefixes',
+        'temp_installer_shell_names',
     ):
         validate_string_list(data[list_key], list_key)
 
