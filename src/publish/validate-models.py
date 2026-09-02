@@ -981,6 +981,22 @@ def validate_cve_detection_params(filename: str) -> None:
         'packaged_developer_tool_identity_tokens',
         'random_temp_scratch_path_prefixes',
         'temp_installer_shell_names',
+        # Ambient-baseline recurrence credit: lets a signal that recurs on a
+        # host across many days earn a benign-attribution credit instead of
+        # being re-alerted every tick.
+        'ambient_baseline_enabled',
+        'ambient_baseline_ttl_days',
+        'ambient_baseline_min_recurrent_days',
+        # Publisher attestation: code-signature publisher identity as an
+        # attribution signal on the CRS axis.
+        'publisher_attestation_enabled',
+        # EvidenceFloor tier gate: when true, the unbreakable tier additionally
+        # requires a graded (not merely binary) anomaly verdict.
+        'evidence_floor_requires_graded_anomaly',
+        # High-volume DNS/NTP egress: normally routine infrastructure traffic,
+        # but a large sustained payload over :53/:123 is a tunneling shape.
+        'treat_high_volume_dns_ntp_as_non_routine',
+        'dns_ntp_non_routine_min_outbound_bytes',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1011,6 +1027,10 @@ def validate_cve_detection_params(filename: str) -> None:
         'attribution_missing',
         'ambient_baseline_credit',
         'ambient_external_egress',
+        'session_is_abnormal_extra',
+        'session_whitelist_nonconforming',
+        'destination_org_matches_publisher',
+        'grandparent_matches_suspicious_lineage',
     }
     required_checks = {
         'credential_harvest',
@@ -1409,6 +1429,27 @@ def validate_cve_detection_params(filename: str) -> None:
         raise ValueError("'recent_sensitive_open_file_ttl_secs' must be a non-negative integer")
     if not isinstance(data['fim_hash_size_threshold'], int) or data['fim_hash_size_threshold'] < 0:
         raise ValueError("'fim_hash_size_threshold' must be a non-negative integer")
+
+    # Feature gates. `bool` is a subclass of `int`, so these are checked with
+    # an explicit isinstance(bool) rather than being folded into the integer
+    # checks above -- a gate published as `0`/`1` must fail loudly.
+    for flag_key in (
+        'ambient_baseline_enabled',
+        'publisher_attestation_enabled',
+        'evidence_floor_requires_graded_anomaly',
+        'treat_high_volume_dns_ntp_as_non_routine',
+    ):
+        if not isinstance(data[flag_key], bool):
+            raise ValueError(f"'{flag_key}' must be a boolean")
+
+    for positive_int_key in (
+        'ambient_baseline_ttl_days',
+        'ambient_baseline_min_recurrent_days',
+        'dns_ntp_non_routine_min_outbound_bytes',
+    ):
+        value = data[positive_int_key]
+        if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+            raise ValueError(f"'{positive_int_key}' must be a positive integer")
 
     for list_key in (
         'ci_runner_process_name_prefixes',
