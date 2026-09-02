@@ -1521,7 +1521,7 @@
           {
             "class": "link",
             "locale": "EN",
-            "target": "https://manpages.ubuntu.com/manpages/questing/en/man3/pwquality.3.html"
+            "target": "https://manpages.ubuntu.com/manpages/noble/en/man5/pwquality.conf.5.html"
           }
         ],
         "elevation": "",
@@ -1536,7 +1536,7 @@
           {
             "class": "link",
             "locale": "EN",
-            "target": "https://manpages.ubuntu.com/manpages/questing/en/man3/pwquality.3.html"
+            "target": "https://manpages.ubuntu.com/manpages/noble/en/man5/pwquality.conf.5.html"
           }
         ],
         "elevation": "",
@@ -2332,5 +2332,5 @@
     }
   ],
   "name": "threat model Linux",
-  "signature": "c5d39fd8a1b403fcf86e4e2702d207dfd75e670b0c14b4aab0f2cccf058d590d"
+  "signature": "e9e86c67a05181f8ee8d6d888ac1eb6b6a913dbc7c230a22a7edb6105c4f4b0b"
 }
