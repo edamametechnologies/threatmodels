@@ -1,5 +1,5 @@
 {
-  "date": "August 06th 2026",
+  "date": "September 02th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -846,7 +846,7 @@
       "scope": "generic",
       "severity": 1,
       "tags": [
-        "Personal Posture"
+        "AI Agent Posture"
       ]
     },
     {
@@ -917,7 +917,7 @@
       "scope": "generic",
       "severity": 1,
       "tags": [
-        "Personal Posture"
+        "AI Agent Posture"
       ]
     },
     {
@@ -988,7 +988,7 @@
       "scope": "generic",
       "severity": 1,
       "tags": [
-        "Personal Posture"
+        "AI Agent Posture"
       ]
     },
     {
@@ -2833,5 +2833,5 @@
     }
   ],
   "name": "threat model Windows",
-  "signature": "1a33ff00f785440d3ba78576d699c88886f70434db7b9c7e6b34c37981af4946"
+  "signature": "fbfced4f1e52d36edba377c370f89107f3a5db1eae5cc6ef2a44658dda5d4aed"
 }
