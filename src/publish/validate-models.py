@@ -1039,6 +1039,8 @@ def validate_cve_detection_params(filename: str) -> None:
         'sandbox_exploitation',
         'file_system_tampering',
         'sensitive_material_egress',
+        'agent_control_tampering',
+        'agent_denylist_bypass',
     }
     allowed_severities = {'CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO'}
 
