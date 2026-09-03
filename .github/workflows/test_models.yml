@@ -145,6 +145,13 @@ jobs:
           cargo build --release
           cargo test --release -- --nocapture
           chmod +x target/release/run_cli_test || true
+      - name: AI framework tags match the foundation crosswalk
+        working-directory: threatmodels
+        shell: bash
+        run: |
+          RUNNER=src/test/target/release/run_cli_test
+          [ -x "$RUNNER" ] || RUNNER="$RUNNER.exe"
+          python3 src/publish/sync-ai-framework-tags.py --runner "$RUNNER" --check
 
       - name: Run tests
         working-directory: threatmodels
