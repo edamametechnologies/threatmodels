@@ -985,7 +985,7 @@ def validate_cve_detection_params(filename: str) -> None:
         # host across many days earn a benign-attribution credit instead of
         # being re-alerted every tick.
         'ambient_baseline_enabled',
-        'ambient_baseline_ttl_days',
+        'ambient_baseline_ttl_days',        'crs_authoritative_enabled',
         'ambient_baseline_min_recurrent_days',
         # Publisher attestation: code-signature publisher identity as an
         # attribution signal on the CRS axis.
@@ -993,6 +993,7 @@ def validate_cve_detection_params(filename: str) -> None:
         # EvidenceFloor tier gate: when true, the unbreakable tier additionally
         # requires a graded (not merely binary) anomaly verdict.
         'evidence_floor_requires_graded_anomaly',
+        'crs_authoritative_enabled',
         # High-volume DNS/NTP egress: normally routine infrastructure traffic,
         # but a large sustained payload over :53/:123 is a tunneling shape.
         'treat_high_volume_dns_ntp_as_non_routine',
@@ -1439,6 +1440,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'ambient_baseline_enabled',
         'publisher_attestation_enabled',
         'evidence_floor_requires_graded_anomaly',
+        'crs_authoritative_enabled',
         'treat_high_volume_dns_ntp_as_non_routine',
     ):
         if not isinstance(data[flag_key], bool):
