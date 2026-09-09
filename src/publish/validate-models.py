@@ -986,6 +986,15 @@ def validate_cve_detection_params(filename: str) -> None:
         # being re-alerted every tick.
         'ambient_baseline_enabled',
         'ambient_baseline_ttl_days',        'crs_authoritative_enabled',
+        # Kernel-lineage severity flip (INC-19 shadow -> live) and the
+        # process_memory_scrape credential-holder basenames (moved out of code).
+        'kernel_lineage_flip_enabled',
+        # Deterministic divergence floor: corroborated untrusted lineage on an
+        # agent-attributed session emits correlation:untrusted_lineage_floor.
+        'divergence_lineage_floor_enabled',
+        # B4 cross-engine evidence bus injection switch (detector -> divergence).
+        'cross_engine_bus_enabled',
+        'process_memory_scrape_sensitive_target_basenames',
         'ambient_baseline_min_recurrent_days',
         # Publisher attestation: code-signature publisher identity as an
         # attribution signal on the CRS axis.
@@ -1032,6 +1041,14 @@ def validate_cve_detection_params(filename: str) -> None:
         'session_whitelist_nonconforming',
         'destination_org_matches_publisher',
         'grandparent_matches_suspicious_lineage',
+        'kernel_lineage_suspicious',
+        # B4 cross-engine bus signals (divergence / transcript / MCP -> detector).
+        'divergence_verdict_active',
+        'divergence_prohibition_on_session',
+        'transcript_prompt_injection_hit',
+        'transcript_secret_exposure_hit',
+        'mcp_endpoint_risk',
+        'declared_confinement_mismatch',
     }
     required_checks = {
         'credential_harvest',
@@ -1042,6 +1059,9 @@ def validate_cve_detection_params(filename: str) -> None:
         'sensitive_material_egress',
         'agent_control_tampering',
         'agent_denylist_bypass',
+        'package_install_lifecycle',
+        'process_memory_scrape',
+        'cloud_metadata_egress',
     }
     allowed_severities = {'CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO'}
 
