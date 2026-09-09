@@ -51,9 +51,11 @@
     "/.config/containers/auth.json",
     "/.config/rclone/rclone.conf",
     "/.claude/.credentials.json",
-    "/.codex/auth.json"
+    "/.codex/auth.json",
+    "/.config/1password/",
+    "/.config/bitwarden/"
   ],
-  "date": "August 16th 2026",
+  "date": "September 09th 2026",
   "fim_excluded_path_patterns": [
     "/target/debug/",
     "/target/release/",
@@ -222,7 +224,8 @@
       "/appdata/roaming/microsoft/protect/",
       "/windows/system32/config/sam",
       "/windows/system32/config/security",
-      "/windows/ntds/ntds.dit"
+      "/windows/ntds/ntds.dit",
+      "/.local/share/keyrings/"
     ],
     "package_publish": [
       "/.npmrc",
@@ -236,7 +239,9 @@
     ],
     "password_manager": [
       "/.config/op/",
-      "/appdata/local/op/"
+      "/appdata/local/op/",
+      "/.config/1password/",
+      "/.config/bitwarden/"
     ],
     "ssh": [
       "/.ssh/",
@@ -265,7 +270,8 @@
       "/.config/Phantom/",
       "/var/run/secrets/kubernetes.io/serviceaccount/",
       "/run/secrets/kubernetes.io/serviceaccount/",
-      "/run/secrets/"
+      "/run/secrets/",
+      "/.local/share/keyrings/"
     ],
     "macos": [
       "/Library/Keychains/",
@@ -306,7 +312,7 @@
       "/AppData/Roaming/containers/auth.json"
     ]
   },
-  "signature": "3fc3182070eed87a352c2be9c047765611e8ef6b6b806e14ce770c7ed6828c33",
+  "signature": "f2be32713a6155c92473c34d783c61c009706934dc7307935d5dec961a58dd35",
   "watch_roots": {
     "common_home_relative": [
       ".ssh",
@@ -319,10 +325,15 @@
     ],
     "linux_home_relative": [
       ".config",
-      ".local/share"
+      ".local/share",
+      ".local/bin",
+      ".config/systemd/user",
+      ".config/autostart"
     ],
     "macos_home_relative": [
-      "Library/Keychains"
+      "Library/Keychains",
+      "Library/LaunchAgents",
+      "Library/LaunchDaemons"
     ],
     "windows_home_relative": [
       "AppData/Roaming",
