@@ -1,5 +1,5 @@
 {
-  "date": "September 03th 2026",
+  "date": "September 14th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -1824,7 +1824,7 @@
         "maxversion": 0,
         "minversion": 10,
         "system": "Windows",
-        "target": "$__EDAMAME_LINES = @('$path = ''HKLM:\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Google Chrome''', 'if (Test-Path $path) { $local_version = (Get-ItemProperty -Path $path).DisplayVersion', '$web_content = Invoke-WebRequest -UseBasicParsing ''https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Windows&num=1''', '$latest_version = ($web_content.Content | ConvertFrom-Json)[0].version', 'if ([version]$latest_version -le [version]$local_version) { Write-Output '''' } else { Write-Output ''Chrome is not up to date (Installed: $local_version, Latest: $latest_version)''', '} } else { Write-Output '''' }'); $__EDAMAME_SCRIPT = $__EDAMAME_LINES -join \"`n\"; Invoke-Expression $__EDAMAME_SCRIPT"
+        "target": "$path = 'HKLM:\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Google Chrome'\nif (Test-Path $path) { $local_version = (Get-ItemProperty -Path $path).DisplayVersion\n$web_content = Invoke-WebRequest -UseBasicParsing 'https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Windows&num=1'\n$latest_version = ($web_content.Content | ConvertFrom-Json)[0].version\nif ([version]$latest_version -le [version]$local_version) { Write-Output '' } else { Write-Output 'Chrome is not up to date (Installed: $local_version, Latest: $latest_version)'\n} } else { Write-Output '' }"
       },
       "metrictype": "bool",
       "name": "Chrome not uptodate",
@@ -3194,5 +3194,5 @@
     }
   ],
   "name": "threat model Windows",
-  "signature": "8556b31c587610fbb2b2118f21019487c6f99c737d326e5691246ed5847a2c0e"
+  "signature": "d8154459288896f91c74938cd17e00ca700065efedd34bc93250b3cc072a8be1"
 }
