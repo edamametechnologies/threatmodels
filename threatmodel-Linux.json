@@ -1,5 +1,5 @@
 {
-  "date": "September 03th 2026",
+  "date": "September 19th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -1753,7 +1753,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the AI / Config tab, or uninstall the agent if it is no longer in use.</p>"
+            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the Config / AI tab, or uninstall the agent if it is no longer in use.</p>"
           },
           {
             "class": "html",
@@ -1773,7 +1773,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the AI / Config tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the Config / AI tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
           },
           {
             "class": "html",
@@ -1838,7 +1838,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the AI / Config tab, or uninstall the agent if it is no longer in use.</p>"
+            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the Config / AI tab, or uninstall the agent if it is no longer in use.</p>"
           },
           {
             "class": "html",
@@ -1858,7 +1858,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the AI / Config tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the Config / AI tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
           },
           {
             "class": "html",
@@ -1923,7 +1923,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the AI / Config tab, or uninstall the agent if it is no longer in use.</p>"
+            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the Config / AI tab, or uninstall the agent if it is no longer in use.</p>"
           },
           {
             "class": "html",
@@ -1943,7 +1943,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the AI / Config tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the Config / AI tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
           },
           {
             "class": "html",
@@ -2008,7 +2008,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the AI / Config tab, or uninstall the agent if it is no longer in use.</p>"
+            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the Config / AI tab, or uninstall the agent if it is no longer in use.</p>"
           },
           {
             "class": "html",
@@ -2028,7 +2028,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the AI / Config tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the Config / AI tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
           },
           {
             "class": "html",
@@ -2552,7 +2552,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the AI / Config tab, or uninstall the agent if it is no longer in use.</p>"
+            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the Config / AI tab, or uninstall the agent if it is no longer in use.</p>"
           },
           {
             "class": "html",
@@ -2572,7 +2572,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the AI / Config tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the Config / AI tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
           },
           {
             "class": "html",
@@ -2637,7 +2637,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the AI / Config tab, or uninstall the agent if it is no longer in use.</p>"
+            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the Config / AI tab, or uninstall the agent if it is no longer in use.</p>"
           },
           {
             "class": "html",
@@ -2657,7 +2657,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the AI / Config tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the Config / AI tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
           },
           {
             "class": "html",
@@ -2693,5 +2693,5 @@
     }
   ],
   "name": "threat model Linux",
-  "signature": "925f6300b5cf0a4e7536a77ff9866ad6da02efd37caee1be2941e468405be4d0"
+  "signature": "a2a7625477badc7b6e6f83357c026177ba21856b0225c827670cce22c145df25"
 }
