@@ -1,5 +1,5 @@
 {
-  "date": "September 14th 2026",
+  "date": "September 21th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -782,12 +782,12 @@
       "description": [
         {
           "locale": "EN",
-          "summary": "The AI security agent has detected active vulnerability findings that require review.",
+          "summary": "The attack pattern detector has published active findings that require review.",
           "title": "Unreviewed vulnerability findings"
         },
         {
           "locale": "FR",
-          "summary": "L'agent de securite IA a detecte des vulnerabilites actives necessitant un examen.",
+          "summary": "Le détecteur de motifs d'attaque a publié des constats actifs nécessitant un examen.",
           "title": "Vulnerabilites non examinees"
         }
       ],
@@ -809,12 +809,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Review the vulnerability findings detected by the AI security agent:</p><ul><li>Navigate to the 'AI' tab, 'Security Agent' subtab.</li><li>Review each finding and take appropriate action.</li><li>Dismiss findings that have been investigated and are not a concern.</li></ul>"
+            "target": "<p>Review the attack pattern findings the detector published:</p><ul><li>Open Security &gt; Overview: the radar shows every HIGH and CRITICAL finding; Security &gt; History keeps the full list.</li><li>Open a finding, review its evidence and act on it.</li><li>Dismiss with scope the findings you investigated and consider expected.</li></ul>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Examinez les vulnerabilites detectees par l'agent de securite IA:</p><ul><li>Allez dans l'onglet 'AI', sous-onglet 'Security Agent'.</li><li>Examinez chaque resultat et prenez les mesures appropriees.</li><li>Ignorez les resultats qui ont ete examines et ne sont pas preoccupants.</li></ul>"
+            "target": "<p>Examinez les constats de motifs d'attaque publiés par le détecteur :</p><ul><li>Ouvrez Sécurité &gt; Vue d'ensemble : le radar montre chaque constat HIGH et CRITICAL ; Sécurité &gt; Historique garde la liste complète.</li><li>Ouvrez un constat, examinez ses preuves et agissez.</li><li>Rejetez avec portée les constats examinés que vous jugez attendus.</li></ul>"
           }
         ],
         "elevation": "",
@@ -829,12 +829,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Review the vulnerability findings detected by the AI security agent:</p><ul><li>Navigate to the 'AI' tab, 'Security Agent' subtab.</li><li>Review each finding and take appropriate action.</li><li>Dismiss findings that have been investigated and are not a concern.</li></ul>"
+            "target": "<p>Review the attack pattern findings the detector published:</p><ul><li>Open Security &gt; Overview: the radar shows every HIGH and CRITICAL finding; Security &gt; History keeps the full list.</li><li>Open a finding, review its evidence and act on it.</li><li>Dismiss with scope the findings you investigated and consider expected.</li></ul>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Examinez les vulnerabilites detectees par l'agent de securite IA:</p><ul><li>Allez dans l'onglet 'AI', sous-onglet 'Security Agent'.</li><li>Examinez chaque resultat et prenez les mesures appropriees.</li><li>Ignorez les resultats qui ont ete examines et ne sont pas preoccupants.</li></ul>"
+            "target": "<p>Examinez les constats de motifs d'attaque publiés par le détecteur :</p><ul><li>Ouvrez Sécurité &gt; Vue d'ensemble : le radar montre chaque constat HIGH et CRITICAL ; Sécurité &gt; Historique garde la liste complète.</li><li>Ouvrez un constat, examinez ses preuves et agissez.</li><li>Rejetez avec portée les constats examinés que vous jugez attendus.</li></ul>"
           }
         ],
         "elevation": "",
@@ -949,12 +949,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Investigate the behavioral divergence detected by the two-plane monitoring engine:</p><ul><li>Navigate to the 'AI' tab, 'Divergence' subtab.</li><li>Review the divergence verdict and contributing evidence.</li><li>Take corrective action if the divergence indicates unauthorized behavior.</li></ul>"
+            "target": "<p>Investigate the behavioral divergence the two-plane engine detected:</p><ul><li>Open Agents &gt; Divergence.</li><li>Review the verdict and the evidence behind it.</li><li>Take corrective action if the divergence indicates unauthorized behavior.</li></ul>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Examinez la divergence comportementale detectee par le moteur de surveillance bi-plan:</p><ul><li>Allez dans l'onglet 'AI', sous-onglet 'Divergence'.</li><li>Examinez le verdict de divergence et les preuves.</li><li>Prenez des mesures correctives si la divergence indique un comportement non autorise.</li></ul>"
+            "target": "<p>Examinez la divergence comportementale detectee par le moteur de surveillance bi-plan:</p><ul><li>Ouvrez Agents &gt; Divergence.</li><li>Examinez le verdict de divergence et les preuves.</li><li>Prenez des mesures correctives si la divergence indique un comportement non autorise.</li></ul>"
           }
         ],
         "elevation": "",
@@ -969,12 +969,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Investigate the behavioral divergence detected by the two-plane monitoring engine:</p><ul><li>Navigate to the 'AI' tab, 'Divergence' subtab.</li><li>Review the divergence verdict and contributing evidence.</li><li>Take corrective action if the divergence indicates unauthorized behavior.</li></ul>"
+            "target": "<p>Investigate the behavioral divergence the two-plane engine detected:</p><ul><li>Open Agents &gt; Divergence.</li><li>Review the verdict and the evidence behind it.</li><li>Take corrective action if the divergence indicates unauthorized behavior.</li></ul>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Examinez la divergence comportementale detectee par le moteur de surveillance bi-plan:</p><ul><li>Allez dans l'onglet 'AI', sous-onglet 'Divergence'.</li><li>Examinez le verdict de divergence et les preuves.</li><li>Prenez des mesures correctives si la divergence indique un comportement non autorise.</li></ul>"
+            "target": "<p>Examinez la divergence comportementale detectee par le moteur de surveillance bi-plan:</p><ul><li>Ouvrez Agents &gt; Divergence.</li><li>Examinez le verdict de divergence et les preuves.</li><li>Prenez des mesures correctives si la divergence indique un comportement non autorise.</li></ul>"
           }
         ],
         "elevation": "",
@@ -1017,12 +1017,12 @@
       "description": [
         {
           "locale": "EN",
-          "summary": "The AI security agent has escalated actions that require manual review before they can proceed.",
+          "summary": "The Assistant has escalated actions that require your review before they can proceed.",
           "title": "Escalated actions pending review"
         },
         {
           "locale": "FR",
-          "summary": "L'agent de securite IA a escalade des actions necessitant un examen manuel avant de pouvoir continuer.",
+          "summary": "L'Assistant a escaladé des actions nécessitant votre examen avant de pouvoir continuer.",
           "title": "Actions escaladees en attente d'examen"
         }
       ],
@@ -1044,12 +1044,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Review the escalated actions from the AI security agent:</p><ul><li>Navigate to the 'AI' tab, 'Security Agent' subtab.</li><li>Review each escalated action and its risk assessment.</li><li>Approve, reject, or modify the proposed actions.</li></ul>"
+            "target": "<p>Review the actions the Assistant escalated to you:</p><ul><li>Open Security &gt; Overview (the radar) or Security &gt; History.</li><li>Review each escalated action and its risk assessment.</li><li>Approve, reject, or modify the proposed actions.</li></ul>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Examinez les actions escaladees de l'agent de securite IA:</p><ul><li>Allez dans l'onglet 'AI', sous-onglet 'Security Agent'.</li><li>Examinez chaque action escaladee et son evaluation des risques.</li><li>Approuvez, rejetez ou modifiez les actions proposees.</li></ul>"
+            "target": "<p>Examinez les actions que l'Assistant vous a escaladées:</p><ul><li>Ouvrez Sécurité &gt; Vue d'ensemble (le radar) ou Sécurité &gt; Historique.</li><li>Examinez chaque action escaladee et son evaluation des risques.</li><li>Approuvez, rejetez ou modifiez les actions proposees.</li></ul>"
           }
         ],
         "elevation": "",
@@ -1064,12 +1064,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Review the escalated actions from the AI security agent:</p><ul><li>Navigate to the 'AI' tab, 'Security Agent' subtab.</li><li>Review each escalated action and its risk assessment.</li><li>Approve, reject, or modify the proposed actions.</li></ul>"
+            "target": "<p>Review the actions the Assistant escalated to you:</p><ul><li>Open Security &gt; Overview (the radar) or Security &gt; History.</li><li>Review each escalated action and its risk assessment.</li><li>Approve, reject, or modify the proposed actions.</li></ul>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Examinez les actions escaladees de l'agent de securite IA:</p><ul><li>Allez dans l'onglet 'AI', sous-onglet 'Security Agent'.</li><li>Examinez chaque action escaladee et son evaluation des risques.</li><li>Approuvez, rejetez ou modifiez les actions proposees.</li></ul>"
+            "target": "<p>Examinez les actions que l'Assistant vous a escaladées:</p><ul><li>Ouvrez Sécurité &gt; Vue d'ensemble (le radar) ou Sécurité &gt; Historique.</li><li>Examinez chaque action escaladee et son evaluation des risques.</li><li>Approuvez, rejetez ou modifiez les actions proposees.</li></ul>"
           }
         ],
         "elevation": "",
@@ -2185,12 +2185,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "Refer to the business rules documentation for more details."
+            "target": "This check runs the script your organization set in EDAMAME_BUSINESS_RULES_CMD; the check output on this card names the rule that failed. When no script is set the check is reported as not configured, not as a failure. Documentation: <a href=\"https://github.com/edamametechnologies/edamame_posture_cli?tab=readme-ov-file#business-rules\">Business rules</a>."
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "Consultez la documentation des règles métier pour plus de détails."
+            "target": "Ce contrôle exécute le script défini par votre organisation dans EDAMAME_BUSINESS_RULES_CMD ; la sortie du contrôle sur cette fiche nomme la règle en défaut. Sans script défini, le contrôle est signalé comme non configuré, pas comme un échec. Documentation : <a href=\"https://github.com/edamametechnologies/edamame_posture_cli?tab=readme-ov-file#business-rules\">Règles métier</a>."
           }
         ],
         "elevation": "",
@@ -2205,12 +2205,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "Refer to the business rules documentation for more details."
+            "target": "This check runs the script your organization set in EDAMAME_BUSINESS_RULES_CMD; the check output on this card names the rule that failed. When no script is set the check is reported as not configured, not as a failure. Documentation: <a href=\"https://github.com/edamametechnologies/edamame_posture_cli?tab=readme-ov-file#business-rules\">Business rules</a>."
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "Consultez la documentation des règles métier pour plus de détails."
+            "target": "Ce contrôle exécute le script défini par votre organisation dans EDAMAME_BUSINESS_RULES_CMD ; la sortie du contrôle sur cette fiche nomme la règle en défaut. Sans script défini, le contrôle est signalé comme non configuré, pas comme un échec. Documentation : <a href=\"https://github.com/edamametechnologies/edamame_posture_cli?tab=readme-ov-file#business-rules\">Règles métier</a>."
           }
         ],
         "elevation": "",
@@ -2254,7 +2254,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the AI / Config tab, or uninstall the agent if it is no longer in use.</p>"
+            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in Config &gt; Agents, or uninstall the agent if it is no longer in use.</p>"
           },
           {
             "class": "html",
@@ -2274,7 +2274,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the AI / Config tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in Config &gt; Agents. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
           },
           {
             "class": "html",
@@ -2339,7 +2339,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the AI / Config tab, or uninstall the agent if it is no longer in use.</p>"
+            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in Config &gt; Agents, or uninstall the agent if it is no longer in use.</p>"
           },
           {
             "class": "html",
@@ -2359,7 +2359,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the AI / Config tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in Config &gt; Agents. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
           },
           {
             "class": "html",
@@ -2424,7 +2424,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the AI / Config tab, or uninstall the agent if it is no longer in use.</p>"
+            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in Config &gt; Agents, or uninstall the agent if it is no longer in use.</p>"
           },
           {
             "class": "html",
@@ -2444,7 +2444,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the AI / Config tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in Config &gt; Agents. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
           },
           {
             "class": "html",
@@ -2509,7 +2509,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the AI / Config tab, or uninstall the agent if it is no longer in use.</p>"
+            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in Config &gt; Agents, or uninstall the agent if it is no longer in use.</p>"
           },
           {
             "class": "html",
@@ -2529,7 +2529,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the AI / Config tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in Config &gt; Agents. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
           },
           {
             "class": "html",
@@ -3053,7 +3053,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the AI / Config tab, or uninstall the agent if it is no longer in use.</p>"
+            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in Config &gt; Agents, or uninstall the agent if it is no longer in use.</p>"
           },
           {
             "class": "html",
@@ -3073,7 +3073,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the AI / Config tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in Config &gt; Agents. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
           },
           {
             "class": "html",
@@ -3138,7 +3138,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in the AI / Config tab, or uninstall the agent if it is no longer in use.</p>"
+            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in Config &gt; Agents, or uninstall the agent if it is no longer in use.</p>"
           },
           {
             "class": "html",
@@ -3158,7 +3158,7 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in the AI / Config tab. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in Config &gt; Agents. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
           },
           {
             "class": "html",
@@ -3194,5 +3194,5 @@
     }
   ],
   "name": "threat model Windows",
-  "signature": "d8154459288896f91c74938cd17e00ca700065efedd34bc93250b3cc072a8be1"
+  "signature": "0c150673613093f564479775b0b2b6eda96e160fdd1677af435c2e00fdb25bf6"
 }
