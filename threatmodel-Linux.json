@@ -1,5 +1,5 @@
 {
-  "date": "September 21th 2026",
+  "date": "September 24th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -651,6 +651,7 @@
         "ISO/IEC 42001:2023,A.9.2-Processes for responsible use of AI",
         "ISO/IEC 42001:2023,A.9.4-Intended use of the AI system",
         "MITRE ATLAS,AML.T0010-AI Supply Chain Compromise",
+        "MITRE ATLAS,AML.T0011-User Execution",
         "MITRE ATLAS,AML.T0025-Exfiltration via Cyber Means",
         "MITRE ATLAS,AML.T0037-Data from Local System",
         "MITRE ATLAS,AML.T0050-Command and Scripting Interpreter",
@@ -658,9 +659,11 @@
         "MITRE ATLAS,AML.T0057-LLM Data Leakage",
         "MITRE ATLAS,AML.T0072-Reverse Shell",
         "MITRE ATLAS,AML.T0074-Masquerading",
+        "MITRE ATLAS,AML.T0075-Cloud Service Discovery",
         "MITRE ATLAS,AML.T0081-Modify AI Agent Configuration",
         "MITRE ATLAS,AML.T0083-Credentials from AI Agent Configuration",
         "MITRE ATLAS,AML.T0090-OS Credential Dumping",
+        "MITRE ATLAS,AML.T0097-Virtualization/Sandbox Evasion",
         "MITRE ATLAS,AML.T0101-Data Destruction via AI Agent Tool Invocation",
         "MITRE ATLAS,AML.T0105-Escape to Host",
         "MITRE ATLAS,AML.T0110-AI Agent Tool Poisoning",
@@ -2693,5 +2696,5 @@
     }
   ],
   "name": "threat model Linux",
-  "signature": "08a2145a0f7b77256bad37a3f4df7973b0bcca141b7fbf3e4556518aa8bacee7"
+  "signature": "e5a287bb8de5ab1f63517dc6ddbbdbbc0c87521c1d325a437961d373af63cfab"
 }
