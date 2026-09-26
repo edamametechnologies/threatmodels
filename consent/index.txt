@@ -1,3 +1,5 @@
+ai-failure-export-EN.md
+ai-failure-export-FR.md
 compliance-scanner-EN.md
 compliance-scanner-FR.md
 privacy-LLM-EN.md
