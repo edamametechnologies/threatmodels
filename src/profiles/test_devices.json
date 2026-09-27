@@ -710,7 +710,7 @@
   },
   {
     "label": "Unknown-0075",
-    "expected": "Unknown",
+    "expected": "IoT",
     "input": {
       "open_ports": [
         {
@@ -760,7 +760,7 @@
   },
   {
     "label": "PC-0079",
-    "expected": "PC",
+    "expected": "Windows PC",
     "input": {
       "open_ports": [
         {
@@ -814,7 +814,7 @@
   },
   {
     "label": "PC-0081",
-    "expected": "PC",
+    "expected": "Windows PC",
     "input": {
       "open_ports": [
         {

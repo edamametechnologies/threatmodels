@@ -11,133 +11,144 @@ WARN = "WARN"
 
 
 # --- Classification test runner ---
-def classify_device(db: Dict[str, Any], device: Dict[str, Any]) -> str:
-    """Pure-Python mirror of profiles.rs logic at a high level.
-    Evaluates profiles against one device input and returns device_type or 'Unknown'.
+# Pure-Python mirror of flodbadd src/profiles.rs (classify_device):
+# - mdns_services rules match the SERVICE-TYPE labels of each instance
+#   ("Philippe's iPhone._companion-link._tcp.local" -> "companion-link"),
+#   equal or as a prefix ("ipp" matches "ipps"); never the instance name.
+# - vendors match on word boundaries (a rule may be a multi-word phrase of
+#   consecutive whole words: "lg" matches "LG Electronics", not "Belgacom").
+# - hostnames match the same way, the rule's last word may prefix a word
+#   ("xbox" matches "XboxOne-1234").
+# - banners stay substring matches; open_ports all listed must be open.
+# - profiles are evaluated in JSON order, first match wins; a device_type may
+#   appear in several rules.
 
-    Parsing and order semantics mirror Rust after change:
-    - Preserve JSON order and return on the first matching rule (first match wins)
-    """
-    profiles_list = db.get("profiles", [])
-    # Normalize inputs
-    vendor = (device.get("vendor") or "").lower()
-    hostname = (device.get("hostname") or "").lower()
-    mdns = [(s or "").lower() for s in device.get("mdns_services", [])]
+
+def _words(text: str) -> List[str]:
+    out: List[str] = []
+    cur = ""
+    for ch in (text or "").lower():
+        if ch.isalnum():
+            cur += ch
+        elif cur:
+            out.append(cur)
+            cur = ""
+    if cur:
+        out.append(cur)
+    return out
+
+
+def _phrase_matches(haystack: List[str], rule: str, last_word_prefix: bool) -> bool:
+    rule_words = _words(rule)
+    n = len(rule_words)
+    if n == 0 or len(haystack) < n:
+        return False
+    for i in range(len(haystack) - n + 1):
+        ok = True
+        for j in range(n):
+            word = haystack[i + j]
+            if last_word_prefix and j == n - 1:
+                ok = word.startswith(rule_words[j])
+            else:
+                ok = word == rule_words[j]
+            if not ok:
+                break
+        if ok:
+            return True
+    return False
+
+
+def _mdns_service_types(entry: str) -> List[str]:
+    lower = (entry or "").strip().rstrip(".").lower()
+    labels = lower.split(".")
+    types: List[str] = []
+    for i, label in enumerate(labels):
+        if label in ("_tcp", "_udp", "_sub") and i > 0 and labels[i - 1].startswith("_"):
+            service = labels[i - 1][1:]
+            if service:
+                types.append(service)
+    if not types and len(labels) == 1:
+        bare = labels[0].lstrip("_")
+        if bare and all(c.isascii() and (c.isalnum() or c in "-_") for c in bare):
+            types.append(bare)
+    return types
+
+
+def _normalize_device(device: Dict[str, Any]) -> Dict[str, Any]:
     ports = set()
-    banners = []
+    banners: List[str] = []
     for p in device.get("open_ports", []) or []:
         if isinstance(p, dict):
             if isinstance(p.get("port"), int):
                 ports.add(p["port"])
             if isinstance(p.get("banner"), str):
                 banners.append(p["banner"].lower())
-    
-    def leaf_matches(attrs: Dict[str, Any]) -> bool:
-        # AND across attributes; within each attribute, OR/contains semantics
-        # open_ports: all listed must be present
-        # negate: invert result
-        result = True
-        if "open_ports" in attrs and isinstance(attrs["open_ports"], list):
-            op = attrs["open_ports"]
-            result = result and all(isinstance(x, int) and x in ports for x in op)
-        if "mdns_services" in attrs and isinstance(attrs["mdns_services"], list) and attrs["mdns_services"]:
-            result = result and any(any(s in m for m in mdns) for s in attrs["mdns_services"])
-        if "vendors" in attrs and isinstance(attrs["vendors"], list) and attrs["vendors"]:
-            result = result and any((v or "").lower() in vendor for v in attrs["vendors"])
-        if "hostnames" in attrs and isinstance(attrs["hostnames"], list) and attrs["hostnames"]:
-            result = result and any((h or "").lower() in hostname for h in attrs["hostnames"])
-        if "banners" in attrs and isinstance(attrs["banners"], list) and attrs["banners"]:
-            result = result and any(any(bfrag in b for b in banners) for bfrag in attrs["banners"])
-        if attrs.get("negate") is True:
-            result = not result
-        return result
+        elif isinstance(p, int):
+            ports.add(p)
+    mdns_types: List[str] = []
+    for s in device.get("mdns_services", []) or []:
+        mdns_types.extend(_mdns_service_types(s))
+    return {
+        "ports": ports,
+        "banners": banners,
+        "mdns_types": mdns_types,
+        "vendor_words": _words(device.get("vendor") or ""),
+        "hostname_words": _words(device.get("hostname") or ""),
+    }
 
-    def cond_matches(cond: Dict[str, Any]) -> bool:
-        if "Leaf" in cond and isinstance(cond["Leaf"], dict):
-            return leaf_matches(cond["Leaf"])
-        if "Node" in cond and isinstance(cond["Node"], dict):
-            ctype = cond["Node"].get("type")
-            subs = cond["Node"].get("sub_conditions") or []
-            if ctype == "AND":
-                return all(cond_matches(s) for s in subs)
-            if ctype == "OR":
-                return any(cond_matches(s) for s in subs)
-        return False
 
-    # Iterate strictly in JSON order; first match wins
-    for idx, prof in enumerate(profiles_list):
+def _leaf_matches(attrs: Dict[str, Any], d: Dict[str, Any]) -> bool:
+    result = True
+    if isinstance(attrs.get("open_ports"), list):
+        result = result and all(isinstance(x, int) and x in d["ports"] for x in attrs["open_ports"])
+    if isinstance(attrs.get("mdns_services"), list) and attrs["mdns_services"]:
+        rules = [(s or "").strip().lstrip("_").lower() for s in attrs["mdns_services"]]
+        result = result and any(r and any(t.startswith(r) for t in d["mdns_types"]) for r in rules)
+    if isinstance(attrs.get("vendors"), list) and attrs["vendors"]:
+        result = result and any(_phrase_matches(d["vendor_words"], v or "", False) for v in attrs["vendors"])
+    if isinstance(attrs.get("hostnames"), list) and attrs["hostnames"]:
+        result = result and any(_phrase_matches(d["hostname_words"], h or "", True) for h in attrs["hostnames"])
+    if isinstance(attrs.get("banners"), list) and attrs["banners"]:
+        result = result and any(any((frag or "").lower() in b for b in d["banners"]) for frag in attrs["banners"])
+    if attrs.get("negate") is True:
+        result = not result
+    return result
+
+
+def _cond_matches(cond: Dict[str, Any], d: Dict[str, Any]) -> bool:
+    if "Leaf" in cond and isinstance(cond["Leaf"], dict):
+        return _leaf_matches(cond["Leaf"], d)
+    if "Node" in cond and isinstance(cond["Node"], dict):
+        ctype = cond["Node"].get("type")
+        subs = cond["Node"].get("sub_conditions") or []
+        if ctype == "AND":
+            return all(_cond_matches(s, d) for s in subs)
+        if ctype == "OR":
+            return any(_cond_matches(s, d) for s in subs)
+    return False
+
+
+def classify_device(db: Dict[str, Any], device: Dict[str, Any]) -> str:
+    """Evaluate profiles in JSON order; the first matching rule wins."""
+    d = _normalize_device(device)
+    for prof in db.get("profiles", []):
         for cond in prof.get("conditions", []):
-            if cond_matches(cond):
+            if _cond_matches(cond, d):
                 return prof.get("device_type", "Unknown")
     return "Unknown"
 
 
 def matching_device_types(db: Dict[str, Any], device: Dict[str, Any]) -> List[str]:
-    """Return all device_types whose rules would match the given device.
-
-    Uses last-write-wins effective profile set (same as classify_device) but
-    does not stop at first match, to detect overlapping rules.
-    """
-    profiles_list = db.get("profiles", [])
-    last_index: Dict[str, int] = {}
-    for idx, prof in enumerate(profiles_list):
-        dt = prof.get("device_type")
-        if isinstance(dt, str) and dt:
-            last_index[dt] = idx
-
-    # Normalize inputs (same as classify_device)
-    vendor = (device.get("vendor") or "").lower()
-    hostname = (device.get("hostname") or "").lower()
-    mdns = [(s or "").lower() for s in device.get("mdns_services", [])]
-    ports = set()
-    banners = []
-    for p in device.get("open_ports", []) or []:
-        if isinstance(p, dict):
-            if isinstance(p.get("port"), int):
-                ports.add(p["port"]) 
-            if isinstance(p.get("banner"), str):
-                banners.append(p["banner"].lower())
-
-    def leaf_matches(attrs: Dict[str, Any]) -> bool:
-        result = True
-        if "open_ports" in attrs and isinstance(attrs["open_ports"], list):
-            op = attrs["open_ports"]
-            result = result and all(isinstance(x, int) and x in ports for x in op)
-        if "mdns_services" in attrs and isinstance(attrs["mdns_services"], list) and attrs["mdns_services"]:
-            result = result and any(any(s in m for m in mdns) for s in attrs["mdns_services"])
-        if "vendors" in attrs and isinstance(attrs["vendors"], list) and attrs["vendors"]:
-            result = result and any((v or "").lower() in vendor for v in attrs["vendors"])
-        if "hostnames" in attrs and isinstance(attrs["hostnames"], list) and attrs["hostnames"]:
-            result = result and any((h or "").lower() in hostname for h in attrs["hostnames"])
-        if "banners" in attrs and isinstance(attrs["banners"], list) and attrs["banners"]:
-            result = result and any(any(bfrag in b for b in banners) for bfrag in attrs["banners"])
-        if attrs.get("negate") is True:
-            result = not result
-        return result
-
-    def cond_matches(cond: Dict[str, Any]) -> bool:
-        if "Leaf" in cond and isinstance(cond["Leaf"], dict):
-            return leaf_matches(cond["Leaf"])
-        if "Node" in cond and isinstance(cond["Node"], dict):
-            ctype = cond["Node"].get("type")
-            subs = cond["Node"].get("sub_conditions") or []
-            if ctype == "AND":
-                return all(cond_matches(s) for s in subs)
-            if ctype == "OR":
-                return any(cond_matches(s) for s in subs)
-        return False
-
+    """Return every distinct device_type with a rule matching the device (to
+    report overlaps), in rule order."""
+    d = _normalize_device(device)
     matches: List[str] = []
-    for idx, prof in enumerate(profiles_list):
+    for prof in db.get("profiles", []):
         dt = prof.get("device_type")
-        if not (isinstance(dt, str) and dt):
+        if not (isinstance(dt, str) and dt) or dt in matches:
             continue
-        if last_index.get(dt, idx) != idx:
-            continue
-        for cond in prof.get("conditions", []):
-            if cond_matches(cond):
-                matches.append(dt)
-                break
+        if any(_cond_matches(cond, d) for cond in prof.get("conditions", [])):
+            matches.append(dt)
     return matches
 
 
@@ -334,8 +345,8 @@ def validate_profiles(db: Dict[str, Any]) -> List[Tuple[str, str]]:
         if not isinstance(device_type, str) or not device_type:
             issues.append((FAIL, "device_type must be a non-empty string"))
             continue
-        if device_type in seen_types:
-            issues.append((FAIL, f"duplicate device_type '{device_type}' (will overwrite in map)") )
+        # A device_type may appear in several rules: the list is ordered and
+        # the first matching rule wins (flodbadd keeps a Vec, not a map).
         seen_types.add(device_type)
 
         conditions = prof.get("conditions")
