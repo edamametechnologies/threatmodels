@@ -90,7 +90,11 @@ The `lanscan-profiles-db.json` file contains rules for identifying device types 
 Evaluation semantics:
 
 - Rules are evaluated strictly in the JSON order; the engine returns the first matching `device_type` (first-match-wins).
-- To avoid ambiguous classifications, design rules so only one `device_type` matches a given device. The validation script flags overlapping matches across multiple device types.
+- A `device_type` may appear in several rules, so specific evidence (mDNS service types, distinctive ports) can be placed ahead of broad vendor guesses for the same or another type. The validation script (`src/profiles/validate.py`) reports overlapping matches as warnings.
+- `mdns_services` entries match the service-type labels of an advertised instance (`Philippe's iPhone._companion-link._tcp.local` -> `companion-link`), exactly or as a prefix (`ipp` matches `ipps`); the free-text instance name is never matched.
+- `vendors` match whole words of the OUI vendor name (`lg` matches `LG Electronics`, not `Belgacom`; a rule may be a phrase such as `sony interactive entertainment`). `hostnames` match the same way, except the rule's last word may prefix a hostname word (`xbox` matches `XboxOne-1234`). `banners` are substring matches.
+
+The flodbadd corpus test (`tests/fixtures/device_type_corpus.json`, run by `cargo test --lib profiles` in flodbadd) classifies known devices against this file when it sits next to the flodbadd checkout.
 
 This database powers EDAMAME Security's device identification capabilities, allowing it to recognize and categorize devices on local networks.
 

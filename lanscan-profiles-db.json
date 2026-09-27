@@ -9,30 +9,15 @@
               {
                 "Leaf": {
                   "mdns_services": [
-                    "ipp",
-                    "printer",
-                    "airprint"
+                    "mediaremotetv"
                   ]
                 }
               },
               {
                 "Leaf": {
-                  "vendors": [
-                    "canon",
-                    "epson",
-                    "brother",
-                    "lexmark",
-                    "xerox",
-                    "ricoh",
-                    "kodak",
-                    "sharp"
-                  ]
-                }
-              },
-              {
-                "Leaf": {
-                  "banners": [
-                    "hp http server"
+                  "hostnames": [
+                    "apple tv",
+                    "appletv"
                   ]
                 }
               }
@@ -41,7 +26,7 @@
           }
         }
       ],
-      "device_type": "Printer"
+      "device_type": "SmartTV"
     },
     {
       "conditions": [
@@ -50,72 +35,8 @@
             "sub_conditions": [
               {
                 "Leaf": {
-                  "vendors": [
-                    "raspberry"
-                  ]
-                }
-              },
-              {
-                "Leaf": {
-                  "banners": [
-                    "raspbian"
-                  ]
-                }
-              },
-              {
-                "Leaf": {
                   "hostnames": [
-                    "raspberrypi"
-                  ]
-                }
-              }
-            ],
-            "type": "OR"
-          }
-        }
-      ],
-      "device_type": "RaspberryPi"
-    },
-    {
-      "conditions": [
-        {
-          "Node": {
-            "sub_conditions": [
-              {
-                "Leaf": {
-                  "vendors": [
-                    "sonos",
-                    "bose",
-                    "jbl",
-                    "harman"
-                  ]
-                }
-              },
-              {
-                "Leaf": {
-                  "open_ports": [
-                    1400,
-                    1410
-                  ]
-                }
-              },
-              {
-                "Leaf": {
-                  "mdns_services": [
-                    "sonos",
-                    "bose",
-                    "jbl",
-                    "harman"
-                  ]
-                }
-              },
-              {
-                "Leaf": {
-                  "hostnames": [
-                    "sonos",
-                    "bose",
-                    "jbl",
-                    "harman"
+                    "homepod"
                   ]
                 }
               },
@@ -125,14 +46,22 @@
                     {
                       "Leaf": {
                         "mdns_services": [
-                          "spotify-connect"
+                          "companion-link"
                         ]
                       }
                     },
                     {
                       "Leaf": {
-                        "vendors": [
-                          "amazon"
+                        "mdns_services": [
+                          "airplay",
+                          "raop"
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "mdns_services": [
+                          "sleep-proxy"
                         ]
                       }
                     }
@@ -153,31 +82,25 @@
           "Node": {
             "sub_conditions": [
               {
-                "Node": {
-                  "sub_conditions": [
-                    {
-                      "Leaf": {
-                        "mdns_services": [
-                          "apple-mobdev2"
-                        ]
-                      }
-                    },
-                    {
-                      "Leaf": {
-                        "mdns_services": [
-                          "companion-link"
-                        ],
-                        "negate": true
-                      }
-                    }
-                  ],
-                  "type": "AND"
+                "Leaf": {
+                  "mdns_services": [
+                    "apple-mobdev2",
+                    "remotepairing"
+                  ]
                 }
               },
               {
                 "Leaf": {
                   "open_ports": [
                     62078
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "hostnames": [
+                    "iphone",
+                    "ipad"
                   ]
                 }
               }
@@ -191,10 +114,54 @@
     {
       "conditions": [
         {
-          "Leaf": {
-            "mdns_services": [
-              "companion-link"
-            ]
+          "Node": {
+            "sub_conditions": [
+              {
+                "Leaf": {
+                  "mdns_services": [
+                    "companion-link"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "hostnames": [
+                    "macbook",
+                    "imac",
+                    "mac mini",
+                    "mac studio",
+                    "mac pro"
+                  ]
+                }
+              },
+              {
+                "Node": {
+                  "sub_conditions": [
+                    {
+                      "Leaf": {
+                        "vendors": [
+                          "apple"
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "mdns_services": [
+                          "ssh",
+                          "sftp-ssh",
+                          "smb",
+                          "rfb",
+                          "afpovertcp",
+                          "workstation"
+                        ]
+                      }
+                    }
+                  ],
+                  "type": "AND"
+                }
+              }
+            ],
+            "type": "OR"
           }
         }
       ],
@@ -208,65 +175,21 @@
               {
                 "Leaf": {
                   "vendors": [
-                    "oneplus",
-                    "motorola",
-                    "nokia",
-                    "htc"
-                  ]
-                }
-              }
-            ],
-            "type": "OR"
-          }
-        }
-      ],
-      "device_type": "Smartphone"
-    },
-    {
-      "conditions": [
-        {
-          "Node": {
-            "sub_conditions": [
-              {
-                "Leaf": {
-                  "vendors": [
-                    "synology",
-                    "asustor",
-                    "drobo",
-                    "wd",
-                    "seagate",
-                    "qnap",
-                    "terramaster"
-                  ]
-                }
-              }
-            ],
-            "type": "OR"
-          }
-        }
-      ],
-      "device_type": "NAS"
-    },
-    {
-      "conditions": [
-        {
-          "Node": {
-            "sub_conditions": [
-              {
-                "Leaf": {
-                  "vendors": [
-                    "microsoft",
-                    "microsoft",
-                    "nintendo"
+                    "raspberry pi"
                   ]
                 }
               },
               {
                 "Leaf": {
                   "hostnames": [
-                    "ps4",
-                    "ps5",
-                    "xbox"
+                    "raspberrypi"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "banners": [
+                    "raspbian"
                   ]
                 }
               }
@@ -275,7 +198,7 @@
           }
         }
       ],
-      "device_type": "GameConsole"
+      "device_type": "RaspberryPi"
     },
     {
       "conditions": [
@@ -284,47 +207,15 @@
             "sub_conditions": [
               {
                 "Leaf": {
-                  "open_ports": [
-                    1883
+                  "mdns_services": [
+                    "home-assistant"
                   ]
                 }
               },
               {
                 "Leaf": {
                   "open_ports": [
-                    8883
-                  ]
-                }
-              },
-              {
-                "Node": {
-                  "sub_conditions": [
-                    {
-                      "Leaf": {
-                        "mdns_services": [
-                          "mqtt",
-                          "hue",
-                          "miio"
-                        ]
-                      }
-                    }
-                  ],
-                  "type": "AND"
-                }
-              },
-              {
-                "Leaf": {
-                  "vendors": [
-                    "wemo",
-                    "lifx",
-                    "tuya",
-                    "dyson",
-                    "physical graph",
-                    "philips lighting",
-                    "shelly",
-                    "tasmota",
-                    "ecobee",
-                    "lutron"
+                    8123
                   ]
                 }
               }
@@ -341,94 +232,30 @@
           "Node": {
             "sub_conditions": [
               {
-                "Node": {
-                  "sub_conditions": [
-                    {
-                      "Leaf": {
-                        "open_ports": [
-                          8001,
-                          8002,
-                          8080
-                        ]
-                      }
-                    },
-                    {
-                      "Leaf": {
-                        "open_ports": [
-                          3000,
-                          3001
-                        ]
-                      }
-                    },
-                    {
-                      "Leaf": {
-                        "open_ports": [
-                          8008,
-                          8009,
-                          8443,
-                          9000
-                        ]
-                      }
-                    },
-                    {
-                      "Leaf": {
-                        "vendors": [
-                          "tcl",
-                          "hisense",
-                          "vizio",
-                          "sharp",
-                          "toshiba",
-                          "lg",
-                          "roku"
-                        ]
-                      }
-                    },
-                    {
-                      "Leaf": {
-                        "mdns_services": [
-                          "androidtvremote",
-                          "googlecast"
-                        ]
-                      }
-                    }
-                  ],
-                  "type": "OR"
-                }
-              }
-            ],
-            "type": "AND"
-          }
-        }
-      ],
-      "device_type": "SmartTV"
-    },
-    {
-      "conditions": [
-        {
-          "Node": {
-            "sub_conditions": [
-              {
                 "Leaf": {
-                  "mdns_services": [
-                    "axis-video"
+                  "vendors": [
+                    "synology",
+                    "qnap",
+                    "asustor",
+                    "western digital",
+                    "seagate",
+                    "terramaster",
+                    "drobo"
                   ]
                 }
               },
               {
                 "Leaf": {
-                  "vendors": [
-                    "hikvision",
-                    "dahua",
-                    "axis",
-                    "vivotek",
-                    "flir",
-                    "nest",
-                    "arlo",
-                    "reolink",
-                    "amcrest",
-                    "wyze",
-                    "d-link",
-                    "foscam"
+                  "mdns_services": [
+                    "qdiscover"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "open_ports": [
+                    5000,
+                    5001
                   ]
                 }
               }
@@ -437,7 +264,7 @@
           }
         }
       ],
-      "device_type": "Camera"
+      "device_type": "NAS"
     },
     {
       "conditions": [
@@ -478,9 +305,14 @@
               {
                 "Leaf": {
                   "open_ports": [
-                    21,
-                    22,
-                    23
+                    8291
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "open_ports": [
+                    7547
                   ]
                 }
               },
@@ -489,62 +321,20 @@
                   "sub_conditions": [
                     {
                       "Leaf": {
-                        "open_ports": [
-                          25,
-                          587
+                        "vendors": [
+                          "asustek"
                         ]
                       }
                     },
                     {
                       "Leaf": {
                         "open_ports": [
-                          25,
-                          465
-                        ]
-                      }
-                    },
-                    {
-                      "Leaf": {
-                        "open_ports": [
-                          110,
-                          995
-                        ]
-                      }
-                    },
-                    {
-                      "Leaf": {
-                        "open_ports": [
-                          143,
-                          993
-                        ]
-                      }
-                    },
-                    {
-                      "Leaf": {
-                        "open_ports": [
-                          119,
-                          563
-                        ]
-                      }
-                    },
-                    {
-                      "Leaf": {
-                        "open_ports": [
-                          25,
-                          110
-                        ]
-                      }
-                    },
-                    {
-                      "Leaf": {
-                        "open_ports": [
-                          25,
-                          143
+                          8443
                         ]
                       }
                     }
                   ],
-                  "type": "OR"
+                  "type": "AND"
                 }
               }
             ],
@@ -560,38 +350,110 @@
           "Node": {
             "sub_conditions": [
               {
-                "Node": {
-                  "sub_conditions": [
-                    {
-                      "Leaf": {
-                        "vendors": [
-                          "dell",
-                          "lenovo",
-                          "acer",
-                          "msi",
-                          "asus",
-                          "intel corporate"
-                        ]
-                      }
-                    },
-                    {
-                      "Leaf": {
-                        "banners": [
-                          "ubuntu"
-                        ]
-                      }
-                    },
-                    {
-                      "Leaf": {
-                        "open_ports": [
-                          135,
-                          139,
-                          445
-                        ]
-                      }
-                    }
-                  ],
-                  "type": "OR"
+                "Leaf": {
+                  "mdns_services": [
+                    "ipp",
+                    "printer",
+                    "pdl-datastream",
+                    "uscan",
+                    "scanner",
+                    "canon-bjnp"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "open_ports": [
+                    9100
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "open_ports": [
+                    515
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "banners": [
+                    "hp http server",
+                    "jetdirect"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "vendors": [
+                    "canon",
+                    "epson",
+                    "brother industries",
+                    "lexmark",
+                    "xerox",
+                    "ricoh",
+                    "kyocera",
+                    "konica minolta",
+                    "zebra technologies"
+                  ]
+                }
+              }
+            ],
+            "type": "OR"
+          }
+        }
+      ],
+      "device_type": "Printer"
+    },
+    {
+      "conditions": [
+        {
+          "Node": {
+            "sub_conditions": [
+              {
+                "Leaf": {
+                  "vendors": [
+                    "sonos",
+                    "bose",
+                    "harman"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "open_ports": [
+                    1400,
+                    1410
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "open_ports": [
+                    1400,
+                    1443
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "mdns_services": [
+                    "sonos",
+                    "googlezone"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "hostnames": [
+                    "sonos",
+                    "homepod",
+                    "google home",
+                    "nest mini",
+                    "nest audio",
+                    "nest hub",
+                    "echo dot"
+                  ]
                 }
               },
               {
@@ -599,27 +461,453 @@
                   "sub_conditions": [
                     {
                       "Leaf": {
-                        "negate": true,
+                        "vendors": [
+                          "amazon"
+                        ]
+                      }
+                    },
+                    {
+                      "Node": {
+                        "sub_conditions": [
+                          {
+                            "Leaf": {
+                              "mdns_services": [
+                                "spotify-connect"
+                              ]
+                            }
+                          },
+                          {
+                            "Leaf": {
+                              "open_ports": [
+                                4070
+                              ]
+                            }
+                          },
+                          {
+                            "Leaf": {
+                              "open_ports": [
+                                55443
+                              ]
+                            }
+                          }
+                        ],
+                        "type": "OR"
+                      }
+                    }
+                  ],
+                  "type": "AND"
+                }
+              }
+            ],
+            "type": "OR"
+          }
+        }
+      ],
+      "device_type": "SmartSpeaker"
+    },
+    {
+      "conditions": [
+        {
+          "Node": {
+            "sub_conditions": [
+              {
+                "Leaf": {
+                  "mdns_services": [
+                    "androidtvremote",
+                    "nv_shield_remote",
+                    "googlecast",
+                    "amzn-wplay"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "open_ports": [
+                    8001,
+                    8002
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "open_ports": [
+                    8060
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "open_ports": [
+                    8008,
+                    8009
+                  ]
+                }
+              },
+              {
+                "Node": {
+                  "sub_conditions": [
+                    {
+                      "Leaf": {
                         "open_ports": [
-                          53
+                          3000,
+                          3001
                         ]
                       }
                     },
                     {
                       "Leaf": {
-                        "open_ports": [
-                          135,
-                          139,
-                          445
+                        "vendors": [
+                          "lg"
                         ]
                       }
                     }
                   ],
-                  "type": "OR"
+                  "type": "AND"
+                }
+              },
+              {
+                "Node": {
+                  "sub_conditions": [
+                    {
+                      "Leaf": {
+                        "vendors": [
+                          "samsung",
+                          "lg",
+                          "sony",
+                          "panasonic",
+                          "hisense",
+                          "tcl",
+                          "tp vision",
+                          "vizio"
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "mdns_services": [
+                          "airplay",
+                          "raop"
+                        ]
+                      }
+                    }
+                  ],
+                  "type": "AND"
+                }
+              },
+              {
+                "Leaf": {
+                  "vendors": [
+                    "roku",
+                    "vizio",
+                    "tp vision",
+                    "hisense visual technology",
+                    "hisense electric",
+                    "sony visual products",
+                    "toshiba visual solutions",
+                    "shenzhen tcl new technology",
+                    "tcl king electrical appliances"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "hostnames": [
+                    "chromecast",
+                    "bravia",
+                    "roku",
+                    "lgwebostv",
+                    "firetv",
+                    "fire tv"
+                  ]
                 }
               }
             ],
-            "type": "AND"
+            "type": "OR"
+          }
+        }
+      ],
+      "device_type": "SmartTV"
+    },
+    {
+      "conditions": [
+        {
+          "Node": {
+            "sub_conditions": [
+              {
+                "Leaf": {
+                  "vendors": [
+                    "nintendo",
+                    "sony interactive entertainment",
+                    "sony computer entertainment"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "hostnames": [
+                    "xbox",
+                    "ps4",
+                    "ps5",
+                    "playstation"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "open_ports": [
+                    9295
+                  ]
+                }
+              }
+            ],
+            "type": "OR"
+          }
+        }
+      ],
+      "device_type": "GameConsole"
+    },
+    {
+      "conditions": [
+        {
+          "Node": {
+            "sub_conditions": [
+              {
+                "Leaf": {
+                  "mdns_services": [
+                    "axis-video",
+                    "rtsp"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "vendors": [
+                    "hikvision",
+                    "dahua",
+                    "axis communications",
+                    "vivotek",
+                    "flir",
+                    "arlo",
+                    "reolink",
+                    "amcrest",
+                    "wyze",
+                    "ezviz",
+                    "blink by amazon"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "open_ports": [
+                    554
+                  ]
+                }
+              }
+            ],
+            "type": "OR"
+          }
+        }
+      ],
+      "device_type": "Camera"
+    },
+    {
+      "conditions": [
+        {
+          "Node": {
+            "sub_conditions": [
+              {
+                "Leaf": {
+                  "open_ports": [
+                    1883
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "open_ports": [
+                    8883
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "open_ports": [
+                    6668
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "mdns_services": [
+                    "hue",
+                    "miio",
+                    "hap",
+                    "matter",
+                    "esphomelib",
+                    "shelly",
+                    "nanoleaf",
+                    "elg",
+                    "ewelink",
+                    "lutron"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "vendors": [
+                    "tuya",
+                    "espressif",
+                    "signify",
+                    "philips lighting",
+                    "physical graph",
+                    "smartthings",
+                    "dyson",
+                    "ecobee",
+                    "lutron electronics",
+                    "netatmo",
+                    "withings",
+                    "nest labs",
+                    "irobot",
+                    "roborock",
+                    "belkin international",
+                    "wemo",
+                    "lifx",
+                    "shelly",
+                    "tasmota",
+                    "beken"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "hostnames": [
+                    "shelly",
+                    "tasmota",
+                    "wemo"
+                  ]
+                }
+              }
+            ],
+            "type": "OR"
+          }
+        }
+      ],
+      "device_type": "IoT"
+    },
+    {
+      "conditions": [
+        {
+          "Node": {
+            "sub_conditions": [
+              {
+                "Leaf": {
+                  "vendors": [
+                    "freebox",
+                    "sagemcom",
+                    "technicolor",
+                    "avm",
+                    "arris",
+                    "actiontec",
+                    "arcadyan",
+                    "sercomm",
+                    "routerboard",
+                    "mikrotik"
+                  ]
+                }
+              }
+            ],
+            "type": "OR"
+          }
+        }
+      ],
+      "device_type": "Router"
+    },
+    {
+      "conditions": [
+        {
+          "Node": {
+            "sub_conditions": [
+              {
+                "Leaf": {
+                  "open_ports": [
+                    135,
+                    445
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "open_ports": [
+                    135,
+                    139
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "hostnames": [
+                    "desktop",
+                    "laptop"
+                  ]
+                }
+              }
+            ],
+            "type": "OR"
+          }
+        }
+      ],
+      "device_type": "Windows PC"
+    },
+    {
+      "conditions": [
+        {
+          "Node": {
+            "sub_conditions": [
+              {
+                "Leaf": {
+                  "vendors": [
+                    "dell",
+                    "lenovo",
+                    "acer",
+                    "micro-star",
+                    "asustek",
+                    "intel corporate",
+                    "intel corporation",
+                    "giga-byte",
+                    "hp inc",
+                    "microsoft",
+                    "toshiba client solutions",
+                    "super micro computer",
+                    "rivet networks",
+                    "vmware",
+                    "parallels",
+                    "pcs computer systems",
+                    "uptech",
+                    "nvidia"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "mdns_services": [
+                    "workstation",
+                    "udisks-ssh"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "banners": [
+                    "ubuntu",
+                    "debian",
+                    "fedora",
+                    "centos",
+                    "red hat"
+                  ]
+                }
+              }
+            ],
+            "type": "OR"
           }
         }
       ],
@@ -632,26 +920,68 @@
             "sub_conditions": [
               {
                 "Leaf": {
+                  "hostnames": [
+                    "android",
+                    "galaxy",
+                    "pixel",
+                    "oneplus",
+                    "redmi",
+                    "xiaomi"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
                   "vendors": [
-                    "alliedtelesis",
+                    "oneplus",
+                    "motorola mobility",
+                    "htc corporation",
+                    "vivo mobile",
+                    "guangdong oppo",
+                    "xiaomi communications",
+                    "huawei device",
+                    "hmd global",
+                    "lg electronics mobile communications",
+                    "samsung electronics"
+                  ]
+                }
+              }
+            ],
+            "type": "OR"
+          }
+        }
+      ],
+      "device_type": "Smartphone"
+    },
+    {
+      "conditions": [
+        {
+          "Node": {
+            "sub_conditions": [
+              {
+                "Leaf": {
+                  "vendors": [
+                    "allied telesis",
                     "alcatel-lucent",
                     "arista",
                     "aruba",
-                    "belkin",
-                    "buffalo",
                     "cisco",
                     "d-link",
-                    "dell",
-                    "extremenetworks",
-                    "freebox",
-                    "hpe",
+                    "extreme networks",
                     "juniper",
                     "linksys",
-                    "mikrotik",
                     "netgear",
                     "tp-link",
                     "ubiquiti",
-                    "zyxel"
+                    "zyxel",
+                    "routerboard",
+                    "ruckus",
+                    "fortinet",
+                    "palo alto networks",
+                    "hewlett packard enterprise",
+                    "tenda",
+                    "buffalo",
+                    "eero"
                   ]
                 }
               }
@@ -661,7 +991,34 @@
         }
       ],
       "device_type": "NetworkDevice"
+    },
+    {
+      "conditions": [
+        {
+          "Node": {
+            "sub_conditions": [
+              {
+                "Leaf": {
+                  "banners": [
+                    "openssh"
+                  ]
+                }
+              },
+              {
+                "Leaf": {
+                  "mdns_services": [
+                    "ssh",
+                    "sftp-ssh"
+                  ]
+                }
+              }
+            ],
+            "type": "OR"
+          }
+        }
+      ],
+      "device_type": "PC"
     }
   ],
-  "signature": "37bd7c512de4950deb8e5321f954d6b83c5f35737cbf8baea83dccedfddd2ff5"
+  "signature": "f11a38ca5606d0ae33cc1047633251f48615608319f58b17f7312e4d51410658"
 }
