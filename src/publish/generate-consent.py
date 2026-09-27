@@ -37,27 +37,45 @@ PRIVACY_HEADER_FR = """* L'identifiant unique de votre machine
 * Votre nom d'utilisateur dans ce domaine
 * Votre score sous forme d'une valeur numérique"""
 
-AI_SECTION_EN = """* The details of each failing AI agent security check listed above:
-  * For every AI coding agent EDAMAME supports, whether it is installed on this machine and whether its transcript observer is running
-  * The name of the agent a failure belongs to, for example `cursor` or `claude_code`
-  * The name of the governance harness that agent declares, for example `nono` or `srt`
-  * The name of the risk amplifier that fired, for example `passwordless_root`, `critical_subprocess` or `secret_exposure`
-  * The file name, without its path or its arguments, of a sensitive program the agent launched, for example `ssh`
-  * The configured name of an MCP server found to be exposed, for example `gojiberry`, together with the exposure rule that fired, for example `mcp_public_no_strong_auth`. MCP servers that are not exposed are never named
-  * The category of a secret found in the agent transcript, for example `aws_credentials`, never the secret itself
+AI_SECTION_EN = """* The AI details of this machine:
+  * AI setup of this machine, sent in every report, even when no AI check is failing
+    * The name of the user account EDAMAME assessed (taken from the home folder), the operating system family, and whether that account is an administrator, runs elevated or can become root without a password
+    * The governance harnesses EDAMAME knows, for example `nono` or `srt`, and whether each one is installed
+    * For every AI coding agent EDAMAME supports, for example `cursor` or `claude_code`:
+      * Whether it is installed and whether its transcript observer is running
+      * Whether it runs in a sandbox, the sandbox mechanism and its file access scope
+      * Which risk amplifiers apply, for example `passwordless_root`, `critical_subprocess` or `secret_exposure`
+      * The file names, without paths or arguments, of the sensitive programs it launched, for example `ssh`
+      * The categories of secrets found in its transcripts, for example `aws_credentials`, never the secrets themselves
+      * Every MCP server it declares, whether exposed or not: the configured server name, the transport, the exposure scope, the authentication strength, whether it is EDAMAME's own server, and the severity and rule names of any risk found on it
+  * For each failing AI agent security check
+    * The name of the check, the agent it concerns, and the conditions that made it fail: a risk amplifier, a sensitive program name, an MCP server name and exposure rule, a secret category, a missing or bypassed governance harness, or a paused transcript observer
+    * For each attack pattern finding: the detector that raised it, its identifier (a hash), its severity, the detector's description, the name of the process and of its parent process, the destination domain name (or, when there is none, the destination IP address) and port, the detection basis, the framework reference, whether you dismissed it on this device, and whether an AI model reviewed it. The description can contain full file and program paths, which often include your user account name, and, when an AI agent re-ran a denied command under another spelling, both commands
+    * For each behavioral divergence finding: its category, identifier, severity, description, the process name, the agent concerned, what triggered it, and the number of unexpected sensitive files (not their paths)
+    * For each Assistant action waiting for your review: its identifier, its type and its priority
+    * Whether the attack pattern detector, the divergence engine or the Assistant is switched off
 
-Agent transcripts, prompts, model responses, file contents, command arguments, environment variable values and secret values are never reported."""
+Agent transcripts, prompts, model responses, file contents, environment variable values and secret values are never reported."""
 
-AI_SECTION_FR = """* Le détail de chaque test de sécurité IA en échec parmi ceux listés ci-dessus :
-  * Pour chaque agent de codage IA pris en charge par EDAMAME, s'il est installé sur cette machine et si son observateur de transcriptions est actif
-  * Le nom de l'agent concerné par l'échec, par exemple `cursor` ou `claude_code`
-  * Le nom du harnais de gouvernance déclaré par cet agent, par exemple `nono` ou `srt`
-  * Le nom de l'amplificateur de risque déclenché, par exemple `passwordless_root`, `critical_subprocess` ou `secret_exposure`
-  * Le nom de fichier, sans son chemin ni ses arguments, d'un programme sensible lancé par l'agent, par exemple `ssh`
-  * Le nom configuré d'un serveur MCP détecté comme exposé, par exemple `gojiberry`, accompagné de la règle d'exposition déclenchée, par exemple `mcp_public_no_strong_auth`. Les serveurs MCP non exposés ne sont jamais nommés
-  * La catégorie d'un secret détecté dans la transcription de l'agent, par exemple `aws_credentials`, jamais le secret lui-même
+AI_SECTION_FR = """* Les détails IA de cette machine :
+  * Configuration IA de cette machine, envoyée dans chaque rapport, même quand aucun test IA n'est en échec
+    * Le nom du compte utilisateur évalué par EDAMAME (déduit du dossier personnel), la famille du système d'exploitation, et si ce compte est administrateur, s'exécute avec des droits élevés ou peut devenir root sans mot de passe
+    * Les harnais de gouvernance connus d'EDAMAME, par exemple `nono` ou `srt`, et si chacun est installé
+    * Pour chaque agent de codage IA pris en charge par EDAMAME, par exemple `cursor` ou `claude_code` :
+      * S'il est installé et si son observateur de transcriptions est actif
+      * S'il s'exécute dans un bac à sable, le mécanisme de ce bac à sable et son étendue d'accès aux fichiers
+      * Les amplificateurs de risque qui s'appliquent, par exemple `passwordless_root`, `critical_subprocess` ou `secret_exposure`
+      * Les noms de fichier, sans chemin ni arguments, des programmes sensibles qu'il a lancés, par exemple `ssh`
+      * Les catégories de secrets détectés dans ses transcriptions, par exemple `aws_credentials`, jamais les secrets eux-mêmes
+      * Chaque serveur MCP qu'il déclare, exposé ou non : le nom configuré du serveur, le transport, l'étendue d'exposition, le niveau d'authentification, s'il s'agit du serveur d'EDAMAME, ainsi que la sévérité et le nom des règles de tout risque détecté sur ce serveur
+  * Pour chaque test de sécurité IA en échec
+    * Le nom du test, l'agent concerné, et les conditions qui l'ont fait échouer : un amplificateur de risque, un nom de programme sensible, un nom de serveur MCP et sa règle d'exposition, une catégorie de secret, un harnais de gouvernance absent ou contourné, ou un observateur de transcriptions en pause
+    * Pour chaque constat de schéma d'attaque : le détecteur qui l'a levé, son identifiant (une empreinte), sa sévérité, la description du détecteur, le nom du processus et de son processus parent, le nom de domaine de destination (ou, à défaut, l'adresse IP de destination) et le port, la base de détection, la référence de cadre, si vous l'avez écarté sur cet appareil, et si un modèle d'IA l'a examiné. La description peut contenir des chemins complets de fichiers et de programmes, qui contiennent souvent le nom de votre compte utilisateur, et, lorsqu'un agent IA a relancé une commande interdite sous une autre forme, les deux commandes
+    * Pour chaque constat de divergence comportementale : sa catégorie, son identifiant, sa sévérité, sa description, le nom du processus, l'agent concerné, ce qui l'a déclenché, et le nombre de fichiers sensibles inattendus (pas leurs chemins)
+    * Pour chaque action de l'Assistant en attente de votre validation : son identifiant, son type et sa priorité
+    * Si le détecteur de schémas d'attaque, le moteur de divergence ou l'Assistant est désactivé
 
-Les transcriptions d'agents, les invites, les réponses des modèles, le contenu des fichiers, les arguments de commande, les valeurs des variables d'environnement et les valeurs des secrets ne sont jamais rapportés."""
+Les transcriptions d'agents, les invites, les réponses des modèles, le contenu des fichiers, les valeurs des variables d'environnement et les valeurs des secrets ne sont jamais rapportés."""
 
 
 def threat_titles(model: dict, locale: str) -> list[str]:
