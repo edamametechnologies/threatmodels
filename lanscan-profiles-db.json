@@ -1,5 +1,5 @@
 {
-  "date": "August 10th 2025",
+  "date": "September 27th 2026",
   "profiles": [
     {
       "conditions": [
@@ -452,10 +452,27 @@
                 }
               },
               {
-                "Leaf": {
-                  "open_ports": [
-                    53
-                  ]
+                "Node": {
+                  "sub_conditions": [
+                    {
+                      "Leaf": {
+                        "open_ports": [
+                          53
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "negate": true,
+                        "open_ports": [
+                          135,
+                          139,
+                          445
+                        ]
+                      }
+                    }
+                  ],
+                  "type": "AND"
                 }
               },
               {
@@ -578,11 +595,27 @@
                 }
               },
               {
-                "Leaf": {
-                  "negate": true,
-                  "open_ports": [
-                    53
-                  ]
+                "Node": {
+                  "sub_conditions": [
+                    {
+                      "Leaf": {
+                        "negate": true,
+                        "open_ports": [
+                          53
+                        ]
+                      }
+                    },
+                    {
+                      "Leaf": {
+                        "open_ports": [
+                          135,
+                          139,
+                          445
+                        ]
+                      }
+                    }
+                  ],
+                  "type": "OR"
                 }
               }
             ],
@@ -630,5 +663,5 @@
       "device_type": "NetworkDevice"
     }
   ],
-  "signature": "4b9db3cccb17ca3bcbe489883f938567942c12d48dfeff01d7a4259533638590"
+  "signature": "37bd7c512de4950deb8e5321f954d6b83c5f35737cbf8baea83dccedfddd2ff5"
 }
