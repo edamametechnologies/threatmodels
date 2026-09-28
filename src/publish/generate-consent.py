@@ -20,22 +20,34 @@ AI_SOURCES = ("Windows", "macOS", "Linux")
 LOCALES = ("EN", "FR")
 
 PRIVACY_HEADER_EN = """* Your machine unique identifier
+* Your machine name (hostname), without its network domain suffix
 * Your operating system name and version
 * Your public IPv4 address and/or IPv6 address
+* Your approximate location derived from your public IPv4 address: city, region, country, time zone, latitude and longitude. To find it, EDAMAME sends your public IPv4 address to the ip-api.com geolocation service
 * Your MAC address if available
 * Your peer IDs for your VPN or ZTNA connections if available
-* The domain you are connected to
-* Your username in that domain
-* Your score as a single numerical value"""
+* The domain you are connected to, your username in that domain and the access code used to connect
+* The language of the EDAMAME interface
+* The EDAMAME version, whether this machine is a CI/CD runner, and the state of the EDAMAME Helper
+* The date and time of the report
+* Your score as a single numerical value
+* Your score for each category (network, system integrity, system services, applications, credentials), your star rating, and your compliance percentage for each compliance framework
+* The history of the remediations and rollbacks you performed: the check concerned, the action, when it happened, and whether it succeeded and was validated"""
 
 PRIVACY_HEADER_FR = """* L'identifiant unique de votre machine
+* Le nom de votre machine (nom d'hôte), sans son suffixe de domaine réseau
 * Le nom et la version de votre système d'exploitation
 * Votre adresse IPv4 et/ou IPv6 publique
+* Votre localisation approximative déduite de votre adresse IPv4 publique : ville, région, pays, fuseau horaire, latitude et longitude. Pour la déterminer, EDAMAME envoie votre adresse IPv4 publique au service de géolocalisation ip-api.com
 * Votre adresse MAC si disponible
 * Vos identifiants de pairs pour vos connexions VPN ou ZTNA si disponibles
-* Le domaine auquel vous êtes connecté
-* Votre nom d'utilisateur dans ce domaine
-* Votre score sous forme d'une valeur numérique"""
+* Le domaine auquel vous êtes connecté, votre nom d'utilisateur dans ce domaine et le code d'accès utilisé pour vous connecter
+* La langue de l'interface d'EDAMAME
+* La version d'EDAMAME, si cette machine est un exécuteur CI/CD, et l'état de l'EDAMAME Helper
+* La date et l'heure du rapport
+* Votre score sous forme d'une valeur numérique
+* Votre score pour chaque catégorie (réseau, intégrité du système, services système, applications, identifiants), votre nombre d'étoiles, et votre pourcentage de conformité pour chaque référentiel de conformité
+* L'historique des remédiations et des retours en arrière que vous avez effectués : le test concerné, l'action, sa date, et si elle a réussi et a été validée"""
 
 AI_SECTION_EN = """* The AI details of this machine:
   * AI setup of this machine, sent in every report while AI details are shared, even when no AI check is failing
@@ -125,9 +137,9 @@ def render_page(source: str, locale: str, titles: list[str], ai_details: bool) -
     )
     header = PRIVACY_HEADER_FR if french else PRIVACY_HEADER_EN
     checks_label = (
-        "* Votre score sous forme d'un vecteur de valeurs booléennes résultant des tests de sécurité suivants :"
+        "* Le nom, la date et la signature du modèle de menace utilisé, et pour chacun des tests de sécurité suivants : sa définition telle que publiée dans ce modèle, son statut (en échec, réussi ou inconnu) et la date de sa dernière évaluation :"
         if french
-        else "* Your score as a detailed vector of boolean values resulting on the following security checks:"
+        else "* The name, date and signature of the threat model used, and for each of the following security checks: its definition as published in that threat model, its status (failing, passing or unknown) and when it was last evaluated:"
     )
     checks = "\n".join(f"  * {title}" for title in titles)
     if not checks:
@@ -142,7 +154,7 @@ def render_page(source: str, locale: str, titles: list[str], ai_details: bool) -
     wiki_url = f"https://github.com/edamametechnologies/threatmodels/wiki/{model_name}-{locale}"
     trailer = (
         f"""
-Ces informations sont utilisées uniquement par EDAMAME et ne sont pas partagées avec des tiers.
+Ces informations sont utilisées uniquement par EDAMAME et ne sont pas partagées avec des tiers, à l'exception de votre adresse IPv4 publique envoyée à ip-api.com pour la localisation ci-dessus.
 
 Ces informations sont collectées à l'aide d'un "modèle de menace" public qui garantit de ne pas violer votre vie privée.
 
@@ -153,7 +165,7 @@ Le wiki du modèle de menace peut être consulté à l'adresse [{wiki_url}]({wik
 Si vous n'êtes pas d'accord avec cette politique, veuillez ne pas rapporter votre score."""
         if french
         else f"""
-This information is used solely by EDAMAME and is not shared with any third party.
+This information is used solely by EDAMAME and is not shared with any third party, apart from your public IPv4 address sent to ip-api.com for the location lookup above.
 
 This information is gathered using a public "threat model" that is guaranteed not to violate your privacy.
 
