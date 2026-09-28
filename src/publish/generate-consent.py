@@ -38,8 +38,8 @@ PRIVACY_HEADER_FR = """* L'identifiant unique de votre machine
 * Votre score sous forme d'une valeur numérique"""
 
 AI_SECTION_EN = """* The AI details of this machine:
-  * AI setup of this machine, sent in every report, even when no AI check is failing
-    * The name of the user account EDAMAME assessed (taken from the home folder), the operating system family, and whether that account is an administrator, runs elevated or can become root without a password
+  * AI setup of this machine, sent in every report while AI details are shared, even when no AI check is failing
+    * The operating system family, and whether the assessed user account is an administrator, runs elevated or can become root without a password. The account name itself is not sent
     * The governance harnesses EDAMAME knows, for example `nono` or `srt`, and whether each one is installed
     * For every AI coding agent EDAMAME supports, for example `cursor` or `claude_code`:
       * Whether it is installed and whether its transcript observer is running
@@ -50,16 +50,20 @@ AI_SECTION_EN = """* The AI details of this machine:
       * Every MCP server it declares, whether exposed or not: the configured server name, the transport, the exposure scope, the authentication strength, whether it is EDAMAME's own server, and the severity and rule names of any risk found on it
   * For each failing AI agent security check
     * The name of the check, the agent it concerns, and the conditions that made it fail: a risk amplifier, a sensitive program name, an MCP server name and exposure rule, a secret category, a missing or bypassed governance harness, or a paused transcript observer
-    * For each attack pattern finding: the detector that raised it, its identifier (a hash), its severity, the detector's description, the name of the process and of its parent process, the destination domain name (or, when there is none, the destination IP address) and port, the detection basis, the framework reference, whether you dismissed it on this device, and whether an AI model reviewed it. The description can contain full file and program paths, which often include your user account name, and, when an AI agent re-ran a denied command under another spelling, both commands
-    * For each behavioral divergence finding: its category, identifier, severity, description, the process name, the agent concerned, what triggered it, and the number of unexpected sensitive files (not their paths)
+    * For each attack pattern finding: the detector that raised it, its identifier (a hash), its severity, the file names, without paths, of the process and of its parent process, the destination and port, the detection basis, the framework reference, whether you dismissed it on this device, and whether an AI model reviewed it
+      * The destination is the domain name or, when there is none, the IP address. A private, local-network or loopback destination is sent only as that category, for example `private network`, never as its address or name
+      * For the files the finding touched: the category and the file name, without its folder, of each file EDAMAME's sensitive-file list recognizes, for example `ssh:id_ed25519`, and only the number of other files. A file in your home folder whose name contains your account name is sent as its category alone
+      * When an AI agent re-ran a denied command under another spelling: the names of the programs involved, for example `curl`, without their arguments
+    * For each behavioral divergence finding: its category, identifier, severity, the file name of the process, the agent concerned, the phrase the engine uses for what triggered it, for example `unexpected sensitive file access with unexplained external egress`, and the number of unexpected sensitive files (not their paths)
     * For each Assistant action waiting for your review: its identifier, its type and its priority
     * Whether the attack pattern detector, the divergence engine or the Assistant is switched off
+    * The descriptions EDAMAME shows for these findings on this device are not sent: EDAMAME Hub shows a summary built from the items above
 
-Agent transcripts, prompts, model responses, file contents, environment variable values and secret values are never reported."""
+Agent transcripts, prompts, model responses, file contents, full file paths, command arguments, environment variable values and secret values are never reported."""
 
 AI_SECTION_FR = """* Les détails IA de cette machine :
-  * Configuration IA de cette machine, envoyée dans chaque rapport, même quand aucun test IA n'est en échec
-    * Le nom du compte utilisateur évalué par EDAMAME (déduit du dossier personnel), la famille du système d'exploitation, et si ce compte est administrateur, s'exécute avec des droits élevés ou peut devenir root sans mot de passe
+  * Configuration IA de cette machine, envoyée dans chaque rapport tant que les détails IA sont partagés, même quand aucun test IA n'est en échec
+    * La famille du système d'exploitation, et si le compte utilisateur évalué est administrateur, s'exécute avec des droits élevés ou peut devenir root sans mot de passe. Le nom du compte lui-même n'est pas envoyé
     * Les harnais de gouvernance connus d'EDAMAME, par exemple `nono` ou `srt`, et si chacun est installé
     * Pour chaque agent de codage IA pris en charge par EDAMAME, par exemple `cursor` ou `claude_code` :
       * S'il est installé et si son observateur de transcriptions est actif
@@ -70,12 +74,16 @@ AI_SECTION_FR = """* Les détails IA de cette machine :
       * Chaque serveur MCP qu'il déclare, exposé ou non : le nom configuré du serveur, le transport, l'étendue d'exposition, le niveau d'authentification, s'il s'agit du serveur d'EDAMAME, ainsi que la sévérité et le nom des règles de tout risque détecté sur ce serveur
   * Pour chaque test de sécurité IA en échec
     * Le nom du test, l'agent concerné, et les conditions qui l'ont fait échouer : un amplificateur de risque, un nom de programme sensible, un nom de serveur MCP et sa règle d'exposition, une catégorie de secret, un harnais de gouvernance absent ou contourné, ou un observateur de transcriptions en pause
-    * Pour chaque constat de schéma d'attaque : le détecteur qui l'a levé, son identifiant (une empreinte), sa sévérité, la description du détecteur, le nom du processus et de son processus parent, le nom de domaine de destination (ou, à défaut, l'adresse IP de destination) et le port, la base de détection, la référence de cadre, si vous l'avez écarté sur cet appareil, et si un modèle d'IA l'a examiné. La description peut contenir des chemins complets de fichiers et de programmes, qui contiennent souvent le nom de votre compte utilisateur, et, lorsqu'un agent IA a relancé une commande interdite sous une autre forme, les deux commandes
-    * Pour chaque constat de divergence comportementale : sa catégorie, son identifiant, sa sévérité, sa description, le nom du processus, l'agent concerné, ce qui l'a déclenché, et le nombre de fichiers sensibles inattendus (pas leurs chemins)
+    * Pour chaque constat de schéma d'attaque : le détecteur qui l'a levé, son identifiant (une empreinte), sa sévérité, les noms de fichier, sans chemin, du processus et de son processus parent, la destination et le port, la base de détection, la référence de cadre, si vous l'avez écarté sur cet appareil, et si un modèle d'IA l'a examiné
+      * La destination est le nom de domaine ou, à défaut, l'adresse IP. Une destination privée, du réseau local ou de bouclage n'est envoyée que sous cette catégorie, par exemple `private network`, jamais sous son adresse ni son nom
+      * Pour les fichiers concernés par le constat : la catégorie et le nom de fichier, sans son dossier, de chaque fichier reconnu par la liste de fichiers sensibles d'EDAMAME, par exemple `ssh:id_ed25519`, et seulement le nombre des autres fichiers. Un fichier de votre dossier personnel dont le nom contient le nom de votre compte n'est envoyé que sous sa catégorie
+      * Lorsqu'un agent IA a relancé une commande interdite sous une autre forme : les noms des programmes concernés, par exemple `curl`, sans leurs arguments
+    * Pour chaque constat de divergence comportementale : sa catégorie, son identifiant, sa sévérité, le nom de fichier du processus, l'agent concerné, la formule du moteur pour ce qui l'a déclenché, par exemple `unexpected sensitive file access with unexplained external egress`, et le nombre de fichiers sensibles inattendus (pas leurs chemins)
     * Pour chaque action de l'Assistant en attente de votre validation : son identifiant, son type et sa priorité
     * Si le détecteur de schémas d'attaque, le moteur de divergence ou l'Assistant est désactivé
+    * Les descriptions qu'EDAMAME affiche pour ces constats sur cet appareil ne sont pas envoyées : EDAMAME Hub affiche un résumé construit à partir des éléments ci-dessus
 
-Les transcriptions d'agents, les invites, les réponses des modèles, le contenu des fichiers, les valeurs des variables d'environnement et les valeurs des secrets ne sont jamais rapportés."""
+Les transcriptions d'agents, les invites, les réponses des modèles, le contenu des fichiers, les chemins complets des fichiers, les arguments des commandes, les valeurs des variables d'environnement et les valeurs des secrets ne sont jamais rapportés."""
 
 
 def threat_titles(model: dict, locale: str) -> list[str]:
