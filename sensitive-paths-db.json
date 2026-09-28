@@ -16,7 +16,11 @@
     "/id_ecdsa",
     "/id_dsa",
     "/Login Data",
-    "/Cookies",
+    "/Cookies$",
+    "/Cookies-journal$",
+    "/Network/Cookies",
+    "/cookies.sqlite",
+    "/Cookies.binarycookies",
     "/Web Data",
     "/.git-credentials",
     "/.vault-token",
@@ -55,7 +59,7 @@
     "/.config/1password/",
     "/.config/bitwarden/"
   ],
-  "date": "September 09th 2026",
+  "date": "September 28th 2026",
   "fim_excluded_path_patterns": [
     "/target/debug/",
     "/target/release/",
@@ -120,7 +124,11 @@
       "/.azure/"
     ],
     "browser_store": [
-      "/cookies",
+      "/cookies$",
+      "/cookies-journal$",
+      "/network/cookies",
+      "/cookies.sqlite",
+      "/cookies.binarycookies",
       "/login data",
       "/web data",
       "/key4.db",
@@ -312,7 +320,7 @@
       "/AppData/Roaming/containers/auth.json"
     ]
   },
-  "signature": "f2be32713a6155c92473c34d783c61c009706934dc7307935d5dec961a58dd35",
+  "signature": "2baed15674a3cc752799ce0f7084d52921e5d0c4fa2c8a5bee21628d4d00951d",
   "watch_roots": {
     "common_home_relative": [
       ".ssh",
