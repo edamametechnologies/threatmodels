@@ -85,6 +85,15 @@ chrome_ids=(
   "dppgmdbiimibapkepcbdbmkaabgiofem"   # 1Password
   "jbkfoedolllekgbhcbcoahefnbanhhlh"   # Bitwarden
   "pdffhmdngciaglkoonimfcmckehcpafo"   # KeePassXC-Browser
+  "bbcinlkgjjkejfdpemiealijmmooekmp"   # LastPass
+  "gehmmocbbkpblljhkekmfhjpfbkclbph"   # Dashlane
+  "lfochlioelphaglamdcakfjemolpichk"   # Keeper
+  "mpfckamfocjknfipmpjdkkebpnieooca"   # Keeper (second official listing)
+  "aomonpiegmnimnhlnpjkoinpiopofgkc"   # Zoho Vault
+  "oakginmjipboeflcgnbipnjojnpchnpd"   # NordPass
+  "ljfpcifpgbbchoddpjefaipoiigpdmag"   # RoboForm
+  "mliehcloacfoicbanjhhnlimealolgoi"   # Enpass
+  "gcllgfdnfnllodcaambdaknbipemelie"   # Proton Pass
 )
 
 chromium_bases=(
