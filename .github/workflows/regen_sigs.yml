@@ -12,6 +12,7 @@ on:
       - 'agent-visibility-params-db.json'
       - 'lanscan-port-vulns-db.json'
       - 'lanscan-vendor-vulns-db.json'
+      - 'signed/**'
 
 concurrency:
   group: verify-generated-artifacts-${{ github.event.pull_request.number }}
@@ -49,3 +50,14 @@ jobs:
             git status --short
             exit 1
           fi
+
+      # A PR that changes a threat model must carry the exec manifest signed
+      # offline with a root key (src/publish/sign-manifest.py). Clients refuse
+      # an unsigned exec model anyway; this stops the PR from merging one.
+      # Skipped until the root public keys are configured.
+      - name: Verify exec manifest signature
+        if: vars.MODEL_ROOT_PUBLIC_KEYS != ''
+        run: |
+          args=()
+          for key in ${{ vars.MODEL_ROOT_PUBLIC_KEYS }}; do args+=(--public-key "$key"); done
+          python3 src/publish/sign-manifest.py verify --scope exec --branch "${{ github.base_ref }}" "${args[@]}"
