@@ -53,6 +53,8 @@ app_names=(
   "Zoho Vault.app"
   "Proton Pass.app"
   "Chrome Apps.localized/Google Password Manager.app"
+  "Chrome Apps.localized/Bitwarden.app"   # Bitwarden web vault installed as a Chrome app
+  "Edge Apps.localized/Bitwarden.app"     # same, installed from Edge
 )
 
 for app_dir in "/Applications" "$HOME/Applications"; do
@@ -83,6 +85,15 @@ chrome_ids=(
   "dppgmdbiimibapkepcbdbmkaabgiofem"   # 1Password
   "jbkfoedolllekgbhcbcoahefnbanhhlh"   # Bitwarden
   "pdffhmdngciaglkoonimfcmckehcpafo"   # KeePassXC-Browser
+  "bbcinlkgjjkejfdpemiealijmmooekmp"   # LastPass
+  "gehmmocbbkpblljhkekmfhjpfbkclbph"   # Dashlane
+  "lfochlioelphaglamdcakfjemolpichk"   # Keeper
+  "mpfckamfocjknfipmpjdkkebpnieooca"   # Keeper (second official listing)
+  "aomonpiegmnimnhlnpjkoinpiopofgkc"   # Zoho Vault
+  "oakginmjipboeflcgnbipnjojnpchnpd"   # NordPass
+  "ljfpcifpgbbchoddpjefaipoiigpdmag"   # RoboForm
+  "mliehcloacfoicbanjhhnlimealolgoi"   # Enpass
+  "gcllgfdnfnllodcaambdaknbipemelie"   # Proton Pass
 )
 
 chromium_bases=(
@@ -141,9 +152,32 @@ chromium_profile_has_pm() {
   return 1
 }
 
+# Known IDs tested by exact path in the standard profile folders. Since macOS 27, privacy
+# protection stops processes without Full Disk Access from listing a browser's data folder
+# (so the glob below finds nothing), but testing a known path still works.
+chromium_profiles=("Default")
+for n in $(seq 1 30); do chromium_profiles+=("Profile $n"); done
+
+chromium_known_id_by_path() {
+  local base="$1" name dir id
+  for name in "" "${chromium_profiles[@]}"; do
+    dir="$base${name:+/$name}"
+    [[ -d "$dir/Extensions" ]] || continue
+    for id in "${chrome_ids[@]}"; do
+      if [[ -d "$dir/Extensions/$id" ]]; then
+        return 0
+      fi
+    done
+  done
+  return 1
+}
+
 if [[ $found_pm -eq 0 ]]; then
   for base in "${chromium_bases[@]}"; do
     [[ -d "$base" ]] || continue
+    if chromium_known_id_by_path "$base"; then
+      found_pm=1; break
+    fi
     for profile in "$base" "$base"/*; do
       if [[ -d "$profile" ]] && chromium_profile_has_pm "$profile"; then
         found_pm=1; break 2
