@@ -5,7 +5,7 @@ name: Sign data manifest
 # PR with the result, like the daily blacklists update.
 #
 # The exec manifest (threatmodel-*.json, whose cli targets the helper runs
-# elevated) is NEVER signed here: it is signed offline with a root key and
+# elevated) is NEVER signed here: it is signed with a root key outside CI and
 # committed in the PR that changes a threat model (see
 # src/publish/sign-manifest.py). Clients refuse a CI-key signature on it.
 #
@@ -34,6 +34,8 @@ permissions:
   contents: read
 
 jobs:
+  # Holds the CI key: installs only what the signer needs and never runs
+  # anything else, then hands the signed files to `publish`.
   sign-data:
     if: vars.MODEL_ROOT_PUBLIC_KEYS != ''
     runs-on: ubuntu-latest
@@ -48,16 +50,18 @@ jobs:
         with:
           python-version: 3.11.3
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+      - name: Install the signer's only dependency
+        run: python -m pip install 'cryptography==44.0.2'
 
       - name: Build data manifest
         run: python3 src/publish/sign-manifest.py build --scope data --branch main
 
+      # Always (re)sign: after a CI certificate renewal the manifest is
+      # unchanged but the published signature carries the old certificate,
+      # which clients stop accepting at its not_after. Signing is
+      # deterministic, so an unchanged key, certificate and manifest produce
+      # the same bytes and no PR.
       - name: Sign data manifest
-        if: hashFiles('signed/manifest-data.sig.json') == ''
         env:
           MODEL_SIGNING_KEY: ${{ secrets.MODEL_SIGNING_KEY }}
           MODEL_SIGNING_CERT: ${{ secrets.MODEL_SIGNING_CERT }}
@@ -70,6 +74,47 @@ jobs:
           args=()
           for key in ${{ vars.MODEL_ROOT_PUBLIC_KEYS }}; do args+=(--public-key "$key"); done
           python3 src/publish/sign-manifest.py verify --scope data --branch main "${args[@]}"
+
+      - name: Upload the signed data manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: signed-data-manifest
+          path: |
+            signed/manifest-data.json
+            signed/manifest-data.sig.json
+          if-no-files-found: error
+
+  # No signing key here. The org IP allow list refuses the push from a
+  # hosted runner until the Hub has listed its IP, so the posture action
+  # registers the runner and waits. The wait must probe a PRIVATE repository
+  # with the token the push uses: this repository is public and answers the
+  # probe at once, which proves nothing (self-hosted-runners rule, "Org IP
+  # allow list"; the first run's push got 403, run 36563969725).
+  publish:
+    needs: [sign-data]
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Setup EDAMAME Posture
+        uses: edamametechnologies/edamame_posture_action@v1
+        with:
+          edamame_user: ${{ vars.EDAMAME_POSTURE_USER }}
+          edamame_domain: ${{ vars.EDAMAME_POSTURE_DOMAIN }}
+          edamame_pin: ${{ secrets.EDAMAME_POSTURE_PIN }}
+          edamame_id: ${{ github.run_id }}
+          checkout: true
+          wait_for_api: true
+          wait_repository: edamametechnologies/edamame_core
+          token: ${{ secrets.DEV_GITHUB_TOKEN }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download the signed data manifest
+        uses: actions/download-artifact@v4
+        with:
+          name: signed-data-manifest
+          path: signed
 
       - name: Create Pull Request
         id: create-pr
