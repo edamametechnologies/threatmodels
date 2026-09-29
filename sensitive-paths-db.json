@@ -19,10 +19,7 @@
     "/Cookies$",
     "/Cookies-journal$",
     "/Network/Cookies",
-    "/cookies.sqlite$",
-    "/cookies.sqlite-wal$",
-    "/cookies.sqlite-shm$",
-    "/cookies.sqlite-journal$",
+    "/cookies.sqlite",
     "/Cookies.binarycookies",
     "/Web Data",
     "/.git-credentials",
@@ -62,7 +59,7 @@
     "/.config/1password/",
     "/.config/bitwarden/"
   ],
-  "date": "September 29th 2026",
+  "date": "September 28th 2026",
   "fim_excluded_path_patterns": [
     "/target/debug/",
     "/target/release/",
@@ -130,10 +127,7 @@
       "/cookies$",
       "/cookies-journal$",
       "/network/cookies",
-      "/cookies.sqlite$",
-      "/cookies.sqlite-wal$",
-      "/cookies.sqlite-shm$",
-      "/cookies.sqlite-journal$",
+      "/cookies.sqlite",
       "/cookies.binarycookies",
       "/login data",
       "/web data",
@@ -326,7 +320,7 @@
       "/AppData/Roaming/containers/auth.json"
     ]
   },
-  "signature": "7098edc4ac0f90a7e7849955ad6c8a0dfd956fac29bac39309507a462d2ae3ce",
+  "signature": "2baed15674a3cc752799ce0f7084d52921e5d0c4fa2c8a5bee21628d4d00951d",
   "watch_roots": {
     "common_home_relative": [
       ".ssh",
