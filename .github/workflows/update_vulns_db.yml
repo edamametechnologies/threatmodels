@@ -203,6 +203,43 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.DEV_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
 
+      # Each run opens its PR on a new automated/vulns-update-<run_number>
+      # branch, and a PR whose checks fail is never auto-merged, so the next
+      # month's PR left it open (the blacklist updater's 22 such orphans were
+      # closed by hand on 2026-09-29). Every run regenerates both databases, so
+      # the PR this run created (or, when nothing changed, main itself)
+      # supersedes every older one; merging an older one would bring back
+      # stale data.
+      - name: Close superseded vulnerability update PRs
+        if: |
+          needs.update-port-vulns-db.outputs.outcome == 'success' &&
+          needs.update-vendor-vulns-db.outputs.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.DEV_GITHUB_TOKEN }}
+          NEW_PR: ${{ steps.create-pr.outputs.pull-request-number }}
+        run: |
+          set -euo pipefail
+          repo="$GITHUB_REPOSITORY"
+          if [[ -n "$NEW_PR" ]]; then
+            why="Superseded by #${NEW_PR}: every monthly update regenerates both vulnerability databases."
+          else
+            why="Superseded: main already carries this month's vulnerability databases."
+          fi
+          stale=$(gh pr list --repo "$repo" --state open --base main --limit 200 \
+            --json number,headRefName,isCrossRepository \
+            --jq '.[] | select(.isCrossRepository | not) | select(.headRefName | startswith("automated/vulns-update-")) | "\(.number) \(.headRefName)"')
+          while read -r pr branch; do
+            [[ -z "$pr" || "$pr" == "$NEW_PR" ]] && continue
+            echo "Closing #${pr} and deleting ${branch}"
+            # gh treats a branch that is already gone as deleted. A PR that
+            # auto-merged since the listing cannot be closed; that is fine.
+            if ! gh pr close "$pr" --repo "$repo" --delete-branch --comment "$why"; then
+              state=$(gh pr view "$pr" --repo "$repo" --json state --jq .state)
+              [[ "$state" == "MERGED" ]] || exit 1
+              echo "#${pr} was merged meanwhile"
+            fi
+          done <<< "$stale"
+
       - name: Send failure notification
         if: |
           needs.update-port-vulns-db.outputs.outcome == 'failure' || 
