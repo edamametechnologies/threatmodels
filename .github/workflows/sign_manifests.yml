@@ -84,13 +84,16 @@ jobs:
             signed/manifest-data.sig.json
           if-no-files-found: error
 
-  # No signing key here. The org IP allow list refuses pushes from hosted
-  # runners, so the posture action registers this runner first (as in
-  # update_blacklists_db.yml).
+  # No signing key here. The org IP allow list refuses the push from a
+  # hosted runner until the Hub has listed its IP, so the posture action
+  # registers the runner and waits. The wait must probe a PRIVATE repository
+  # with the token the push uses: this repository is public and answers the
+  # probe at once, which proves nothing (self-hosted-runners rule, "Org IP
+  # allow list"; the first run's push got 403, run 36563969725).
   publish:
     needs: [sign-data]
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       - name: Setup EDAMAME Posture
         uses: edamametechnologies/edamame_posture_action@v1
@@ -101,6 +104,8 @@ jobs:
           edamame_id: ${{ github.run_id }}
           checkout: true
           wait_for_api: true
+          wait_repository: edamametechnologies/edamame_core
+          token: ${{ secrets.DEV_GITHUB_TOKEN }}
 
       - name: Checkout repository
         uses: actions/checkout@v4
