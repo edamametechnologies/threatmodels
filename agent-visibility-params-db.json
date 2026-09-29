@@ -333,7 +333,7 @@
       "title": "Investigate prompt-injection bait"
     }
   ],
-  "date": "September 29th 2026",
+  "date": "September 30th 2026",
   "history_retention": {
     "behavioral_model_max_entries": 100,
     "coach_max_cached_insights": 48,
@@ -342,6 +342,143 @@
     "history_retention_days": 30,
     "subprocess_max_observations": 512,
     "visibility_log_max_entries": 1000
+  },
+  "instruction_inventory": {
+    "agent_subdirectories": [
+      {
+        "directory": "rules",
+        "kind": "rule"
+      },
+      {
+        "directory": "skills",
+        "kind": "skill"
+      },
+      {
+        "directory": "skills-cursor",
+        "kind": "skill"
+      },
+      {
+        "directory": "commands",
+        "kind": "command"
+      },
+      {
+        "directory": "agents",
+        "kind": "subagent"
+      },
+      {
+        "directory": "subagents",
+        "kind": "subagent"
+      },
+      {
+        "directory": "memories",
+        "kind": "memory"
+      },
+      {
+        "directory": "prompts",
+        "kind": "prompt"
+      },
+      {
+        "directory": "instructions",
+        "kind": "instruction"
+      },
+      {
+        "directory": "hooks",
+        "kind": "hook"
+      }
+    ],
+    "artifact_extensions": [
+      "md",
+      "mdc",
+      "txt",
+      "json",
+      "toml",
+      "yaml",
+      "yml"
+    ],
+    "document_extensions": [
+      "md",
+      "mdc"
+    ],
+    "nested_roots": {
+      "claude_desktop": [
+        "local-agent-mode-sessions/skills-plugin/*/*"
+      ]
+    },
+    "skill_entry_files": [
+      "skill.md",
+      "description.md"
+    ],
+    "skill_tree_directories": [
+      "skills",
+      "skills-cursor",
+      ".agentfield",
+      "agentfield"
+    ],
+    "toplevel_instruction_files": [
+      "claude.md",
+      "agents.md",
+      "gemini.md",
+      "codex.md",
+      "rules.md",
+      "instructions.md",
+      "memory.md",
+      ".cursorrules"
+    ],
+    "toplevel_rule_extensions": [
+      "mdc"
+    ],
+    "workspace_config_directories": [
+      ".cursor",
+      ".claude"
+    ],
+    "workspace_subdirectories": [
+      {
+        "directory": "skills",
+        "kind": "skill"
+      },
+      {
+        "directory": "skills-cursor",
+        "kind": "skill"
+      },
+      {
+        "directory": "commands",
+        "kind": "command"
+      },
+      {
+        "directory": "agents",
+        "kind": "subagent"
+      },
+      {
+        "directory": "subagents",
+        "kind": "subagent"
+      }
+    ],
+    "workspace_toplevel_files": [
+      {
+        "kind": "instruction",
+        "path": "AGENTS.md"
+      },
+      {
+        "kind": "instruction",
+        "path": "CLAUDE.md"
+      },
+      {
+        "kind": "instruction",
+        "path": "GEMINI.md"
+      },
+      {
+        "kind": "instruction",
+        "path": "CODEX.md"
+      },
+      {
+        "kind": "instruction",
+        "path": ".cursorrules"
+      },
+      {
+        "kind": "instruction",
+        "path": ".github/copilot-instructions.md"
+      }
+    ]
   },
   "model_pricing": {
     "default": {
@@ -593,7 +730,7 @@
       "per_marker": false
     }
   ],
-  "signature": "ce44b1babaadd40143c82a738ad198ae1f6c759a600709cdd095a9a2253e6fd2",
+  "signature": "94e378135bfd7d4c7290b44cd756cf17b48eb89e1069134ddc65a8ba47593fd4",
   "transcript_secret_signatures": [
     {
       "hits": 2,

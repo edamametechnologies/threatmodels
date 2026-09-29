@@ -1634,6 +1634,7 @@ def validate_agent_visibility_params(filename: str) -> None:
         'augmentation_coach_templates',
         'history_retention',
         'workspace_attribution',
+        'instruction_inventory',
     }
 
     def validate_string_list(value, key_name: str) -> None:
@@ -1948,6 +1949,93 @@ def validate_agent_visibility_params(filename: str) -> None:
             if not (root.startswith('/') or root.startswith('?:/')):
                 raise ValueError(f"{key_name}: '{root}' must be an absolute path or start with '?:/'")
 
+    # Component kinds the Agents view and the augmentation report key on.
+    instruction_kinds = {
+        'rule', 'skill', 'command', 'subagent', 'memory', 'prompt',
+        'instruction', 'hook',
+    }
+
+    def validate_relative_path(path, key_name: str) -> None:
+        # Joined onto a root the code resolves (a home, an agent's own root,
+        # a workspace): relative, '/'-separated, never climbing out.
+        if (not isinstance(path, str) or not path or path.startswith('/')
+                or '\\' in path or '..' in path.split('/')):
+            raise ValueError(f"{key_name} must be a relative '/'-separated path, got {path!r}")
+
+    def validate_lowercase_list(value, key_name: str) -> None:
+        # Compared against lowercased names, so an uppercase entry never matches.
+        validate_string_list(value, key_name)
+        if not value:
+            raise ValueError(f"{key_name} must be non-empty")
+        for item in value:
+            if not item or item != item.lower():
+                raise ValueError(f"{key_name}: '{item}' must be a non-empty lowercase string")
+
+    def validate_instruction_inventory(value, key_name: str) -> None:
+        # What the instruction inventory (edamame_foundation::agent_visibility)
+        # walks and reads: the instruction directories under an agent's root
+        # and under a workspace root with the component kind each projects
+        # to, the top-level instruction files, the extensions, the skill
+        # package markers and the nested roots.
+        directory_list_keys = {'agent_subdirectories', 'workspace_subdirectories'}
+        lowercase_list_keys = {
+            'artifact_extensions', 'document_extensions',
+            'toplevel_instruction_files', 'toplevel_rule_extensions',
+            'skill_entry_files', 'skill_tree_directories',
+        }
+        expected_keys = directory_list_keys | lowercase_list_keys | {
+            'nested_roots', 'workspace_toplevel_files', 'workspace_config_directories',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for sub in sorted(directory_list_keys):
+            entries = value[sub]
+            if not isinstance(entries, list) or not entries:
+                raise ValueError(f"{key_name}['{sub}'] must be a non-empty list")
+            for i, entry in enumerate(entries):
+                if not isinstance(entry, dict) or set(entry.keys()) != {'directory', 'kind'}:
+                    raise ValueError(f"{key_name}['{sub}'][{i}] must be {{directory, kind}}")
+                directory = entry['directory']
+                # One path component, matched against lowercased components.
+                if (not isinstance(directory, str) or not directory
+                        or directory != directory.lower() or '/' in directory
+                        or '\\' in directory or directory == '..'):
+                    raise ValueError(f"{key_name}['{sub}'][{i}]['directory'] must be one lowercase path component")
+                if entry['kind'] not in instruction_kinds:
+                    raise ValueError(f"{key_name}['{sub}'][{i}]['kind'] must be one of {sorted(instruction_kinds)}")
+        for sub in sorted(lowercase_list_keys):
+            validate_lowercase_list(value[sub], f"{key_name}['{sub}']")
+        for sub in ('artifact_extensions', 'document_extensions', 'toplevel_rule_extensions'):
+            for ext in value[sub]:
+                if ext.startswith('.') or '/' in ext:
+                    raise ValueError(f"{key_name}['{sub}']: '{ext}' must be an extension without its dot")
+        roots = value['nested_roots']
+        if not isinstance(roots, dict):
+            raise ValueError(f"{key_name}['nested_roots'] must be a dict")
+        for agent, patterns in roots.items():
+            validate_string_list(patterns, f"{key_name}['nested_roots']['{agent}']")
+            for pattern in patterns:
+                validate_relative_path(pattern, f"{key_name}['nested_roots']['{agent}']")
+        files = value['workspace_toplevel_files']
+        if not isinstance(files, list) or not files:
+            raise ValueError(f"{key_name}['workspace_toplevel_files'] must be a non-empty list")
+        for i, entry in enumerate(files):
+            if not isinstance(entry, dict) or set(entry.keys()) != {'path', 'kind'}:
+                raise ValueError(f"{key_name}['workspace_toplevel_files'][{i}] must be {{path, kind}}")
+            validate_relative_path(entry['path'], f"{key_name}['workspace_toplevel_files'][{i}]['path']")
+            if entry['kind'] not in instruction_kinds:
+                raise ValueError(f"{key_name}['workspace_toplevel_files'][{i}]['kind'] must be one of {sorted(instruction_kinds)}")
+        directories = value['workspace_config_directories']
+        validate_string_list(directories, f"{key_name}['workspace_config_directories']")
+        if not directories:
+            raise ValueError(f"{key_name}['workspace_config_directories'] must be non-empty")
+        for directory in directories:
+            validate_relative_path(directory, f"{key_name}['workspace_config_directories']")
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -2010,6 +2098,10 @@ def validate_agent_visibility_params(filename: str) -> None:
     validate_workspace_attribution(
         data['workspace_attribution'],
         'workspace_attribution',
+    )
+    validate_instruction_inventory(
+        data['instruction_inventory'],
+        'instruction_inventory',
     )
 
     print("Agent visibility params validation successful")
