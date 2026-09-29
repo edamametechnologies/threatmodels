@@ -1,0 +1,16 @@
+{
+  "format": 1,
+  "signatures": [
+    {
+      "certificate": {
+        "key_id": "c00da6eb02879a2d",
+        "not_after": 1798457588,
+        "public_key": "e883be3fbbae32c46a7d511ea462ff8e22c2fd5073d7ceb206245f884dc45685",
+        "root_key_id": "93295ebcb9a6ec08",
+        "root_signature": "0cc5828b27127b2e0e7f8b8df5e97fadae25808dfd57922ac50f0a18e7f8414239e8f21bb1300b3366287bcf045f2b76d77cf328f21cbc27dad16c9691cd2609"
+      },
+      "key_id": "c00da6eb02879a2d",
+      "signature": "ca4ad76a386b72b49ec87a869cb852a8e510ea8e381fbbb8e8cfe04d4838f139dc9baf4f01ad39edc40c32ead563c970050fc242e0fea1e6ab75b020bccad804"
+    }
+  ]
+}
