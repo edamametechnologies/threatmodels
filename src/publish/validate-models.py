@@ -1633,6 +1633,7 @@ def validate_agent_visibility_params(filename: str) -> None:
         'augmentation_prompt_templates',
         'augmentation_coach_templates',
         'history_retention',
+        'workspace_attribution',
     }
 
     def validate_string_list(value, key_name: str) -> None:
@@ -1861,6 +1862,92 @@ def validate_agent_visibility_params(filename: str) -> None:
             if isinstance(sub, bool) or not isinstance(sub, int) or sub < 1:
                 raise ValueError(f"{key_name}['{subkey}'] must be a positive integer")
 
+    def validate_workspace_attribution(value, key_name: str) -> None:
+        # Which workspace an agent session is filed under on the Agents view
+        # (edamame_foundation::agent_workspaces): the agent-CLI launch
+        # vocabulary read from launching transcripts, the harness markers of
+        # a programmatic start, the temporary roots grouped per agent, path
+        # conventions, time windows and label wording.
+        string_list_keys = {
+            'agent_cli_programs', 'agent_cli_package_markers',
+            'package_runner_programs', 'package_exec_programs',
+            'package_exec_subcommands', 'shell_programs',
+            'powershell_programs', 'powershell_script_options',
+            'interpreter_program_prefixes', 'source_programs',
+            'wrapper_programs', 'wrapper_slash_option_programs',
+            'wrapper_duration_programs', 'wrapper_title_programs',
+            'detaching_programs', 'change_directory_programs',
+            'executable_extensions', 'script_extensions', 'command_keys',
+            'working_directory_keys', 'write_path_keys', 'write_content_keys',
+            'write_edit_list_keys', 'background_flag_keys',
+            'background_wait_keys', 'patch_file_headers', 'home_variables',
+            'temp_variables', 'headless_entrypoint_prefixes',
+            'headless_originators', 'headless_sources', 'temp_roots',
+            'home_parent_directories',
+        }
+        option_list_keys = {
+            'wrapper_value_options', 'wrapper_program_options', 'lookup_options',
+        }
+        positive_int_keys = {
+            'launch_clock_slack_secs', 'background_launch_window_secs',
+            'subagent_lookback_margin_secs', 'max_launch_chain',
+        }
+        string_keys = {'subagent_directory', 'temporary_workspace_label'}
+        expected_keys = (
+            string_list_keys | option_list_keys | positive_int_keys | string_keys
+            | {'agent_cli_subcommands', 'path_aliases', 'agent_labels'}
+        )
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for sub in sorted(string_list_keys):
+            validate_string_list(value[sub], f"{key_name}['{sub}']")
+            if not value[sub]:
+                raise ValueError(f"{key_name}['{sub}'] must be non-empty")
+        for sub in sorted(option_list_keys):
+            entries = value[sub]
+            if not isinstance(entries, list):
+                raise ValueError(f"{key_name}['{sub}'] must be a list")
+            for i, entry in enumerate(entries):
+                if not isinstance(entry, dict) or set(entry.keys()) != {'program', 'options'}:
+                    raise ValueError(f"{key_name}['{sub}'][{i}] must be {{program, options}}")
+                if not isinstance(entry['program'], str) or not entry['program']:
+                    raise ValueError(f"{key_name}['{sub}'][{i}]['program'] must be a non-empty string")
+                validate_string_list(entry['options'], f"{key_name}['{sub}'][{i}]['options']")
+        for sub in sorted(positive_int_keys):
+            v = value[sub]
+            if isinstance(v, bool) or not isinstance(v, int) or v < 1:
+                raise ValueError(f"{key_name}['{sub}'] must be a positive integer")
+        for sub in sorted(string_keys):
+            if not isinstance(value[sub], str) or not value[sub]:
+                raise ValueError(f"{key_name}['{sub}'] must be a non-empty string")
+        subcommands = value['agent_cli_subcommands']
+        if not isinstance(subcommands, list):
+            raise ValueError(f"{key_name}['agent_cli_subcommands'] must be a list")
+        for i, entry in enumerate(subcommands):
+            if (not isinstance(entry, dict) or set(entry.keys()) != {'program', 'subcommand'}
+                    or not all(isinstance(entry[k], str) and entry[k] for k in entry)):
+                raise ValueError(f"{key_name}['agent_cli_subcommands'][{i}] must be {{program, subcommand}}")
+        aliases = value['path_aliases']
+        if not isinstance(aliases, list):
+            raise ValueError(f"{key_name}['path_aliases'] must be a list")
+        for i, entry in enumerate(aliases):
+            if (not isinstance(entry, dict) or set(entry.keys()) != {'prefix', 'canonical'}
+                    or not all(isinstance(entry[k], str) and entry[k].startswith('/') for k in entry)):
+                raise ValueError(f"{key_name}['path_aliases'][{i}] must be {{prefix, canonical}} absolute paths")
+        labels = value['agent_labels']
+        if not isinstance(labels, dict) or not labels:
+            raise ValueError(f"{key_name}['agent_labels'] must be a non-empty dict")
+        for agent, label in labels.items():
+            if not isinstance(label, str) or not label:
+                raise ValueError(f"{key_name}['agent_labels']['{agent}'] must be a non-empty string")
+        for i, root in enumerate(value['temp_roots'] + value['home_parent_directories']):
+            if not (root.startswith('/') or root.startswith('?:/')):
+                raise ValueError(f"{key_name}: '{root}' must be an absolute path or start with '?:/'")
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -1919,6 +2006,10 @@ def validate_agent_visibility_params(filename: str) -> None:
     validate_history_retention(
         data['history_retention'],
         'history_retention',
+    )
+    validate_workspace_attribution(
+        data['workspace_attribution'],
+        'workspace_attribution',
     )
 
     print("Agent visibility params validation successful")

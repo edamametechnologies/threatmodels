@@ -333,7 +333,7 @@
       "title": "Investigate prompt-injection bait"
     }
   ],
-  "date": "September 07th 2026",
+  "date": "September 29th 2026",
   "history_retention": {
     "behavioral_model_max_entries": 100,
     "coach_max_cached_insights": 48,
@@ -593,7 +593,7 @@
       "per_marker": false
     }
   ],
-  "signature": "ecd766def0392ea81a9980bb91888af11bd01ace6939d5f3ffc2efc839ffa4f1",
+  "signature": "ce44b1babaadd40143c82a738ad198ae1f6c759a600709cdd095a9a2253e6fd2",
   "transcript_secret_signatures": [
     {
       "hits": 2,
@@ -691,5 +691,360 @@
       "mode": "any",
       "per_marker": false
     }
-  ]
+  ],
+  "workspace_attribution": {
+    "agent_cli_package_markers": [
+      "@anthropic-ai/claude-code",
+      "@openai/codex",
+      "/claude-code/"
+    ],
+    "agent_cli_programs": [
+      "claude",
+      "codex",
+      "cursor-agent"
+    ],
+    "agent_cli_subcommands": [
+      {
+        "program": "cursor",
+        "subcommand": "agent"
+      }
+    ],
+    "agent_labels": {
+      "claude_code": "Claude Code",
+      "claude_desktop": "Claude Desktop",
+      "codex": "Codex",
+      "cursor": "Cursor",
+      "hermes": "Hermes",
+      "openclaw": "OpenClaw"
+    },
+    "background_flag_keys": [
+      "run_in_background",
+      "is_background",
+      "background"
+    ],
+    "background_launch_window_secs": 3600,
+    "background_wait_keys": [
+      "block_until_ms"
+    ],
+    "change_directory_programs": [
+      "cd",
+      "pushd",
+      "set-location",
+      "sl",
+      "chdir"
+    ],
+    "command_keys": [
+      "command",
+      "cmd"
+    ],
+    "detaching_programs": [
+      "start-process",
+      "start",
+      "setsid",
+      "daemonize",
+      "disown"
+    ],
+    "executable_extensions": [
+      "exe",
+      "cmd",
+      "bat",
+      "ps1"
+    ],
+    "headless_entrypoint_prefixes": [
+      "sdk"
+    ],
+    "headless_originators": [
+      "codex_exec"
+    ],
+    "headless_sources": [
+      "exec"
+    ],
+    "home_parent_directories": [
+      "/Users",
+      "/home",
+      "?:/Users"
+    ],
+    "home_variables": [
+      "${HOME}",
+      "$HOME",
+      "%USERPROFILE%",
+      "${env:USERPROFILE}",
+      "$env:USERPROFILE"
+    ],
+    "interpreter_program_prefixes": [
+      "python",
+      "node",
+      "bun",
+      "deno",
+      "ruby",
+      "perl"
+    ],
+    "launch_clock_slack_secs": 5,
+    "lookup_options": [
+      {
+        "options": [
+          "-v",
+          "-V"
+        ],
+        "program": "command"
+      }
+    ],
+    "max_launch_chain": 16,
+    "package_exec_programs": [
+      "pnpm",
+      "yarn"
+    ],
+    "package_exec_subcommands": [
+      "dlx",
+      "exec"
+    ],
+    "package_runner_programs": [
+      "npx",
+      "bunx",
+      "pnpx",
+      "node",
+      "bun",
+      "deno"
+    ],
+    "patch_file_headers": [
+      "*** Add File:",
+      "*** Update File:"
+    ],
+    "path_aliases": [
+      {
+        "canonical": "/tmp",
+        "prefix": "/private/tmp"
+      },
+      {
+        "canonical": "/var",
+        "prefix": "/private/var"
+      },
+      {
+        "canonical": "/etc",
+        "prefix": "/private/etc"
+      }
+    ],
+    "powershell_programs": [
+      "pwsh",
+      "powershell"
+    ],
+    "powershell_script_options": [
+      "-c",
+      "-command"
+    ],
+    "script_extensions": [
+      "sh",
+      "bash",
+      "zsh",
+      "fish",
+      "ps1",
+      "psm1",
+      "cmd",
+      "bat",
+      "py",
+      "js",
+      "mjs",
+      "cjs",
+      "ts",
+      "rb",
+      "pl"
+    ],
+    "shell_programs": [
+      "sh",
+      "bash",
+      "zsh",
+      "dash",
+      "ksh",
+      "fish",
+      "pwsh",
+      "powershell"
+    ],
+    "source_programs": [
+      "source",
+      "."
+    ],
+    "subagent_directory": "subagents",
+    "subagent_lookback_margin_secs": 3600,
+    "temp_roots": [
+      "/tmp",
+      "/var/tmp",
+      "/dev/shm",
+      "/var/folders/*/*/T",
+      "?:/Windows/Temp",
+      "?:/Temp",
+      "?:/tmp",
+      "?:/Users/*/AppData/Local/Temp"
+    ],
+    "temp_variables": [
+      "${TMPDIR}",
+      "$TMPDIR",
+      "%TEMP%",
+      "%TMP%",
+      "${env:TEMP}",
+      "$env:TEMP",
+      "${env:TMP}",
+      "$env:TMP"
+    ],
+    "temporary_workspace_label": "Temporary sessions",
+    "working_directory_keys": [
+      "workdir",
+      "working_directory",
+      "cwd",
+      "directory"
+    ],
+    "wrapper_duration_programs": [
+      "timeout",
+      "gtimeout"
+    ],
+    "wrapper_program_options": [
+      {
+        "options": [
+          "-filepath"
+        ],
+        "program": "start-process"
+      }
+    ],
+    "wrapper_programs": [
+      "env",
+      "nohup",
+      "exec",
+      "command",
+      "builtin",
+      "time",
+      "caffeinate",
+      "setsid",
+      "stdbuf",
+      "unbuffer",
+      "sudo",
+      "doas",
+      "nice",
+      "ionice",
+      "xargs",
+      "start-process",
+      "start",
+      "call",
+      "timeout",
+      "gtimeout",
+      "cmd",
+      "then",
+      "do",
+      "else",
+      "elif",
+      "if",
+      "while",
+      "until",
+      "!"
+    ],
+    "wrapper_slash_option_programs": [
+      "cmd",
+      "start"
+    ],
+    "wrapper_title_programs": [
+      "start"
+    ],
+    "wrapper_value_options": [
+      {
+        "options": [
+          "-u",
+          "--unset",
+          "-C",
+          "--chdir",
+          "-S",
+          "--split-string"
+        ],
+        "program": "env"
+      },
+      {
+        "options": [
+          "-u",
+          "-g",
+          "-C",
+          "-D",
+          "-h",
+          "-p",
+          "-r",
+          "-t",
+          "-U"
+        ],
+        "program": "sudo"
+      },
+      {
+        "options": [
+          "-u",
+          "-C"
+        ],
+        "program": "doas"
+      },
+      {
+        "options": [
+          "-n",
+          "--adjustment"
+        ],
+        "program": "nice"
+      },
+      {
+        "options": [
+          "-c",
+          "-n",
+          "-p"
+        ],
+        "program": "ionice"
+      },
+      {
+        "options": [
+          "-s",
+          "--signal",
+          "-k",
+          "--kill-after"
+        ],
+        "program": "timeout"
+      },
+      {
+        "options": [
+          "-s",
+          "--signal",
+          "-k",
+          "--kill-after"
+        ],
+        "program": "gtimeout"
+      },
+      {
+        "options": [
+          "-n",
+          "-I",
+          "-P",
+          "-L",
+          "-s",
+          "-d",
+          "-E",
+          "-a"
+        ],
+        "program": "xargs"
+      },
+      {
+        "options": [
+          "-i",
+          "-o",
+          "-e"
+        ],
+        "program": "stdbuf"
+      }
+    ],
+    "write_content_keys": [
+      "content",
+      "contents",
+      "new_string",
+      "code_edit",
+      "text"
+    ],
+    "write_edit_list_keys": [
+      "edits"
+    ],
+    "write_path_keys": [
+      "file_path",
+      "path",
+      "target_file",
+      "filePath"
+    ]
+  }
 }
