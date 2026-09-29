@@ -156,6 +156,40 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.DEV_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
 
+      # Each run opens its PR on a new automated/blacklists-update-<run_number>
+      # branch, and a PR whose checks fail is never auto-merged: the next day's
+      # PR used to leave it open (22 orphans and their branches were closed by
+      # hand on 2026-09-29). Every run regenerates the whole database, so the
+      # PR this run created (or, when nothing changed, main itself) supersedes
+      # every older one; merging an older one would bring back stale data.
+      - name: Close superseded blacklist update PRs
+        if: needs.update-blacklists-db.outputs.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.DEV_GITHUB_TOKEN }}
+          NEW_PR: ${{ steps.create-pr.outputs.pull-request-number }}
+        run: |
+          set -euo pipefail
+          repo="$GITHUB_REPOSITORY"
+          if [[ -n "$NEW_PR" ]]; then
+            why="Superseded by #${NEW_PR}: every daily update regenerates the whole blacklists database."
+          else
+            why="Superseded: main already carries today's blacklists database."
+          fi
+          stale=$(gh pr list --repo "$repo" --state open --base main --limit 200 \
+            --json number,headRefName,isCrossRepository \
+            --jq '.[] | select(.isCrossRepository | not) | select(.headRefName | startswith("automated/blacklists-update-")) | "\(.number) \(.headRefName)"')
+          while read -r pr branch; do
+            [[ -z "$pr" || "$pr" == "$NEW_PR" ]] && continue
+            echo "Closing #${pr} and deleting ${branch}"
+            # gh treats a branch that is already gone as deleted. A PR that
+            # auto-merged since the listing cannot be closed; that is fine.
+            if ! gh pr close "$pr" --repo "$repo" --delete-branch --comment "$why"; then
+              state=$(gh pr view "$pr" --repo "$repo" --json state --jq .state)
+              [[ "$state" == "MERGED" ]] || exit 1
+              echo "#${pr} was merged meanwhile"
+            fi
+          done <<< "$stale"
+
       - name: Send failure notification
         if: needs.update-blacklists-db.outputs.outcome == 'failure'
         uses: slackapi/slack-github-action@v1.26.0
