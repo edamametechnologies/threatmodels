@@ -26,13 +26,14 @@ PRIVACY_HEADER_EN = """* Your machine unique identifier
 * Your approximate location derived from your public IPv4 address: city, region, country, time zone, latitude and longitude. To find it, EDAMAME sends your public IPv4 address to the ip-api.com geolocation service
 * Your MAC address if available
 * Your peer IDs for your VPN or ZTNA connections if available
-* The domain you are connected to, your username in that domain and the access code used to connect
+* The domain you are connected to, your username in that domain and the access code used to connect or, when you certify your score, the email address you enter
 * The language of the EDAMAME interface
 * The EDAMAME version, whether this machine is a CI/CD runner, and the state of the EDAMAME Helper
 * The date and time of the report
 * Your score as a single numerical value
 * Your score for each category (network, system integrity, system services, applications, credentials), your star rating, and your compliance percentage for each compliance framework
-* The history of the remediations and rollbacks you performed: the check concerned, the action, when it happened, and whether it succeeded and was validated"""
+* The history of the remediations and rollbacks you performed: the check concerned, the action, when it happened, and whether it succeeded and was validated
+* Whether AI details sharing is on for this device. The AI details themselves are sent only when it is"""
 
 PRIVACY_HEADER_FR = """* L'identifiant unique de votre machine
 * Le nom de votre machine (nom d'hôte), sans son suffixe de domaine réseau
@@ -41,13 +42,14 @@ PRIVACY_HEADER_FR = """* L'identifiant unique de votre machine
 * Votre localisation approximative déduite de votre adresse IPv4 publique : ville, région, pays, fuseau horaire, latitude et longitude. Pour la déterminer, EDAMAME envoie votre adresse IPv4 publique au service de géolocalisation ip-api.com
 * Votre adresse MAC si disponible
 * Vos identifiants de pairs pour vos connexions VPN ou ZTNA si disponibles
-* Le domaine auquel vous êtes connecté, votre nom d'utilisateur dans ce domaine et le code d'accès utilisé pour vous connecter
+* Le domaine auquel vous êtes connecté, votre nom d'utilisateur dans ce domaine et le code d'accès utilisé pour vous connecter ou, lorsque vous certifiez votre score, l'adresse email que vous saisissez
 * La langue de l'interface d'EDAMAME
 * La version d'EDAMAME, si cette machine est un exécuteur CI/CD, et l'état de l'EDAMAME Helper
 * La date et l'heure du rapport
 * Votre score sous forme d'une valeur numérique
 * Votre score pour chaque catégorie (réseau, intégrité du système, services système, applications, identifiants), votre nombre d'étoiles, et votre pourcentage de conformité pour chaque référentiel de conformité
-* L'historique des remédiations et des retours en arrière que vous avez effectués : le test concerné, l'action, sa date, et si elle a réussi et a été validée"""
+* L'historique des remédiations et des retours en arrière que vous avez effectués : le test concerné, l'action, sa date, et si elle a réussi et a été validée
+* Si le partage des détails IA est activé pour cet appareil. Les détails IA eux-mêmes ne sont envoyés que lorsqu'il l'est"""
 
 AI_SECTION_EN = """* The AI details of this machine:
   * AI setup of this machine, sent in every report while AI details are shared, even when no AI check is failing
@@ -154,9 +156,17 @@ def render_page(source: str, locale: str, titles: list[str], ai_details: bool) -
     wiki_url = f"https://github.com/edamametechnologies/threatmodels/wiki/{model_name}-{locale}"
     trailer = (
         f"""
-Ces informations sont utilisées uniquement par EDAMAME et ne sont pas partagées avec des tiers, à l'exception de votre adresse IPv4 publique envoyée à ip-api.com pour la localisation ci-dessus.
+**Qui voit ces informations et combien de temps EDAMAME Hub les conserve**
+* Les administrateurs du domaine auquel vous êtes connecté voient ces informations dans EDAMAME Hub, et le personnel d'EDAMAME peut les consulter depuis la console d'administration d'EDAMAME
+* Si les administrateurs du domaine connectent EDAMAME Hub à d'autres services, comme une plateforme de conformité (Vanta), un fournisseur de contrôle d'accès (par exemple Netskope) ou une organisation GitHub, EDAMAME Hub leur envoie l'état de cet appareil et les informations dont ils ont besoin pour le reconnaître, comme ses adresses IP ou ses identifiants de pairs VPN ou ZTNA
+* EDAMAME Hub conserve le dernier rapport de cet appareil sans date d'expiration. Chaque nouveau rapport le remplace, et il est supprimé lorsqu'un administrateur retire l'appareil, lorsque le domaine est supprimé, ou 7 jours après le dernier rapport d'un appareil que le domaine a désactivé
+* EDAMAME Hub conserve aussi les rapports précédents pendant 7 jours avec une offre de domaine gratuite et pendant 365 jours avec une offre payante, y compris après la suppression de l'appareil ou du domaine. Ils contiennent l'identifiant de l'appareil, votre nom d'utilisateur, le type de système d'exploitation, le score global et la conformité, le statut de chaque test, les adresses IP publiques et la localisation approximative
+* Les journaux du service d'EDAMAME enregistrent les rapports que reçoit EDAMAME Hub. Aucune expiration n'est configurée pour ces journaux
+* Lorsque vous certifiez votre score, EDAMAME envoie le rapport par email à l'adresse que vous saisissez et conserve cette adresse. Sauf s'il s'agit d'une adresse edamame.tech, EDAMAME la transmet aussi à son prestataire de prospection par email, Apollo.io, qui peut vous envoyer des emails de suivi. L'équipe d'EDAMAME est avertie de chaque certification dans son espace de travail Slack, avec l'identifiant de l'appareil, le nom d'utilisateur, le système d'exploitation, le score, la ville et le pays, et l'adresse email
 
-Ces informations sont collectées à l'aide d'un "modèle de menace" public qui garantit de ne pas violer votre vie privée.
+En dehors des services nommés dans cette politique, EDAMAME ne partage pas ces informations avec des tiers.
+
+Ces informations sont collectées à l'aide d'un "modèle de menace" public : les tests qu'il exécute, avec leurs scripts, sont publiés aux adresses ci-dessous.
 
 Le modèle de menace peut être consulté à l'adresse [{model_url}]({model_url}).
 
@@ -165,9 +175,17 @@ Le wiki du modèle de menace peut être consulté à l'adresse [{wiki_url}]({wik
 Si vous n'êtes pas d'accord avec cette politique, veuillez ne pas rapporter votre score."""
         if french
         else f"""
-This information is used solely by EDAMAME and is not shared with any third party, apart from your public IPv4 address sent to ip-api.com for the location lookup above.
+**Who sees this information and how long EDAMAME Hub keeps it**
+* The administrators of the domain you are connected to see this information in EDAMAME Hub, and EDAMAME staff can view it through EDAMAME's administration console
+* If the domain's administrators connect EDAMAME Hub to other services, such as a compliance platform (Vanta), an access-control provider (for example Netskope) or a GitHub organization, EDAMAME Hub sends them this device's status and the details they need to recognize it, such as its IP addresses or its VPN or ZTNA peer IDs
+* EDAMAME Hub keeps the latest report of this device with no expiry date. Each new report replaces it, and it is deleted when an administrator removes the device, when the domain is deleted, or 7 days after the last report of a device the domain has disabled
+* EDAMAME Hub also keeps earlier reports for 7 days on a free domain plan and for 365 days on a paid plan, including after the device or the domain is deleted. They hold the device identifier, your username, the operating system type, the overall score and compliance, the status of each check, the public IP addresses and the approximate location
+* EDAMAME's service logs record the reports EDAMAME Hub receives. No expiry is configured for these logs
+* When you certify your score, EDAMAME emails the report to the address you enter and keeps that address. Unless it is an edamame.tech address, EDAMAME also gives it to its email outreach provider, Apollo.io, which can send you follow-up emails. EDAMAME's team is notified of each certification in its Slack workspace, with the device identifier, the username, the operating system, the score, the city and country, and the email address
 
-This information is gathered using a public "threat model" that is guaranteed not to violate your privacy.
+Apart from the services named in this policy, EDAMAME does not share this information with third parties.
+
+This information is gathered using a public "threat model": the checks it runs, with their scripts, are published at the links below.
 
 The threat model can be seen at [{model_url}]({model_url}).
 
