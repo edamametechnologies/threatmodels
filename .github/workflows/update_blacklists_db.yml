@@ -62,8 +62,14 @@ jobs:
           edamame_pin: ${{ secrets.EDAMAME_POSTURE_PIN }}
           edamame_id: ${{ github.run_id }}
           checkout: true
-          # We need to wait for the API access to be granted as we require protected access
+          # The PR push and auto-merge below use DEV_GITHUB_TOKEN, which the
+          # org IP allow list refuses until the Hub has listed this runner's
+          # IP. This repository is public and answers the default probe at
+          # once, which proves nothing: probe a private repository with the
+          # token the push uses (self-hosted-runners rule, "Org IP allow list").
           wait_for_api: true
+          wait_repository: edamametechnologies/edamame_core
+          token: ${{ secrets.DEV_GITHUB_TOKEN }}
 
       - name: Checkout repository
         uses: actions/checkout@v4
