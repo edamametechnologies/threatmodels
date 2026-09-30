@@ -2577,11 +2577,16 @@ def validate_agent_visibility_params(filename: str) -> None:
 
     def validate_host_privilege(value, key_name: str) -> None:
         # What the macOS / Linux host-privilege assessment reads and matches
-        # (edamame_foundation::agent_visibility): elevated users,
-        # administrator groups, the group database and the sudoers policy.
+        # (edamame_foundation::agent_visibility, sudoers_grading): elevated
+        # users, administrator groups, the group database, the sudoers
+        # policy, and what a passwordless sudo rule may allow before it
+        # counts as root (escalatable binaries, their versioned families, and
+        # the environment variables whose env_keep reaches root).
         name_keys = {'elevated_users', 'macos_admin_groups', 'linux_admin_groups'}
         path_keys = {'group_files', 'sudoers_files', 'sudoers_directories'}
-        expected_keys = name_keys | path_keys
+        binary_keys = {'escalatable_binaries', 'escalatable_binary_families'}
+        env_keys = {'escalatable_environment_variables'}
+        expected_keys = name_keys | path_keys | binary_keys | env_keys
         if not isinstance(value, dict):
             raise ValueError(f"'{key_name}' must be a dict")
         if set(value.keys()) != expected_keys:
@@ -2603,6 +2608,27 @@ def validate_agent_visibility_params(filename: str) -> None:
             for path in value[sub]:
                 if not path.startswith('/') or '..' in path.split('/'):
                     raise ValueError(f"{key_name}['{sub}']: '{path}' must be an absolute path")
+        for sub in sorted(binary_keys):
+            validate_string_list(value[sub], f"{key_name}['{sub}']")
+            if not value[sub]:
+                raise ValueError(f"{key_name}['{sub}'] must be non-empty")
+            if len(set(value[sub])) != len(value[sub]):
+                raise ValueError(f"{key_name}['{sub}'] has duplicate entries")
+            for name in value[sub]:
+                # A lowercase executable basename (compared with the
+                # lowercased basename of the command a rule allows).
+                if (not name or name != name.lower() or name.strip() != name
+                        or any(c in name for c in '/\\ \t*?[]')):
+                    raise ValueError(f"{key_name}['{sub}']: '{name}' must be a lowercase basename")
+        for sub in sorted(env_keys):
+            validate_string_list(value[sub], f"{key_name}['{sub}']")
+            if not value[sub]:
+                raise ValueError(f"{key_name}['{sub}'] must be non-empty")
+            if len(set(value[sub])) != len(value[sub]):
+                raise ValueError(f"{key_name}['{sub}'] has duplicate entries")
+            for name in value[sub]:
+                if not re.fullmatch(r'[A-Z_][A-Z0-9_]*', name):
+                    raise ValueError(f"{key_name}['{sub}']: '{name}' must be an uppercase environment variable name")
 
     def validate_mcp_discovery(value, key_name: str) -> None:
         # Where the MCP servers an agent acquires outside its global MCP
