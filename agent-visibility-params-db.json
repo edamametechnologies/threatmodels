@@ -1,4 +1,70 @@
 {
+  "agent_confinement": {
+    "config_files": {
+      "claude_code": "settings.json",
+      "codex": "config.toml",
+      "cursor": "cli-config.json"
+    },
+    "container_name_needles": {
+      "claude_code": [],
+      "claude_desktop": [
+        "claudefordesktop",
+        "claudedesktop",
+        "claude-desktop"
+      ],
+      "codex": [
+        "codex"
+      ],
+      "cursor": [
+        "cursor"
+      ],
+      "hermes": [],
+      "openclaw": []
+    },
+    "default_permission_mode_rank": 3,
+    "linux_confinement_directories": [
+      {
+        "directory": ".var/app",
+        "mechanism": "flatpak"
+      },
+      {
+        "directory": "snap",
+        "mechanism": "snap"
+      }
+    ],
+    "macos_container_directories": [
+      "Library/Containers"
+    ],
+    "macos_vm_bundles": {
+      "claude_desktop": [
+        "Library/Application Support/Claude/vm_bundles/claudevm.bundle"
+      ]
+    },
+    "permission_mode_ranks": {
+      "acceptEdits": 2,
+      "auto": 1,
+      "bypassPermissions": 0,
+      "dontAsk": 1,
+      "plan": 4
+    },
+    "sandbox_modes_off": {
+      "codex": [
+        "danger-full-access"
+      ],
+      "cursor": [
+        "disabled"
+      ]
+    },
+    "sandbox_modes_on": {
+      "codex": [
+        "read-only",
+        "workspace-write"
+      ],
+      "cursor": [
+        "enabled"
+      ]
+    }
+  },
   "agent_critical_subprocess_catalog": [
     {
       "category": "remote_access",
@@ -105,6 +171,117 @@
       "owasp_refs": "OWASP-ASI03,OWASP-ASI05,OWASP-LLM06"
     }
   ],
+  "agent_harnesses": {
+    "catalog": [
+      {
+        "binaries": [
+          "agentfield",
+          "af"
+        ],
+        "display_name": "AgentField",
+        "homepage": "https://agentfield.ai",
+        "identity_files": [
+          ".af/did",
+          ".af/identity",
+          ".af/identity.json",
+          ".config/agentfield/did",
+          ".config/agentfield/identity",
+          ".config/agentfield/identity.json"
+        ],
+        "markers": [
+          ".af"
+        ],
+        "slug": "agentfield"
+      },
+      {
+        "binaries": [
+          "rippletide"
+        ],
+        "display_name": "Rippletide",
+        "homepage": "https://rippletide.com",
+        "identity_files": [],
+        "markers": [],
+        "slug": "rippletide"
+      },
+      {
+        "binaries": [
+          "nono"
+        ],
+        "display_name": "nono",
+        "homepage": "https://github.com/always-further/nono",
+        "identity_files": [],
+        "markers": [
+          ".nono"
+        ],
+        "slug": "nono"
+      },
+      {
+        "binaries": [
+          "srt"
+        ],
+        "display_name": "Anthropic Sandbox Runtime",
+        "homepage": "https://github.com/anthropic-experimental/sandbox-runtime",
+        "identity_files": [],
+        "markers": [
+          ".srt"
+        ],
+        "slug": "srt"
+      }
+    ],
+    "config_directories": [
+      ".{slug}",
+      ".config/{slug}",
+      "Library/Application Support/{slug}",
+      "AppData/Roaming/{slug}",
+      "AppData/Local/{slug}"
+    ],
+    "home_bin_directories": [
+      ".local/bin",
+      "bin",
+      ".cargo/bin",
+      "go/bin",
+      ".npm-global/bin",
+      ".bun/bin",
+      ".deno/bin",
+      ".volta/bin",
+      ".yarn/bin",
+      "Library/pnpm",
+      ".local/share/pnpm",
+      "AppData/Roaming/npm",
+      "AppData/Local/Microsoft/WindowsApps"
+    ],
+    "identity_keys": [
+      "did",
+      "identity",
+      "agent_did",
+      "agent_id",
+      "project_id",
+      "id"
+    ],
+    "system_bin_directories": {
+      "linux": [
+        "/usr/local/bin",
+        "/home/linuxbrew/.linuxbrew/bin",
+        "/snap/bin"
+      ],
+      "macos": [
+        "/opt/homebrew/bin",
+        "/usr/local/bin"
+      ],
+      "windows": []
+    },
+    "versioned_bin_directories": [
+      {
+        "bin": "bin",
+        "root": ".nvm/versions/node"
+      }
+    ],
+    "windows_binary_extensions": [
+      "exe",
+      "cmd",
+      "bat"
+    ]
+  },
   "agent_model_container_keys": [
     "message",
     "request",
@@ -333,7 +510,39 @@
       "title": "Investigate prompt-injection bait"
     }
   ],
-  "date": "September 07th 2026",
+  "date": "September 30th 2026",
+  "delegation_markers": {
+    "spawn_goal_keys": [
+      "description",
+      "prompt",
+      "goal",
+      "subagent_type"
+    ],
+    "spawn_target_keys": [
+      "subagent_type",
+      "delegate_to",
+      "spawn_agent"
+    ],
+    "spawn_tool_names": [
+      "task",
+      "subagent",
+      "dispatch_agent"
+    ],
+    "text_markers": [
+      "\"name\":\"task\"",
+      "\"name\": \"task\"",
+      "subagent_type",
+      "dispatch_agent",
+      "delegate_to",
+      "spawn_agent"
+    ],
+    "text_reason_keys": [
+      "subagent_type",
+      "delegate_to",
+      "spawn_agent",
+      "dispatch_agent"
+    ]
+  },
   "history_retention": {
     "behavioral_model_max_entries": 100,
     "coach_max_cached_insights": 48,
@@ -342,6 +551,567 @@
     "history_retention_days": 30,
     "subprocess_max_observations": 512,
     "visibility_log_max_entries": 1000
+  },
+  "host_privilege": {
+    "elevated_users": [
+      "root"
+    ],
+    "escalatable_binaries": [
+      "7z",
+      "aa-exec",
+      "adduser",
+      "ansible-playbook",
+      "apk",
+      "apt",
+      "apt-get",
+      "aria2c",
+      "arj",
+      "ash",
+      "at",
+      "awk",
+      "bash",
+      "batcat",
+      "bpftrace",
+      "bundle",
+      "bundler",
+      "busctl",
+      "busybox",
+      "byebug",
+      "c++",
+      "cabal",
+      "capsh",
+      "cc",
+      "cdist",
+      "certbot",
+      "chgrp",
+      "chmod",
+      "choom",
+      "chown",
+      "chpasswd",
+      "chroot",
+      "chrt",
+      "composer",
+      "cowsay",
+      "cowthink",
+      "cp",
+      "cpan",
+      "cpio",
+      "cpulimit",
+      "crash",
+      "crontab",
+      "csh",
+      "csplit",
+      "curl",
+      "dash",
+      "dc",
+      "dd",
+      "debugfs",
+      "defaults",
+      "ditto",
+      "dmesg",
+      "dmidecode",
+      "dmsetup",
+      "dnf",
+      "doas",
+      "docker",
+      "dotnet",
+      "dpkg",
+      "dscl",
+      "dseditgroup",
+      "dstat",
+      "dvips",
+      "easy_install",
+      "ed",
+      "elvish",
+      "emacs",
+      "enscript",
+      "env",
+      "erl",
+      "ex",
+      "exiftool",
+      "expect",
+      "facter",
+      "find",
+      "fish",
+      "flock",
+      "ftp",
+      "gawk",
+      "gdb",
+      "gem",
+      "ghc",
+      "ghci",
+      "gimp",
+      "git",
+      "gpasswd",
+      "grc",
+      "guile",
+      "hdiutil",
+      "hping3",
+      "iftop",
+      "insmod",
+      "install",
+      "installer",
+      "ionice",
+      "ip",
+      "iptables",
+      "ispell",
+      "jjs",
+      "joe",
+      "journalctl",
+      "jrunscript",
+      "kextload",
+      "kmutil",
+      "knife",
+      "ksh",
+      "ksh93",
+      "kubectl",
+      "latex",
+      "latexmk",
+      "launchctl",
+      "less",
+      "lftp",
+      "ltrace",
+      "lualatex",
+      "luatex",
+      "lwp-download",
+      "lxc",
+      "mail",
+      "make",
+      "man",
+      "mawk",
+      "minicom",
+      "mksh",
+      "modprobe",
+      "more",
+      "most",
+      "mount",
+      "msgfilter",
+      "multitime",
+      "mv",
+      "mysql",
+      "nano",
+      "nawk",
+      "nc",
+      "ncat",
+      "ncdu",
+      "ncftp",
+      "neofetch",
+      "nerdctl",
+      "netcat",
+      "nice",
+      "nmap",
+      "nohup",
+      "npm",
+      "npx",
+      "nroff",
+      "nsenter",
+      "nvim",
+      "octave",
+      "openssl",
+      "openvpn",
+      "openvt",
+      "opkg",
+      "osascript",
+      "pacman",
+      "pandoc",
+      "passwd",
+      "patch",
+      "pdb",
+      "pdflatex",
+      "pdftex",
+      "pdksh",
+      "perf",
+      "pexec",
+      "pg",
+      "pic",
+      "pico",
+      "pidstat",
+      "pkexec",
+      "pkg",
+      "plutil",
+      "pnpm",
+      "podman",
+      "port",
+      "posh",
+      "profiles",
+      "pry",
+      "psql",
+      "puppet",
+      "pwsh",
+      "rake",
+      "rbash",
+      "red",
+      "restic",
+      "rlwrap",
+      "rpm",
+      "rsync",
+      "run-mailcap",
+      "run-parts",
+      "runuser",
+      "rview",
+      "rvim",
+      "sash",
+      "scp",
+      "screen",
+      "script",
+      "security",
+      "sed",
+      "service",
+      "setarch",
+      "setcap",
+      "setfacl",
+      "setlock",
+      "setsid",
+      "sftp",
+      "sg",
+      "sh",
+      "shuf",
+      "slsh",
+      "smbclient",
+      "snap",
+      "socat",
+      "softlimit",
+      "sort",
+      "split",
+      "sqlite3",
+      "ssh",
+      "ssh-agent",
+      "sshpass",
+      "start-stop-daemon",
+      "stdbuf",
+      "strace",
+      "su",
+      "sudo",
+      "sudoedit",
+      "sysadminctl",
+      "sysctl",
+      "systemctl",
+      "systemd-resolve",
+      "systemd-run",
+      "systemsetup",
+      "tar",
+      "taskset",
+      "tcpdump",
+      "tcsh",
+      "tee",
+      "telnet",
+      "tex",
+      "tftp",
+      "time",
+      "timedatectl",
+      "timeout",
+      "tmate",
+      "tmutil",
+      "tmux",
+      "top",
+      "torify",
+      "torsocks",
+      "tshark",
+      "unshare",
+      "unzip",
+      "update-alternatives",
+      "useradd",
+      "usermod",
+      "vagrant",
+      "valgrind",
+      "varnishncsa",
+      "vi",
+      "view",
+      "vigr",
+      "vim",
+      "vimdiff",
+      "vipw",
+      "virsh",
+      "visudo",
+      "watch",
+      "wget",
+      "wireshark",
+      "xargs",
+      "xelatex",
+      "xetex",
+      "xxd",
+      "yarn",
+      "yash",
+      "yum",
+      "zathura",
+      "zip",
+      "zsh",
+      "zypper"
+    ],
+    "escalatable_binary_families": [
+      "clang",
+      "g++",
+      "gcc",
+      "irb",
+      "java",
+      "julia",
+      "lua",
+      "luajit",
+      "node",
+      "nodejs",
+      "perl",
+      "php",
+      "pip",
+      "pypy",
+      "python",
+      "ruby",
+      "tclsh",
+      "wish"
+    ],
+    "escalatable_environment_variables": [
+      "BASH_ENV",
+      "DYLD_FALLBACK_FRAMEWORK_PATH",
+      "DYLD_FALLBACK_LIBRARY_PATH",
+      "DYLD_FRAMEWORK_PATH",
+      "DYLD_INSERT_LIBRARIES",
+      "DYLD_LIBRARY_PATH",
+      "ENV",
+      "JAVA_TOOL_OPTIONS",
+      "JDK_JAVA_OPTIONS",
+      "LD_AUDIT",
+      "LD_LIBRARY_PATH",
+      "LD_PRELOAD",
+      "NODE_OPTIONS",
+      "NODE_PATH",
+      "PERL5LIB",
+      "PERL5OPT",
+      "PERLLIB",
+      "PYTHONHOME",
+      "PYTHONPATH",
+      "PYTHONSTARTUP",
+      "RUBYLIB",
+      "RUBYOPT",
+      "_JAVA_OPTIONS"
+    ],
+    "group_files": [
+      "/etc/group"
+    ],
+    "linux_admin_groups": [
+      "sudo",
+      "wheel",
+      "admin"
+    ],
+    "macos_admin_groups": [
+      "admin"
+    ],
+    "sudoers_directories": [
+      "/etc/sudoers.d"
+    ],
+    "sudoers_files": [
+      "/etc/sudoers"
+    ]
+  },
+  "instruction_inventory": {
+    "agent_subdirectories": [
+      {
+        "directory": "rules",
+        "kind": "rule"
+      },
+      {
+        "directory": "skills",
+        "kind": "skill"
+      },
+      {
+        "directory": "skills-cursor",
+        "kind": "skill"
+      },
+      {
+        "directory": "commands",
+        "kind": "command"
+      },
+      {
+        "directory": "agents",
+        "kind": "subagent"
+      },
+      {
+        "directory": "subagents",
+        "kind": "subagent"
+      },
+      {
+        "directory": "memories",
+        "kind": "memory"
+      },
+      {
+        "directory": "prompts",
+        "kind": "prompt"
+      },
+      {
+        "directory": "instructions",
+        "kind": "instruction"
+      },
+      {
+        "directory": "hooks",
+        "kind": "hook"
+      }
+    ],
+    "artifact_extensions": [
+      "md",
+      "mdc",
+      "txt",
+      "json",
+      "toml",
+      "yaml",
+      "yml"
+    ],
+    "document_extensions": [
+      "md",
+      "mdc"
+    ],
+    "nested_roots": {
+      "claude_desktop": [
+        "local-agent-mode-sessions/skills-plugin/*/*"
+      ]
+    },
+    "skill_entry_files": [
+      "skill.md",
+      "description.md"
+    ],
+    "skill_tree_directories": [
+      "skills",
+      "skills-cursor",
+      ".agentfield",
+      "agentfield"
+    ],
+    "toplevel_instruction_files": [
+      "claude.md",
+      "agents.md",
+      "gemini.md",
+      "codex.md",
+      "rules.md",
+      "instructions.md",
+      "memory.md",
+      ".cursorrules"
+    ],
+    "toplevel_rule_extensions": [
+      "mdc"
+    ],
+    "workspace_config_directories": [
+      ".cursor",
+      ".claude"
+    ],
+    "workspace_subdirectories": [
+      {
+        "directory": "skills",
+        "kind": "skill"
+      },
+      {
+        "directory": "skills-cursor",
+        "kind": "skill"
+      },
+      {
+        "directory": "commands",
+        "kind": "command"
+      },
+      {
+        "directory": "agents",
+        "kind": "subagent"
+      },
+      {
+        "directory": "subagents",
+        "kind": "subagent"
+      }
+    ],
+    "workspace_toplevel_files": [
+      {
+        "kind": "instruction",
+        "path": "AGENTS.md"
+      },
+      {
+        "kind": "instruction",
+        "path": "CLAUDE.md"
+      },
+      {
+        "kind": "instruction",
+        "path": "GEMINI.md"
+      },
+      {
+        "kind": "instruction",
+        "path": "CODEX.md"
+      },
+      {
+        "kind": "instruction",
+        "path": ".cursorrules"
+      },
+      {
+        "kind": "instruction",
+        "path": ".github/copilot-instructions.md"
+      }
+    ]
+  },
+  "instruction_references": {
+    "basenames": [
+      "skill.md",
+      "agents.md",
+      "claude.md",
+      "gemini.md",
+      "codex.md",
+      "rules.md",
+      "instructions.md",
+      "memory.md",
+      ".cursorrules",
+      "copilot-instructions.md"
+    ],
+    "document_extensions": [
+      "md",
+      "mdc",
+      "txt"
+    ],
+    "file_segments": [
+      "commands/",
+      "rules/",
+      "prompts/"
+    ],
+    "folder_segments": [
+      "skills/",
+      "agents/",
+      "subagents/"
+    ]
+  },
+  "mcp_credential_markers": {
+    "env_key_needles": [
+      "TOKEN",
+      "KEY",
+      "SECRET",
+      "PASSWORD",
+      "CREDENTIAL",
+      "PAT"
+    ],
+    "header_names": [
+      "authorization"
+    ],
+    "header_needles": [
+      "api-key",
+      "token"
+    ]
+  },
+  "mcp_discovery": {
+    "claude_code_plugin_manifests": [
+      "plugins/installed_plugins.json"
+    ],
+    "claude_code_project_config_files": [
+      ".mcp.json"
+    ],
+    "claude_code_project_directories": [
+      "projects"
+    ],
+    "claude_desktop_extension_directories": [
+      "Claude Extensions"
+    ],
+    "claude_desktop_extension_manifest": "manifest.json",
+    "cursor_plugin_directories": [
+      "plugins"
+    ],
+    "openclaw_extension_directories": [
+      "extensions"
+    ],
+    "openclaw_extension_manifest": "openclaw.plugin.json",
+    "plugin_config_suffixes": [
+      "mcp.json"
+    ],
+    "plugin_skip_directories": [
+      "node_modules",
+      ".git"
+    ]
   },
   "model_pricing": {
     "default": {
@@ -593,7 +1363,7 @@
       "per_marker": false
     }
   ],
-  "signature": "ecd766def0392ea81a9980bb91888af11bd01ace6939d5f3ffc2efc839ffa4f1",
+  "signature": "079243fddb739917b862aa921a3f5313fd8910d59326a30f4e2a4f6a923907ae",
   "transcript_secret_signatures": [
     {
       "hits": 2,
@@ -691,5 +1461,435 @@
       "mode": "any",
       "per_marker": false
     }
-  ]
+  ],
+  "workspace_attribution": {
+    "agent_cli_package_markers": [
+      "@anthropic-ai/claude-code",
+      "@openai/codex",
+      "/claude-code/"
+    ],
+    "agent_cli_programs": [
+      "claude",
+      "codex",
+      "cursor-agent"
+    ],
+    "agent_cli_subcommands": [
+      {
+        "program": "cursor",
+        "subcommand": "agent"
+      }
+    ],
+    "agent_labels": {
+      "claude_code": "Claude Code",
+      "claude_desktop": "Claude Desktop",
+      "codex": "Codex",
+      "cursor": "Cursor",
+      "hermes": "Hermes",
+      "openclaw": "OpenClaw"
+    },
+    "background_flag_keys": [
+      "run_in_background",
+      "is_background",
+      "background"
+    ],
+    "background_launch_window_secs": 3600,
+    "background_wait_keys": [
+      "block_until_ms"
+    ],
+    "change_directory_programs": [
+      "cd",
+      "pushd",
+      "set-location",
+      "sl",
+      "chdir"
+    ],
+    "command_keys": [
+      "command",
+      "cmd"
+    ],
+    "detaching_programs": [
+      "start-process",
+      "start",
+      "setsid",
+      "daemonize",
+      "disown"
+    ],
+    "executable_extensions": [
+      "exe",
+      "cmd",
+      "bat",
+      "ps1"
+    ],
+    "fleet_workspace_references": [
+      {
+        "agent_type": "hermes",
+        "conditional_suffixes": [],
+        "contains": [
+          "/.hermes"
+        ],
+        "ends_with": [
+          "/.hermes",
+          "-.hermes",
+          "-hermes"
+        ],
+        "equals": [
+          ".hermes"
+        ]
+      },
+      {
+        "agent_type": "openclaw",
+        "conditional_suffixes": [],
+        "contains": [
+          "/.openclaw"
+        ],
+        "ends_with": [
+          "/.openclaw",
+          "-.openclaw",
+          "-openclaw"
+        ],
+        "equals": [
+          ".openclaw"
+        ]
+      },
+      {
+        "agent_type": "codex",
+        "conditional_suffixes": [],
+        "contains": [
+          "/.codex",
+          "/documents/codex/",
+          "-documents-codex-"
+        ],
+        "ends_with": [
+          "/.codex",
+          "-.codex",
+          "-codex",
+          "/documents/codex",
+          "-documents-codex"
+        ],
+        "equals": [
+          ".codex"
+        ]
+      },
+      {
+        "agent_type": "claude_desktop",
+        "conditional_suffixes": [
+          {
+            "suffix": "-claude",
+            "when_contains": "library"
+          }
+        ],
+        "contains": [
+          "/application support/claude",
+          "/appdata/roaming/claude",
+          "/.config/claude/",
+          "-application support-claude",
+          "-application-support-claude",
+          "-appdata-roaming-claude"
+        ],
+        "ends_with": [
+          "/.config/claude"
+        ],
+        "equals": []
+      }
+    ],
+    "headless_entrypoint_prefixes": [
+      "sdk"
+    ],
+    "headless_originators": [
+      "codex_exec"
+    ],
+    "headless_sources": [
+      "exec"
+    ],
+    "home_parent_directories": [
+      "/Users",
+      "/home",
+      "?:/Users"
+    ],
+    "home_variables": [
+      "${HOME}",
+      "$HOME",
+      "%USERPROFILE%",
+      "${env:USERPROFILE}",
+      "$env:USERPROFILE"
+    ],
+    "interpreter_program_prefixes": [
+      "python",
+      "node",
+      "bun",
+      "deno",
+      "ruby",
+      "perl"
+    ],
+    "launch_clock_slack_secs": 5,
+    "lookup_options": [
+      {
+        "options": [
+          "-v",
+          "-V"
+        ],
+        "program": "command"
+      }
+    ],
+    "max_launch_chain": 16,
+    "package_exec_programs": [
+      "pnpm",
+      "yarn"
+    ],
+    "package_exec_subcommands": [
+      "dlx",
+      "exec"
+    ],
+    "package_runner_programs": [
+      "npx",
+      "bunx",
+      "pnpx",
+      "node",
+      "bun",
+      "deno"
+    ],
+    "patch_file_headers": [
+      "*** Add File:",
+      "*** Update File:"
+    ],
+    "path_aliases": [
+      {
+        "canonical": "/tmp",
+        "prefix": "/private/tmp"
+      },
+      {
+        "canonical": "/var",
+        "prefix": "/private/var"
+      },
+      {
+        "canonical": "/etc",
+        "prefix": "/private/etc"
+      }
+    ],
+    "powershell_programs": [
+      "pwsh",
+      "powershell"
+    ],
+    "powershell_script_options": [
+      "-c",
+      "-command"
+    ],
+    "project_directories": [
+      "projects"
+    ],
+    "script_extensions": [
+      "sh",
+      "bash",
+      "zsh",
+      "fish",
+      "ps1",
+      "psm1",
+      "cmd",
+      "bat",
+      "py",
+      "js",
+      "mjs",
+      "cjs",
+      "ts",
+      "rb",
+      "pl"
+    ],
+    "shell_programs": [
+      "sh",
+      "bash",
+      "zsh",
+      "dash",
+      "ksh",
+      "fish",
+      "pwsh",
+      "powershell"
+    ],
+    "source_programs": [
+      "source",
+      "."
+    ],
+    "subagent_directory": "subagents",
+    "subagent_lookback_margin_secs": 3600,
+    "temp_roots": [
+      "/tmp",
+      "/var/tmp",
+      "/dev/shm",
+      "/var/folders/*/*/T",
+      "?:/Windows/Temp",
+      "?:/Temp",
+      "?:/tmp",
+      "?:/Users/*/AppData/Local/Temp"
+    ],
+    "temp_variables": [
+      "${TMPDIR}",
+      "$TMPDIR",
+      "%TEMP%",
+      "%TMP%",
+      "${env:TEMP}",
+      "$env:TEMP",
+      "${env:TMP}",
+      "$env:TMP"
+    ],
+    "temporary_workspace_label": "Temporary sessions",
+    "working_directory_keys": [
+      "workdir",
+      "working_directory",
+      "cwd",
+      "directory"
+    ],
+    "wrapper_duration_programs": [
+      "timeout",
+      "gtimeout"
+    ],
+    "wrapper_program_options": [
+      {
+        "options": [
+          "-filepath"
+        ],
+        "program": "start-process"
+      }
+    ],
+    "wrapper_programs": [
+      "env",
+      "nohup",
+      "exec",
+      "command",
+      "builtin",
+      "time",
+      "caffeinate",
+      "setsid",
+      "stdbuf",
+      "unbuffer",
+      "sudo",
+      "doas",
+      "nice",
+      "ionice",
+      "xargs",
+      "start-process",
+      "start",
+      "call",
+      "timeout",
+      "gtimeout",
+      "cmd",
+      "then",
+      "do",
+      "else",
+      "elif",
+      "if",
+      "while",
+      "until",
+      "!"
+    ],
+    "wrapper_slash_option_programs": [
+      "cmd",
+      "start"
+    ],
+    "wrapper_title_programs": [
+      "start"
+    ],
+    "wrapper_value_options": [
+      {
+        "options": [
+          "-u",
+          "--unset",
+          "-C",
+          "--chdir",
+          "-S",
+          "--split-string"
+        ],
+        "program": "env"
+      },
+      {
+        "options": [
+          "-u",
+          "-g",
+          "-C",
+          "-D",
+          "-h",
+          "-p",
+          "-r",
+          "-t",
+          "-U"
+        ],
+        "program": "sudo"
+      },
+      {
+        "options": [
+          "-u",
+          "-C"
+        ],
+        "program": "doas"
+      },
+      {
+        "options": [
+          "-n",
+          "--adjustment"
+        ],
+        "program": "nice"
+      },
+      {
+        "options": [
+          "-c",
+          "-n",
+          "-p"
+        ],
+        "program": "ionice"
+      },
+      {
+        "options": [
+          "-s",
+          "--signal",
+          "-k",
+          "--kill-after"
+        ],
+        "program": "timeout"
+      },
+      {
+        "options": [
+          "-s",
+          "--signal",
+          "-k",
+          "--kill-after"
+        ],
+        "program": "gtimeout"
+      },
+      {
+        "options": [
+          "-n",
+          "-I",
+          "-P",
+          "-L",
+          "-s",
+          "-d",
+          "-E",
+          "-a"
+        ],
+        "program": "xargs"
+      },
+      {
+        "options": [
+          "-i",
+          "-o",
+          "-e"
+        ],
+        "program": "stdbuf"
+      }
+    ],
+    "write_content_keys": [
+      "content",
+      "contents",
+      "new_string",
+      "code_edit",
+      "text"
+    ],
+    "write_edit_list_keys": [
+      "edits"
+    ],
+    "write_path_keys": [
+      "file_path",
+      "path",
+      "target_file",
+      "filePath"
+    ]
+  }
 }

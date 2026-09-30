@@ -1,0 +1,126 @@
+name: Model-signing certificate expiry
+
+# Fails 14 days before the CI signing certificate expires. The certificate is
+# read from signed/manifest-data.sig.json on main, the signature verifying
+# clients download: from its not_after they refuse every data download and
+# keep what they have, and the sign-data job of sign_manifests.yml refuses to
+# sign. Renewal: edamame_app/MODELSIGNING-CEREMONY.md G1, then a run of
+# sign_manifests.yml whose PR puts the new certificate in that file.
+
+on:
+  schedule:
+    # Daily at 06:17 UTC
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+    inputs:
+      warn_days:
+        description: 'Fail when the certificate expires in fewer than this many days'
+        required: false
+        default: '14'
+
+permissions:
+  contents: read
+
+jobs:
+  certificate-expiry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout the published data signature
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          sparse-checkout: signed/manifest-data.sig.json
+          sparse-checkout-cone-mode: false
+
+      - name: Check the CI certificate expiry
+        id: expiry
+        env:
+          WARN_DAYS: ${{ inputs.warn_days || '14' }}
+        shell: python3 {0}
+        run: |
+          import json
+          import os
+          import sys
+          import time
+
+          SIGNATURE_FILE = "signed/manifest-data.sig.json"
+          RENEW = (
+              "Renew the CI certificate: edamame_app/MODELSIGNING-CEREMONY.md G1, with "
+              "root-A.pem from the model-signing secrets folder (RECORD.md there), then "
+              "run sign_manifests.yml and merge its PR so that this file carries the new "
+              "certificate."
+          )
+
+
+          def utc(timestamp):
+              return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(timestamp))
+
+
+          def finish(ok, message):
+              escaped = message.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+              print(f"::{'notice' if ok else 'error'} title=Model-signing CI certificate::{escaped}")
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+                  summary.write(message + "\n")
+              with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+                  output.write("message=" + message.replace("\n", " ") + "\n")
+              sys.exit(0 if ok else 1)
+
+
+          try:
+              warn_days = int(os.environ["WARN_DAYS"])
+              if warn_days < 0:
+                  raise ValueError
+          except ValueError:
+              finish(False, f"warn_days must be a whole number of days, not {os.environ['WARN_DAYS']!r}.")
+
+          if not os.path.isfile(SIGNATURE_FILE):
+              finish(False, f"{SIGNATURE_FILE} is not on main, so verifying clients refuse every data "
+                            f"download. Run sign_manifests.yml and merge its PR.")
+
+          try:
+              with open(SIGNATURE_FILE, encoding="utf-8") as handle:
+                  envelope = json.load(handle)
+              certificates = [
+                  (entry["certificate"]["key_id"], int(entry["certificate"]["not_after"]))
+                  for entry in envelope["signatures"]
+                  if entry.get("certificate") is not None
+              ]
+          except (OSError, ValueError, KeyError, TypeError, AttributeError) as error:
+              finish(False, f"{SIGNATURE_FILE} on main cannot be read ({type(error).__name__}: {error}).")
+
+          if not certificates:
+              finish(False, f"{SIGNATURE_FILE} on main carries no CI certificate, so its expiry cannot be "
+                            f"checked. Run sign_manifests.yml and merge its PR.")
+
+          now = time.time()
+          for key_id, not_after in sorted(certificates, key=lambda item: item[1]):
+              print(f"CI key {key_id}: certificate valid until {utc(not_after)} "
+                    f"({int((not_after - now) / 86400 * 10) / 10} days left)")
+
+          # Clients accept any signature entry that verifies, and re-signing an
+          # unchanged manifest after a renewal appends the new key's entry next to
+          # the old one: the published signature dies with the newest certificate.
+          key_id, not_after = max(certificates, key=lambda item: item[1])
+          days_left = (not_after - now) / 86400
+          if days_left <= 0:
+              finish(False, f"The model-signing CI certificate (key {key_id}) expired on "
+                            f"{utc(not_after)}: verifying clients refuse every data download. {RENEW}")
+          if days_left < warn_days:
+              finish(False, f"The model-signing CI certificate (key {key_id}) expires on "
+                            f"{utc(not_after)}, in {int(days_left * 10) / 10} days. {RENEW}")
+          finish(True, f"The model-signing CI certificate (key {key_id}) is valid until "
+                       f"{utc(not_after)}, {int(days_left)} days from now (this check fails "
+                       f"{warn_days} days before).")
+
+      - name: Slack alert
+        if: failure()
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: 'C072J0U9TH7'
+          slack-message: |
+            Model-signing CI certificate check failed on threatmodels main:
+            ${{ steps.expiry.outputs.message || 'the check did not run, see the workflow run' }}
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

@@ -59,7 +59,7 @@
     "/.config/1password/",
     "/.config/bitwarden/"
   ],
-  "date": "September 28th 2026",
+  "date": "September 30th 2026",
   "fim_excluded_path_patterns": [
     "/target/debug/",
     "/target/release/",
@@ -116,6 +116,40 @@
     "/datareporting/archived/",
     "/saved-telemetry-pings/"
   ],
+  "fim_forbidden_watch_roots": {
+    "unix": [
+      "/",
+      "/bin",
+      "/boot",
+      "/dev",
+      "/etc",
+      "/home",
+      "/lib",
+      "/lib64",
+      "/opt",
+      "/proc",
+      "/root",
+      "/run",
+      "/sbin",
+      "/srv",
+      "/sys",
+      "/usr",
+      "/var",
+      "/Applications",
+      "/Library",
+      "/System",
+      "/Users",
+      "/Volumes",
+      "/private"
+    ],
+    "windows": [
+      "C:\\",
+      "C:\\Windows",
+      "C:\\Program Files",
+      "C:\\Program Files (x86)",
+      "C:\\Users"
+    ]
+  },
   "labels": {
     "aws": [
       "/.aws/"
@@ -320,7 +354,7 @@
       "/AppData/Roaming/containers/auth.json"
     ]
   },
-  "signature": "2baed15674a3cc752799ce0f7084d52921e5d0c4fa2c8a5bee21628d4d00951d",
+  "signature": "3fe8b8e29dfed2a4d6044f300dbed33bbdea6b73608dd516f901dc8585345490",
   "watch_roots": {
     "common_home_relative": [
       ".ssh",

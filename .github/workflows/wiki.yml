@@ -20,8 +20,12 @@ jobs:
             edamame_pin: ${{ secrets.EDAMAME_POSTURE_PIN }}
             edamame_id: ${{ github.run_id }}
             checkout: true
-            # We need to wait for the API access to be granted as we require protected access
+            # The later push authenticates with DEV_GITHUB_TOKEN, which the org IP
+            # allow list refuses until the Hub lists this runner. This repository is
+            # public, so the default probe answers at once: probe a private one.
             wait_for_api: true
+            wait_repository: edamametechnologies/edamame_core
+            token: ${{ secrets.DEV_GITHUB_TOKEN }}
 
         - name: Setup Python
           uses: actions/setup-python@v3.1.4

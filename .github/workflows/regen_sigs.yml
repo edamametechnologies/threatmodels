@@ -1,18 +1,12 @@
 name: Verify generated threatmodel artifacts
+
+# `regen` is meant to be a required status check on main (Validation
+# ruleset). A required check must report on every PR, so this workflow has no
+# `paths:` filter: a PR that touches none of the files the job verifies is a
+# no-op that passes in seconds.
 on:
   pull_request:
     branches: ["main", "dev"]
-    paths:
-      - 'threatmodel-*.json'
-      - 'whitelists-db.json'
-      - 'blacklists-db.json'
-      - 'lanscan-profiles-db.json'
-      - 'sensitive-paths-db.json'
-      - 'cve-detection-params-db.json'
-      - 'agent-visibility-params-db.json'
-      - 'lanscan-port-vulns-db.json'
-      - 'lanscan-vendor-vulns-db.json'
-      - 'signed/**'
 
 concurrency:
   group: verify-generated-artifacts-${{ github.event.pull_request.number }}
@@ -22,27 +16,58 @@ permissions:
   contents: read
 
 jobs:
+  # The job id is the status check context: keep it `regen`.
   regen:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # The PR merge commit and its two parents, to list what the PR changes.
+          fetch-depth: 2
+
+      # Everything `make update` reads or writes, every published model and
+      # list, the signed manifests, the signer and generators, and this
+      # workflow. When in doubt (not a PR merge commit), verify.
+      - name: Files to verify
+        id: scope
+        run: |
+          relevant='^(threatmodel-[^/]+\.(json|sig)|[^/]+-db\.(json|sig)|consent/.+|signed/.+|src/publish/.+|Makefile|requirements\.txt|\.github/workflows/regen_sigs\.yml)$'
+          if git rev-parse -q --verify 'HEAD^2' >/dev/null; then
+            changed=$(git diff --name-only --no-renames 'HEAD^1' HEAD)
+            matched=$(grep -E "$relevant" <<< "$changed" || true)
+          else
+            echo "HEAD is not a pull request merge commit: verifying everything."
+            matched="(all)"
+          fi
+          if [[ -n "$matched" ]]; then
+            echo "verify=true" >> "$GITHUB_OUTPUT"
+            echo "Changes to verify:"
+            echo "$matched"
+          else
+            echo "verify=false" >> "$GITHUB_OUTPUT"
+            echo "No model, list, consent, signed manifest, generator or signer changed: nothing to verify."
+          fi
 
       - name: Setup Python
+        if: steps.scope.outputs.verify == 'true'
         uses: actions/setup-python@v3.1.4
         with:
           python-version: 3.11.3
 
       - name: Install dependencies
+        if: steps.scope.outputs.verify == 'true'
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Regenerate artifacts
+        if: steps.scope.outputs.verify == 'true'
         run: make update
 
       - name: Verify generated artifacts are current
+        if: steps.scope.outputs.verify == 'true'
         run: |
           if [[ -n "$(git status --porcelain --untracked-files=all)" ]]; then
             echo "Generated threatmodel artifacts are out of date."
@@ -51,13 +76,19 @@ jobs:
             exit 1
           fi
 
-      # A PR that changes a threat model must carry the exec manifest signed
-      # offline with a root key (src/publish/sign-manifest.py). Clients refuse
-      # an unsigned exec model anyway; this stops the PR from merging one.
-      # Skipped until the root public keys are configured.
+      # A PR into main that changes a threat model must carry the exec
+      # manifest signed with a root key (the PR template has the routine).
+      # Clients refuse an unsigned exec model anyway; this stops the PR from
+      # merging one. Only main is signed, so PRs into dev skip this step.
       - name: Verify exec manifest signature
-        if: vars.MODEL_ROOT_PUBLIC_KEYS != ''
+        if: steps.scope.outputs.verify == 'true' && github.base_ref == 'main'
+        env:
+          ROOT_PUBLIC_KEYS: ${{ vars.MODEL_ROOT_PUBLIC_KEYS }}
         run: |
+          if [[ -z "${ROOT_PUBLIC_KEYS//[[:space:]]/}" ]]; then
+            echo "::error::The repository variable MODEL_ROOT_PUBLIC_KEYS is empty, so the exec manifest cannot be verified."
+            exit 1
+          fi
           args=()
-          for key in ${{ vars.MODEL_ROOT_PUBLIC_KEYS }}; do args+=(--public-key "$key"); done
-          python3 src/publish/sign-manifest.py verify --scope exec --branch "${{ github.base_ref }}" "${args[@]}"
+          for key in $ROOT_PUBLIC_KEYS; do args+=(--public-key "$key"); done
+          python3 src/publish/sign-manifest.py verify --scope exec --branch main "${args[@]}"

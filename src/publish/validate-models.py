@@ -822,7 +822,7 @@ def validate_sensitive_paths(filename: str) -> None:
     """Validate sensitive-paths-db.json structure."""
     allowed_top_keys = {
         'date', 'signature', 'common_patterns', 'platform_patterns', 'labels',
-        'watch_roots', 'fim_excluded_path_patterns',
+        'watch_roots', 'fim_excluded_path_patterns', 'fim_forbidden_watch_roots',
     }
 
     with open(filename, 'r', encoding='utf-8') as file:
@@ -918,6 +918,26 @@ def validate_sensitive_paths(filename: str) -> None:
                 f"fim_excluded_path_patterns[{i}] must use '/' separators; got '{pat}'"
             )
 
+    # fim_forbidden_watch_roots: directories the FIM watcher must never watch
+    # recursively (a filesystem root or a top-level system tree), whatever
+    # asked for them. `unix` applies on macOS and Linux, `windows` on
+    # Windows; flodbadd::fim compares them case-insensitively, `\` folded
+    # to '/', trailing separators ignored.
+    forbidden = data['fim_forbidden_watch_roots']
+    if not isinstance(forbidden, dict) or set(forbidden.keys()) != {'unix', 'windows'}:
+        raise ValueError("'fim_forbidden_watch_roots' must be a dict with keys 'unix' and 'windows'")
+    for platform_key, roots in forbidden.items():
+        if not isinstance(roots, list) or not roots:
+            raise ValueError(f"fim_forbidden_watch_roots['{platform_key}'] must be a non-empty list")
+        for i, root in enumerate(roots):
+            where = f"fim_forbidden_watch_roots['{platform_key}'][{i}]"
+            if not isinstance(root, str):
+                raise ValueError(f"{where} must be a string")
+            if platform_key == 'unix' and (not root.startswith('/') or '\\' in root):
+                raise ValueError(f"{where} must be an absolute POSIX path; got '{root}'")
+            if platform_key == 'windows' and not re.match(r'^[A-Za-z]:\\', root):
+                raise ValueError(f"{where} must be an absolute Windows path (drive root); got '{root}'")
+
     print("Sensitive paths validation successful")
 
 
@@ -1007,6 +1027,65 @@ def validate_cve_detection_params(filename: str) -> None:
         # but a large sustained payload over :53/:123 is a tunneling shape.
         'treat_high_volume_dns_ntp_as_non_routine',
         'dns_ntp_non_routine_min_outbound_bytes',
+        # Per-user store ownership: the profile-relative roots whose first
+        # component names the owning application, the sandboxed-application
+        # container layouts, the install roots that name a product, and the
+        # generic tokens that never name one.
+        'per_user_app_data_roots',
+        'sandbox_container_layouts',
+        'application_install_roots',
+        'application_install_prefixes',
+        'owned_store_generic_tokens',
+        'owned_store_min_token_len',
+        # Stores the operating system owns below the per-user library, the
+        # images of OS services, and the sealed system volume's binary roots.
+        'platform_owned_user_store',
+        'os_service_image_path_prefixes',
+        'macos_sealed_system_binary_path_prefixes',
+        # Process lineage: the AI agents' process names, the directories that
+        # hold a tool's versioned releases, and the desktop-session roles
+        # that launch every application.
+        'agent_process_names',
+        'version_layout_directories',
+        'desktop_session_root_roles',
+        # IPv4 ranges of the host's own access-network plumbing (a flow
+        # there ends at the CPE / tunnel endpoint, not at a remote peer).
+        'access_network_plumbing_ipv4_cidrs',
+        # Script / language runtimes, package-manager runtimes, dependency
+        # tree markers and the lockfiles / manifests an install rewrites.
+        'script_runtime_basenames',
+        'dependency_tree_markers',
+        'package_manager_runtimes',
+        'install_artifact_basenames',
+        # Developer toolchain tree markers (read on disk by the dev-tree
+        # attestation and in the FIM stream), and the suffixes of code /
+        # persistence definitions that are never data artifacts.
+        'dev_tree_markers',
+        'code_module_suffixes',
+        # Which sensitive-paths catalog labels denote credential material,
+        # and which name agent instruction / configuration surfaces.
+        'sensitive_material_labels',
+        'agent_instruction_labels',
+        # Where each agent keeps its enforcement configuration.
+        'agent_control_config_path_suffixes',
+        # Certificate / legal-entity vocabulary dropped from a signing
+        # publisher before its organization tokens are matched against a
+        # destination, and the shortest token kept.
+        'publisher_org_stop_tokens',
+        'publisher_org_min_token_len',
+        # Detection thresholds: read breadth that makes process-memory reads
+        # a sweep, the hex run that marks a per-invocation path segment, the
+        # credential classes a process-tree relay needs, and the local
+        # processes that make a blacklisted prefix shared infrastructure.
+        'memory_scrape_read_enumeration_min_distinct_targets',
+        'memory_scrape_per_invocation_min_hex_run',
+        'relay_min_credential_classes',
+        'shared_infrastructure_min_local_processes',
+        # OS temp roots by role, the name shape of a per-invocation temp
+        # scratch directory, and the temp PowerShell stub name shape.
+        'os_temp_roots',
+        'temp_scratch_name',
+        'windows_temp_powershell_stub',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1411,6 +1490,148 @@ def validate_cve_detection_params(filename: str) -> None:
         for subkey in sorted(expected_keys):
             validate_string_list(value[subkey], f"{key_name}['{subkey}']")
 
+    def validate_path_fragments(value, key_name: str, *, relative: bool, directory: bool) -> None:
+        # Path fragments the detector matches against a lowercased,
+        # forward-slash-normalized path. `relative`: below the user profile
+        # (no leading '/'); otherwise anchored at a separator (leading '/').
+        # `directory`: a directory prefix whose next component is read
+        # (trailing '/').
+        validate_string_list(value, key_name)
+        for i, item in enumerate(value):
+            where = f"{key_name}[{i}]"
+            if not item:
+                raise ValueError(f"{where} must be a non-empty string")
+            if item != item.lower() or '\\' in item:
+                raise ValueError(f"{where} must be lowercase with '/' separators; got '{item}'")
+            if relative and item.startswith('/'):
+                raise ValueError(f"{where} must be relative (no leading '/'); got '{item}'")
+            if not relative and not item.startswith('/'):
+                raise ValueError(f"{where} must start with '/'; got '{item}'")
+            if directory and not item.endswith('/'):
+                raise ValueError(f"{where} must end with '/'; got '{item}'")
+
+    def validate_lowercase_tokens(value, key_name: str) -> None:
+        # Names and tokens compared for equality with a lowercased value.
+        validate_string_list(value, key_name)
+        for i, item in enumerate(value):
+            if not item or item != item.lower() or item != item.strip():
+                raise ValueError(
+                    f"{key_name}[{i}] must be a non-empty lowercase string without "
+                    f"surrounding whitespace; got '{item}'"
+                )
+
+    def validate_sandbox_container_layouts(value, key_name: str) -> None:
+        # Sandboxed-application containers whose data directory mirrors a
+        # user profile (macOS App Sandbox, Windows MSIX, Linux Flatpak):
+        # `<container_root><container id>/<data_dir><inner_root><owner>/...`,
+        # relative to the profile. `data_dir` is empty when the container
+        # directory itself holds the mirrored roots.
+        expected_entry_keys = {'container_root', 'data_dir', 'inner_roots'}
+        if not isinstance(value, list):
+            raise ValueError(f"'{key_name}' must be a list")
+        for i, entry in enumerate(value):
+            ekey = f"{key_name}[{i}]"
+            if not isinstance(entry, dict):
+                raise ValueError(f"{ekey} must be a dict")
+            if set(entry.keys()) != expected_entry_keys:
+                missing = expected_entry_keys - set(entry.keys())
+                extra = set(entry.keys()) - expected_entry_keys
+                raise ValueError(f"{ekey} has missing keys {missing} and unexpected keys {extra}")
+            validate_path_fragments(
+                [entry['container_root']], f"{ekey}['container_root']", relative=True, directory=True
+            )
+            if not isinstance(entry['data_dir'], str):
+                raise ValueError(f"{ekey}['data_dir'] must be a string")
+            if entry['data_dir']:
+                validate_path_fragments(
+                    [entry['data_dir']], f"{ekey}['data_dir']", relative=True, directory=True
+                )
+            if not entry['inner_roots']:
+                raise ValueError(f"{ekey}['inner_roots'] must be non-empty")
+            validate_path_fragments(
+                entry['inner_roots'], f"{ekey}['inner_roots']", relative=True, directory=True
+            )
+
+    def validate_platform_owned_user_store(value, key_name: str) -> None:
+        # Per-user stores the operating system owns: below `library_root`
+        # (profile-relative), the owner directory -- the component below one
+        # of `library_state_directories`, or a direct child of the root -- is
+        # in the OS's reserved namespace (`owner_prefixes`; a direct child may
+        # also match `direct_owner_prefixes`).
+        expected_keys = {
+            'library_root',
+            'library_state_directories',
+            'owner_prefixes',
+            'direct_owner_prefixes',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        validate_path_fragments(
+            [value['library_root']], f"{key_name}['library_root']", relative=True, directory=True
+        )
+        for subkey in ('library_state_directories', 'owner_prefixes', 'direct_owner_prefixes'):
+            validate_lowercase_tokens(value[subkey], f"{key_name}['{subkey}']")
+
+    def validate_dev_tree_markers(value, key_name: str) -> None:
+        # File and directory NAMES (case-sensitive, as on disk) that mark a
+        # toolchain tree: single names and lists of names, never paths.
+        name_keys = {
+            'cachedir_tag_file', 'cmake_cache_file', 'node_manifest_file',
+            'node_modules_directory', 'swiftpm_build_directory', 'swiftpm_state_file',
+            'swiftpm_manifest_file', 'bazel_output_link', 'bazel_workspace_link_prefix',
+            'go_build_work_directory_prefix', 'venv_config_file',
+        }
+        list_keys = {
+            'node_install_state_files', 'bun_lockfiles', 'bazel_workspace_files',
+            'go_build_action_config_files',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        expected_keys = name_keys | list_keys
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+
+        def check_name(name, where):
+            if not isinstance(name, str) or not name or name != name.strip():
+                raise ValueError(f"{where} must be a non-empty name without surrounding whitespace")
+            if '/' in name or '\\' in name:
+                raise ValueError(f"{where} must be a name, not a path; got '{name}'")
+
+        for name_key in sorted(name_keys):
+            check_name(value[name_key], f"{key_name}['{name_key}']")
+        for list_key in sorted(list_keys):
+            validate_string_list(value[list_key], f"{key_name}['{list_key}']")
+            if not value[list_key]:
+                raise ValueError(f"{key_name}['{list_key}'] must be non-empty")
+            for i, name in enumerate(value[list_key]):
+                check_name(name, f"{key_name}['{list_key}'][{i}]")
+
+    def validate_agent_process_names(value, key_name: str) -> None:
+        # Agent slug -> process names (the tool name of the image, lowercase,
+        # `.exe` stripped). A name maps to one agent only, so the lookup is
+        # unambiguous.
+        if not isinstance(value, dict) or not value:
+            raise ValueError(f"'{key_name}' must be a non-empty dict")
+        seen = {}
+        for slug, names in value.items():
+            if not re.fullmatch(r"[a-z0-9_]+", slug):
+                raise ValueError(f"{key_name} key '{slug}' must be a lowercase slug")
+            if not names:
+                raise ValueError(f"{key_name}['{slug}'] must be non-empty")
+            validate_lowercase_tokens(names, f"{key_name}['{slug}']")
+            for name in names:
+                if name in seen:
+                    raise ValueError(
+                        f"{key_name}: '{name}' is listed for both '{seen[name]}' and '{slug}'"
+                    )
+                seen[name] = slug
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -1470,6 +1691,12 @@ def validate_cve_detection_params(filename: str) -> None:
         'ambient_baseline_ttl_days',
         'ambient_baseline_min_recurrent_days',
         'dns_ntp_non_routine_min_outbound_bytes',
+        'owned_store_min_token_len',
+        'publisher_org_min_token_len',
+        'memory_scrape_read_enumeration_min_distinct_targets',
+        'memory_scrape_per_invocation_min_hex_run',
+        'relay_min_credential_classes',
+        'shared_infrastructure_min_local_processes',
     ):
         value = data[positive_int_key]
         if isinstance(value, bool) or not isinstance(value, int) or value < 1:
@@ -1604,6 +1831,120 @@ def validate_cve_detection_params(filename: str) -> None:
         data['evidence_weights'],
         'evidence_weights',
     )
+    validate_path_fragments(
+        data['per_user_app_data_roots'], 'per_user_app_data_roots', relative=True, directory=True
+    )
+    validate_sandbox_container_layouts(data['sandbox_container_layouts'], 'sandbox_container_layouts')
+    validate_path_fragments(
+        data['application_install_roots'], 'application_install_roots', relative=False, directory=True
+    )
+    validate_path_fragments(
+        data['application_install_prefixes'],
+        'application_install_prefixes',
+        relative=False,
+        directory=True,
+    )
+    validate_lowercase_tokens(data['owned_store_generic_tokens'], 'owned_store_generic_tokens')
+    validate_platform_owned_user_store(data['platform_owned_user_store'], 'platform_owned_user_store')
+    for prefix_key in ('os_service_image_path_prefixes', 'macos_sealed_system_binary_path_prefixes'):
+        validate_path_fragments(data[prefix_key], prefix_key, relative=False, directory=True)
+    validate_agent_process_names(data['agent_process_names'], 'agent_process_names')
+    for token_key in ('version_layout_directories', 'desktop_session_root_roles'):
+        validate_lowercase_tokens(data[token_key], token_key)
+    # A range read as "not external" blinds egress detection for it: only
+    # strict IPv4 CIDRs, and nothing wider than a /16.
+    validate_string_list(data['access_network_plumbing_ipv4_cidrs'], 'access_network_plumbing_ipv4_cidrs')
+    for i, cidr in enumerate(data['access_network_plumbing_ipv4_cidrs']):
+        where = f"access_network_plumbing_ipv4_cidrs[{i}]"
+        if '/' not in cidr:
+            raise ValueError(f"{where} must be CIDR notation; got '{cidr}'")
+        try:
+            network = ipaddress.IPv4Network(cidr, strict=True)
+        except ValueError as exc:
+            raise ValueError(f"{where} is not a strict IPv4 CIDR: {exc}") from exc
+        if network.prefixlen < 16:
+            raise ValueError(f"{where} must be /16 or narrower; got '{cidr}'")
+    for token_key in ('script_runtime_basenames', 'package_manager_runtimes', 'install_artifact_basenames'):
+        validate_lowercase_tokens(data[token_key], token_key)
+    validate_path_fragments(
+        data['dependency_tree_markers'], 'dependency_tree_markers', relative=False, directory=True
+    )
+    validate_dev_tree_markers(data['dev_tree_markers'], 'dev_tree_markers')
+
+    def validate_exact_keys(value, key_name, expected_keys):
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+
+    # OS temp roots, matched on a lowercased '/' path: the Windows per-user
+    # and SYSTEM temp markers (found anywhere in the path), the POSIX temp
+    # roots and macOS per-user temp trees (at its start), and the macOS
+    # per-user temp root (`<parent><xx>/<hash>/<leaf>`).
+    temp_roots = data['os_temp_roots']
+    validate_exact_keys(temp_roots, 'os_temp_roots', {
+        'windows_user_temp_marker', 'windows_system_temp_marker', 'posix_temp_roots',
+        'macos_per_user_temp_trees', 'macos_per_user_temp_parent', 'macos_per_user_temp_leaf',
+    })
+    for single_key in ('windows_user_temp_marker', 'windows_system_temp_marker', 'macos_per_user_temp_parent'):
+        validate_path_fragments([temp_roots[single_key]], f"os_temp_roots['{single_key}']", relative=False, directory=True)
+    for list_key in ('posix_temp_roots', 'macos_per_user_temp_trees'):
+        if not temp_roots[list_key]:
+            raise ValueError(f"os_temp_roots['{list_key}'] must be non-empty")
+        validate_path_fragments(temp_roots[list_key], f"os_temp_roots['{list_key}']", relative=False, directory=True)
+    validate_lowercase_tokens([temp_roots['macos_per_user_temp_leaf']], "os_temp_roots['macos_per_user_temp_leaf']")
+    if '/' in temp_roots['macos_per_user_temp_leaf']:
+        raise ValueError("os_temp_roots['macos_per_user_temp_leaf'] must be a directory name")
+
+    # A per-invocation temp scratch directory name: optional leading dots,
+    # `prefix`, optional dots, then an alphanumeric token of min_token_len.
+    scratch = data['temp_scratch_name']
+    validate_exact_keys(scratch, 'temp_scratch_name', {'prefix', 'min_token_len'})
+    validate_lowercase_tokens([scratch['prefix']], "temp_scratch_name['prefix']")
+    if isinstance(scratch['min_token_len'], bool) or not isinstance(scratch['min_token_len'], int) or scratch['min_token_len'] < 1:
+        raise ValueError("temp_scratch_name['min_token_len'] must be a positive integer")
+
+    # The temp PowerShell stub a Windows helper writes into the per-user
+    # temp root: `<name_prefix><random><name_suffix>`.
+    stub = data['windows_temp_powershell_stub']
+    validate_exact_keys(stub, 'windows_temp_powershell_stub', {'name_prefix', 'name_suffix'})
+    validate_lowercase_tokens([stub['name_prefix'], stub['name_suffix']], 'windows_temp_powershell_stub')
+    for label_key in ('sensitive_material_labels', 'agent_instruction_labels'):
+        validate_lowercase_tokens(data[label_key], label_key)
+    validate_lowercase_tokens(data['publisher_org_stop_tokens'], 'publisher_org_stop_tokens')
+    # Agent slug -> path suffixes of that agent's enforcement configuration
+    # (lowercase, '/', anchored at a separator); a suffix belongs to one
+    # agent.
+    control_configs = data['agent_control_config_path_suffixes']
+    if not isinstance(control_configs, dict) or not control_configs:
+        raise ValueError("'agent_control_config_path_suffixes' must be a non-empty dict")
+    seen_suffixes = {}
+    for agent, suffixes in control_configs.items():
+        if not re.fullmatch(r"[a-z0-9_]+", agent):
+            raise ValueError(f"agent_control_config_path_suffixes key '{agent}' must be a lowercase slug")
+        if not suffixes:
+            raise ValueError(f"agent_control_config_path_suffixes['{agent}'] must be non-empty")
+        validate_path_fragments(
+            suffixes, f"agent_control_config_path_suffixes['{agent}']", relative=False, directory=False
+        )
+        for suffix in suffixes:
+            if suffix in seen_suffixes:
+                raise ValueError(
+                    f"agent_control_config_path_suffixes: '{suffix}' is listed for both "
+                    f"'{seen_suffixes[suffix]}' and '{agent}'"
+                )
+            seen_suffixes[suffix] = agent
+    overlap = set(data['sensitive_material_labels']) & set(data['agent_instruction_labels'])
+    if overlap:
+        raise ValueError(
+            f"labels {sorted(overlap)} cannot be both credential material and agent instruction surfaces"
+        )
+    validate_lowercase_tokens(data['code_module_suffixes'], 'code_module_suffixes')
+    for i, suffix in enumerate(data['code_module_suffixes']):
+        if not suffix.startswith('.'):
+            raise ValueError(f"code_module_suffixes[{i}] must start with '.'; got '{suffix}'")
 
     print("CVE detection params validation successful")
 
@@ -1633,6 +1974,15 @@ def validate_agent_visibility_params(filename: str) -> None:
         'augmentation_prompt_templates',
         'augmentation_coach_templates',
         'history_retention',
+        'workspace_attribution',
+        'instruction_inventory',
+        'instruction_references',
+        'agent_harnesses',
+        'agent_confinement',
+        'host_privilege',
+        'mcp_discovery',
+        'mcp_credential_markers',
+        'delegation_markers',
     }
 
     def validate_string_list(value, key_name: str) -> None:
@@ -1861,6 +2211,520 @@ def validate_agent_visibility_params(filename: str) -> None:
             if isinstance(sub, bool) or not isinstance(sub, int) or sub < 1:
                 raise ValueError(f"{key_name}['{subkey}'] must be a positive integer")
 
+    def validate_workspace_attribution(value, key_name: str) -> None:
+        # Which workspace an agent session is filed under on the Agents view
+        # (edamame_foundation::agent_workspaces): the agent-CLI launch
+        # vocabulary read from launching transcripts, the harness markers of
+        # a programmatic start, the temporary roots grouped per agent, path
+        # conventions, time windows and label wording.
+        string_list_keys = {
+            'agent_cli_programs', 'agent_cli_package_markers',
+            'package_runner_programs', 'package_exec_programs',
+            'package_exec_subcommands', 'shell_programs',
+            'powershell_programs', 'powershell_script_options',
+            'interpreter_program_prefixes', 'source_programs',
+            'wrapper_programs', 'wrapper_slash_option_programs',
+            'wrapper_duration_programs', 'wrapper_title_programs',
+            'detaching_programs', 'change_directory_programs',
+            'executable_extensions', 'script_extensions', 'command_keys',
+            'working_directory_keys', 'write_path_keys', 'write_content_keys',
+            'write_edit_list_keys', 'background_flag_keys',
+            'background_wait_keys', 'patch_file_headers', 'home_variables',
+            'temp_variables', 'headless_entrypoint_prefixes',
+            'headless_originators', 'headless_sources', 'temp_roots',
+            'home_parent_directories', 'project_directories',
+        }
+        option_list_keys = {
+            'wrapper_value_options', 'wrapper_program_options', 'lookup_options',
+        }
+        positive_int_keys = {
+            'launch_clock_slack_secs', 'background_launch_window_secs',
+            'subagent_lookback_margin_secs', 'max_launch_chain',
+        }
+        string_keys = {'subagent_directory', 'temporary_workspace_label'}
+        expected_keys = (
+            string_list_keys | option_list_keys | positive_int_keys | string_keys
+            | {'agent_cli_subcommands', 'path_aliases', 'agent_labels',
+               'fleet_workspace_references'}
+        )
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for sub in sorted(string_list_keys):
+            validate_string_list(value[sub], f"{key_name}['{sub}']")
+            if not value[sub]:
+                raise ValueError(f"{key_name}['{sub}'] must be non-empty")
+        for sub in sorted(option_list_keys):
+            entries = value[sub]
+            if not isinstance(entries, list):
+                raise ValueError(f"{key_name}['{sub}'] must be a list")
+            for i, entry in enumerate(entries):
+                if not isinstance(entry, dict) or set(entry.keys()) != {'program', 'options'}:
+                    raise ValueError(f"{key_name}['{sub}'][{i}] must be {{program, options}}")
+                if not isinstance(entry['program'], str) or not entry['program']:
+                    raise ValueError(f"{key_name}['{sub}'][{i}]['program'] must be a non-empty string")
+                validate_string_list(entry['options'], f"{key_name}['{sub}'][{i}]['options']")
+        for sub in sorted(positive_int_keys):
+            v = value[sub]
+            if isinstance(v, bool) or not isinstance(v, int) or v < 1:
+                raise ValueError(f"{key_name}['{sub}'] must be a positive integer")
+        for sub in sorted(string_keys):
+            if not isinstance(value[sub], str) or not value[sub]:
+                raise ValueError(f"{key_name}['{sub}'] must be a non-empty string")
+        subcommands = value['agent_cli_subcommands']
+        if not isinstance(subcommands, list):
+            raise ValueError(f"{key_name}['agent_cli_subcommands'] must be a list")
+        for i, entry in enumerate(subcommands):
+            if (not isinstance(entry, dict) or set(entry.keys()) != {'program', 'subcommand'}
+                    or not all(isinstance(entry[k], str) and entry[k] for k in entry)):
+                raise ValueError(f"{key_name}['agent_cli_subcommands'][{i}] must be {{program, subcommand}}")
+        aliases = value['path_aliases']
+        if not isinstance(aliases, list):
+            raise ValueError(f"{key_name}['path_aliases'] must be a list")
+        for i, entry in enumerate(aliases):
+            if (not isinstance(entry, dict) or set(entry.keys()) != {'prefix', 'canonical'}
+                    or not all(isinstance(entry[k], str) and entry[k].startswith('/') for k in entry)):
+                raise ValueError(f"{key_name}['path_aliases'][{i}] must be {{prefix, canonical}} absolute paths")
+        labels = value['agent_labels']
+        if not isinstance(labels, dict) or not labels:
+            raise ValueError(f"{key_name}['agent_labels'] must be a non-empty dict")
+        for agent, label in labels.items():
+            if not isinstance(label, str) or not label:
+                raise ValueError(f"{key_name}['agent_labels']['{agent}'] must be a non-empty string")
+        for i, root in enumerate(value['temp_roots'] + value['home_parent_directories']):
+            if not (root.startswith('/') or root.startswith('?:/')):
+                raise ValueError(f"{key_name}: '{root}' must be an absolute path or start with '?:/'")
+        for directory in value['project_directories']:
+            # One path component, matched exactly against a transcript path's.
+            if not directory or '/' in directory or '\\' in directory:
+                raise ValueError(f"{key_name}['project_directories']: '{directory}' must be one path component")
+        references = value['fleet_workspace_references']
+        if not isinstance(references, list) or not references:
+            raise ValueError(f"{key_name}['fleet_workspace_references'] must be a non-empty list")
+        reference_keys = {'agent_type', 'equals', 'contains', 'ends_with', 'conditional_suffixes'}
+        for i, entry in enumerate(references):
+            where = f"{key_name}['fleet_workspace_references'][{i}]"
+            if not isinstance(entry, dict) or set(entry.keys()) != reference_keys:
+                raise ValueError(f"{where} must be {{{', '.join(sorted(reference_keys))}}}")
+            if not isinstance(entry['agent_type'], str) or not entry['agent_type']:
+                raise ValueError(f"{where}['agent_type'] must be a non-empty string")
+            matchers = 0
+            for sub in ('equals', 'contains', 'ends_with'):
+                validate_string_list(entry[sub], f"{where}['{sub}']")
+                for needle in entry[sub]:
+                    # Matched against the lowercased reference with '/' separators.
+                    if not needle or needle != needle.lower() or '\\' in needle:
+                        raise ValueError(f"{where}['{sub}']: '{needle}' must be a non-empty lowercase string without '\\'")
+                matchers += len(entry[sub])
+            suffixes = entry['conditional_suffixes']
+            if not isinstance(suffixes, list):
+                raise ValueError(f"{where}['conditional_suffixes'] must be a list")
+            for j, suffix in enumerate(suffixes):
+                if (not isinstance(suffix, dict) or set(suffix.keys()) != {'suffix', 'when_contains'}
+                        or not all(isinstance(suffix[k], str) and suffix[k] and suffix[k] == suffix[k].lower()
+                                   for k in suffix)):
+                    raise ValueError(f"{where}['conditional_suffixes'][{j}] must be {{suffix, when_contains}} lowercase strings")
+            matchers += len(suffixes)
+            if matchers == 0:
+                raise ValueError(f"{where} must carry at least one matcher")
+
+    # Component kinds the Agents view and the augmentation report key on.
+    instruction_kinds = {
+        'rule', 'skill', 'command', 'subagent', 'memory', 'prompt',
+        'instruction', 'hook',
+    }
+
+    def validate_relative_path(path, key_name: str) -> None:
+        # Joined onto a root the code resolves (a home, an agent's own root,
+        # a workspace): relative, '/'-separated, never climbing out.
+        if (not isinstance(path, str) or not path or path.startswith('/')
+                or '\\' in path or '..' in path.split('/')):
+            raise ValueError(f"{key_name} must be a relative '/'-separated path, got {path!r}")
+
+    def validate_lowercase_list(value, key_name: str) -> None:
+        # Compared against lowercased names, so an uppercase entry never matches.
+        validate_string_list(value, key_name)
+        if not value:
+            raise ValueError(f"{key_name} must be non-empty")
+        for item in value:
+            if not item or item != item.lower():
+                raise ValueError(f"{key_name}: '{item}' must be a non-empty lowercase string")
+
+    def validate_instruction_inventory(value, key_name: str) -> None:
+        # What the instruction inventory (edamame_foundation::agent_visibility)
+        # walks and reads: the instruction directories under an agent's root
+        # and under a workspace root with the component kind each projects
+        # to, the top-level instruction files, the extensions, the skill
+        # package markers and the nested roots.
+        directory_list_keys = {'agent_subdirectories', 'workspace_subdirectories'}
+        lowercase_list_keys = {
+            'artifact_extensions', 'document_extensions',
+            'toplevel_instruction_files', 'toplevel_rule_extensions',
+            'skill_entry_files', 'skill_tree_directories',
+        }
+        expected_keys = directory_list_keys | lowercase_list_keys | {
+            'nested_roots', 'workspace_toplevel_files', 'workspace_config_directories',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for sub in sorted(directory_list_keys):
+            entries = value[sub]
+            if not isinstance(entries, list) or not entries:
+                raise ValueError(f"{key_name}['{sub}'] must be a non-empty list")
+            for i, entry in enumerate(entries):
+                if not isinstance(entry, dict) or set(entry.keys()) != {'directory', 'kind'}:
+                    raise ValueError(f"{key_name}['{sub}'][{i}] must be {{directory, kind}}")
+                directory = entry['directory']
+                # One path component, matched against lowercased components.
+                if (not isinstance(directory, str) or not directory
+                        or directory != directory.lower() or '/' in directory
+                        or '\\' in directory or directory == '..'):
+                    raise ValueError(f"{key_name}['{sub}'][{i}]['directory'] must be one lowercase path component")
+                if entry['kind'] not in instruction_kinds:
+                    raise ValueError(f"{key_name}['{sub}'][{i}]['kind'] must be one of {sorted(instruction_kinds)}")
+        for sub in sorted(lowercase_list_keys):
+            validate_lowercase_list(value[sub], f"{key_name}['{sub}']")
+        for sub in ('artifact_extensions', 'document_extensions', 'toplevel_rule_extensions'):
+            for ext in value[sub]:
+                if ext.startswith('.') or '/' in ext:
+                    raise ValueError(f"{key_name}['{sub}']: '{ext}' must be an extension without its dot")
+        roots = value['nested_roots']
+        if not isinstance(roots, dict):
+            raise ValueError(f"{key_name}['nested_roots'] must be a dict")
+        for agent, patterns in roots.items():
+            validate_string_list(patterns, f"{key_name}['nested_roots']['{agent}']")
+            for pattern in patterns:
+                validate_relative_path(pattern, f"{key_name}['nested_roots']['{agent}']")
+        files = value['workspace_toplevel_files']
+        if not isinstance(files, list) or not files:
+            raise ValueError(f"{key_name}['workspace_toplevel_files'] must be a non-empty list")
+        for i, entry in enumerate(files):
+            if not isinstance(entry, dict) or set(entry.keys()) != {'path', 'kind'}:
+                raise ValueError(f"{key_name}['workspace_toplevel_files'][{i}] must be {{path, kind}}")
+            validate_relative_path(entry['path'], f"{key_name}['workspace_toplevel_files'][{i}]['path']")
+            if entry['kind'] not in instruction_kinds:
+                raise ValueError(f"{key_name}['workspace_toplevel_files'][{i}]['kind'] must be one of {sorted(instruction_kinds)}")
+        directories = value['workspace_config_directories']
+        validate_string_list(directories, f"{key_name}['workspace_config_directories']")
+        if not directories:
+            raise ValueError(f"{key_name}['workspace_config_directories'] must be non-empty")
+        for directory in directories:
+            validate_relative_path(directory, f"{key_name}['workspace_config_directories']")
+
+    def validate_instruction_references(value, key_name: str) -> None:
+        # What makes a path in an instruction body a reference to another
+        # instruction artifact (edamame_foundation::agent_visibility, the
+        # skill reference graph).
+        expected_keys = {'basenames', 'folder_segments', 'file_segments', 'document_extensions'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for sub in sorted(expected_keys):
+            validate_lowercase_list(value[sub], f"{key_name}['{sub}']")
+        for sub in ('folder_segments', 'file_segments'):
+            for segment in value[sub]:
+                # Matched as a substring of a '/'-separated path: a directory
+                # name followed by its separator.
+                if not segment.endswith('/') or segment == '/':
+                    raise ValueError(f"{key_name}['{sub}']: '{segment}' must be a directory name ending with '/'")
+        for ext in value['document_extensions']:
+            if ext.startswith('.') or '/' in ext:
+                raise ValueError(f"{key_name}['document_extensions']: '{ext}' must be an extension without its dot")
+
+    def validate_agent_harnesses(value, key_name: str) -> None:
+        # The agent-governance harness catalog the Agents view detects from a
+        # per-user footprint (edamame_foundation::agent_visibility), and the
+        # bin and config directories searched.
+        expected_keys = {
+            'catalog', 'config_directories', 'home_bin_directories',
+            'versioned_bin_directories', 'system_bin_directories',
+            'windows_binary_extensions', 'identity_keys',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        catalog = value['catalog']
+        if not isinstance(catalog, list) or not catalog:
+            raise ValueError(f"{key_name}['catalog'] must be a non-empty list")
+        entry_keys = {'slug', 'display_name', 'homepage', 'markers', 'binaries', 'identity_files'}
+        slugs = set()
+        for i, entry in enumerate(catalog):
+            where = f"{key_name}['catalog'][{i}]"
+            if not isinstance(entry, dict) or set(entry.keys()) != entry_keys:
+                raise ValueError(f"{where} must be {{{', '.join(sorted(entry_keys))}}}")
+            slug = entry['slug']
+            # Fills `{slug}` in a path and names the harness in facts.
+            if (not isinstance(slug, str) or not slug
+                    or not all(c.islower() or c.isdigit() or c in '-_' for c in slug)):
+                raise ValueError(f"{where}['slug'] must be lowercase letters, digits, '-' or '_'")
+            if slug in slugs:
+                raise ValueError(f"{where}['slug'] '{slug}' is listed twice")
+            slugs.add(slug)
+            if not isinstance(entry['display_name'], str) or not entry['display_name']:
+                raise ValueError(f"{where}['display_name'] must be a non-empty string")
+            if not isinstance(entry['homepage'], str) or not entry['homepage'].startswith('https://'):
+                raise ValueError(f"{where}['homepage'] must be an https URL")
+            for sub in ('markers', 'identity_files'):
+                validate_string_list(entry[sub], f"{where}['{sub}']")
+                for path in entry[sub]:
+                    validate_relative_path(path, f"{where}['{sub}']")
+            validate_string_list(entry['binaries'], f"{where}['binaries']")
+            for binary in entry['binaries']:
+                if not binary or '/' in binary or '\\' in binary:
+                    raise ValueError(f"{where}['binaries']: '{binary}' must be a file name")
+            if not entry['markers'] and not entry['binaries']:
+                raise ValueError(f"{where} must carry a marker or a binary")
+        for template in value['config_directories']:
+            validate_relative_path(template, f"{key_name}['config_directories']")
+            # Without the slug, one directory would mark every harness present.
+            if '{slug}' not in template:
+                raise ValueError(f"{key_name}['config_directories']: '{template}' must contain {{slug}}")
+        validate_string_list(value['home_bin_directories'], f"{key_name}['home_bin_directories']")
+        for directory in value['home_bin_directories']:
+            validate_relative_path(directory, f"{key_name}['home_bin_directories']")
+        versioned = value['versioned_bin_directories']
+        if not isinstance(versioned, list):
+            raise ValueError(f"{key_name}['versioned_bin_directories'] must be a list")
+        for i, entry in enumerate(versioned):
+            if not isinstance(entry, dict) or set(entry.keys()) != {'root', 'bin'}:
+                raise ValueError(f"{key_name}['versioned_bin_directories'][{i}] must be {{root, bin}}")
+            validate_relative_path(entry['root'], f"{key_name}['versioned_bin_directories'][{i}]['root']")
+            validate_relative_path(entry['bin'], f"{key_name}['versioned_bin_directories'][{i}]['bin']")
+        system = value['system_bin_directories']
+        if not isinstance(system, dict) or set(system.keys()) != {'macos', 'linux', 'windows'}:
+            raise ValueError(f"{key_name}['system_bin_directories'] must be {{macos, linux, windows}}")
+        for platform, directories in system.items():
+            validate_string_list(directories, f"{key_name}['system_bin_directories']['{platform}']")
+            for directory in directories:
+                if not (directory.startswith('/') or directory[1:3] == ':/'):
+                    raise ValueError(f"{key_name}['system_bin_directories']['{platform}']: '{directory}' must be absolute")
+        validate_lowercase_list(value['windows_binary_extensions'], f"{key_name}['windows_binary_extensions']")
+        for ext in value['windows_binary_extensions']:
+            if ext.startswith('.') or '/' in ext:
+                raise ValueError(f"{key_name}['windows_binary_extensions']: '{ext}' must be an extension without its dot")
+        validate_string_list(value['identity_keys'], f"{key_name}['identity_keys']")
+        if not value['identity_keys'] or not all(value['identity_keys']):
+            raise ValueError(f"{key_name}['identity_keys'] must be non-empty strings")
+
+    def validate_agent_confinement(value, key_name: str) -> None:
+        # Where an agent's OS confinement shows on disk, where each agent
+        # declares its own confinement and enforcement plane, and how Claude
+        # Code's approval modes rank (edamame_foundation::agent_visibility).
+        expected_keys = {
+            'container_name_needles', 'macos_container_directories',
+            'macos_vm_bundles', 'linux_confinement_directories', 'config_files',
+            'permission_mode_ranks', 'default_permission_mode_rank',
+            'sandbox_modes_on', 'sandbox_modes_off',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        needles = value['container_name_needles']
+        if not isinstance(needles, dict) or not needles:
+            raise ValueError(f"{key_name}['container_name_needles'] must be a non-empty dict")
+        for agent, agent_needles in needles.items():
+            validate_string_list(agent_needles, f"{key_name}['container_name_needles']['{agent}']")
+            for needle in agent_needles:
+                # Matched as a substring of a lowercased directory name.
+                if not needle or needle != needle.lower() or '/' in needle:
+                    raise ValueError(f"{key_name}['container_name_needles']['{agent}']: '{needle}' must be a lowercase name fragment")
+        validate_string_list(value['macos_container_directories'], f"{key_name}['macos_container_directories']")
+        for directory in value['macos_container_directories']:
+            validate_relative_path(directory, f"{key_name}['macos_container_directories']")
+        bundles = value['macos_vm_bundles']
+        if not isinstance(bundles, dict):
+            raise ValueError(f"{key_name}['macos_vm_bundles'] must be a dict")
+        for agent, paths in bundles.items():
+            validate_string_list(paths, f"{key_name}['macos_vm_bundles']['{agent}']")
+            for path in paths:
+                validate_relative_path(path, f"{key_name}['macos_vm_bundles']['{agent}']")
+        confined = value['linux_confinement_directories']
+        if not isinstance(confined, list):
+            raise ValueError(f"{key_name}['linux_confinement_directories'] must be a list")
+        for i, entry in enumerate(confined):
+            where = f"{key_name}['linux_confinement_directories'][{i}]"
+            if not isinstance(entry, dict) or set(entry.keys()) != {'directory', 'mechanism'}:
+                raise ValueError(f"{where} must be {{directory, mechanism}}")
+            validate_relative_path(entry['directory'], f"{where}['directory']")
+            if not isinstance(entry['mechanism'], str) or not entry['mechanism']:
+                raise ValueError(f"{where}['mechanism'] must be a non-empty string")
+        files = value['config_files']
+        if not isinstance(files, dict):
+            raise ValueError(f"{key_name}['config_files'] must be a dict")
+        for agent, path in files.items():
+            validate_relative_path(path, f"{key_name}['config_files']['{agent}']")
+        ranks = value['permission_mode_ranks']
+        if not isinstance(ranks, dict) or not ranks:
+            raise ValueError(f"{key_name}['permission_mode_ranks'] must be a non-empty dict")
+        for mode, rank in list(ranks.items()) + [('default', value['default_permission_mode_rank'])]:
+            if isinstance(rank, bool) or not isinstance(rank, int) or not 0 <= rank <= 255:
+                raise ValueError(f"{key_name}: the rank of '{mode}' must be an integer 0..255")
+        # The values of an agent's own sandbox setting (Cursor sandbox.mode,
+        # Codex sandbox_mode) that turn command confinement on and off.
+        for side in ('sandbox_modes_on', 'sandbox_modes_off'):
+            modes = value[side]
+            if not isinstance(modes, dict) or not modes:
+                raise ValueError(f"{key_name}['{side}'] must be a non-empty dict")
+            for agent, values in modes.items():
+                validate_string_list(values, f"{key_name}['{side}']['{agent}']")
+                if not values or any(not v for v in values):
+                    raise ValueError(f"{key_name}['{side}']['{agent}'] must list non-empty values")
+        for agent in value['sandbox_modes_on'].keys() & value['sandbox_modes_off'].keys():
+            both = set(value['sandbox_modes_on'][agent]) & set(value['sandbox_modes_off'][agent])
+            if both:
+                raise ValueError(f"{key_name}: {sorted(both)} cannot turn {agent}'s sandbox both on and off")
+
+    def validate_host_privilege(value, key_name: str) -> None:
+        # What the macOS / Linux host-privilege assessment reads and matches
+        # (edamame_foundation::agent_visibility, sudoers_grading): elevated
+        # users, administrator groups, the group database, the sudoers
+        # policy, and what a passwordless sudo rule may allow before it
+        # counts as root (escalatable binaries, their versioned families, and
+        # the environment variables whose env_keep reaches root).
+        name_keys = {'elevated_users', 'macos_admin_groups', 'linux_admin_groups'}
+        path_keys = {'group_files', 'sudoers_files', 'sudoers_directories'}
+        binary_keys = {'escalatable_binaries', 'escalatable_binary_families'}
+        env_keys = {'escalatable_environment_variables'}
+        expected_keys = name_keys | path_keys | binary_keys | env_keys
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for sub in sorted(name_keys):
+            validate_string_list(value[sub], f"{key_name}['{sub}']")
+            if not value[sub]:
+                raise ValueError(f"{key_name}['{sub}'] must be non-empty")
+            for name in value[sub]:
+                # A user or group name as the group database writes it.
+                if not name or any(c in name for c in ':,/ \t%'):
+                    raise ValueError(f"{key_name}['{sub}']: '{name}' must be a user or group name")
+        for sub in sorted(path_keys):
+            validate_string_list(value[sub], f"{key_name}['{sub}']")
+            if not value[sub]:
+                raise ValueError(f"{key_name}['{sub}'] must be non-empty")
+            for path in value[sub]:
+                if not path.startswith('/') or '..' in path.split('/'):
+                    raise ValueError(f"{key_name}['{sub}']: '{path}' must be an absolute path")
+        for sub in sorted(binary_keys):
+            validate_string_list(value[sub], f"{key_name}['{sub}']")
+            if not value[sub]:
+                raise ValueError(f"{key_name}['{sub}'] must be non-empty")
+            if len(set(value[sub])) != len(value[sub]):
+                raise ValueError(f"{key_name}['{sub}'] has duplicate entries")
+            for name in value[sub]:
+                # A lowercase executable basename (compared with the
+                # lowercased basename of the command a rule allows).
+                if (not name or name != name.lower() or name.strip() != name
+                        or any(c in name for c in '/\\ \t*?[]')):
+                    raise ValueError(f"{key_name}['{sub}']: '{name}' must be a lowercase basename")
+        for sub in sorted(env_keys):
+            validate_string_list(value[sub], f"{key_name}['{sub}']")
+            if not value[sub]:
+                raise ValueError(f"{key_name}['{sub}'] must be non-empty")
+            if len(set(value[sub])) != len(value[sub]):
+                raise ValueError(f"{key_name}['{sub}'] has duplicate entries")
+            for name in value[sub]:
+                if not re.fullmatch(r'[A-Z_][A-Z0-9_]*', name):
+                    raise ValueError(f"{key_name}['{sub}']: '{name}' must be an uppercase environment variable name")
+
+    def validate_mcp_discovery(value, key_name: str) -> None:
+        # Where the MCP servers an agent acquires outside its global MCP
+        # config are declared (edamame_foundation::agent_visibility): plugin
+        # trees, project configs, installed-plugin manifests, extensions.
+        list_keys = {
+            'plugin_config_suffixes', 'plugin_skip_directories',
+            'cursor_plugin_directories', 'claude_code_plugin_manifests',
+            'claude_code_project_directories', 'claude_code_project_config_files',
+            'claude_desktop_extension_directories', 'openclaw_extension_directories',
+        }
+        file_keys = {'claude_desktop_extension_manifest', 'openclaw_extension_manifest'}
+        expected_keys = list_keys | file_keys
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for sub in sorted(list_keys):
+            validate_string_list(value[sub], f"{key_name}['{sub}']")
+            if not value[sub]:
+                raise ValueError(f"{key_name}['{sub}'] must be non-empty")
+        validate_lowercase_list(value['plugin_config_suffixes'], f"{key_name}['plugin_config_suffixes']")
+        for sub in ('plugin_config_suffixes', 'plugin_skip_directories'):
+            for name in value[sub]:
+                # Compared with one path component.
+                if not name or '/' in name or '\\' in name:
+                    raise ValueError(f"{key_name}['{sub}']: '{name}' must be a file or directory name")
+        for sub in sorted(list_keys - {'plugin_config_suffixes', 'plugin_skip_directories'}):
+            for path in value[sub]:
+                validate_relative_path(path, f"{key_name}['{sub}']")
+        for sub in sorted(file_keys):
+            name = value[sub]
+            if not isinstance(name, str) or not name or '/' in name or '\\' in name:
+                raise ValueError(f"{key_name}['{sub}'] must be a file name")
+
+    def validate_mcp_credential_markers(value, key_name: str) -> None:
+        # The header and environment-variable names that make an MCP server's
+        # authentication a shared secret (edamame_foundation::agent_visibility).
+        expected_keys = {'header_names', 'header_needles', 'env_key_needles'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        # Compared with the lowercased header name.
+        validate_lowercase_list(value['header_names'], f"{key_name}['header_names']")
+        validate_lowercase_list(value['header_needles'], f"{key_name}['header_needles']")
+        needles = value['env_key_needles']
+        validate_string_list(needles, f"{key_name}['env_key_needles']")
+        if not needles:
+            raise ValueError(f"{key_name}['env_key_needles'] must be non-empty")
+        for needle in needles:
+            # Compared with the uppercased variable name.
+            if not needle or needle != needle.upper():
+                raise ValueError(f"{key_name}['env_key_needles']: '{needle}' must be a non-empty uppercase string")
+
+    def validate_delegation_markers(value, key_name: str) -> None:
+        # The agent vocabulary that marks a sub-agent spawn in a transcript
+        # (edamame_foundation::agent_visibility, recursion / delegation).
+        expected_keys = {
+            'spawn_tool_names', 'spawn_target_keys', 'spawn_goal_keys',
+            'text_markers', 'text_reason_keys',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        # Compared with a lowercased tool name / transcript line.
+        for sub in ('spawn_tool_names', 'text_markers', 'text_reason_keys'):
+            validate_lowercase_list(value[sub], f"{key_name}['{sub}']")
+        # JSON keys, matched as written.
+        for sub in ('spawn_target_keys', 'spawn_goal_keys'):
+            validate_string_list(value[sub], f"{key_name}['{sub}']")
+            if not value[sub] or not all(value[sub]):
+                raise ValueError(f"{key_name}['{sub}'] must be non-empty strings")
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -1919,6 +2783,42 @@ def validate_agent_visibility_params(filename: str) -> None:
     validate_history_retention(
         data['history_retention'],
         'history_retention',
+    )
+    validate_workspace_attribution(
+        data['workspace_attribution'],
+        'workspace_attribution',
+    )
+    validate_instruction_inventory(
+        data['instruction_inventory'],
+        'instruction_inventory',
+    )
+    validate_instruction_references(
+        data['instruction_references'],
+        'instruction_references',
+    )
+    validate_agent_harnesses(
+        data['agent_harnesses'],
+        'agent_harnesses',
+    )
+    validate_agent_confinement(
+        data['agent_confinement'],
+        'agent_confinement',
+    )
+    validate_host_privilege(
+        data['host_privilege'],
+        'host_privilege',
+    )
+    validate_mcp_discovery(
+        data['mcp_discovery'],
+        'mcp_discovery',
+    )
+    validate_mcp_credential_markers(
+        data['mcp_credential_markers'],
+        'mcp_credential_markers',
+    )
+    validate_delegation_markers(
+        data['delegation_markers'],
+        'delegation_markers',
     )
 
     print("Agent visibility params validation successful")
