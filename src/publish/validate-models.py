@@ -1007,6 +1007,16 @@ def validate_cve_detection_params(filename: str) -> None:
         # but a large sustained payload over :53/:123 is a tunneling shape.
         'treat_high_volume_dns_ntp_as_non_routine',
         'dns_ntp_non_routine_min_outbound_bytes',
+        # Per-user store ownership: the profile-relative roots whose first
+        # component names the owning application, the sandboxed-application
+        # container layouts, the install roots that name a product, and the
+        # generic tokens that never name one.
+        'per_user_app_data_roots',
+        'sandbox_container_layouts',
+        'application_install_roots',
+        'application_install_prefixes',
+        'owned_store_generic_tokens',
+        'owned_store_min_token_len',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1411,6 +1421,68 @@ def validate_cve_detection_params(filename: str) -> None:
         for subkey in sorted(expected_keys):
             validate_string_list(value[subkey], f"{key_name}['{subkey}']")
 
+    def validate_path_fragments(value, key_name: str, *, relative: bool, directory: bool) -> None:
+        # Path fragments the detector matches against a lowercased,
+        # forward-slash-normalized path. `relative`: below the user profile
+        # (no leading '/'); otherwise anchored at a separator (leading '/').
+        # `directory`: a directory prefix whose next component is read
+        # (trailing '/').
+        validate_string_list(value, key_name)
+        for i, item in enumerate(value):
+            where = f"{key_name}[{i}]"
+            if not item:
+                raise ValueError(f"{where} must be a non-empty string")
+            if item != item.lower() or '\\' in item:
+                raise ValueError(f"{where} must be lowercase with '/' separators; got '{item}'")
+            if relative and item.startswith('/'):
+                raise ValueError(f"{where} must be relative (no leading '/'); got '{item}'")
+            if not relative and not item.startswith('/'):
+                raise ValueError(f"{where} must start with '/'; got '{item}'")
+            if directory and not item.endswith('/'):
+                raise ValueError(f"{where} must end with '/'; got '{item}'")
+
+    def validate_lowercase_tokens(value, key_name: str) -> None:
+        # Names and tokens compared for equality with a lowercased value.
+        validate_string_list(value, key_name)
+        for i, item in enumerate(value):
+            if not item or item != item.lower() or item != item.strip():
+                raise ValueError(
+                    f"{key_name}[{i}] must be a non-empty lowercase string without "
+                    f"surrounding whitespace; got '{item}'"
+                )
+
+    def validate_sandbox_container_layouts(value, key_name: str) -> None:
+        # Sandboxed-application containers whose data directory mirrors a
+        # user profile (macOS App Sandbox, Windows MSIX, Linux Flatpak):
+        # `<container_root><container id>/<data_dir><inner_root><owner>/...`,
+        # relative to the profile. `data_dir` is empty when the container
+        # directory itself holds the mirrored roots.
+        expected_entry_keys = {'container_root', 'data_dir', 'inner_roots'}
+        if not isinstance(value, list):
+            raise ValueError(f"'{key_name}' must be a list")
+        for i, entry in enumerate(value):
+            ekey = f"{key_name}[{i}]"
+            if not isinstance(entry, dict):
+                raise ValueError(f"{ekey} must be a dict")
+            if set(entry.keys()) != expected_entry_keys:
+                missing = expected_entry_keys - set(entry.keys())
+                extra = set(entry.keys()) - expected_entry_keys
+                raise ValueError(f"{ekey} has missing keys {missing} and unexpected keys {extra}")
+            validate_path_fragments(
+                [entry['container_root']], f"{ekey}['container_root']", relative=True, directory=True
+            )
+            if not isinstance(entry['data_dir'], str):
+                raise ValueError(f"{ekey}['data_dir'] must be a string")
+            if entry['data_dir']:
+                validate_path_fragments(
+                    [entry['data_dir']], f"{ekey}['data_dir']", relative=True, directory=True
+                )
+            if not entry['inner_roots']:
+                raise ValueError(f"{ekey}['inner_roots'] must be non-empty")
+            validate_path_fragments(
+                entry['inner_roots'], f"{ekey}['inner_roots']", relative=True, directory=True
+            )
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -1470,6 +1542,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'ambient_baseline_ttl_days',
         'ambient_baseline_min_recurrent_days',
         'dns_ntp_non_routine_min_outbound_bytes',
+        'owned_store_min_token_len',
     ):
         value = data[positive_int_key]
         if isinstance(value, bool) or not isinstance(value, int) or value < 1:
@@ -1604,6 +1677,20 @@ def validate_cve_detection_params(filename: str) -> None:
         data['evidence_weights'],
         'evidence_weights',
     )
+    validate_path_fragments(
+        data['per_user_app_data_roots'], 'per_user_app_data_roots', relative=True, directory=True
+    )
+    validate_sandbox_container_layouts(data['sandbox_container_layouts'], 'sandbox_container_layouts')
+    validate_path_fragments(
+        data['application_install_roots'], 'application_install_roots', relative=False, directory=True
+    )
+    validate_path_fragments(
+        data['application_install_prefixes'],
+        'application_install_prefixes',
+        relative=False,
+        directory=True,
+    )
+    validate_lowercase_tokens(data['owned_store_generic_tokens'], 'owned_store_generic_tokens')
 
     print("CVE detection params validation successful")
 
