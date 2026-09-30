@@ -1053,6 +1053,14 @@ def validate_cve_detection_params(filename: str) -> None:
         # destination, and the shortest token kept.
         'publisher_org_stop_tokens',
         'publisher_org_min_token_len',
+        # Detection thresholds: read breadth that makes process-memory reads
+        # a sweep, the hex run that marks a per-invocation path segment, the
+        # credential classes a process-tree relay needs, and the local
+        # processes that make a blacklisted prefix shared infrastructure.
+        'memory_scrape_read_enumeration_min_distinct_targets',
+        'memory_scrape_per_invocation_min_hex_run',
+        'relay_min_credential_classes',
+        'shared_infrastructure_min_local_processes',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1660,6 +1668,10 @@ def validate_cve_detection_params(filename: str) -> None:
         'dns_ntp_non_routine_min_outbound_bytes',
         'owned_store_min_token_len',
         'publisher_org_min_token_len',
+        'memory_scrape_read_enumeration_min_distinct_targets',
+        'memory_scrape_per_invocation_min_hex_run',
+        'relay_min_credential_classes',
+        'shared_infrastructure_min_local_processes',
     ):
         value = data[positive_int_key]
         if isinstance(value, bool) or not isinstance(value, int) or value < 1:
