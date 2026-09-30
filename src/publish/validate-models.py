@@ -1028,6 +1028,9 @@ def validate_cve_detection_params(filename: str) -> None:
         'agent_process_names',
         'version_layout_directories',
         'desktop_session_root_roles',
+        # IPv4 ranges of the host's own access-network plumbing (a flow
+        # there ends at the CPE / tunnel endpoint, not at a remote peer).
+        'access_network_plumbing_ipv4_cidrs',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1752,6 +1755,19 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_agent_process_names(data['agent_process_names'], 'agent_process_names')
     for token_key in ('version_layout_directories', 'desktop_session_root_roles'):
         validate_lowercase_tokens(data[token_key], token_key)
+    # A range read as "not external" blinds egress detection for it: only
+    # strict IPv4 CIDRs, and nothing wider than a /16.
+    validate_string_list(data['access_network_plumbing_ipv4_cidrs'], 'access_network_plumbing_ipv4_cidrs')
+    for i, cidr in enumerate(data['access_network_plumbing_ipv4_cidrs']):
+        where = f"access_network_plumbing_ipv4_cidrs[{i}]"
+        if '/' not in cidr:
+            raise ValueError(f"{where} must be CIDR notation; got '{cidr}'")
+        try:
+            network = ipaddress.IPv4Network(cidr, strict=True)
+        except ValueError as exc:
+            raise ValueError(f"{where} is not a strict IPv4 CIDR: {exc}") from exc
+        if network.prefixlen < 16:
+            raise ValueError(f"{where} must be /16 or narrower; got '{cidr}'")
 
     print("CVE detection params validation successful")
 
