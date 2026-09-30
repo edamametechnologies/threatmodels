@@ -1037,6 +1037,11 @@ def validate_cve_detection_params(filename: str) -> None:
         'dependency_tree_markers',
         'package_manager_runtimes',
         'install_artifact_basenames',
+        # Developer toolchain tree markers (read on disk by the dev-tree
+        # attestation and in the FIM stream), and the suffixes of code /
+        # persistence definitions that are never data artifacts.
+        'dev_tree_markers',
+        'code_module_suffixes',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1527,6 +1532,42 @@ def validate_cve_detection_params(filename: str) -> None:
         for subkey in ('library_state_directories', 'owner_prefixes', 'direct_owner_prefixes'):
             validate_lowercase_tokens(value[subkey], f"{key_name}['{subkey}']")
 
+    def validate_dev_tree_markers(value, key_name: str) -> None:
+        # File and directory NAMES (case-sensitive, as on disk) that mark a
+        # toolchain tree: single names and lists of names, never paths.
+        name_keys = {
+            'cachedir_tag_file', 'cmake_cache_file', 'node_manifest_file',
+            'node_modules_directory', 'swiftpm_build_directory', 'swiftpm_state_file',
+            'swiftpm_manifest_file', 'bazel_output_link', 'bazel_workspace_link_prefix',
+            'go_build_work_directory_prefix', 'venv_config_file',
+        }
+        list_keys = {
+            'node_install_state_files', 'bun_lockfiles', 'bazel_workspace_files',
+            'go_build_action_config_files',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        expected_keys = name_keys | list_keys
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+
+        def check_name(name, where):
+            if not isinstance(name, str) or not name or name != name.strip():
+                raise ValueError(f"{where} must be a non-empty name without surrounding whitespace")
+            if '/' in name or '\\' in name:
+                raise ValueError(f"{where} must be a name, not a path; got '{name}'")
+
+        for name_key in sorted(name_keys):
+            check_name(value[name_key], f"{key_name}['{name_key}']")
+        for list_key in sorted(list_keys):
+            validate_string_list(value[list_key], f"{key_name}['{list_key}']")
+            if not value[list_key]:
+                raise ValueError(f"{key_name}['{list_key}'] must be non-empty")
+            for i, name in enumerate(value[list_key]):
+                check_name(name, f"{key_name}['{list_key}'][{i}]")
+
     def validate_agent_process_names(value, key_name: str) -> None:
         # Agent slug -> process names (the tool name of the image, lowercase,
         # `.exe` stripped). A name maps to one agent only, so the lookup is
@@ -1779,6 +1820,11 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_path_fragments(
         data['dependency_tree_markers'], 'dependency_tree_markers', relative=False, directory=True
     )
+    validate_dev_tree_markers(data['dev_tree_markers'], 'dev_tree_markers')
+    validate_lowercase_tokens(data['code_module_suffixes'], 'code_module_suffixes')
+    for i, suffix in enumerate(data['code_module_suffixes']):
+        if not suffix.startswith('.'):
+            raise ValueError(f"code_module_suffixes[{i}] must start with '.'; got '{suffix}'")
 
     print("CVE detection params validation successful")
 
