@@ -480,6 +480,35 @@
       }
     ]
   },
+  "instruction_references": {
+    "basenames": [
+      "skill.md",
+      "agents.md",
+      "claude.md",
+      "gemini.md",
+      "codex.md",
+      "rules.md",
+      "instructions.md",
+      "memory.md",
+      ".cursorrules",
+      "copilot-instructions.md"
+    ],
+    "document_extensions": [
+      "md",
+      "mdc",
+      "txt"
+    ],
+    "file_segments": [
+      "commands/",
+      "rules/",
+      "prompts/"
+    ],
+    "folder_segments": [
+      "skills/",
+      "agents/",
+      "subagents/"
+    ]
+  },
   "model_pricing": {
     "default": {
       "cache_read": 0.3,
@@ -730,7 +759,7 @@
       "per_marker": false
     }
   ],
-  "signature": "94e378135bfd7d4c7290b44cd756cf17b48eb89e1069134ddc65a8ba47593fd4",
+  "signature": "86613ee8042f501345d1664c3790f1a87e47daa93f76d91b762689188b265946",
   "transcript_secret_signatures": [
     {
       "hits": 2,

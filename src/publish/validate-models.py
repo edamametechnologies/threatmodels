@@ -1754,6 +1754,7 @@ def validate_agent_visibility_params(filename: str) -> None:
         'history_retention',
         'workspace_attribution',
         'instruction_inventory',
+        'instruction_references',
     }
 
     def validate_string_list(value, key_name: str) -> None:
@@ -2155,6 +2156,29 @@ def validate_agent_visibility_params(filename: str) -> None:
         for directory in directories:
             validate_relative_path(directory, f"{key_name}['workspace_config_directories']")
 
+    def validate_instruction_references(value, key_name: str) -> None:
+        # What makes a path in an instruction body a reference to another
+        # instruction artifact (edamame_foundation::agent_visibility, the
+        # skill reference graph).
+        expected_keys = {'basenames', 'folder_segments', 'file_segments', 'document_extensions'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for sub in sorted(expected_keys):
+            validate_lowercase_list(value[sub], f"{key_name}['{sub}']")
+        for sub in ('folder_segments', 'file_segments'):
+            for segment in value[sub]:
+                # Matched as a substring of a '/'-separated path: a directory
+                # name followed by its separator.
+                if not segment.endswith('/') or segment == '/':
+                    raise ValueError(f"{key_name}['{sub}']: '{segment}' must be a directory name ending with '/'")
+        for ext in value['document_extensions']:
+            if ext.startswith('.') or '/' in ext:
+                raise ValueError(f"{key_name}['document_extensions']: '{ext}' must be an extension without its dot")
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -2221,6 +2245,10 @@ def validate_agent_visibility_params(filename: str) -> None:
     validate_instruction_inventory(
         data['instruction_inventory'],
         'instruction_inventory',
+    )
+    validate_instruction_references(
+        data['instruction_references'],
+        'instruction_references',
     )
 
     print("Agent visibility params validation successful")
