@@ -1046,6 +1046,8 @@ def validate_cve_detection_params(filename: str) -> None:
         # and which name agent instruction / configuration surfaces.
         'sensitive_material_labels',
         'agent_instruction_labels',
+        # Where each agent keeps its enforcement configuration.
+        'agent_control_config_path_suffixes',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1827,6 +1829,28 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_dev_tree_markers(data['dev_tree_markers'], 'dev_tree_markers')
     for label_key in ('sensitive_material_labels', 'agent_instruction_labels'):
         validate_lowercase_tokens(data[label_key], label_key)
+    # Agent slug -> path suffixes of that agent's enforcement configuration
+    # (lowercase, '/', anchored at a separator); a suffix belongs to one
+    # agent.
+    control_configs = data['agent_control_config_path_suffixes']
+    if not isinstance(control_configs, dict) or not control_configs:
+        raise ValueError("'agent_control_config_path_suffixes' must be a non-empty dict")
+    seen_suffixes = {}
+    for agent, suffixes in control_configs.items():
+        if not re.fullmatch(r"[a-z0-9_]+", agent):
+            raise ValueError(f"agent_control_config_path_suffixes key '{agent}' must be a lowercase slug")
+        if not suffixes:
+            raise ValueError(f"agent_control_config_path_suffixes['{agent}'] must be non-empty")
+        validate_path_fragments(
+            suffixes, f"agent_control_config_path_suffixes['{agent}']", relative=False, directory=False
+        )
+        for suffix in suffixes:
+            if suffix in seen_suffixes:
+                raise ValueError(
+                    f"agent_control_config_path_suffixes: '{suffix}' is listed for both "
+                    f"'{seen_suffixes[suffix]}' and '{agent}'"
+                )
+            seen_suffixes[suffix] = agent
     overlap = set(data['sensitive_material_labels']) & set(data['agent_instruction_labels'])
     if overlap:
         raise ValueError(
