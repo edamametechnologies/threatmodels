@@ -1042,6 +1042,10 @@ def validate_cve_detection_params(filename: str) -> None:
         # persistence definitions that are never data artifacts.
         'dev_tree_markers',
         'code_module_suffixes',
+        # Which sensitive-paths catalog labels denote credential material,
+        # and which name agent instruction / configuration surfaces.
+        'sensitive_material_labels',
+        'agent_instruction_labels',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1821,6 +1825,13 @@ def validate_cve_detection_params(filename: str) -> None:
         data['dependency_tree_markers'], 'dependency_tree_markers', relative=False, directory=True
     )
     validate_dev_tree_markers(data['dev_tree_markers'], 'dev_tree_markers')
+    for label_key in ('sensitive_material_labels', 'agent_instruction_labels'):
+        validate_lowercase_tokens(data[label_key], label_key)
+    overlap = set(data['sensitive_material_labels']) & set(data['agent_instruction_labels'])
+    if overlap:
+        raise ValueError(
+            f"labels {sorted(overlap)} cannot be both credential material and agent instruction surfaces"
+        )
     validate_lowercase_tokens(data['code_module_suffixes'], 'code_module_suffixes')
     for i, suffix in enumerate(data['code_module_suffixes']):
         if not suffix.startswith('.'):
