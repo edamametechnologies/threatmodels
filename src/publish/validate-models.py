@@ -1048,6 +1048,11 @@ def validate_cve_detection_params(filename: str) -> None:
         'agent_instruction_labels',
         # Where each agent keeps its enforcement configuration.
         'agent_control_config_path_suffixes',
+        # Certificate / legal-entity vocabulary dropped from a signing
+        # publisher before its organization tokens are matched against a
+        # destination, and the shortest token kept.
+        'publisher_org_stop_tokens',
+        'publisher_org_min_token_len',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1654,6 +1659,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'ambient_baseline_min_recurrent_days',
         'dns_ntp_non_routine_min_outbound_bytes',
         'owned_store_min_token_len',
+        'publisher_org_min_token_len',
     ):
         value = data[positive_int_key]
         if isinstance(value, bool) or not isinstance(value, int) or value < 1:
@@ -1829,6 +1835,7 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_dev_tree_markers(data['dev_tree_markers'], 'dev_tree_markers')
     for label_key in ('sensitive_material_labels', 'agent_instruction_labels'):
         validate_lowercase_tokens(data[label_key], label_key)
+    validate_lowercase_tokens(data['publisher_org_stop_tokens'], 'publisher_org_stop_tokens')
     # Agent slug -> path suffixes of that agent's enforcement configuration
     # (lowercase, '/', anchored at a separator); a suffix belongs to one
     # agent.
