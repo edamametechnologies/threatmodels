@@ -1,4 +1,53 @@
 {
+  "agent_confinement": {
+    "config_files": {
+      "claude_code": "settings.json",
+      "codex": "config.toml",
+      "cursor": "cli-config.json"
+    },
+    "container_name_needles": {
+      "claude_code": [],
+      "claude_desktop": [
+        "claudefordesktop",
+        "claudedesktop",
+        "claude-desktop"
+      ],
+      "codex": [
+        "codex"
+      ],
+      "cursor": [
+        "cursor"
+      ],
+      "hermes": [],
+      "openclaw": []
+    },
+    "default_permission_mode_rank": 3,
+    "linux_confinement_directories": [
+      {
+        "directory": ".var/app",
+        "mechanism": "flatpak"
+      },
+      {
+        "directory": "snap",
+        "mechanism": "snap"
+      }
+    ],
+    "macos_container_directories": [
+      "Library/Containers"
+    ],
+    "macos_vm_bundles": {
+      "claude_desktop": [
+        "Library/Application Support/Claude/vm_bundles/claudevm.bundle"
+      ]
+    },
+    "permission_mode_ranks": {
+      "acceptEdits": 2,
+      "auto": 1,
+      "bypassPermissions": 0,
+      "dontAsk": 1,
+      "plan": 4
+    }
+  },
   "agent_critical_subprocess_catalog": [
     {
       "category": "remote_access",
@@ -870,7 +919,7 @@
       "per_marker": false
     }
   ],
-  "signature": "e1975a0f2976ee76a0da65fbd2cf80bd122b1f2a8fbd00d128da5f6db7e3e495",
+  "signature": "ad7d27dffda91273bdc4c269ba683009b59dfc263e09c9324453c5a63f477903",
   "transcript_secret_signatures": [
     {
       "hits": 2,

@@ -1756,6 +1756,7 @@ def validate_agent_visibility_params(filename: str) -> None:
         'instruction_inventory',
         'instruction_references',
         'agent_harnesses',
+        'agent_confinement',
     }
 
     def validate_string_list(value, key_name: str) -> None:
@@ -2292,6 +2293,62 @@ def validate_agent_visibility_params(filename: str) -> None:
         if not value['identity_keys'] or not all(value['identity_keys']):
             raise ValueError(f"{key_name}['identity_keys'] must be non-empty strings")
 
+    def validate_agent_confinement(value, key_name: str) -> None:
+        # Where an agent's OS confinement shows on disk, where each agent
+        # declares its own confinement and enforcement plane, and how Claude
+        # Code's approval modes rank (edamame_foundation::agent_visibility).
+        expected_keys = {
+            'container_name_needles', 'macos_container_directories',
+            'macos_vm_bundles', 'linux_confinement_directories', 'config_files',
+            'permission_mode_ranks', 'default_permission_mode_rank',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        needles = value['container_name_needles']
+        if not isinstance(needles, dict) or not needles:
+            raise ValueError(f"{key_name}['container_name_needles'] must be a non-empty dict")
+        for agent, agent_needles in needles.items():
+            validate_string_list(agent_needles, f"{key_name}['container_name_needles']['{agent}']")
+            for needle in agent_needles:
+                # Matched as a substring of a lowercased directory name.
+                if not needle or needle != needle.lower() or '/' in needle:
+                    raise ValueError(f"{key_name}['container_name_needles']['{agent}']: '{needle}' must be a lowercase name fragment")
+        validate_string_list(value['macos_container_directories'], f"{key_name}['macos_container_directories']")
+        for directory in value['macos_container_directories']:
+            validate_relative_path(directory, f"{key_name}['macos_container_directories']")
+        bundles = value['macos_vm_bundles']
+        if not isinstance(bundles, dict):
+            raise ValueError(f"{key_name}['macos_vm_bundles'] must be a dict")
+        for agent, paths in bundles.items():
+            validate_string_list(paths, f"{key_name}['macos_vm_bundles']['{agent}']")
+            for path in paths:
+                validate_relative_path(path, f"{key_name}['macos_vm_bundles']['{agent}']")
+        confined = value['linux_confinement_directories']
+        if not isinstance(confined, list):
+            raise ValueError(f"{key_name}['linux_confinement_directories'] must be a list")
+        for i, entry in enumerate(confined):
+            where = f"{key_name}['linux_confinement_directories'][{i}]"
+            if not isinstance(entry, dict) or set(entry.keys()) != {'directory', 'mechanism'}:
+                raise ValueError(f"{where} must be {{directory, mechanism}}")
+            validate_relative_path(entry['directory'], f"{where}['directory']")
+            if not isinstance(entry['mechanism'], str) or not entry['mechanism']:
+                raise ValueError(f"{where}['mechanism'] must be a non-empty string")
+        files = value['config_files']
+        if not isinstance(files, dict):
+            raise ValueError(f"{key_name}['config_files'] must be a dict")
+        for agent, path in files.items():
+            validate_relative_path(path, f"{key_name}['config_files']['{agent}']")
+        ranks = value['permission_mode_ranks']
+        if not isinstance(ranks, dict) or not ranks:
+            raise ValueError(f"{key_name}['permission_mode_ranks'] must be a non-empty dict")
+        for mode, rank in list(ranks.items()) + [('default', value['default_permission_mode_rank'])]:
+            if isinstance(rank, bool) or not isinstance(rank, int) or not 0 <= rank <= 255:
+                raise ValueError(f"{key_name}: the rank of '{mode}' must be an integer 0..255")
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -2366,6 +2423,10 @@ def validate_agent_visibility_params(filename: str) -> None:
     validate_agent_harnesses(
         data['agent_harnesses'],
         'agent_harnesses',
+    )
+    validate_agent_confinement(
+        data['agent_confinement'],
+        'agent_confinement',
     )
 
     print("Agent visibility params validation successful")
