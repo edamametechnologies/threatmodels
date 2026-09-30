@@ -759,7 +759,7 @@
       "per_marker": false
     }
   ],
-  "signature": "86613ee8042f501345d1664c3790f1a87e47daa93f76d91b762689188b265946",
+  "signature": "4bc9aa0c910cf2af0d89c17cdc483106c9f387cbdf708ee4620a47dfface609e",
   "transcript_secret_signatures": [
     {
       "hits": 2,
@@ -916,6 +916,78 @@
       "bat",
       "ps1"
     ],
+    "fleet_workspace_references": [
+      {
+        "agent_type": "hermes",
+        "conditional_suffixes": [],
+        "contains": [
+          "/.hermes"
+        ],
+        "ends_with": [
+          "/.hermes",
+          "-.hermes",
+          "-hermes"
+        ],
+        "equals": [
+          ".hermes"
+        ]
+      },
+      {
+        "agent_type": "openclaw",
+        "conditional_suffixes": [],
+        "contains": [
+          "/.openclaw"
+        ],
+        "ends_with": [
+          "/.openclaw",
+          "-.openclaw",
+          "-openclaw"
+        ],
+        "equals": [
+          ".openclaw"
+        ]
+      },
+      {
+        "agent_type": "codex",
+        "conditional_suffixes": [],
+        "contains": [
+          "/.codex",
+          "/documents/codex/",
+          "-documents-codex-"
+        ],
+        "ends_with": [
+          "/.codex",
+          "-.codex",
+          "-codex",
+          "/documents/codex",
+          "-documents-codex"
+        ],
+        "equals": [
+          ".codex"
+        ]
+      },
+      {
+        "agent_type": "claude_desktop",
+        "conditional_suffixes": [
+          {
+            "suffix": "-claude",
+            "when_contains": "library"
+          }
+        ],
+        "contains": [
+          "/application support/claude",
+          "/appdata/roaming/claude",
+          "/.config/claude/",
+          "-application support-claude",
+          "-application-support-claude",
+          "-appdata-roaming-claude"
+        ],
+        "ends_with": [
+          "/.config/claude"
+        ],
+        "equals": []
+      }
+    ],
     "headless_entrypoint_prefixes": [
       "sdk"
     ],
@@ -997,6 +1069,9 @@
     "powershell_script_options": [
       "-c",
       "-command"
+    ],
+    "project_directories": [
+      "projects"
     ],
     "script_extensions": [
       "sh",

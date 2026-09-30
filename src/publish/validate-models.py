@@ -2004,7 +2004,7 @@ def validate_agent_visibility_params(filename: str) -> None:
             'background_wait_keys', 'patch_file_headers', 'home_variables',
             'temp_variables', 'headless_entrypoint_prefixes',
             'headless_originators', 'headless_sources', 'temp_roots',
-            'home_parent_directories',
+            'home_parent_directories', 'project_directories',
         }
         option_list_keys = {
             'wrapper_value_options', 'wrapper_program_options', 'lookup_options',
@@ -2016,7 +2016,8 @@ def validate_agent_visibility_params(filename: str) -> None:
         string_keys = {'subagent_directory', 'temporary_workspace_label'}
         expected_keys = (
             string_list_keys | option_list_keys | positive_int_keys | string_keys
-            | {'agent_cli_subcommands', 'path_aliases', 'agent_labels'}
+            | {'agent_cli_subcommands', 'path_aliases', 'agent_labels',
+               'fleet_workspace_references'}
         )
         if not isinstance(value, dict):
             raise ValueError(f"'{key_name}' must be a dict")
@@ -2068,6 +2069,39 @@ def validate_agent_visibility_params(filename: str) -> None:
         for i, root in enumerate(value['temp_roots'] + value['home_parent_directories']):
             if not (root.startswith('/') or root.startswith('?:/')):
                 raise ValueError(f"{key_name}: '{root}' must be an absolute path or start with '?:/'")
+        for directory in value['project_directories']:
+            # One path component, matched exactly against a transcript path's.
+            if not directory or '/' in directory or '\\' in directory:
+                raise ValueError(f"{key_name}['project_directories']: '{directory}' must be one path component")
+        references = value['fleet_workspace_references']
+        if not isinstance(references, list) or not references:
+            raise ValueError(f"{key_name}['fleet_workspace_references'] must be a non-empty list")
+        reference_keys = {'agent_type', 'equals', 'contains', 'ends_with', 'conditional_suffixes'}
+        for i, entry in enumerate(references):
+            where = f"{key_name}['fleet_workspace_references'][{i}]"
+            if not isinstance(entry, dict) or set(entry.keys()) != reference_keys:
+                raise ValueError(f"{where} must be {{{', '.join(sorted(reference_keys))}}}")
+            if not isinstance(entry['agent_type'], str) or not entry['agent_type']:
+                raise ValueError(f"{where}['agent_type'] must be a non-empty string")
+            matchers = 0
+            for sub in ('equals', 'contains', 'ends_with'):
+                validate_string_list(entry[sub], f"{where}['{sub}']")
+                for needle in entry[sub]:
+                    # Matched against the lowercased reference with '/' separators.
+                    if not needle or needle != needle.lower() or '\\' in needle:
+                        raise ValueError(f"{where}['{sub}']: '{needle}' must be a non-empty lowercase string without '\\'")
+                matchers += len(entry[sub])
+            suffixes = entry['conditional_suffixes']
+            if not isinstance(suffixes, list):
+                raise ValueError(f"{where}['conditional_suffixes'] must be a list")
+            for j, suffix in enumerate(suffixes):
+                if (not isinstance(suffix, dict) or set(suffix.keys()) != {'suffix', 'when_contains'}
+                        or not all(isinstance(suffix[k], str) and suffix[k] and suffix[k] == suffix[k].lower()
+                                   for k in suffix)):
+                    raise ValueError(f"{where}['conditional_suffixes'][{j}] must be {{suffix, when_contains}} lowercase strings")
+            matchers += len(suffixes)
+            if matchers == 0:
+                raise ValueError(f"{where} must carry at least one matcher")
 
     # Component kinds the Agents view and the augmentation report key on.
     instruction_kinds = {
