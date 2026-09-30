@@ -1,8 +1,8 @@
 {
   "branch": "main",
   "files": {
-    "agent-visibility-params-db.json": "224d2a62aba7bae8f41bf38540770c262c092b5ecef4abfed613d569f81e0840",
-    "blacklists-db.json": "c5d419ba8134c55f89ddf165adcdb2cb077543152dd2ce5f23aca310f3cc9089",
+    "agent-visibility-params-db.json": "963d34a6881e5af765b3e6e659f9771b278eb0ebde9f2bedd979aad9bc337d9e",
+    "blacklists-db.json": "71e6bddd76559597a4bc5f264ed33121cf7f6d01391a9c9e305e34dfe8d2ebd4",
     "consent/ai-failure-export-EN.md": "32ec90f43628e779a11f79f049e07ef5455c9ab12e36bee8d264f6dd871a1b16",
     "consent/ai-failure-export-FR.md": "2dc44a9f34341214f81fc0da1124ee9e587fb7ff9ace7d971380028e1c85e35d",
     "consent/compliance-scanner-EN.md": "b66e8620b4159dd77aa941687a24c1724bb29a151e3008da74c055b3c3f981c9",
@@ -34,15 +34,15 @@
     "consent/user-feedback-FR.md": "b675dc4f6a3ee3534077919e5391a59ed27dd973e4ae8b0282e79a73242196d5",
     "consent/vulnerability-feedback-EN.md": "da68125af5b2edd919771ae5285e0a6997f30e48c3641a89627c0b041fb43433",
     "consent/vulnerability-feedback-FR.md": "fd8b1beb4e560e32710a9c517b356d67853dcfaaf3fbbdf9bc4e0bf39fc9c882",
-    "cve-detection-params-db.json": "4acb64ddb2f143ed90d76d0efbfa630bd359b3e010e1d8b45d537bb0e5045f75",
+    "cve-detection-params-db.json": "79d1530d258ffbbb3193f17ff4690680398b54b9e424fe04e6fde5eed9df6e1d",
     "lanscan-port-vulns-db.json": "68544baf74e25e181ffc582448d8c87387f7aa170f24eb4f8ff2982dbbcaaab3",
     "lanscan-profiles-db.json": "c7dd123a2bd7be34a5742472767fd7c31df4ac90bfeaf3b9edf275847b1f377c",
     "lanscan-vendor-vulns-db.json": "00959da6e79735e87125367c6dfbcc202a1b358f1c0f01b29571dc005191b59b",
-    "sensitive-paths-db.json": "b9655289a20aac8d45df434a6b1831cb2f410a04884b90be3e62fcb535e6a0a2",
+    "sensitive-paths-db.json": "2fffc42527cdbdcff4dde2831277762dd26ea43581b0fbcb66a060385ddef4a3",
     "whitelists-db.json": "307647c3013061df0b600b6468d749e81ed5224b45a349a5e2640096e8ccc22d"
   },
   "format": 1,
-  "issued_at": "2026-09-30T01:56:01Z",
+  "issued_at": "2026-09-30T16:07:06Z",
   "scope": "data",
-  "sequence": 1790733361
+  "sequence": 1790784426
 }
