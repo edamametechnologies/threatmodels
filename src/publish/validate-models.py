@@ -1081,6 +1081,11 @@ def validate_cve_detection_params(filename: str) -> None:
         'memory_scrape_per_invocation_min_hex_run',
         'relay_min_credential_classes',
         'shared_infrastructure_min_local_processes',
+        # OS temp roots by role, the name shape of a per-invocation temp
+        # scratch directory, and the temp PowerShell stub name shape.
+        'os_temp_roots',
+        'temp_scratch_name',
+        'windows_temp_powershell_stub',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1865,6 +1870,47 @@ def validate_cve_detection_params(filename: str) -> None:
         data['dependency_tree_markers'], 'dependency_tree_markers', relative=False, directory=True
     )
     validate_dev_tree_markers(data['dev_tree_markers'], 'dev_tree_markers')
+
+    def validate_exact_keys(value, key_name, expected_keys):
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+
+    # OS temp roots, matched on a lowercased '/' path: the Windows per-user
+    # and SYSTEM temp markers (found anywhere in the path), the POSIX temp
+    # roots and macOS per-user temp trees (at its start), and the macOS
+    # per-user temp root (`<parent><xx>/<hash>/<leaf>`).
+    temp_roots = data['os_temp_roots']
+    validate_exact_keys(temp_roots, 'os_temp_roots', {
+        'windows_user_temp_marker', 'windows_system_temp_marker', 'posix_temp_roots',
+        'macos_per_user_temp_trees', 'macos_per_user_temp_parent', 'macos_per_user_temp_leaf',
+    })
+    for single_key in ('windows_user_temp_marker', 'windows_system_temp_marker', 'macos_per_user_temp_parent'):
+        validate_path_fragments([temp_roots[single_key]], f"os_temp_roots['{single_key}']", relative=False, directory=True)
+    for list_key in ('posix_temp_roots', 'macos_per_user_temp_trees'):
+        if not temp_roots[list_key]:
+            raise ValueError(f"os_temp_roots['{list_key}'] must be non-empty")
+        validate_path_fragments(temp_roots[list_key], f"os_temp_roots['{list_key}']", relative=False, directory=True)
+    validate_lowercase_tokens([temp_roots['macos_per_user_temp_leaf']], "os_temp_roots['macos_per_user_temp_leaf']")
+    if '/' in temp_roots['macos_per_user_temp_leaf']:
+        raise ValueError("os_temp_roots['macos_per_user_temp_leaf'] must be a directory name")
+
+    # A per-invocation temp scratch directory name: optional leading dots,
+    # `prefix`, optional dots, then an alphanumeric token of min_token_len.
+    scratch = data['temp_scratch_name']
+    validate_exact_keys(scratch, 'temp_scratch_name', {'prefix', 'min_token_len'})
+    validate_lowercase_tokens([scratch['prefix']], "temp_scratch_name['prefix']")
+    if isinstance(scratch['min_token_len'], bool) or not isinstance(scratch['min_token_len'], int) or scratch['min_token_len'] < 1:
+        raise ValueError("temp_scratch_name['min_token_len'] must be a positive integer")
+
+    # The temp PowerShell stub a Windows helper writes into the per-user
+    # temp root: `<name_prefix><random><name_suffix>`.
+    stub = data['windows_temp_powershell_stub']
+    validate_exact_keys(stub, 'windows_temp_powershell_stub', {'name_prefix', 'name_suffix'})
+    validate_lowercase_tokens([stub['name_prefix'], stub['name_suffix']], 'windows_temp_powershell_stub')
     for label_key in ('sensitive_material_labels', 'agent_instruction_labels'):
         validate_lowercase_tokens(data[label_key], label_key)
     validate_lowercase_tokens(data['publisher_org_stop_tokens'], 'publisher_org_stop_tokens')
