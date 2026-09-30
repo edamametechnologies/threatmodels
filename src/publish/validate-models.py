@@ -1022,6 +1022,12 @@ def validate_cve_detection_params(filename: str) -> None:
         'platform_owned_user_store',
         'os_service_image_path_prefixes',
         'macos_sealed_system_binary_path_prefixes',
+        # Process lineage: the AI agents' process names, the directories that
+        # hold a tool's versioned releases, and the desktop-session roles
+        # that launch every application.
+        'agent_process_names',
+        'version_layout_directories',
+        'desktop_session_root_roles',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1512,6 +1518,26 @@ def validate_cve_detection_params(filename: str) -> None:
         for subkey in ('library_state_directories', 'owner_prefixes', 'direct_owner_prefixes'):
             validate_lowercase_tokens(value[subkey], f"{key_name}['{subkey}']")
 
+    def validate_agent_process_names(value, key_name: str) -> None:
+        # Agent slug -> process names (the tool name of the image, lowercase,
+        # `.exe` stripped). A name maps to one agent only, so the lookup is
+        # unambiguous.
+        if not isinstance(value, dict) or not value:
+            raise ValueError(f"'{key_name}' must be a non-empty dict")
+        seen = {}
+        for slug, names in value.items():
+            if not re.fullmatch(r"[a-z0-9_]+", slug):
+                raise ValueError(f"{key_name} key '{slug}' must be a lowercase slug")
+            if not names:
+                raise ValueError(f"{key_name}['{slug}'] must be non-empty")
+            validate_lowercase_tokens(names, f"{key_name}['{slug}']")
+            for name in names:
+                if name in seen:
+                    raise ValueError(
+                        f"{key_name}: '{name}' is listed for both '{seen[name]}' and '{slug}'"
+                    )
+                seen[name] = slug
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -1723,6 +1749,9 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_platform_owned_user_store(data['platform_owned_user_store'], 'platform_owned_user_store')
     for prefix_key in ('os_service_image_path_prefixes', 'macos_sealed_system_binary_path_prefixes'):
         validate_path_fragments(data[prefix_key], prefix_key, relative=False, directory=True)
+    validate_agent_process_names(data['agent_process_names'], 'agent_process_names')
+    for token_key in ('version_layout_directories', 'desktop_session_root_roles'):
+        validate_lowercase_tokens(data[token_key], token_key)
 
     print("CVE detection params validation successful")
 
@@ -1759,6 +1788,7 @@ def validate_agent_visibility_params(filename: str) -> None:
         'agent_confinement',
         'host_privilege',
         'mcp_discovery',
+        'mcp_credential_markers',
     }
 
     def validate_string_list(value, key_name: str) -> None:
@@ -2416,6 +2446,28 @@ def validate_agent_visibility_params(filename: str) -> None:
             if not isinstance(name, str) or not name or '/' in name or '\\' in name:
                 raise ValueError(f"{key_name}['{sub}'] must be a file name")
 
+    def validate_mcp_credential_markers(value, key_name: str) -> None:
+        # The header and environment-variable names that make an MCP server's
+        # authentication a shared secret (edamame_foundation::agent_visibility).
+        expected_keys = {'header_names', 'header_needles', 'env_key_needles'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        # Compared with the lowercased header name.
+        validate_lowercase_list(value['header_names'], f"{key_name}['header_names']")
+        validate_lowercase_list(value['header_needles'], f"{key_name}['header_needles']")
+        needles = value['env_key_needles']
+        validate_string_list(needles, f"{key_name}['env_key_needles']")
+        if not needles:
+            raise ValueError(f"{key_name}['env_key_needles'] must be non-empty")
+        for needle in needles:
+            # Compared with the uppercased variable name.
+            if not needle or needle != needle.upper():
+                raise ValueError(f"{key_name}['env_key_needles']: '{needle}' must be a non-empty uppercase string")
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -2502,6 +2554,10 @@ def validate_agent_visibility_params(filename: str) -> None:
     validate_mcp_discovery(
         data['mcp_discovery'],
         'mcp_discovery',
+    )
+    validate_mcp_credential_markers(
+        data['mcp_credential_markers'],
+        'mcp_credential_markers',
     )
 
     print("Agent visibility params validation successful")

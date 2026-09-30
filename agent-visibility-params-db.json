@@ -691,6 +691,23 @@
       "subagents/"
     ]
   },
+  "mcp_credential_markers": {
+    "env_key_needles": [
+      "TOKEN",
+      "KEY",
+      "SECRET",
+      "PASSWORD",
+      "CREDENTIAL",
+      "PAT"
+    ],
+    "header_names": [
+      "authorization"
+    ],
+    "header_needles": [
+      "api-key",
+      "token"
+    ]
+  },
   "mcp_discovery": {
     "claude_code_plugin_manifests": [
       "plugins/installed_plugins.json"
@@ -970,7 +987,7 @@
       "per_marker": false
     }
   ],
-  "signature": "b59cca65c9124f14a637d9abb235c396b351bfe8ddf573ec8aeee3f97bcbfcfd",
+  "signature": "158ff4f9f32ab32fa944014b8e4ce00a1dc404bb3cc9c94d0d25770a3d695ab4",
   "transcript_secret_signatures": [
     {
       "hits": 2,
