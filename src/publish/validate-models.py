@@ -1789,6 +1789,7 @@ def validate_agent_visibility_params(filename: str) -> None:
         'host_privilege',
         'mcp_discovery',
         'mcp_credential_markers',
+        'delegation_markers',
     }
 
     def validate_string_list(value, key_name: str) -> None:
@@ -2468,6 +2469,28 @@ def validate_agent_visibility_params(filename: str) -> None:
             if not needle or needle != needle.upper():
                 raise ValueError(f"{key_name}['env_key_needles']: '{needle}' must be a non-empty uppercase string")
 
+    def validate_delegation_markers(value, key_name: str) -> None:
+        # The agent vocabulary that marks a sub-agent spawn in a transcript
+        # (edamame_foundation::agent_visibility, recursion / delegation).
+        expected_keys = {
+            'spawn_tool_names', 'spawn_target_keys', 'spawn_goal_keys',
+            'text_markers', 'text_reason_keys',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        # Compared with a lowercased tool name / transcript line.
+        for sub in ('spawn_tool_names', 'text_markers', 'text_reason_keys'):
+            validate_lowercase_list(value[sub], f"{key_name}['{sub}']")
+        # JSON keys, matched as written.
+        for sub in ('spawn_target_keys', 'spawn_goal_keys'):
+            validate_string_list(value[sub], f"{key_name}['{sub}']")
+            if not value[sub] or not all(value[sub]):
+                raise ValueError(f"{key_name}['{sub}'] must be non-empty strings")
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -2558,6 +2581,10 @@ def validate_agent_visibility_params(filename: str) -> None:
     validate_mcp_credential_markers(
         data['mcp_credential_markers'],
         'mcp_credential_markers',
+    )
+    validate_delegation_markers(
+        data['delegation_markers'],
+        'delegation_markers',
     )
 
     print("Agent visibility params validation successful")

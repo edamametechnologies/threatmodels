@@ -494,6 +494,38 @@
     }
   ],
   "date": "September 30th 2026",
+  "delegation_markers": {
+    "spawn_goal_keys": [
+      "description",
+      "prompt",
+      "goal",
+      "subagent_type"
+    ],
+    "spawn_target_keys": [
+      "subagent_type",
+      "delegate_to",
+      "spawn_agent"
+    ],
+    "spawn_tool_names": [
+      "task",
+      "subagent",
+      "dispatch_agent"
+    ],
+    "text_markers": [
+      "\"name\":\"task\"",
+      "\"name\": \"task\"",
+      "subagent_type",
+      "dispatch_agent",
+      "delegate_to",
+      "spawn_agent"
+    ],
+    "text_reason_keys": [
+      "subagent_type",
+      "delegate_to",
+      "spawn_agent",
+      "dispatch_agent"
+    ]
+  },
   "history_retention": {
     "behavioral_model_max_entries": 100,
     "coach_max_cached_insights": 48,
@@ -987,7 +1019,7 @@
       "per_marker": false
     }
   ],
-  "signature": "158ff4f9f32ab32fa944014b8e4ce00a1dc404bb3cc9c94d0d25770a3d695ab4",
+  "signature": "10bf8ac1abb674ab1a75061837d1a08d67f4e4b5714d78ec85ee2a2d13ce1aad",
   "transcript_secret_signatures": [
     {
       "hits": 2,
