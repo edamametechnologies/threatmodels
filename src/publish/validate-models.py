@@ -1017,6 +1017,11 @@ def validate_cve_detection_params(filename: str) -> None:
         'application_install_prefixes',
         'owned_store_generic_tokens',
         'owned_store_min_token_len',
+        # Stores the operating system owns below the per-user library, the
+        # images of OS services, and the sealed system volume's binary roots.
+        'platform_owned_user_store',
+        'os_service_image_path_prefixes',
+        'macos_sealed_system_binary_path_prefixes',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1483,6 +1488,30 @@ def validate_cve_detection_params(filename: str) -> None:
                 entry['inner_roots'], f"{ekey}['inner_roots']", relative=True, directory=True
             )
 
+    def validate_platform_owned_user_store(value, key_name: str) -> None:
+        # Per-user stores the operating system owns: below `library_root`
+        # (profile-relative), the owner directory -- the component below one
+        # of `library_state_directories`, or a direct child of the root -- is
+        # in the OS's reserved namespace (`owner_prefixes`; a direct child may
+        # also match `direct_owner_prefixes`).
+        expected_keys = {
+            'library_root',
+            'library_state_directories',
+            'owner_prefixes',
+            'direct_owner_prefixes',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        validate_path_fragments(
+            [value['library_root']], f"{key_name}['library_root']", relative=True, directory=True
+        )
+        for subkey in ('library_state_directories', 'owner_prefixes', 'direct_owner_prefixes'):
+            validate_lowercase_tokens(value[subkey], f"{key_name}['{subkey}']")
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -1691,6 +1720,9 @@ def validate_cve_detection_params(filename: str) -> None:
         directory=True,
     )
     validate_lowercase_tokens(data['owned_store_generic_tokens'], 'owned_store_generic_tokens')
+    validate_platform_owned_user_store(data['platform_owned_user_store'], 'platform_owned_user_store')
+    for prefix_key in ('os_service_image_path_prefixes', 'macos_sealed_system_binary_path_prefixes'):
+        validate_path_fragments(data[prefix_key], prefix_key, relative=False, directory=True)
 
     print("CVE detection params validation successful")
 
