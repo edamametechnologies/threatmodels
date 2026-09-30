@@ -1031,6 +1031,12 @@ def validate_cve_detection_params(filename: str) -> None:
         # IPv4 ranges of the host's own access-network plumbing (a flow
         # there ends at the CPE / tunnel endpoint, not at a remote peer).
         'access_network_plumbing_ipv4_cidrs',
+        # Script / language runtimes, package-manager runtimes, dependency
+        # tree markers and the lockfiles / manifests an install rewrites.
+        'script_runtime_basenames',
+        'dependency_tree_markers',
+        'package_manager_runtimes',
+        'install_artifact_basenames',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1768,6 +1774,11 @@ def validate_cve_detection_params(filename: str) -> None:
             raise ValueError(f"{where} is not a strict IPv4 CIDR: {exc}") from exc
         if network.prefixlen < 16:
             raise ValueError(f"{where} must be /16 or narrower; got '{cidr}'")
+    for token_key in ('script_runtime_basenames', 'package_manager_runtimes', 'install_artifact_basenames'):
+        validate_lowercase_tokens(data[token_key], token_key)
+    validate_path_fragments(
+        data['dependency_tree_markers'], 'dependency_tree_markers', relative=False, directory=True
+    )
 
     print("CVE detection params validation successful")
 
