@@ -822,7 +822,7 @@ def validate_sensitive_paths(filename: str) -> None:
     """Validate sensitive-paths-db.json structure."""
     allowed_top_keys = {
         'date', 'signature', 'common_patterns', 'platform_patterns', 'labels',
-        'watch_roots', 'fim_excluded_path_patterns',
+        'watch_roots', 'fim_excluded_path_patterns', 'fim_forbidden_watch_roots',
     }
 
     with open(filename, 'r', encoding='utf-8') as file:
@@ -917,6 +917,26 @@ def validate_sensitive_paths(filename: str) -> None:
             raise ValueError(
                 f"fim_excluded_path_patterns[{i}] must use '/' separators; got '{pat}'"
             )
+
+    # fim_forbidden_watch_roots: directories the FIM watcher must never watch
+    # recursively (a filesystem root or a top-level system tree), whatever
+    # asked for them. `unix` applies on macOS and Linux, `windows` on
+    # Windows; flodbadd::fim compares them case-insensitively, `\` folded
+    # to '/', trailing separators ignored.
+    forbidden = data['fim_forbidden_watch_roots']
+    if not isinstance(forbidden, dict) or set(forbidden.keys()) != {'unix', 'windows'}:
+        raise ValueError("'fim_forbidden_watch_roots' must be a dict with keys 'unix' and 'windows'")
+    for platform_key, roots in forbidden.items():
+        if not isinstance(roots, list) or not roots:
+            raise ValueError(f"fim_forbidden_watch_roots['{platform_key}'] must be a non-empty list")
+        for i, root in enumerate(roots):
+            where = f"fim_forbidden_watch_roots['{platform_key}'][{i}]"
+            if not isinstance(root, str):
+                raise ValueError(f"{where} must be a string")
+            if platform_key == 'unix' and (not root.startswith('/') or '\\' in root):
+                raise ValueError(f"{where} must be an absolute POSIX path; got '{root}'")
+            if platform_key == 'windows' and not re.match(r'^[A-Za-z]:\\', root):
+                raise ValueError(f"{where} must be an absolute Windows path (drive root); got '{root}'")
 
     print("Sensitive paths validation successful")
 
