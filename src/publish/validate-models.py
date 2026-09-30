@@ -1755,6 +1755,7 @@ def validate_agent_visibility_params(filename: str) -> None:
         'workspace_attribution',
         'instruction_inventory',
         'instruction_references',
+        'agent_harnesses',
     }
 
     def validate_string_list(value, key_name: str) -> None:
@@ -2213,6 +2214,84 @@ def validate_agent_visibility_params(filename: str) -> None:
             if ext.startswith('.') or '/' in ext:
                 raise ValueError(f"{key_name}['document_extensions']: '{ext}' must be an extension without its dot")
 
+    def validate_agent_harnesses(value, key_name: str) -> None:
+        # The agent-governance harness catalog the Agents view detects from a
+        # per-user footprint (edamame_foundation::agent_visibility), and the
+        # bin and config directories searched.
+        expected_keys = {
+            'catalog', 'config_directories', 'home_bin_directories',
+            'versioned_bin_directories', 'system_bin_directories',
+            'windows_binary_extensions', 'identity_keys',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        catalog = value['catalog']
+        if not isinstance(catalog, list) or not catalog:
+            raise ValueError(f"{key_name}['catalog'] must be a non-empty list")
+        entry_keys = {'slug', 'display_name', 'homepage', 'markers', 'binaries', 'identity_files'}
+        slugs = set()
+        for i, entry in enumerate(catalog):
+            where = f"{key_name}['catalog'][{i}]"
+            if not isinstance(entry, dict) or set(entry.keys()) != entry_keys:
+                raise ValueError(f"{where} must be {{{', '.join(sorted(entry_keys))}}}")
+            slug = entry['slug']
+            # Fills `{slug}` in a path and names the harness in facts.
+            if (not isinstance(slug, str) or not slug
+                    or not all(c.islower() or c.isdigit() or c in '-_' for c in slug)):
+                raise ValueError(f"{where}['slug'] must be lowercase letters, digits, '-' or '_'")
+            if slug in slugs:
+                raise ValueError(f"{where}['slug'] '{slug}' is listed twice")
+            slugs.add(slug)
+            if not isinstance(entry['display_name'], str) or not entry['display_name']:
+                raise ValueError(f"{where}['display_name'] must be a non-empty string")
+            if not isinstance(entry['homepage'], str) or not entry['homepage'].startswith('https://'):
+                raise ValueError(f"{where}['homepage'] must be an https URL")
+            for sub in ('markers', 'identity_files'):
+                validate_string_list(entry[sub], f"{where}['{sub}']")
+                for path in entry[sub]:
+                    validate_relative_path(path, f"{where}['{sub}']")
+            validate_string_list(entry['binaries'], f"{where}['binaries']")
+            for binary in entry['binaries']:
+                if not binary or '/' in binary or '\\' in binary:
+                    raise ValueError(f"{where}['binaries']: '{binary}' must be a file name")
+            if not entry['markers'] and not entry['binaries']:
+                raise ValueError(f"{where} must carry a marker or a binary")
+        for template in value['config_directories']:
+            validate_relative_path(template, f"{key_name}['config_directories']")
+            # Without the slug, one directory would mark every harness present.
+            if '{slug}' not in template:
+                raise ValueError(f"{key_name}['config_directories']: '{template}' must contain {{slug}}")
+        validate_string_list(value['home_bin_directories'], f"{key_name}['home_bin_directories']")
+        for directory in value['home_bin_directories']:
+            validate_relative_path(directory, f"{key_name}['home_bin_directories']")
+        versioned = value['versioned_bin_directories']
+        if not isinstance(versioned, list):
+            raise ValueError(f"{key_name}['versioned_bin_directories'] must be a list")
+        for i, entry in enumerate(versioned):
+            if not isinstance(entry, dict) or set(entry.keys()) != {'root', 'bin'}:
+                raise ValueError(f"{key_name}['versioned_bin_directories'][{i}] must be {{root, bin}}")
+            validate_relative_path(entry['root'], f"{key_name}['versioned_bin_directories'][{i}]['root']")
+            validate_relative_path(entry['bin'], f"{key_name}['versioned_bin_directories'][{i}]['bin']")
+        system = value['system_bin_directories']
+        if not isinstance(system, dict) or set(system.keys()) != {'macos', 'linux', 'windows'}:
+            raise ValueError(f"{key_name}['system_bin_directories'] must be {{macos, linux, windows}}")
+        for platform, directories in system.items():
+            validate_string_list(directories, f"{key_name}['system_bin_directories']['{platform}']")
+            for directory in directories:
+                if not (directory.startswith('/') or directory[1:3] == ':/'):
+                    raise ValueError(f"{key_name}['system_bin_directories']['{platform}']: '{directory}' must be absolute")
+        validate_lowercase_list(value['windows_binary_extensions'], f"{key_name}['windows_binary_extensions']")
+        for ext in value['windows_binary_extensions']:
+            if ext.startswith('.') or '/' in ext:
+                raise ValueError(f"{key_name}['windows_binary_extensions']: '{ext}' must be an extension without its dot")
+        validate_string_list(value['identity_keys'], f"{key_name}['identity_keys']")
+        if not value['identity_keys'] or not all(value['identity_keys']):
+            raise ValueError(f"{key_name}['identity_keys'] must be non-empty strings")
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -2283,6 +2362,10 @@ def validate_agent_visibility_params(filename: str) -> None:
     validate_instruction_references(
         data['instruction_references'],
         'instruction_references',
+    )
+    validate_agent_harnesses(
+        data['agent_harnesses'],
+        'agent_harnesses',
     )
 
     print("Agent visibility params validation successful")
