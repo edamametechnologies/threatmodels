@@ -1758,6 +1758,7 @@ def validate_agent_visibility_params(filename: str) -> None:
         'agent_harnesses',
         'agent_confinement',
         'host_privilege',
+        'mcp_discovery',
     }
 
     def validate_string_list(value, key_name: str) -> None:
@@ -2379,6 +2380,42 @@ def validate_agent_visibility_params(filename: str) -> None:
                 if not path.startswith('/') or '..' in path.split('/'):
                     raise ValueError(f"{key_name}['{sub}']: '{path}' must be an absolute path")
 
+    def validate_mcp_discovery(value, key_name: str) -> None:
+        # Where the MCP servers an agent acquires outside its global MCP
+        # config are declared (edamame_foundation::agent_visibility): plugin
+        # trees, project configs, installed-plugin manifests, extensions.
+        list_keys = {
+            'plugin_config_suffixes', 'plugin_skip_directories',
+            'cursor_plugin_directories', 'claude_code_plugin_manifests',
+            'claude_code_project_directories', 'claude_code_project_config_files',
+            'claude_desktop_extension_directories', 'openclaw_extension_directories',
+        }
+        file_keys = {'claude_desktop_extension_manifest', 'openclaw_extension_manifest'}
+        expected_keys = list_keys | file_keys
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for sub in sorted(list_keys):
+            validate_string_list(value[sub], f"{key_name}['{sub}']")
+            if not value[sub]:
+                raise ValueError(f"{key_name}['{sub}'] must be non-empty")
+        validate_lowercase_list(value['plugin_config_suffixes'], f"{key_name}['plugin_config_suffixes']")
+        for sub in ('plugin_config_suffixes', 'plugin_skip_directories'):
+            for name in value[sub]:
+                # Compared with one path component.
+                if not name or '/' in name or '\\' in name:
+                    raise ValueError(f"{key_name}['{sub}']: '{name}' must be a file or directory name")
+        for sub in sorted(list_keys - {'plugin_config_suffixes', 'plugin_skip_directories'}):
+            for path in value[sub]:
+                validate_relative_path(path, f"{key_name}['{sub}']")
+        for sub in sorted(file_keys):
+            name = value[sub]
+            if not isinstance(name, str) or not name or '/' in name or '\\' in name:
+                raise ValueError(f"{key_name}['{sub}'] must be a file name")
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -2461,6 +2498,10 @@ def validate_agent_visibility_params(filename: str) -> None:
     validate_host_privilege(
         data['host_privilege'],
         'host_privilege',
+    )
+    validate_mcp_discovery(
+        data['mcp_discovery'],
+        'mcp_discovery',
     )
 
     print("Agent visibility params validation successful")

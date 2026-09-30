@@ -691,6 +691,35 @@
       "subagents/"
     ]
   },
+  "mcp_discovery": {
+    "claude_code_plugin_manifests": [
+      "plugins/installed_plugins.json"
+    ],
+    "claude_code_project_config_files": [
+      ".mcp.json"
+    ],
+    "claude_code_project_directories": [
+      "projects"
+    ],
+    "claude_desktop_extension_directories": [
+      "Claude Extensions"
+    ],
+    "claude_desktop_extension_manifest": "manifest.json",
+    "cursor_plugin_directories": [
+      "plugins"
+    ],
+    "openclaw_extension_directories": [
+      "extensions"
+    ],
+    "openclaw_extension_manifest": "openclaw.plugin.json",
+    "plugin_config_suffixes": [
+      "mcp.json"
+    ],
+    "plugin_skip_directories": [
+      "node_modules",
+      ".git"
+    ]
+  },
   "model_pricing": {
     "default": {
       "cache_read": 0.3,
@@ -941,7 +970,7 @@
       "per_marker": false
     }
   ],
-  "signature": "8a42462b06647ac8ff73fdd25d97900d6d1b2e9429c7f2804e9ff74a8ebf6c47",
+  "signature": "b59cca65c9124f14a637d9abb235c396b351bfe8ddf573ec8aeee3f97bcbfcfd",
   "transcript_secret_signatures": [
     {
       "hits": 2,
