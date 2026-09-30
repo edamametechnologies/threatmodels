@@ -1757,6 +1757,7 @@ def validate_agent_visibility_params(filename: str) -> None:
         'instruction_references',
         'agent_harnesses',
         'agent_confinement',
+        'host_privilege',
     }
 
     def validate_string_list(value, key_name: str) -> None:
@@ -2349,6 +2350,35 @@ def validate_agent_visibility_params(filename: str) -> None:
             if isinstance(rank, bool) or not isinstance(rank, int) or not 0 <= rank <= 255:
                 raise ValueError(f"{key_name}: the rank of '{mode}' must be an integer 0..255")
 
+    def validate_host_privilege(value, key_name: str) -> None:
+        # What the macOS / Linux host-privilege assessment reads and matches
+        # (edamame_foundation::agent_visibility): elevated users,
+        # administrator groups, the group database and the sudoers policy.
+        name_keys = {'elevated_users', 'macos_admin_groups', 'linux_admin_groups'}
+        path_keys = {'group_files', 'sudoers_files', 'sudoers_directories'}
+        expected_keys = name_keys | path_keys
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for sub in sorted(name_keys):
+            validate_string_list(value[sub], f"{key_name}['{sub}']")
+            if not value[sub]:
+                raise ValueError(f"{key_name}['{sub}'] must be non-empty")
+            for name in value[sub]:
+                # A user or group name as the group database writes it.
+                if not name or any(c in name for c in ':,/ \t%'):
+                    raise ValueError(f"{key_name}['{sub}']: '{name}' must be a user or group name")
+        for sub in sorted(path_keys):
+            validate_string_list(value[sub], f"{key_name}['{sub}']")
+            if not value[sub]:
+                raise ValueError(f"{key_name}['{sub}'] must be non-empty")
+            for path in value[sub]:
+                if not path.startswith('/') or '..' in path.split('/'):
+                    raise ValueError(f"{key_name}['{sub}']: '{path}' must be an absolute path")
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -2427,6 +2457,10 @@ def validate_agent_visibility_params(filename: str) -> None:
     validate_agent_confinement(
         data['agent_confinement'],
         'agent_confinement',
+    )
+    validate_host_privilege(
+        data['host_privilege'],
+        'host_privilege',
     )
 
     print("Agent visibility params validation successful")

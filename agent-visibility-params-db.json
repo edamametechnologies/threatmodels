@@ -503,6 +503,28 @@
     "subprocess_max_observations": 512,
     "visibility_log_max_entries": 1000
   },
+  "host_privilege": {
+    "elevated_users": [
+      "root"
+    ],
+    "group_files": [
+      "/etc/group"
+    ],
+    "linux_admin_groups": [
+      "sudo",
+      "wheel",
+      "admin"
+    ],
+    "macos_admin_groups": [
+      "admin"
+    ],
+    "sudoers_directories": [
+      "/etc/sudoers.d"
+    ],
+    "sudoers_files": [
+      "/etc/sudoers"
+    ]
+  },
   "instruction_inventory": {
     "agent_subdirectories": [
       {
@@ -919,7 +941,7 @@
       "per_marker": false
     }
   ],
-  "signature": "ad7d27dffda91273bdc4c269ba683009b59dfc263e09c9324453c5a63f477903",
+  "signature": "8a42462b06647ac8ff73fdd25d97900d6d1b2e9429c7f2804e9ff74a8ebf6c47",
   "transcript_secret_signatures": [
     {
       "hits": 2,
