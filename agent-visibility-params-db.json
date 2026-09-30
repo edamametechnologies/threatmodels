@@ -46,6 +46,23 @@
       "bypassPermissions": 0,
       "dontAsk": 1,
       "plan": 4
+    },
+    "sandbox_modes_off": {
+      "codex": [
+        "danger-full-access"
+      ],
+      "cursor": [
+        "disabled"
+      ]
+    },
+    "sandbox_modes_on": {
+      "codex": [
+        "read-only",
+        "workspace-write"
+      ],
+      "cursor": [
+        "enabled"
+      ]
     }
   },
   "agent_critical_subprocess_catalog": [
@@ -1346,7 +1363,7 @@
       "per_marker": false
     }
   ],
-  "signature": "0a30ab36b045d95542a3d084e92e7e125064d52f7f19dd095c0f39316cda884d",
+  "signature": "079243fddb739917b862aa921a3f5313fd8910d59326a30f4e2a4f6a923907ae",
   "transcript_secret_signatures": [
     {
       "hits": 2,

@@ -2527,6 +2527,7 @@ def validate_agent_visibility_params(filename: str) -> None:
             'container_name_needles', 'macos_container_directories',
             'macos_vm_bundles', 'linux_confinement_directories', 'config_files',
             'permission_mode_ranks', 'default_permission_mode_rank',
+            'sandbox_modes_on', 'sandbox_modes_off',
         }
         if not isinstance(value, dict):
             raise ValueError(f"'{key_name}' must be a dict")
@@ -2574,6 +2575,20 @@ def validate_agent_visibility_params(filename: str) -> None:
         for mode, rank in list(ranks.items()) + [('default', value['default_permission_mode_rank'])]:
             if isinstance(rank, bool) or not isinstance(rank, int) or not 0 <= rank <= 255:
                 raise ValueError(f"{key_name}: the rank of '{mode}' must be an integer 0..255")
+        # The values of an agent's own sandbox setting (Cursor sandbox.mode,
+        # Codex sandbox_mode) that turn command confinement on and off.
+        for side in ('sandbox_modes_on', 'sandbox_modes_off'):
+            modes = value[side]
+            if not isinstance(modes, dict) or not modes:
+                raise ValueError(f"{key_name}['{side}'] must be a non-empty dict")
+            for agent, values in modes.items():
+                validate_string_list(values, f"{key_name}['{side}']['{agent}']")
+                if not values or any(not v for v in values):
+                    raise ValueError(f"{key_name}['{side}']['{agent}'] must list non-empty values")
+        for agent in value['sandbox_modes_on'].keys() & value['sandbox_modes_off'].keys():
+            both = set(value['sandbox_modes_on'][agent]) & set(value['sandbox_modes_off'][agent])
+            if both:
+                raise ValueError(f"{key_name}: {sorted(both)} cannot turn {agent}'s sandbox both on and off")
 
     def validate_host_privilege(value, key_name: str) -> None:
         # What the macOS / Linux host-privilege assessment reads and matches
