@@ -1108,6 +1108,13 @@ def validate_cve_detection_params(filename: str) -> None:
         'measurement_intent_tokens',
         'global_package_roots',
         'package_bare_runtimes',
+        # Evaluator integrity thresholds: a writer's batch (paths, measurement
+        # share, burst window) and how far outside a session's transcript
+        # span a write is still the session's.
+        'evaluator_materialisation_min_paths',
+        'evaluator_materialisation_measurement_divisor',
+        'evaluator_materialisation_burst_secs',
+        'evaluator_session_attribution_slack_secs',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1792,6 +1799,15 @@ def validate_cve_detection_params(filename: str) -> None:
     for entry in data['global_package_roots']:
         if not (entry.startswith('/') and entry.endswith('/')):
             raise ValueError(f"global_package_roots entry {entry!r} must start and end with '/'")
+    for int_key in (
+        'evaluator_materialisation_min_paths',
+        'evaluator_materialisation_measurement_divisor',
+        'evaluator_materialisation_burst_secs',
+        'evaluator_session_attribution_slack_secs',
+    ):
+        value = data[int_key]
+        if not isinstance(value, int) or isinstance(value, bool) or value <= 0:
+            raise ValueError(f"{int_key} must be a positive integer")
     # A bare runtime is one of the package-manager runtimes: the ones that run
     # any program, not only installs.
     stray = set(data['package_bare_runtimes']) - set(data['package_manager_runtimes'])
