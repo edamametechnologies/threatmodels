@@ -34,7 +34,7 @@
     "consent/user-feedback-FR.md": "b675dc4f6a3ee3534077919e5391a59ed27dd973e4ae8b0282e79a73242196d5",
     "consent/vulnerability-feedback-EN.md": "da68125af5b2edd919771ae5285e0a6997f30e48c3641a89627c0b041fb43433",
     "consent/vulnerability-feedback-FR.md": "fd8b1beb4e560e32710a9c517b356d67853dcfaaf3fbbdf9bc4e0bf39fc9c882",
-    "cve-detection-params-db.json": "79d1530d258ffbbb3193f17ff4690680398b54b9e424fe04e6fde5eed9df6e1d",
+    "cve-detection-params-db.json": "1279ff5997140ebd6b053a064db77f957b3f075cbe3fa6c9e9fd599a7fb164de",
     "lanscan-port-vulns-db.json": "68544baf74e25e181ffc582448d8c87387f7aa170f24eb4f8ff2982dbbcaaab3",
     "lanscan-profiles-db.json": "c7dd123a2bd7be34a5742472767fd7c31df4ac90bfeaf3b9edf275847b1f377c",
     "lanscan-vendor-vulns-db.json": "00959da6e79735e87125367c6dfbcc202a1b358f1c0f01b29571dc005191b59b",
@@ -42,7 +42,7 @@
     "whitelists-db.json": "307647c3013061df0b600b6468d749e81ed5224b45a349a5e2640096e8ccc22d"
   },
   "format": 1,
-  "issued_at": "2026-10-05T01:54:39Z",
+  "issued_at": "2026-10-05T09:12:55Z",
   "scope": "data",
-  "sequence": 1791165279
+  "sequence": 1791191575
 }
