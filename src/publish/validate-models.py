@@ -1086,6 +1086,14 @@ def validate_cve_detection_params(filename: str) -> None:
         'os_temp_roots',
         'temp_scratch_name',
         'windows_temp_powershell_stub',
+        # Install roots only an administrator writes (a `Temp` directory below
+        # them is a product's own staging, not user-writable temp), the
+        # kernel pseudo-writers a FIM event names without an image path, and
+        # the shared-hosting public suffixes under which every subdomain
+        # belongs to whoever registered it (2.0.5).
+        'admin_only_install_roots',
+        'fim_kernel_pseudo_writer_names',
+        'shared_hosting_public_suffixes',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1730,6 +1738,9 @@ def validate_cve_detection_params(filename: str) -> None:
         'packaged_developer_tool_identity_tokens',
         'random_temp_scratch_path_prefixes',
         'temp_installer_shell_names',
+        'admin_only_install_roots',
+        'fim_kernel_pseudo_writer_names',
+        'shared_hosting_public_suffixes',
     ):
         validate_string_list(data[list_key], list_key)
 
