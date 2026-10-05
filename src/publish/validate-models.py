@@ -1094,6 +1094,27 @@ def validate_cve_detection_params(filename: str) -> None:
         'admin_only_install_roots',
         'fim_kernel_pseudo_writer_names',
         'shared_hosting_public_suffixes',
+        # The measurement surface an agent's evaluator lives on (divergence
+        # evaluator integrity), the derived and third-party trees that are not
+        # part of it, and the words of a task that is measurement work; the
+        # global CLI install roots and the bare language runtimes that tell
+        # an installed CLI running from an install (2.0.5).
+        'measurement_test_directory_segments',
+        'measurement_test_filename_prefixes',
+        'measurement_test_filename_suffixes',
+        'measurement_harness_filenames',
+        'measurement_harness_directory_paths',
+        'measurement_derived_directory_segments',
+        'measurement_intent_tokens',
+        'global_package_roots',
+        'package_bare_runtimes',
+        # Evaluator integrity thresholds: a writer's batch (paths, measurement
+        # share, burst window) and how far outside a session's transcript
+        # span a write is still the session's.
+        'evaluator_materialisation_min_paths',
+        'evaluator_materialisation_measurement_divisor',
+        'evaluator_materialisation_burst_secs',
+        'evaluator_session_attribution_slack_secs',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1741,8 +1762,57 @@ def validate_cve_detection_params(filename: str) -> None:
         'admin_only_install_roots',
         'fim_kernel_pseudo_writer_names',
         'shared_hosting_public_suffixes',
+        'measurement_test_directory_segments',
+        'measurement_test_filename_prefixes',
+        'measurement_test_filename_suffixes',
+        'measurement_harness_filenames',
+        'measurement_harness_directory_paths',
+        'measurement_derived_directory_segments',
+        'measurement_intent_tokens',
+        'global_package_roots',
+        'package_bare_runtimes',
     ):
         validate_string_list(data[list_key], list_key)
+
+    # Matched against lower-cased, `/`-separated paths and actions.
+    for list_key in (
+        'measurement_test_directory_segments',
+        'measurement_test_filename_prefixes',
+        'measurement_test_filename_suffixes',
+        'measurement_harness_filenames',
+        'measurement_harness_directory_paths',
+        'measurement_derived_directory_segments',
+        'measurement_intent_tokens',
+        'global_package_roots',
+        'package_bare_runtimes',
+    ):
+        for entry in data[list_key]:
+            if entry != entry.lower() or '\\' in entry:
+                raise ValueError(f"{list_key} entry {entry!r} must be lower-case and '/'-separated")
+    for list_key in ('measurement_test_directory_segments', 'measurement_derived_directory_segments'):
+        for entry in data[list_key]:
+            if '/' in entry:
+                raise ValueError(f"{list_key} entry {entry!r} is one directory name, without '/'")
+    for entry in data['measurement_harness_directory_paths']:
+        if entry.startswith('/') or entry.endswith('/'):
+            raise ValueError(f"measurement_harness_directory_paths entry {entry!r} has no leading or trailing '/'")
+    for entry in data['global_package_roots']:
+        if not (entry.startswith('/') and entry.endswith('/')):
+            raise ValueError(f"global_package_roots entry {entry!r} must start and end with '/'")
+    for int_key in (
+        'evaluator_materialisation_min_paths',
+        'evaluator_materialisation_measurement_divisor',
+        'evaluator_materialisation_burst_secs',
+        'evaluator_session_attribution_slack_secs',
+    ):
+        value = data[int_key]
+        if not isinstance(value, int) or isinstance(value, bool) or value <= 0:
+            raise ValueError(f"{int_key} must be a positive integer")
+    # A bare runtime is one of the package-manager runtimes: the ones that run
+    # any program, not only installs.
+    stray = set(data['package_bare_runtimes']) - set(data['package_manager_runtimes'])
+    if stray:
+        raise ValueError(f"package_bare_runtimes not in package_manager_runtimes: {sorted(stray)}")
 
     validate_platform_string_lists(data['credential_store_patterns'], 'credential_store_patterns')
     validate_platform_string_lists(
