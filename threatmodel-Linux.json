@@ -1,5 +1,5 @@
 {
-  "date": "September 24th 2026",
+  "date": "October 05th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -102,7 +102,7 @@
           {
             "class": "link",
             "locale": "EN",
-            "target": "https://help.ubuntu.com/community/Antivirus"
+            "target": "https://wiki.debian.org/ClamAV"
           }
         ],
         "elevation": "",
@@ -223,7 +223,7 @@
           {
             "class": "link",
             "locale": "EN",
-            "target": "https://help.ubuntu.com/community/FullDiskEncryptionHowto"
+            "target": "https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system"
           }
         ],
         "elevation": "",
@@ -238,7 +238,7 @@
           {
             "class": "link",
             "locale": "EN",
-            "target": "https://help.ubuntu.com/community/FullDiskEncryptionHowto"
+            "target": "https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system"
           }
         ],
         "elevation": "",
@@ -2696,5 +2696,5 @@
     }
   ],
   "name": "threat model Linux",
-  "signature": "e5a287bb8de5ab1f63517dc6ddbbdbbc0c87521c1d325a437961d373af63cfab"
+  "signature": "9e380e972dc53ae3fc2f1ec205852dad049097300573ca77c6a47f7f4277c110"
 }

@@ -1115,6 +1115,9 @@ def validate_cve_detection_params(filename: str) -> None:
         'evaluator_materialisation_measurement_divisor',
         'evaluator_materialisation_burst_secs',
         'evaluator_session_attribution_slack_secs',
+        # The SSH client's host-key state a human authorizes by authorizing
+        # the connection (never private keys).
+        'ssh_client_state_files',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1617,6 +1620,8 @@ def validate_cve_detection_params(filename: str) -> None:
         list_keys = {
             'node_install_state_files', 'bun_lockfiles', 'bazel_workspace_files',
             'go_build_action_config_files',
+            'venv_interpreter_directories', 'venv_library_directories',
+            'venv_package_directories',
         }
         if not isinstance(value, dict):
             raise ValueError(f"'{key_name}' must be a dict")
@@ -1771,6 +1776,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'measurement_intent_tokens',
         'global_package_roots',
         'package_bare_runtimes',
+        'ssh_client_state_files',
     ):
         validate_string_list(data[list_key], list_key)
 
