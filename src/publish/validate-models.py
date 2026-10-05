@@ -1994,6 +1994,11 @@ def validate_agent_visibility_params(filename: str) -> None:
         'mcp_discovery',
         'mcp_credential_markers',
         'delegation_markers',
+        # Per agent type, the agent's own model traffic: what the transcript
+        # parser declares as expected (llm_hosts) and the dedicated
+        # model-API endpoints among it, to which a declared not-expected
+        # pattern never applies (provider_endpoints) (2.0.5).
+        'agent_llm_traffic',
     }
 
     def validate_string_list(value, key_name: str) -> None:
@@ -2736,6 +2741,69 @@ def validate_agent_visibility_params(filename: str) -> None:
             if not value[sub] or not all(value[sub]):
                 raise ValueError(f"{key_name}['{sub}'] must be non-empty strings")
 
+    def validate_agent_llm_traffic(value, key_name: str) -> None:
+        # Per agent type (edamame_foundation::agent_transcripts collectors):
+        # `llm_hosts` is what the transcript parser declares as the agent's
+        # own model traffic (`host:port`, a bare host meaning :443, or an
+        # `asn:OWNER`); `provider_endpoints` are the dedicated model-API
+        # endpoints among them. The divergence engine never applies a
+        # declared not-expected traffic pattern to the agent's session to
+        # one of its provider endpoints (or a subdomain of one), so an
+        # endpoint must name one host and port exactly: no ASN, no
+        # wildcard, no shared cloud suffix the agent's tools could also
+        # reach (amazonaws.com, googleapis.com stay in llm_hosts only).
+        required_agents = {
+            'claude_code', 'claude_desktop', 'codex', 'cursor', 'hermes', 'openclaw',
+        }
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        missing = required_agents - set(value.keys())
+        if missing:
+            raise ValueError(f"{key_name} is missing agents {sorted(missing)}")
+        host_re = re.compile(r'[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+')
+
+        def parse_host_port(entry: str, where: str):
+            host, sep, port = entry.rpartition(':')
+            if not sep:
+                host, port = entry, '443'
+            if not host_re.fullmatch(host):
+                raise ValueError(f"{where}: '{entry}' must be a lowercase host name with an optional :port")
+            if not port.isdigit() or not 1 <= int(port) <= 65535:
+                raise ValueError(f"{where}: '{entry}' must carry a port 1..65535")
+            return host, int(port)
+
+        for agent, entry in value.items():
+            where = f"{key_name}['{agent}']"
+            if not re.fullmatch(r'[a-z][a-z0-9_]*', agent):
+                raise ValueError(f"{where}: the agent type must be a lowercase slug")
+            if not isinstance(entry, dict) or set(entry.keys()) != {'llm_hosts', 'provider_endpoints'}:
+                raise ValueError(f"{where} must be {{llm_hosts, provider_endpoints}}")
+            hosts = entry['llm_hosts']
+            validate_string_list(hosts, f"{where}['llm_hosts']")
+            if not hosts:
+                raise ValueError(f"{where}['llm_hosts'] must be non-empty")
+            if len(set(hosts)) != len(hosts):
+                raise ValueError(f"{where}['llm_hosts'] has duplicate entries")
+            for host in hosts:
+                if host.startswith('asn:'):
+                    owner = host[len('asn:'):]
+                    if not owner or owner.strip() != owner:
+                        raise ValueError(f"{where}['llm_hosts']: '{host}' must name an ASN owner")
+                else:
+                    parse_host_port(host, f"{where}['llm_hosts']")
+            endpoints = entry['provider_endpoints']
+            validate_string_list(endpoints, f"{where}['provider_endpoints']")
+            if len(set(endpoints)) != len(endpoints):
+                raise ValueError(f"{where}['provider_endpoints'] has duplicate entries")
+            for endpoint in endpoints:
+                if ':' not in endpoint:
+                    raise ValueError(f"{where}['provider_endpoints']: '{endpoint}' must be host:port")
+                parse_host_port(endpoint, f"{where}['provider_endpoints']")
+                # An exemption from a prohibition is never wider than what
+                # the parser already declares as the agent's model traffic.
+                if endpoint not in hosts:
+                    raise ValueError(f"{where}['provider_endpoints']: '{endpoint}' is not in llm_hosts")
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -2830,6 +2898,10 @@ def validate_agent_visibility_params(filename: str) -> None:
     validate_delegation_markers(
         data['delegation_markers'],
         'delegation_markers',
+    )
+    validate_agent_llm_traffic(
+        data['agent_llm_traffic'],
+        'agent_llm_traffic',
     )
 
     print("Agent visibility params validation successful")
