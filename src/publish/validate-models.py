@@ -1115,6 +1115,10 @@ def validate_cve_detection_params(filename: str) -> None:
         'evaluator_materialisation_measurement_divisor',
         'evaluator_materialisation_burst_secs',
         'evaluator_session_attribution_slack_secs',
+        # The SSH client's own host-key state: a human who authorizes an SSH
+        # connection authorizes the client reading and updating these
+        # (divergence human scope). Never private keys.
+        'ssh_client_state_files',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1799,6 +1803,11 @@ def validate_cve_detection_params(filename: str) -> None:
     for entry in data['global_package_roots']:
         if not (entry.startswith('/') and entry.endswith('/')):
             raise ValueError(f"global_package_roots entry {entry!r} must start and end with '/'")
+    validate_string_list(data['ssh_client_state_files'], 'ssh_client_state_files')
+    for entry in data['ssh_client_state_files']:
+        name = entry.rsplit('/', 1)[-1]
+        if not entry.startswith('~/.ssh/') or name.startswith('id_') or name.endswith('.pem') or name.endswith('.key'):
+            raise ValueError(f"ssh_client_state_files entry {entry!r} must be a ~/.ssh/ host-key state file, never a private key")
     for int_key in (
         'evaluator_materialisation_min_paths',
         'evaluator_materialisation_measurement_divisor',
