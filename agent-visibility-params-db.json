@@ -282,6 +282,111 @@
       "bat"
     ]
   },
+  "agent_llm_traffic": {
+    "claude_code": {
+      "llm_hosts": [
+        "api.anthropic.com:443",
+        "asn:ANTHROPIC",
+        "api.openai.com:443",
+        "amazonaws.com:443",
+        "asn:CLOUDFLARENET",
+        "asn:NOTION",
+        "asn:MICROSOFT-CORP",
+        "asn:AMAZON",
+        "googleapis.com:443",
+        "asn:GOOGLE"
+      ],
+      "provider_endpoints": [
+        "api.anthropic.com:443",
+        "api.openai.com:443"
+      ]
+    },
+    "claude_desktop": {
+      "llm_hosts": [
+        "api.anthropic.com:443",
+        "asn:ANTHROPIC",
+        "api.openai.com:443",
+        "amazonaws.com:443",
+        "asn:CLOUDFLARENET",
+        "asn:NOTION",
+        "asn:MICROSOFT-CORP",
+        "asn:AMAZON"
+      ],
+      "provider_endpoints": [
+        "api.anthropic.com:443",
+        "api.openai.com:443"
+      ]
+    },
+    "codex": {
+      "llm_hosts": [
+        "api.anthropic.com:443",
+        "asn:ANTHROPIC",
+        "api.openai.com:443",
+        "amazonaws.com:443",
+        "asn:CLOUDFLARENET",
+        "asn:NOTION",
+        "asn:MICROSOFT-CORP",
+        "asn:AMAZON"
+      ],
+      "provider_endpoints": [
+        "api.anthropic.com:443",
+        "api.openai.com:443"
+      ]
+    },
+    "cursor": {
+      "llm_hosts": [
+        "cursor.sh:443",
+        "api.openai.com:443",
+        "api.anthropic.com:443",
+        "asn:ANTHROPIC",
+        "amazonaws.com:443",
+        "awsglobalaccelerator.com:443",
+        "asn:CLOUDFLARENET",
+        "asn:NOTION",
+        "asn:MICROSOFT-CORP",
+        "asn:AMAZON"
+      ],
+      "provider_endpoints": [
+        "cursor.sh:443",
+        "api.openai.com:443",
+        "api.anthropic.com:443"
+      ]
+    },
+    "hermes": {
+      "llm_hosts": [
+        "api.anthropic.com:443",
+        "asn:ANTHROPIC",
+        "api.openai.com:443",
+        "openrouter.ai:443",
+        "api.nousresearch.com:443",
+        "inference.nousresearch.com:443",
+        "amazonaws.com:443",
+        "asn:CLOUDFLARENET",
+        "asn:AMAZON"
+      ],
+      "provider_endpoints": [
+        "api.anthropic.com:443",
+        "api.openai.com:443",
+        "openrouter.ai:443",
+        "api.nousresearch.com:443",
+        "inference.nousresearch.com:443"
+      ]
+    },
+    "openclaw": {
+      "llm_hosts": [
+        "api.anthropic.com:443",
+        "asn:ANTHROPIC",
+        "api.openai.com:443",
+        "amazonaws.com:443",
+        "asn:CLOUDFLARENET",
+        "asn:AMAZON"
+      ],
+      "provider_endpoints": [
+        "api.anthropic.com:443",
+        "api.openai.com:443"
+      ]
+    }
+  },
   "agent_model_container_keys": [
     "message",
     "request",
@@ -510,7 +615,7 @@
       "title": "Investigate prompt-injection bait"
     }
   ],
-  "date": "September 30th 2026",
+  "date": "October 05th 2026",
   "delegation_markers": {
     "spawn_goal_keys": [
       "description",
@@ -1363,7 +1468,7 @@
       "per_marker": false
     }
   ],
-  "signature": "079243fddb739917b862aa921a3f5313fd8910d59326a30f4e2a4f6a923907ae",
+  "signature": "0f7b725213841e405efdb350ff4ee6bc7070107c1e11ef2fa69fe382aa57d833",
   "transcript_secret_signatures": [
     {
       "hits": 2,
