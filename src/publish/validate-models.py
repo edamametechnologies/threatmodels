@@ -1123,6 +1123,10 @@ def validate_cve_detection_params(filename: str) -> None:
         # revocation, connectivity probes, OS update, toolchain telemetry),
         # by class, each with the ports it covers.
         'divergence_infrastructure_endpoints',
+        # Per-session files an agent harness captures the output of the
+        # commands it runs into (Claude Code's
+        # <temp>/claude[-<uid>]/<project>/<session>/tasks/<id>.output).
+        'agent_harness_output_capture',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1608,6 +1612,41 @@ def validate_cve_detection_params(filename: str) -> None:
             if directory and not item.endswith('/'):
                 raise ValueError(f"{where} must end with '/'; got '{item}'")
 
+    def validate_agent_harness_output_capture(value, key_name: str) -> None:
+        # A write into one of these files is graded LOW whatever process
+        # wrote it, so each entry is a precise layout: the root directory
+        # (an exact name or a prefix of at least two characters plus a
+        # dash), a fixed number of directories below it, the capture
+        # directory and the file suffix. Every entry carries every key.
+        expected_keys = {'agent', 'root_names', 'root_prefixes', 'levels_below_root',
+                         'capture_dir', 'file_suffix'}
+        if not isinstance(value, list) or not value:
+            raise ValueError(f"'{key_name}' must be a non-empty list")
+        for i, entry in enumerate(value):
+            where = f"{key_name}[{i}]"
+            if not isinstance(entry, dict) or set(entry.keys()) != expected_keys:
+                raise ValueError(f"{where} must carry exactly the keys {sorted(expected_keys)}")
+            if not isinstance(entry['agent'], str) or not re.fullmatch(r"[a-z0-9_]+", entry['agent']):
+                raise ValueError(f"{where}['agent'] must be a lowercase slug")
+            for list_key in ('root_names', 'root_prefixes'):
+                validate_string_list(entry[list_key], f"{where}['{list_key}']")
+                for item in entry[list_key]:
+                    if item != item.lower() or not re.fullmatch(r"[a-z0-9._-]+", item):
+                        raise ValueError(f"{where}['{list_key}'] entry {item!r} must be one lowercase path segment")
+            for prefix in entry['root_prefixes']:
+                if len(prefix) < 3 or not prefix.endswith('-'):
+                    raise ValueError(f"{where}['root_prefixes'] entry {prefix!r} must be at least two characters and a dash")
+            if not entry['root_names'] and not entry['root_prefixes']:
+                raise ValueError(f"{where} names no root")
+            levels = entry['levels_below_root']
+            if isinstance(levels, bool) or not isinstance(levels, int) or not 0 <= levels <= 6:
+                raise ValueError(f"{where}['levels_below_root'] must be an integer between 0 and 6")
+            if not isinstance(entry['capture_dir'], str) or not re.fullmatch(r"[a-z0-9._-]+", entry['capture_dir']):
+                raise ValueError(f"{where}['capture_dir'] must be one lowercase path segment")
+            suffix = entry['file_suffix']
+            if not isinstance(suffix, str) or not re.fullmatch(r"\.[a-z0-9]+", suffix):
+                raise ValueError(f"{where}['file_suffix'] must be a lowercase extension such as '.output'")
+
     def validate_lowercase_tokens(value, key_name: str) -> None:
         # Names and tokens compared for equality with a lowercased value.
         validate_string_list(value, key_name)
@@ -1975,6 +2014,10 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_divergence_infrastructure_endpoints(
         data['divergence_infrastructure_endpoints'],
         'divergence_infrastructure_endpoints',
+    )
+    validate_agent_harness_output_capture(
+        data['agent_harness_output_capture'],
+        'agent_harness_output_capture',
     )
     validate_runtime_perfdata_paths(
         data['runtime_perfdata_paths'],
