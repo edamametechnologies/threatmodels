@@ -1127,6 +1127,9 @@ def validate_cve_detection_params(filename: str) -> None:
         # commands it runs into (Claude Code's
         # <temp>/claude[-<uid>]/<project>/<session>/tasks/<id>.output).
         'agent_harness_output_capture',
+        # The names Python's tempfile module gives its scratch entries:
+        # tempfile.template, then _RandomNameSequence (8 characters).
+        'python_tempfile_name',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1647,6 +1650,21 @@ def validate_cve_detection_params(filename: str) -> None:
             if not isinstance(suffix, str) or not re.fullmatch(r"\.[a-z0-9]+", suffix):
                 raise ValueError(f"{where}['file_suffix'] must be a lowercase extension such as '.output'")
 
+    def validate_python_tempfile_name(value, key_name: str) -> None:
+        # Writes a proven temp venv interpreter makes to these names grade
+        # LOW, so the shape stays Python's own: a short lowercase prefix, a
+        # fixed random length long enough to be random, a lowercase alphabet.
+        if not isinstance(value, dict) or set(value.keys()) != {'prefix', 'random_len', 'alphabet'}:
+            raise ValueError(f"'{key_name}' must carry exactly prefix, random_len and alphabet")
+        if not isinstance(value['prefix'], str) or not re.fullmatch(r"[a-z]{2,8}", value['prefix']):
+            raise ValueError(f"'{key_name}.prefix' must be 2 to 8 lowercase letters")
+        n = value['random_len']
+        if isinstance(n, bool) or not isinstance(n, int) or not 6 <= n <= 16:
+            raise ValueError(f"'{key_name}.random_len' must be an integer between 6 and 16")
+        a = value['alphabet']
+        if not isinstance(a, str) or not re.fullmatch(r"[a-z0-9_]{16,}", a) or len(set(a)) != len(a):
+            raise ValueError(f"'{key_name}.alphabet' must be distinct lowercase letters, digits or '_' (at least 16)")
+
     def validate_lowercase_tokens(value, key_name: str) -> None:
         # Names and tokens compared for equality with a lowercased value.
         validate_string_list(value, key_name)
@@ -2019,6 +2037,7 @@ def validate_cve_detection_params(filename: str) -> None:
         data['agent_harness_output_capture'],
         'agent_harness_output_capture',
     )
+    validate_python_tempfile_name(data['python_tempfile_name'], 'python_tempfile_name')
     validate_runtime_perfdata_paths(
         data['runtime_perfdata_paths'],
         'runtime_perfdata_paths',
