@@ -38,11 +38,11 @@
     "lanscan-port-vulns-db.json": "68544baf74e25e181ffc582448d8c87387f7aa170f24eb4f8ff2982dbbcaaab3",
     "lanscan-profiles-db.json": "c7dd123a2bd7be34a5742472767fd7c31df4ac90bfeaf3b9edf275847b1f377c",
     "lanscan-vendor-vulns-db.json": "00959da6e79735e87125367c6dfbcc202a1b358f1c0f01b29571dc005191b59b",
-    "sensitive-paths-db.json": "2fffc42527cdbdcff4dde2831277762dd26ea43581b0fbcb66a060385ddef4a3",
+    "sensitive-paths-db.json": "048d9c49fd25960e056c31278ded10286ebb7fe1a28a848b494a313dc86ceb30",
     "whitelists-db.json": "307647c3013061df0b600b6468d749e81ed5224b45a349a5e2640096e8ccc22d"
   },
   "format": 1,
-  "issued_at": "2026-10-06T09:12:21Z",
+  "issued_at": "2026-10-06T16:02:26Z",
   "scope": "data",
-  "sequence": 1791277941
+  "sequence": 1791302546
 }
