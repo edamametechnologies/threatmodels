@@ -1192,6 +1192,10 @@ def validate_cve_detection_params(filename: str) -> None:
         # The names Python's tempfile module gives its scratch entries:
         # tempfile.template, then _RandomNameSequence (8 characters).
         'python_tempfile_name',
+        # Files an agent harness writes directly under the OS temp root for
+        # its own bookkeeping (Claude Code's <temp>/claude-<4 hex>-cwd, the
+        # working directory its Bash tool records after each command).
+        'agent_harness_temp_files',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1677,6 +1681,36 @@ def validate_cve_detection_params(filename: str) -> None:
             if directory and not item.endswith('/'):
                 raise ValueError(f"{where} must end with '/'; got '{item}'")
 
+    def validate_agent_harness_temp_files(value, key_name: str) -> None:
+        # A write to one of these files directly under the OS temp root is
+        # graded LOW whatever process wrote it, so each entry is an exact
+        # name shape: a prefix of at least two characters and a dash, a
+        # random token of a fixed length from a small alphabet, and a
+        # non-empty suffix. Every entry carries every key.
+        expected_keys = {'agent', 'name_prefix', 'token_len', 'token_alphabet', 'name_suffix'}
+        if not isinstance(value, list) or not value:
+            raise ValueError(f"'{key_name}' must be a non-empty list")
+        for i, entry in enumerate(value):
+            where = f"{key_name}[{i}]"
+            if not isinstance(entry, dict) or set(entry.keys()) != expected_keys:
+                raise ValueError(f"{where} must carry exactly the keys {sorted(expected_keys)}")
+            if not isinstance(entry['agent'], str) or not re.fullmatch(r"[a-z0-9_]+", entry['agent']):
+                raise ValueError(f"{where}['agent'] must be a lowercase slug")
+            prefix = entry['name_prefix']
+            if not isinstance(prefix, str) or len(prefix) < 3 or not prefix.endswith('-') \
+                    or not re.fullmatch(r"[a-z0-9._-]+", prefix):
+                raise ValueError(f"{where}['name_prefix'] must be a lowercase name of at least two characters and a dash")
+            token_len = entry['token_len']
+            if isinstance(token_len, bool) or not isinstance(token_len, int) or not 2 <= token_len <= 32:
+                raise ValueError(f"{where}['token_len'] must be an integer between 2 and 32")
+            alphabet = entry['token_alphabet']
+            if not isinstance(alphabet, str) or not 2 <= len(alphabet) <= 64 \
+                    or not re.fullmatch(r"[a-z0-9_]+", alphabet) or len(set(alphabet)) != len(alphabet):
+                raise ValueError(f"{where}['token_alphabet'] must be 2 to 64 distinct lowercase characters")
+            suffix = entry['name_suffix']
+            if not isinstance(suffix, str) or len(suffix) < 2 or not re.fullmatch(r"[a-z0-9._-]+", suffix):
+                raise ValueError(f"{where}['name_suffix'] must be a lowercase suffix of at least two characters")
+
     def validate_agent_harness_output_capture(value, key_name: str) -> None:
         # A write into one of these files is graded LOW whatever process
         # wrote it, so each entry is a precise layout: the root directory
@@ -2100,6 +2134,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'agent_harness_output_capture',
     )
     validate_python_tempfile_name(data['python_tempfile_name'], 'python_tempfile_name')
+    validate_agent_harness_temp_files(data['agent_harness_temp_files'], 'agent_harness_temp_files')
     validate_runtime_perfdata_paths(
         data['runtime_perfdata_paths'],
         'runtime_perfdata_paths',
