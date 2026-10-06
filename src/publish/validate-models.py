@@ -823,6 +823,7 @@ def validate_sensitive_paths(filename: str) -> None:
     allowed_top_keys = {
         'date', 'signature', 'common_patterns', 'platform_patterns', 'labels',
         'watch_roots', 'fim_excluded_path_patterns', 'fim_forbidden_watch_roots',
+        'credential_opens',
     }
 
     with open(filename, 'r', encoding='utf-8') as file:
@@ -937,6 +938,67 @@ def validate_sensitive_paths(filename: str) -> None:
                 raise ValueError(f"{where} must be an absolute POSIX path; got '{root}'")
             if platform_key == 'windows' and not re.match(r'^[A-Za-z]:\\', root):
                 raise ValueError(f"{where} must be an absolute Windows path (drive root); got '{root}'")
+
+    # credential_opens: the cold credential set the kernel open-notification
+    # clients (flodbadd::credential_opens, BS-10) remember after the
+    # descriptor closes. `cold_labels` name catalog labels; a path inside one
+    # that contains a `hot_subpaths` fragment (stores a browser or a full
+    # node touches all day) stays on the open-file poll. `open_ttl_secs`
+    # bounds how long a closed open stays attached to its process.
+    # `label_home_roots` maps a lowercase label prefix to its case-preserved
+    # home-relative location per platform (the kernel watch prefixes), and
+    # `windows_profile_marker` is the substring every user-profile path
+    # carries (the ETW prefilter before label classification).
+    opens = data['credential_opens']
+    allowed_open_keys = {
+        'cold_labels', 'hot_subpaths', 'open_ttl_secs', 'label_home_roots',
+        'windows_profile_marker',
+    }
+    if not isinstance(opens, dict) or set(opens.keys()) != allowed_open_keys:
+        raise ValueError(f"'credential_opens' must be a dict with keys {sorted(allowed_open_keys)}")
+    cold = opens['cold_labels']
+    if not isinstance(cold, list) or not cold:
+        raise ValueError("credential_opens.cold_labels must be a non-empty list")
+    for i, label in enumerate(cold):
+        if not isinstance(label, str) or label not in data['labels']:
+            raise ValueError(f"credential_opens.cold_labels[{i}] must name a label of 'labels'; got '{label}'")
+    hot = opens['hot_subpaths']
+    if not isinstance(hot, list):
+        raise ValueError("credential_opens.hot_subpaths must be a list")
+    for i, frag in enumerate(hot):
+        if (not isinstance(frag, str) or len(frag) < 3 or not frag.startswith('/')
+                or not frag.endswith('/') or frag != frag.lower() or '\\' in frag):
+            raise ValueError(
+                f"credential_opens.hot_subpaths[{i}] must be a lowercase '/name/' path segment; got '{frag}'"
+            )
+    ttl = opens['open_ttl_secs']
+    if not isinstance(ttl, int) or isinstance(ttl, bool) or not (60 <= ttl <= 86400):
+        raise ValueError("credential_opens.open_ttl_secs must be an integer between 60 and 86400")
+    roots = opens['label_home_roots']
+    if not isinstance(roots, dict) or set(roots.keys()) != {'macos', 'linux', 'windows'}:
+        raise ValueError("credential_opens.label_home_roots must be a dict with keys 'macos', 'linux', 'windows'")
+    for platform_key, entries in roots.items():
+        if not isinstance(entries, list):
+            raise ValueError(f"credential_opens.label_home_roots['{platform_key}'] must be a list")
+        for i, entry in enumerate(entries):
+            where = f"credential_opens.label_home_roots['{platform_key}'][{i}]"
+            if not isinstance(entry, dict) or set(entry.keys()) != {'label_prefix', 'home_prefix'}:
+                raise ValueError(f"{where} must be an object with 'label_prefix' and 'home_prefix'")
+            label_prefix, home_prefix = entry['label_prefix'], entry['home_prefix']
+            if (not isinstance(label_prefix, str) or len(label_prefix) < 3 or not label_prefix.startswith('/')
+                    or not label_prefix.endswith('/') or label_prefix != label_prefix.lower()):
+                raise ValueError(f"{where}.label_prefix must be a lowercase '/name/' prefix; got '{label_prefix}'")
+            if (not isinstance(home_prefix, str) or len(home_prefix) < 3 or not home_prefix.startswith('/')
+                    or not home_prefix.endswith('/') or '\\' in home_prefix or '..' in home_prefix):
+                raise ValueError(f"{where}.home_prefix must be a home-relative '/Dir/' prefix; got '{home_prefix}'")
+            if not home_prefix.lower().endswith(label_prefix):
+                raise ValueError(f"{where}.home_prefix must end with label_prefix (case-insensitively)")
+    marker = opens['windows_profile_marker']
+    if (not isinstance(marker, str) or len(marker) < 3 or not marker.startswith('\\')
+            or not marker.endswith('\\') or marker != marker.lower()):
+        raise ValueError(
+            f"credential_opens.windows_profile_marker must be a lowercase '\\\\dir\\\\' segment; got '{marker}'"
+        )
 
     print("Sensitive paths validation successful")
 

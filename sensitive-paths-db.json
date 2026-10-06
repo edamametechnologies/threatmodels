@@ -59,7 +59,37 @@
     "/.config/1password/",
     "/.config/bitwarden/"
   ],
-  "date": "September 30th 2026",
+  "credential_opens": {
+    "cold_labels": [
+      "aws",
+      "azure",
+      "crypto",
+      "gcp",
+      "gnupg",
+      "ssh"
+    ],
+    "hot_subpaths": [
+      "/local extension settings/",
+      "/blocks/",
+      "/chainstate/",
+      "/indexes/",
+      "/chaindata/",
+      "/lmdb/"
+    ],
+    "label_home_roots": {
+      "linux": [],
+      "macos": [
+        {
+          "home_prefix": "/Library/Application Support/",
+          "label_prefix": "/application support/"
+        }
+      ],
+      "windows": []
+    },
+    "open_ttl_secs": 900,
+    "windows_profile_marker": "\\users\\"
+  },
+  "date": "October 06th 2026",
   "fim_excluded_path_patterns": [
     "/target/debug/",
     "/target/release/",
@@ -354,7 +384,7 @@
       "/AppData/Roaming/containers/auth.json"
     ]
   },
-  "signature": "3fe8b8e29dfed2a4d6044f300dbed33bbdea6b73608dd516f901dc8585345490",
+  "signature": "32e3195dec7d61c1b153d066b3c3b59579d21acce105d00b5881c11f0fdb42ee",
   "watch_roots": {
     "common_home_relative": [
       ".ssh",
