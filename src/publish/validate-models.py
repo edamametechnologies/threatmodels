@@ -1118,6 +1118,11 @@ def validate_cve_detection_params(filename: str) -> None:
         # The SSH client's host-key state a human authorizes by authorizing
         # the connection (never private keys).
         'ssh_client_state_files',
+        # Hosts the divergence correlation plane does not count as
+        # unexplained egress (DNS resolvers, time sync, certificate
+        # revocation, connectivity probes, OS update, toolchain telemetry),
+        # by class, each with the ports it covers.
+        'divergence_infrastructure_endpoints',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1522,6 +1527,67 @@ def validate_cve_detection_params(filename: str) -> None:
         for subkey in sorted(expected_keys):
             validate_string_list(value[subkey], f"{key_name}['{subkey}']")
 
+    def validate_divergence_infrastructure_endpoints(value, key_name: str) -> None:
+        # A host listed here is never unexplained egress to the divergence
+        # correlation plane on the class's ports, so a too-broad entry blinds
+        # it. Every class carries every key (born complete). Hosts are exact
+        # lowercase names or addresses; a suffix starts with '.' and keeps at
+        # least two labels (never a bare public suffix such as '.com'); a
+        # first label is one DNS label matched exactly; a numbered first
+        # label is a letter prefix followed only by digits ('crl'
+        # matches 'crl' and 'crl3', never 'crlx').
+        expected_keys = {'class', 'hosts', 'suffixes', 'first_labels', 'numbered_first_labels', 'ports'}
+        label_re = re.compile(r"[a-z0-9]([a-z0-9-]*[a-z0-9])?")
+        if not isinstance(value, list) or not value:
+            raise ValueError(f"'{key_name}' must be a non-empty list")
+        seen_classes = set()
+        for i, entry in enumerate(value):
+            where = f"{key_name}[{i}]"
+            if not isinstance(entry, dict):
+                raise ValueError(f"{where} must be a dict")
+            if set(entry.keys()) != expected_keys:
+                missing = expected_keys - set(entry.keys())
+                extra = set(entry.keys()) - expected_keys
+                raise ValueError(f"{where} has missing keys {missing} and unexpected keys {extra}")
+            name = entry['class']
+            if not isinstance(name, str) or not re.fullmatch(r"[a-z0-9_]+", name):
+                raise ValueError(f"{where}['class'] must be a lowercase slug; got {name!r}")
+            if name in seen_classes:
+                raise ValueError(f"{where}: class '{name}' is listed twice")
+            seen_classes.add(name)
+            for list_key in ('hosts', 'suffixes', 'first_labels', 'numbered_first_labels'):
+                validate_lowercase_tokens(entry[list_key], f"{where}['{list_key}']")
+                if len(set(entry[list_key])) != len(entry[list_key]):
+                    raise ValueError(f"{where}['{list_key}'] has duplicates")
+            for host in entry['hosts']:
+                labels = host.split('.')
+                if len(labels) < 2 or not all(label_re.fullmatch(label) for label in labels):
+                    raise ValueError(f"{where}['hosts'] entry {host!r} must be a full DNS name or IPv4 address")
+            for suffix in entry['suffixes']:
+                labels = suffix[1:].split('.')
+                if not suffix.startswith('.') or len(labels) < 2 or not all(
+                    label_re.fullmatch(label) for label in labels
+                ):
+                    raise ValueError(
+                        f"{where}['suffixes'] entry {suffix!r} must start with '.' and keep at least two labels"
+                    )
+            for label in entry['first_labels']:
+                if not label_re.fullmatch(label):
+                    raise ValueError(f"{where}['first_labels'] entry {label!r} must be one DNS label")
+            for prefix in entry['numbered_first_labels']:
+                if not re.fullmatch(r"[a-z]+", prefix):
+                    raise ValueError(f"{where}['numbered_first_labels'] entry {prefix!r} must be letters only")
+            if not any(entry[k] for k in ('hosts', 'suffixes', 'first_labels', 'numbered_first_labels')):
+                raise ValueError(f"{where} matches no host")
+            ports = entry['ports']
+            if not isinstance(ports, list) or not ports:
+                raise ValueError(f"{where}['ports'] must be a non-empty list")
+            for port in ports:
+                if isinstance(port, bool) or not isinstance(port, int) or not 1 <= port <= 65535:
+                    raise ValueError(f"{where}['ports'] entry {port!r} must be a port number")
+            if len(set(ports)) != len(ports):
+                raise ValueError(f"{where}['ports'] has duplicates")
+
     def validate_path_fragments(value, key_name: str, *, relative: bool, directory: bool) -> None:
         # Path fragments the detector matches against a lowercased,
         # forward-slash-normalized path. `relative`: below the user profile
@@ -1905,6 +1971,10 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_software_distribution_backends(
         data['software_distribution_backends'],
         'software_distribution_backends',
+    )
+    validate_divergence_infrastructure_endpoints(
+        data['divergence_infrastructure_endpoints'],
+        'divergence_infrastructure_endpoints',
     )
     validate_runtime_perfdata_paths(
         data['runtime_perfdata_paths'],
