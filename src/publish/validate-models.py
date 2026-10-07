@@ -1196,6 +1196,10 @@ def validate_cve_detection_params(filename: str) -> None:
         # its own bookkeeping (Claude Code's <temp>/claude-<4 hex>-cwd, the
         # working directory its Bash tool records after each command).
         'agent_harness_temp_files',
+        # Environment variable names that hold a wallet key or seed (BS-10):
+        # PREFIX_SUFFIX (chain or wallet qualified) or an exact name. Only the
+        # names are read, never the values.
+        'wallet_key_env_names',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1711,6 +1715,26 @@ def validate_cve_detection_params(filename: str) -> None:
             if not isinstance(suffix, str) or len(suffix) < 2 or not re.fullmatch(r"[a-z0-9._-]+", suffix):
                 raise ValueError(f"{where}['name_suffix'] must be a lowercase suffix of at least two characters")
 
+    def validate_wallet_key_env_names(value, key_name: str) -> None:
+        # A process carrying one of these names next to a credential read or
+        # egress corroborates key theft, so every name is chain- or
+        # wallet-qualified: a prefix joined to a suffix with '_', or an exact
+        # name. A bare generic name (PRIVATE_KEY, SECRET, TOKEN) cannot be
+        # spelled: suffixes only ever match after a prefix.
+        expected_keys = {'exact', 'prefixes', 'suffixes'}
+        if not isinstance(value, dict) or set(value.keys()) != expected_keys:
+            raise ValueError(f"'{key_name}' must carry exactly the keys {sorted(expected_keys)}")
+        for part in sorted(expected_keys):
+            items = value[part]
+            if not isinstance(items, list) or not items:
+                raise ValueError(f"'{key_name}.{part}' must be a non-empty list")
+            if len(set(items)) != len(items):
+                raise ValueError(f"'{key_name}.{part}' has duplicates")
+            for item in items:
+                if not isinstance(item, str) or not re.fullmatch(r"[A-Z][A-Z0-9]*(_[A-Z0-9]+)*", item) \
+                        or len(item) < 3:
+                    raise ValueError(f"'{key_name}.{part}' entry '{item}' must be an uppercase environment name of at least three characters")
+
     def validate_agent_harness_output_capture(value, key_name: str) -> None:
         # A write into one of these files is graded LOW whatever process
         # wrote it, so each entry is a precise layout: the root directory
@@ -2135,6 +2159,7 @@ def validate_cve_detection_params(filename: str) -> None:
     )
     validate_python_tempfile_name(data['python_tempfile_name'], 'python_tempfile_name')
     validate_agent_harness_temp_files(data['agent_harness_temp_files'], 'agent_harness_temp_files')
+    validate_wallet_key_env_names(data['wallet_key_env_names'], 'wallet_key_env_names')
     validate_runtime_perfdata_paths(
         data['runtime_perfdata_paths'],
         'runtime_perfdata_paths',
