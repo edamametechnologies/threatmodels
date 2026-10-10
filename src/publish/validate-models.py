@@ -1859,10 +1859,11 @@ def validate_cve_detection_params(filename: str) -> None:
             'node_modules_directory', 'swiftpm_build_directory', 'swiftpm_state_file',
             'swiftpm_manifest_file', 'bazel_output_link', 'bazel_workspace_link_prefix',
             'go_build_work_directory_prefix', 'venv_config_file',
+            'cargo_build_directory',
         }
         list_keys = {
             'node_install_state_files', 'bun_lockfiles', 'bazel_workspace_files',
-            'go_build_action_config_files',
+            'go_build_action_config_files', 'cargo_build_script_basenames',
             'venv_interpreter_directories', 'venv_library_directories',
             'venv_package_directories',
         }
