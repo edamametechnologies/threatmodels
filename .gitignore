@@ -5,6 +5,7 @@ __pycache__/
 /port_vulns_db_*.json
 /venv/
 report-results.txt
+test-progress.log
 /src/test/target/
 /src/test/Cargo.lock
 

@@ -8,6 +8,19 @@ from pathlib import Path
 # Command timeout in seconds
 CMD_TIMEOUT = 120
 
+# Each target is recorded before it runs, flushed to disk, so a run that
+# hangs or loses its runner says which target it was in (CI uploads the file).
+PROGRESS_LOG = Path("test-progress.log")
+
+
+def record_progress(line):
+    print(f"[progress] {line}", flush=True)
+    with open(PROGRESS_LOG, "a", encoding="utf-8") as progress:
+        progress.write(line + "\n")
+        progress.flush()
+        os.fsync(progress.fileno())
+
+
 # Path to the Rust test binary (relative to threatmodels root)
 RUST_BINARY_NAME = "run_cli_test.exe" if platform.system() == "Windows" else "run_cli_test"
 RUST_BINARY_PATH = (Path("src/test/target/release") / RUST_BINARY_NAME).absolute()
@@ -156,6 +169,7 @@ class Metric(object):
         '''
         # Gets the corresponding target command
         command = self.info[target_type]["target"]
+        record_progress(f"{self.info['name']} {target_type}")
         needs_personate = self._needs_personate(target_type)
 
         # Build arguments for the Rust binary: <command> <username> [personate] [timeout]
