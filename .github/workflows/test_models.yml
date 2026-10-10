@@ -156,9 +156,14 @@ jobs:
       - name: Run tests
         working-directory: threatmodels
         shell: bash
+        # The whole run takes under a minute; a step that outlives this has
+        # hung, and stopping it here keeps the job (and its log and progress
+        # artifact) alive. macos-26 lost the job, logs included, after 45-50
+        # minutes on 2026-10-10 (main and a params-only PR alike).
+        timeout-minutes: 40
         run: |
           pip install -r requirements.txt
-          python3 src/test/main.py
+          python3 -u src/test/main.py
 
       - id: read_output
         if: always()
@@ -172,6 +177,15 @@ jobs:
         with:
           name: report-${{ matrix.name }}
           path: threatmodels/report-results.txt
+
+      # The last line names the target that was running when the step stopped.
+      - name: Upload test progress
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-progress-${{ matrix.name }}
+          path: threatmodels/test-progress.log
+          if-no-files-found: ignore
 
   tests-alpine:
     # Stable job name for required-status-check pinning (see tests-native note).
