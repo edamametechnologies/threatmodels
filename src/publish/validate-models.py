@@ -822,8 +822,8 @@ def validate_sensitive_paths(filename: str) -> None:
     """Validate sensitive-paths-db.json structure."""
     allowed_top_keys = {
         'date', 'signature', 'common_patterns', 'platform_patterns', 'labels',
-        'watch_roots', 'fim_excluded_path_patterns', 'fim_forbidden_watch_roots',
-        'credential_opens',
+        'watch_roots', 'watch_roots_early_drop', 'fim_excluded_path_patterns',
+        'fim_forbidden_watch_roots', 'credential_opens',
     }
 
     with open(filename, 'r', encoding='utf-8') as file:
@@ -898,6 +898,31 @@ def validate_sensitive_paths(filename: str) -> None:
                 raise ValueError(
                     f"watch_roots['{key}'][{i}] must be a HOME-relative POSIX path "
                     f"(no leading '/' and no backslashes); got '{p}'"
+                )
+
+    # watch_roots_early_drop: the watch roots, by the same per-platform keys,
+    # whose events the FIM watcher keeps only when sensitive, temp or
+    # catalog-labelled (the generic per-user application-data trees). Every
+    # other watch root keeps all its events. Each entry must be a watch root.
+    early = data['watch_roots_early_drop']
+    if not isinstance(early, dict):
+        raise ValueError("'watch_roots_early_drop' must be a dict")
+    actual_early_keys = set(early.keys())
+    if actual_early_keys != allowed_watch_root_keys:
+        unexpected = actual_early_keys - allowed_watch_root_keys
+        missing = allowed_watch_root_keys - actual_early_keys
+        raise ValueError(
+            f"Unexpected keys {unexpected}, missing keys {missing} in 'watch_roots_early_drop'"
+        )
+    for key, paths in early.items():
+        if not isinstance(paths, list):
+            raise ValueError(f"watch_roots_early_drop['{key}'] must be a list")
+        for i, p in enumerate(paths):
+            if not isinstance(p, str):
+                raise ValueError(f"watch_roots_early_drop['{key}'][{i}] must be a string")
+            if p not in data['watch_roots'][key]:
+                raise ValueError(
+                    f"watch_roots_early_drop['{key}'][{i}] '{p}' is not in watch_roots['{key}']"
                 )
 
     # fim_excluded_path_patterns: substring patterns used by the FIM watcher to
