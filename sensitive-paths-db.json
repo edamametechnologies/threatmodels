@@ -89,7 +89,7 @@
     "open_ttl_secs": 900,
     "windows_profile_marker": "\\users\\"
   },
-  "date": "October 06th 2026",
+  "date": "October 14th 2026",
   "fim_excluded_path_patterns": [
     "/target/debug/",
     "/target/release/",
@@ -384,7 +384,7 @@
       "/AppData/Roaming/containers/auth.json"
     ]
   },
-  "signature": "32e3195dec7d61c1b153d066b3c3b59579d21acce105d00b5881c11f0fdb42ee",
+  "signature": "a2fee6bf0172fc681091ca7b0750ec9a0df2927610ae8ebd946906bd9aff7aaa",
   "watch_roots": {
     "common_home_relative": [
       ".ssh",
@@ -407,6 +407,18 @@
       "Library/LaunchAgents",
       "Library/LaunchDaemons"
     ],
+    "windows_home_relative": [
+      "AppData/Roaming",
+      "AppData/Local"
+    ]
+  },
+  "watch_roots_early_drop": {
+    "common_home_relative": [],
+    "linux_home_relative": [
+      ".config",
+      ".local/share"
+    ],
+    "macos_home_relative": [],
     "windows_home_relative": [
       "AppData/Roaming",
       "AppData/Local"
