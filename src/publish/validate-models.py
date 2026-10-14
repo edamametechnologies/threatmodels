@@ -1225,6 +1225,12 @@ def validate_cve_detection_params(filename: str) -> None:
         # PREFIX_SUFFIX (chain or wallet qualified) or an exact name. Only the
         # names are read, never the values.
         'wallet_key_env_names',
+        # The WiX Burn bundle layout: the directories below a bundle's
+        # per-invocation {GUID} temp directory that hold its own copies
+        # (.ba bootstrapper application, .be elevated engine, .cr clean
+        # room), and the names of the logs and delete-on-reboot markers the
+        # engine writes directly in an OS temp root.
+        'wix_burn_layout',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -2278,6 +2284,41 @@ def validate_cve_detection_params(filename: str) -> None:
     stub = data['windows_temp_powershell_stub']
     validate_exact_keys(stub, 'windows_temp_powershell_stub', {'name_prefix', 'name_suffix'})
     validate_lowercase_tokens([stub['name_prefix'], stub['name_suffix']], 'windows_temp_powershell_stub')
+
+    # The WiX Burn bundle layout: staging directory names (one path segment
+    # each, below the bundle's {GUID} temp directory), the log extension and
+    # the elevated-log suffix, the digit counts of the log timestamp
+    # (`<prefix>_<timestamp>.log`) and of a package log's index
+    # (`<prefix>_<timestamp>_<index>_<package>.log`), and the
+    # delete-on-reboot marker's prefix and suffix (`<prefix><hex><suffix>`).
+    burn = data['wix_burn_layout']
+    validate_exact_keys(burn, 'wix_burn_layout', {
+        'staging_directories', 'log_extension', 'elevated_log_suffix',
+        'log_timestamp_digits', 'package_log_index_digits',
+        'delete_on_reboot_prefix', 'delete_on_reboot_suffix',
+    })
+    if not burn['staging_directories']:
+        raise ValueError("wix_burn_layout['staging_directories'] must be non-empty")
+    validate_lowercase_tokens(burn['staging_directories'], "wix_burn_layout['staging_directories']")
+    for i, directory in enumerate(burn['staging_directories']):
+        if '/' in directory or '\\' in directory or directory in ('.', '..'):
+            raise ValueError(f"wix_burn_layout['staging_directories'][{i}] must be one directory name; got '{directory}'")
+    if len(set(burn['staging_directories'])) != len(burn['staging_directories']):
+        raise ValueError("wix_burn_layout['staging_directories'] has duplicates")
+    validate_lowercase_tokens(
+        [burn['log_extension'], burn['elevated_log_suffix'],
+         burn['delete_on_reboot_prefix'], burn['delete_on_reboot_suffix']],
+        'wix_burn_layout',
+    )
+    for key in ('log_extension', 'elevated_log_suffix', 'delete_on_reboot_suffix'):
+        if not burn[key].startswith('.') or '/' in burn[key] or '\\' in burn[key]:
+            raise ValueError(f"wix_burn_layout['{key}'] must be a file suffix starting with '.'; got '{burn[key]}'")
+    if not burn['elevated_log_suffix'].endswith(burn['log_extension']):
+        raise ValueError("wix_burn_layout['elevated_log_suffix'] must end with its 'log_extension'")
+    for key in ('log_timestamp_digits', 'package_log_index_digits'):
+        value = burn[key]
+        if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+            raise ValueError(f"wix_burn_layout['{key}'] must be a positive integer")
     for label_key in ('sensitive_material_labels', 'agent_instruction_labels'):
         validate_lowercase_tokens(data[label_key], label_key)
     validate_lowercase_tokens(data['publisher_org_stop_tokens'], 'publisher_org_stop_tokens')
