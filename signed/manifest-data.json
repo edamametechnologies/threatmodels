@@ -2,7 +2,7 @@
   "branch": "main",
   "files": {
     "agent-visibility-params-db.json": "d5b4740b94b34838958c506888311c829278abbd2c0587beac097e87dc076076",
-    "blacklists-db.json": "1a65119b1f985fdd91baff8930e2294452d6b98d90f72280d9c06c7d9ad920ea",
+    "blacklists-db.json": "fac92f8c6bce6bf24985414a8061b4caf525f0629d2cf42aec273c321a6eec53",
     "consent/ai-failure-export-EN.md": "32ec90f43628e779a11f79f049e07ef5455c9ab12e36bee8d264f6dd871a1b16",
     "consent/ai-failure-export-FR.md": "2dc44a9f34341214f81fc0da1124ee9e587fb7ff9ace7d971380028e1c85e35d",
     "consent/compliance-scanner-EN.md": "b66e8620b4159dd77aa941687a24c1724bb29a151e3008da74c055b3c3f981c9",
@@ -34,15 +34,15 @@
     "consent/user-feedback-FR.md": "b675dc4f6a3ee3534077919e5391a59ed27dd973e4ae8b0282e79a73242196d5",
     "consent/vulnerability-feedback-EN.md": "da68125af5b2edd919771ae5285e0a6997f30e48c3641a89627c0b041fb43433",
     "consent/vulnerability-feedback-FR.md": "fd8b1beb4e560e32710a9c517b356d67853dcfaaf3fbbdf9bc4e0bf39fc9c882",
-    "cve-detection-params-db.json": "dbd233df2c93a83aede992a783ed7fcd29f9c4a04a245e96fa4cc2a79aa353ec",
+    "cve-detection-params-db.json": "72817fb9c3b0efd45d007ad4ff23429a8f9c4e92cdb5f371ea3958d8d0e6f86f",
     "lanscan-port-vulns-db.json": "68544baf74e25e181ffc582448d8c87387f7aa170f24eb4f8ff2982dbbcaaab3",
     "lanscan-profiles-db.json": "c7dd123a2bd7be34a5742472767fd7c31df4ac90bfeaf3b9edf275847b1f377c",
     "lanscan-vendor-vulns-db.json": "00959da6e79735e87125367c6dfbcc202a1b358f1c0f01b29571dc005191b59b",
-    "sensitive-paths-db.json": "048d9c49fd25960e056c31278ded10286ebb7fe1a28a848b494a313dc86ceb30",
+    "sensitive-paths-db.json": "6f6f7966c7c29eb5372827dc71789ff594ee8d78bde0d8f37a24ce86985bae78",
     "whitelists-db.json": "307647c3013061df0b600b6468d749e81ed5224b45a349a5e2640096e8ccc22d"
   },
   "format": 1,
-  "issued_at": "2026-10-13T01:55:29Z",
+  "issued_at": "2026-10-14T15:04:02Z",
   "scope": "data",
-  "sequence": 1791856529
+  "sequence": 1791990242
 }
