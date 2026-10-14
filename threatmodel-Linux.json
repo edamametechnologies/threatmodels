@@ -1,5 +1,5 @@
 {
-  "date": "October 05th 2026",
+  "date": "October 14th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -2084,7 +2084,7 @@
         "education": [],
         "elevation": "user",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 3,
         "system": "Linux",
         "target": "agents_with_blast_radius"
       },
@@ -2106,7 +2106,7 @@
         ],
         "elevation": "",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 3,
         "system": "Linux",
         "target": "agents_exposure"
       },
@@ -2126,7 +2126,7 @@
         ],
         "elevation": "",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 3,
         "system": "Linux",
         "target": "agents_exposure"
       },
@@ -2214,7 +2214,7 @@
         "education": [],
         "elevation": "user",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 3,
         "system": "Linux",
         "target": "agents_without_harness"
       },
@@ -2236,7 +2236,7 @@
         ],
         "elevation": "",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 3,
         "system": "Linux",
         "target": "agents_exposure"
       },
@@ -2256,7 +2256,7 @@
         ],
         "elevation": "",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 3,
         "system": "Linux",
         "target": "agents_exposure"
       },
@@ -2329,7 +2329,7 @@
         "education": [],
         "elevation": "user",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 3,
         "system": "Linux",
         "target": "harness_divergence"
       },
@@ -2351,7 +2351,7 @@
         ],
         "elevation": "",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 3,
         "system": "Linux",
         "target": "agents_exposure"
       },
@@ -2371,7 +2371,7 @@
         ],
         "elevation": "",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 3,
         "system": "Linux",
         "target": "agents_exposure"
       },
@@ -2444,7 +2444,7 @@
         "education": [],
         "elevation": "user",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 3,
         "system": "Linux",
         "target": "mcp_risk"
       },
@@ -2466,7 +2466,7 @@
         ],
         "elevation": "",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 3,
         "system": "Linux",
         "target": "agents_exposure"
       },
@@ -2486,7 +2486,7 @@
         ],
         "elevation": "",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 3,
         "system": "Linux",
         "target": "agents_exposure"
       },
@@ -2696,5 +2696,5 @@
     }
   ],
   "name": "threat model Linux",
-  "signature": "9e380e972dc53ae3fc2f1ec205852dad049097300573ca77c6a47f7f4277c110"
+  "signature": "e19c558072ec15f9054d1ea70e8a6dcd83286aebd9086b80c2d32f982429848d"
 }

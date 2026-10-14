@@ -1,5 +1,5 @@
 {
-  "date": "September 24th 2026",
+  "date": "October 14th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -2585,7 +2585,7 @@
         "education": [],
         "elevation": "user",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 10,
         "system": "Windows",
         "target": "agents_with_blast_radius"
       },
@@ -2607,7 +2607,7 @@
         ],
         "elevation": "",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 10,
         "system": "Windows",
         "target": "agents_exposure"
       },
@@ -2627,7 +2627,7 @@
         ],
         "elevation": "",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 10,
         "system": "Windows",
         "target": "agents_exposure"
       },
@@ -2715,7 +2715,7 @@
         "education": [],
         "elevation": "user",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 10,
         "system": "Windows",
         "target": "agents_without_harness"
       },
@@ -2737,7 +2737,7 @@
         ],
         "elevation": "",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 10,
         "system": "Windows",
         "target": "agents_exposure"
       },
@@ -2757,7 +2757,7 @@
         ],
         "elevation": "",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 10,
         "system": "Windows",
         "target": "agents_exposure"
       },
@@ -2830,7 +2830,7 @@
         "education": [],
         "elevation": "user",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 10,
         "system": "Windows",
         "target": "harness_divergence"
       },
@@ -2852,7 +2852,7 @@
         ],
         "elevation": "",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 10,
         "system": "Windows",
         "target": "agents_exposure"
       },
@@ -2872,7 +2872,7 @@
         ],
         "elevation": "",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 10,
         "system": "Windows",
         "target": "agents_exposure"
       },
@@ -2945,7 +2945,7 @@
         "education": [],
         "elevation": "user",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 10,
         "system": "Windows",
         "target": "mcp_risk"
       },
@@ -2967,7 +2967,7 @@
         ],
         "elevation": "",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 10,
         "system": "Windows",
         "target": "agents_exposure"
       },
@@ -2987,7 +2987,7 @@
         ],
         "elevation": "",
         "maxversion": 0,
-        "minversion": 12,
+        "minversion": 10,
         "system": "Windows",
         "target": "agents_exposure"
       },
@@ -3197,5 +3197,5 @@
     }
   ],
   "name": "threat model Windows",
-  "signature": "6e7010052e9984f35a95b55a8e77ceb0dbcf79ebf19cbb23c993ab64c1b70509"
+  "signature": "3b5209ba20a13f8a03ad6a39c28fe084da9d62e3446e23e2d798f702c941761c"
 }
