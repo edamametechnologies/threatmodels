@@ -974,9 +974,13 @@ def validate_sensitive_paths(filename: str) -> None:
     # home-relative location per platform (the kernel watch prefixes), and
     # `windows_profile_marker` is the substring every user-profile path
     # carries (the ETW prefilter before label classification).
+    # `cold_files` are single token files of labels that are not cold (their
+    # directories are too busy to watch whole), recorded individually: a read
+    # of one counts toward credential_harvest's breadth, never as egress
+    # material by itself.
     opens = data['credential_opens']
     allowed_open_keys = {
-        'cold_labels', 'hot_subpaths', 'open_ttl_secs', 'label_home_roots',
+        'cold_labels', 'cold_files', 'hot_subpaths', 'open_ttl_secs', 'label_home_roots',
         'windows_profile_marker',
     }
     if not isinstance(opens, dict) or set(opens.keys()) != allowed_open_keys:
@@ -987,6 +991,21 @@ def validate_sensitive_paths(filename: str) -> None:
     for i, label in enumerate(cold):
         if not isinstance(label, str) or label not in data['labels']:
             raise ValueError(f"credential_opens.cold_labels[{i}] must name a label of 'labels'; got '{label}'")
+    cold_files = opens['cold_files']
+    if not isinstance(cold_files, list):
+        raise ValueError("credential_opens.cold_files must be a list")
+    for i, path in enumerate(cold_files):
+        if (not isinstance(path, str) or not path.startswith('/') or path.endswith('/')
+                or path != path.lower() or '\\' in path or len(path) < 4):
+            raise ValueError(
+                f"credential_opens.cold_files[{i}] must be a lowercase home-relative file path; got '{path}'"
+            )
+        owners = [label for label, patterns in data['labels'].items()
+                  if any(p.lower() in path for p in patterns)]
+        if not owners:
+            raise ValueError(f"credential_opens.cold_files[{i}] is in no catalog label: '{path}'")
+        if any(label in cold for label in owners):
+            raise ValueError(f"credential_opens.cold_files[{i}] is already in a cold label: '{path}'")
     hot = opens['hot_subpaths']
     if not isinstance(hot, list):
         raise ValueError("credential_opens.hot_subpaths must be a list")
