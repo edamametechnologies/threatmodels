@@ -1052,6 +1052,7 @@ def validate_cve_detection_params(filename: str) -> None:
     allowed_top_keys = {
         'date', 'signature', 'checks',
         'credential_harvest_min_labels',
+        'credential_harvest_non_secret_suffixes',
         'secret_content_scan_max_bytes',
         'secret_content_scan_excluded_path_patterns',
         'secret_content_scan_skip_extensions',
@@ -1993,6 +1994,14 @@ def validate_cve_detection_params(filename: str) -> None:
 
     if not isinstance(data['credential_harvest_min_labels'], int) or data['credential_harvest_min_labels'] < 1:
         raise ValueError("'credential_harvest_min_labels' must be a positive integer")
+    # Path endings of credential-class files that carry no secret (an ssh
+    # client's config and trust store, public keys, the AWS CLI's non-secret
+    # config): they do not count toward the breadth of a harvest reached
+    # through remembered reads.
+    suffixes = data['credential_harvest_non_secret_suffixes']
+    if not isinstance(suffixes, list) or not all(
+            isinstance(x, str) and x and x == x.lower() and '\\' not in x for x in suffixes):
+        raise ValueError("'credential_harvest_non_secret_suffixes' must be a list of lowercase path endings")
     if not isinstance(data['secret_content_scan_max_bytes'], int) or data['secret_content_scan_max_bytes'] < 0:
         raise ValueError("'secret_content_scan_max_bytes' must be a non-negative integer")
     if not isinstance(data['secret_content_min_hits'], int) or data['secret_content_min_hits'] < 1:
