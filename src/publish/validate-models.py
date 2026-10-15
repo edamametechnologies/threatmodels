@@ -2396,6 +2396,12 @@ def validate_agent_visibility_params(filename: str) -> None:
         # model-API endpoints among it, to which a declared not-expected
         # pattern never applies (provider_endpoints) (2.0.5).
         'agent_llm_traffic',
+        # What the transcript parser does not take as the agent's actions
+        # (2.0.9): the tool-input keys whose values are content the agent
+        # wrote or briefed (a file body, a sub-agent prompt, a search query)
+        # rather than a command, URL or path it acted on, and the remote
+        # shells whose remote command runs on another host.
+        'transcript_hints',
     }
 
     def validate_string_list(value, key_name: str) -> None:
@@ -2623,6 +2629,30 @@ def validate_agent_visibility_params(filename: str) -> None:
             sub = value[subkey]
             if isinstance(sub, bool) or not isinstance(sub, int) or sub < 1:
                 raise ValueError(f"{key_name}['{subkey}'] must be a positive integer")
+
+    def validate_transcript_hints(value, key_name: str) -> None:
+        expected_keys = {'content_input_keys', 'remote_shell_programs'}
+        if not isinstance(value, dict) or set(value.keys()) != expected_keys:
+            raise ValueError(f"'{key_name}' must be a dict with keys {expected_keys}")
+        keys = value['content_input_keys']
+        validate_string_list(keys, f"{key_name}['content_input_keys']")
+        if not keys:
+            raise ValueError(f"{key_name}['content_input_keys'] must be non-empty")
+        for k in keys:
+            if k != k.lower():
+                raise ValueError(f"{key_name}['content_input_keys'] entries are lowercase: '{k}'")
+        programs = value['remote_shell_programs']
+        if not isinstance(programs, list) or not programs:
+            raise ValueError(f"{key_name}['remote_shell_programs'] must be a non-empty list")
+        for i, entry in enumerate(programs):
+            if not isinstance(entry, dict) or set(entry.keys()) != {'program', 'options'}:
+                raise ValueError(f"{key_name}['remote_shell_programs'][{i}] must be {{program, options}}")
+            if not isinstance(entry['program'], str) or not entry['program']:
+                raise ValueError(f"{key_name}['remote_shell_programs'][{i}]['program'] must be a non-empty string")
+            validate_string_list(entry['options'], f"{key_name}['remote_shell_programs'][{i}]['options']")
+            for option in entry['options']:
+                if not option.startswith('-'):
+                    raise ValueError(f"{key_name}['remote_shell_programs'][{i}]['options'] entries are options: '{option}'")
 
     def validate_workspace_attribution(value, key_name: str) -> None:
         # Which workspace an agent session is filed under on the Agents view
@@ -3263,6 +3293,10 @@ def validate_agent_visibility_params(filename: str) -> None:
     validate_workspace_attribution(
         data['workspace_attribution'],
         'workspace_attribution',
+    )
+    validate_transcript_hints(
+        data['transcript_hints'],
+        'transcript_hints',
     )
     validate_instruction_inventory(
         data['instruction_inventory'],

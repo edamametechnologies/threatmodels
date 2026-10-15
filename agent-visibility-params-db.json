@@ -615,7 +615,7 @@
       "title": "Investigate prompt-injection bait"
     }
   ],
-  "date": "October 05th 2026",
+  "date": "October 15th 2026",
   "delegation_markers": {
     "spawn_goal_keys": [
       "description",
@@ -1468,7 +1468,62 @@
       "per_marker": false
     }
   ],
-  "signature": "0f7b725213841e405efdb350ff4ee6bc7070107c1e11ef2fa69fe382aa57d833",
+  "signature": "1ebe69db7740a8bc7ba977ff3e2471508864d041f7fb5d5d2f2430619ee081f2",
+  "transcript_hints": {
+    "content_input_keys": [
+      "body",
+      "comment",
+      "content",
+      "contents",
+      "description",
+      "diff",
+      "explanation",
+      "file_text",
+      "instructions",
+      "message",
+      "new_str",
+      "new_string",
+      "notes",
+      "old_str",
+      "old_string",
+      "patch",
+      "prompt",
+      "query",
+      "reason",
+      "summary",
+      "text",
+      "title"
+    ],
+    "remote_shell_programs": [
+      {
+        "options": [
+          "-B",
+          "-b",
+          "-c",
+          "-D",
+          "-E",
+          "-e",
+          "-F",
+          "-I",
+          "-i",
+          "-J",
+          "-L",
+          "-l",
+          "-m",
+          "-O",
+          "-o",
+          "-P",
+          "-p",
+          "-Q",
+          "-R",
+          "-S",
+          "-W",
+          "-w"
+        ],
+        "program": "ssh"
+      }
+    ]
+  },
   "transcript_secret_signatures": [
     {
       "hits": 2,
