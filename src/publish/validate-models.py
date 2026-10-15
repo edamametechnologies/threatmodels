@@ -974,9 +974,13 @@ def validate_sensitive_paths(filename: str) -> None:
     # home-relative location per platform (the kernel watch prefixes), and
     # `windows_profile_marker` is the substring every user-profile path
     # carries (the ETW prefilter before label classification).
+    # `cold_files` are single token files of labels that are not cold (their
+    # directories are too busy to watch whole), recorded individually: a read
+    # of one counts toward credential_harvest's breadth, never as egress
+    # material by itself.
     opens = data['credential_opens']
     allowed_open_keys = {
-        'cold_labels', 'hot_subpaths', 'open_ttl_secs', 'label_home_roots',
+        'cold_labels', 'cold_files', 'hot_subpaths', 'open_ttl_secs', 'label_home_roots',
         'windows_profile_marker',
     }
     if not isinstance(opens, dict) or set(opens.keys()) != allowed_open_keys:
@@ -987,6 +991,21 @@ def validate_sensitive_paths(filename: str) -> None:
     for i, label in enumerate(cold):
         if not isinstance(label, str) or label not in data['labels']:
             raise ValueError(f"credential_opens.cold_labels[{i}] must name a label of 'labels'; got '{label}'")
+    cold_files = opens['cold_files']
+    if not isinstance(cold_files, list):
+        raise ValueError("credential_opens.cold_files must be a list")
+    for i, path in enumerate(cold_files):
+        if (not isinstance(path, str) or not path.startswith('/') or path.endswith('/')
+                or path != path.lower() or '\\' in path or len(path) < 4):
+            raise ValueError(
+                f"credential_opens.cold_files[{i}] must be a lowercase home-relative file path; got '{path}'"
+            )
+        owners = [label for label, patterns in data['labels'].items()
+                  if any(p.lower() in path for p in patterns)]
+        if not owners:
+            raise ValueError(f"credential_opens.cold_files[{i}] is in no catalog label: '{path}'")
+        if any(label in cold for label in owners):
+            raise ValueError(f"credential_opens.cold_files[{i}] is already in a cold label: '{path}'")
     hot = opens['hot_subpaths']
     if not isinstance(hot, list):
         raise ValueError("credential_opens.hot_subpaths must be a list")
@@ -1033,6 +1052,7 @@ def validate_cve_detection_params(filename: str) -> None:
     allowed_top_keys = {
         'date', 'signature', 'checks',
         'credential_harvest_min_labels',
+        'credential_harvest_non_secret_suffixes',
         'secret_content_scan_max_bytes',
         'secret_content_scan_excluded_path_patterns',
         'secret_content_scan_skip_extensions',
@@ -1974,6 +1994,14 @@ def validate_cve_detection_params(filename: str) -> None:
 
     if not isinstance(data['credential_harvest_min_labels'], int) or data['credential_harvest_min_labels'] < 1:
         raise ValueError("'credential_harvest_min_labels' must be a positive integer")
+    # Path endings of credential-class files that carry no secret (an ssh
+    # client's config and trust store, public keys, the AWS CLI's non-secret
+    # config): they do not count toward the breadth of a harvest reached
+    # through remembered reads.
+    suffixes = data['credential_harvest_non_secret_suffixes']
+    if not isinstance(suffixes, list) or not all(
+            isinstance(x, str) and x and x == x.lower() and '\\' not in x for x in suffixes):
+        raise ValueError("'credential_harvest_non_secret_suffixes' must be a list of lowercase path endings")
     if not isinstance(data['secret_content_scan_max_bytes'], int) or data['secret_content_scan_max_bytes'] < 0:
         raise ValueError("'secret_content_scan_max_bytes' must be a non-negative integer")
     if not isinstance(data['secret_content_min_hits'], int) or data['secret_content_min_hits'] < 1:

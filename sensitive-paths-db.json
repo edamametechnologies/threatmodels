@@ -60,6 +60,17 @@
     "/.config/bitwarden/"
   ],
   "credential_opens": {
+    "cold_files": [
+      "/.kube/config",
+      "/.docker/config.json",
+      "/.config/gh/hosts.yml",
+      "/appdata/roaming/github cli/hosts.yml",
+      "/.git-credentials",
+      "/.npmrc",
+      "/.codex/auth.json",
+      "/.claude/.credentials.json",
+      "/.vault-token"
+    ],
     "cold_labels": [
       "aws",
       "azure",
@@ -89,7 +100,7 @@
     "open_ttl_secs": 900,
     "windows_profile_marker": "\\users\\"
   },
-  "date": "October 14th 2026",
+  "date": "October 16th 2026",
   "fim_excluded_path_patterns": [
     "/target/debug/",
     "/target/release/",
@@ -384,7 +395,7 @@
       "/AppData/Roaming/containers/auth.json"
     ]
   },
-  "signature": "a2fee6bf0172fc681091ca7b0750ec9a0df2927610ae8ebd946906bd9aff7aaa",
+  "signature": "9ad79ec400b99062a53969e5dd12374c513785ae2890cb02347af860c37e3a41",
   "watch_roots": {
     "common_home_relative": [
       ".ssh",
