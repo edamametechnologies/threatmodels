@@ -1186,6 +1186,7 @@ def validate_cve_detection_params(filename: str) -> None:
         # credential classes a process-tree relay needs, and the local
         # processes that make a blacklisted prefix shared infrastructure.
         'memory_scrape_read_enumeration_min_distinct_targets',
+        'memory_scrape_read_enumeration_min_distinct_targets_unattested',
         'memory_scrape_per_invocation_min_hex_run',
         'relay_min_credential_classes',
         'shared_infrastructure_min_local_processes',
@@ -2072,6 +2073,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'owned_store_min_token_len',
         'publisher_org_min_token_len',
         'memory_scrape_read_enumeration_min_distinct_targets',
+        'memory_scrape_read_enumeration_min_distinct_targets_unattested',
         'memory_scrape_per_invocation_min_hex_run',
         'relay_min_credential_classes',
         'shared_infrastructure_min_local_processes',
