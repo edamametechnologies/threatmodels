@@ -1085,6 +1085,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'edamame_daemon_self_telemetry_install_prefixes',
         'platform_credential_helper_routine_destinations',
         'cloud_provider_sdk_destinations',
+        'credential_native_services',
         'software_distribution_backends',
         'platform_metadata_endpoints',
         'platform_runtime_probe_filename_patterns',
@@ -1306,6 +1307,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'package_install_lifecycle',
         'process_memory_scrape',
         'cloud_metadata_egress',
+        'credential_misrouted',
     }
     allowed_severities = {'CRITICAL', 'HIGH', 'MEDIUM', 'LOW', 'INFO'}
 
@@ -1639,6 +1641,45 @@ def validate_cve_detection_params(filename: str) -> None:
                 raise ValueError(
                     f"{key_name}['{weight_key}'] must be within [-1000, 1000]"
                 )
+
+    def validate_credential_native_services(value, key_name: str, cloud_providers) -> None:
+        # Label-keyed { included_path_suffixes, excluded_path_suffixes, ports,
+        # domain_suffixes, asn_owners, cloud_provider, agent_type }: the
+        # services a credential class is used with (the detector's
+        # credential_misrouted check). Keys are sensitive-path labels; every
+        # entry carries every field (born complete).
+        expected_subkeys = {
+            'included_path_suffixes', 'excluded_path_suffixes', 'ports',
+            'domain_suffixes', 'asn_owners', 'cloud_provider', 'agent_type',
+        }
+        if not isinstance(value, dict) or not value:
+            raise ValueError(f"'{key_name}' must be a non-empty dict keyed by sensitive-path label")
+        for label, sub in value.items():
+            if not isinstance(label, str) or not label or label != label.lower():
+                raise ValueError(f"{key_name} key {label!r} must be a lowercase label")
+            if not isinstance(sub, dict):
+                raise ValueError(f"{key_name}['{label}'] must be a dict")
+            if set(sub.keys()) != expected_subkeys:
+                missing = expected_subkeys - set(sub.keys())
+                extra = set(sub.keys()) - expected_subkeys
+                raise ValueError(
+                    f"{key_name}['{label}'] has missing keys {missing} and unexpected keys {extra}"
+                )
+            for list_key in ('included_path_suffixes', 'excluded_path_suffixes', 'domain_suffixes', 'asn_owners'):
+                validate_string_list(sub[list_key], f"{key_name}['{label}']['{list_key}']")
+            ports = sub['ports']
+            if not isinstance(ports, list) or any(
+                not isinstance(port, int) or isinstance(port, bool) or not 1 <= port <= 65535 for port in ports
+            ):
+                raise ValueError(f"{key_name}['{label}']['ports'] must be a list of ports in 1..65535")
+            if not isinstance(sub['cloud_provider'], str) or (
+                sub['cloud_provider'] and sub['cloud_provider'] not in cloud_providers
+            ):
+                raise ValueError(
+                    f"{key_name}['{label}']['cloud_provider'] must be '' or one of {sorted(cloud_providers)}"
+                )
+            if not isinstance(sub['agent_type'], str):
+                raise ValueError(f"{key_name}['{label}']['agent_type'] must be a string")
 
     def validate_software_distribution_backends(value, key_name: str) -> None:
         # Trusted vendor software-distribution backends (GitHub / Fastly /
@@ -2204,6 +2245,11 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_cloud_provider_sdk_destinations(
         data['cloud_provider_sdk_destinations'],
         'cloud_provider_sdk_destinations',
+    )
+    validate_credential_native_services(
+        data['credential_native_services'],
+        'credential_native_services',
+        set(data['cloud_provider_sdk_destinations'].keys()),
     )
     validate_software_distribution_backends(
         data['software_distribution_backends'],
