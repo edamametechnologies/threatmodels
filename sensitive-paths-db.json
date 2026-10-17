@@ -100,7 +100,7 @@
     "open_ttl_secs": 900,
     "windows_profile_marker": "\\users\\"
   },
-  "date": "October 16th 2026",
+  "date": "October 17th 2026",
   "fim_excluded_path_patterns": [
     "/target/debug/",
     "/target/release/",
@@ -210,7 +210,8 @@
       "/logins.json"
     ],
     "claude": [
-      "/.claude/"
+      "/.claude/",
+      "/.claude.json"
     ],
     "cloud_storage": [
       "/.config/rclone/",
@@ -282,7 +283,10 @@
       "/agents.md",
       "/.cursorrules",
       "/mcp.json",
-      "/.cursor/rules/"
+      "/.cursor/rules/",
+      "/.clinerules",
+      "/.kiro/steering/",
+      "/.continue/rules/"
     ],
     "keychain": [
       "/library/keychains/",
@@ -395,7 +399,7 @@
       "/AppData/Roaming/containers/auth.json"
     ]
   },
-  "signature": "9ad79ec400b99062a53969e5dd12374c513785ae2890cb02347af860c37e3a41",
+  "signature": "8684da7fcb4ede6c63d6e00d5d25a500e1bd04477f29376118626a9012e98481",
   "watch_roots": {
     "common_home_relative": [
       ".ssh",
