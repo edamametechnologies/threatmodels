@@ -37,6 +37,15 @@ jobs:
      - name: Install dependencies
        run: pip install -r requirements.txt
 
+     # The manifest signer installs only these, pinned by hash, in a job that
+     # holds the signing key and runs on main alone: check here, without the
+     # key, that they still install.
+     - name: Check the signer's pinned dependencies install
+       run: |
+         python -m venv "$RUNNER_TEMP/signer"
+         "$RUNNER_TEMP/signer/bin/python" -m pip install --require-hashes --only-binary=:all: -r src/publish/requirements-sign.txt
+         "$RUNNER_TEMP/signer/bin/python" -c 'import cryptography; print("cryptography", cryptography.__version__)'
+
      - name: Validate models
        id: validate
        run: |
