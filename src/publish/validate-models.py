@@ -1214,6 +1214,14 @@ def validate_cve_detection_params(filename: str) -> None:
         'measurement_harness_directory_paths',
         'measurement_derived_directory_segments',
         'measurement_intent_tokens',
+        # The whole words of a task that is measurement work, the verbs that
+        # ask for an edit or a run of it, the commands that run tests, and the
+        # words that negate the edit verb after them (2.1.1).
+        'measurement_intent_words',
+        'measurement_authoring_verbs',
+        'measurement_execution_verbs',
+        'measurement_runner_prefixes',
+        'measurement_negation_words',
         'global_package_roots',
         'package_bare_runtimes',
         # Evaluator integrity thresholds: a writer's batch (paths, measurement
@@ -2118,6 +2126,11 @@ def validate_cve_detection_params(filename: str) -> None:
         'measurement_harness_directory_paths',
         'measurement_derived_directory_segments',
         'measurement_intent_tokens',
+        'measurement_intent_words',
+        'measurement_authoring_verbs',
+        'measurement_execution_verbs',
+        'measurement_runner_prefixes',
+        'measurement_negation_words',
         'global_package_roots',
         'package_bare_runtimes',
         'ssh_client_state_files',
@@ -2139,6 +2152,18 @@ def validate_cve_detection_params(filename: str) -> None:
         for entry in data[list_key]:
             if entry != entry.lower() or '\\' in entry:
                 raise ValueError(f"{list_key} entry {entry!r} must be lower-case and '/'-separated")
+    # Matched against the words of a task: runs of ASCII letters and digits,
+    # so an entry with any other character could never match.
+    for list_key in (
+        'measurement_intent_words',
+        'measurement_authoring_verbs',
+        'measurement_execution_verbs',
+        'measurement_runner_prefixes',
+        'measurement_negation_words',
+    ):
+        for entry in data[list_key]:
+            if not re.fullmatch(r'[a-z0-9]+', entry):
+                raise ValueError(f"{list_key} entry {entry!r} must be one lower-case word of ASCII letters and digits")
     for list_key in ('measurement_test_directory_segments', 'measurement_derived_directory_segments'):
         for entry in data[list_key]:
             if '/' in entry:
