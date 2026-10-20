@@ -1,7 +1,7 @@
 AI Failure Details Sharing Policy (EN)
 ======================================
 
-When this device is connected to a domain, it sends score reports to EDAMAME Hub. This setting adds AI details to those reports. It is off unless you turn it on, and your score reports work without it.
+When this device is connected to a domain, it sends score reports to EDAMAME Hub. This setting adds AI details to those reports. It is off unless you, or an organization that manages this device, turn it on, and your score reports work without it.
 
 By turning it on, you agree to share the following information with EDAMAME in each score report.
 
@@ -33,6 +33,6 @@ The administrators of the domain you are connected to see these details next to 
 
 EDAMAME Hub keeps these details with the latest report of this device, with no expiry date. The next report that carries AI details replaces them, and they are deleted with that report: when an administrator removes the device, when the domain is deleted, or 7 days after the last report of a device the domain has disabled.
 
-You can turn this setting off at any time in Config > Privacy or in Trust > Connect: the next score report no longer carries these details, and EDAMAME Hub discards the details it kept. An organization that manages this device can also turn this sharing on or off for it.
+You can turn this setting off at any time in Config > Privacy or in Trust > Connect: the next score report no longer carries these details, and EDAMAME Hub discards the details it kept. An organization that manages this device can also turn this sharing on or off for it; its choice then replaces yours.
 
 If you do not agree with this policy, leave this setting off.

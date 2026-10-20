@@ -1,4 +1,4 @@
-# Politique de Confidentialité des Retours sur le Profilage
+# Politique de Confidentialité des Retours sur le Profilage (FR)
 
 En signalant un profilage incorrect pour un appareil donné, vous acceptez de partager les informations suivantes avec EDAMAME, telles qu'elles apparaissent dans la fenêtre d'information de l'appareil :
 

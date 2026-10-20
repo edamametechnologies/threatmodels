@@ -5,7 +5,7 @@ By reporting an incorrect profiling for a given device, you agree to share the f
 - The device type EDAMAME assigned to the device
 - The device vendor name
 - The device open ports, with the services, banners/headers and known vulnerabilities EDAMAME found for them
-- The device advertized mDNS services
+- The device advertised mDNS services
 - The device hostname
 - Your note, if you write one
 

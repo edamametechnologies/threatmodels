@@ -22,34 +22,36 @@ LOCALES = ("EN", "FR")
 PRIVACY_HEADER_EN = """* Your machine unique identifier
 * Your machine name (hostname), without its network domain suffix
 * Your operating system name and version
-* Your public IPv4 address and/or IPv6 address
+* Your public IPv4 address and/or IPv6 address. To find them, EDAMAME queries the ipify.org service
 * Your approximate location derived from your public IPv4 address: city, region, country, time zone, latitude and longitude. To find it, EDAMAME sends your public IPv4 address to the ip-api.com geolocation service
 * Your MAC address if available
 * Your peer IDs for your VPN or ZTNA connections if available
-* The domain you are connected to, your username in that domain and the access code used to connect or, when you certify your score, the email address you enter
+* The domain you are connected to, your username in that domain and the access code used to connect (or, for a device your organization enrolled, its enrollment credential) or, when you certify your score, the email address you enter
 * The language of the EDAMAME interface
 * The EDAMAME version, whether this machine is a CI/CD runner, and the state of the EDAMAME Helper
 * The date and time of the report
 * Your score as a single numerical value
 * Your score for each category (network, system integrity, system services, applications, credentials), your star rating, and your compliance percentage for each compliance framework
 * The history of the remediations and rollbacks you performed: the check concerned, the action, when it happened, and whether it succeeded and was validated
-* Whether AI details sharing is on for this device. The AI details themselves are sent only when it is"""
+* Whether AI details sharing is on for this device. The AI details themselves are sent only when it is
+* When the domain manages this device's settings from EDAMAME Hub: which configuration this device received, whether you accepted or declined it, whether this device connected to the EDAMAME Portal with it, and any problem applying it"""
 
 PRIVACY_HEADER_FR = """* L'identifiant unique de votre machine
 * Le nom de votre machine (nom d'hôte), sans son suffixe de domaine réseau
 * Le nom et la version de votre système d'exploitation
-* Votre adresse IPv4 et/ou IPv6 publique
+* Votre adresse IPv4 et/ou IPv6 publique. Pour les déterminer, EDAMAME interroge le service ipify.org
 * Votre localisation approximative déduite de votre adresse IPv4 publique : ville, région, pays, fuseau horaire, latitude et longitude. Pour la déterminer, EDAMAME envoie votre adresse IPv4 publique au service de géolocalisation ip-api.com
 * Votre adresse MAC si disponible
 * Vos identifiants de pairs pour vos connexions VPN ou ZTNA si disponibles
-* Le domaine auquel vous êtes connecté, votre nom d'utilisateur dans ce domaine et le code d'accès utilisé pour vous connecter ou, lorsque vous certifiez votre score, l'adresse email que vous saisissez
+* Le domaine auquel vous êtes connecté, votre nom d'utilisateur dans ce domaine et le code d'accès utilisé pour vous connecter (ou, pour un appareil inscrit par votre organisation, son identifiant d'inscription) ou, lorsque vous certifiez votre score, l'adresse email que vous saisissez
 * La langue de l'interface d'EDAMAME
 * La version d'EDAMAME, si cette machine est un exécuteur CI/CD, et l'état de l'EDAMAME Helper
 * La date et l'heure du rapport
 * Votre score sous forme d'une valeur numérique
 * Votre score pour chaque catégorie (réseau, intégrité du système, services système, applications, identifiants), votre nombre d'étoiles, et votre pourcentage de conformité pour chaque référentiel de conformité
 * L'historique des remédiations et des retours en arrière que vous avez effectués : le test concerné, l'action, sa date, et si elle a réussi et a été validée
-* Si le partage des détails IA est activé pour cet appareil. Les détails IA eux-mêmes ne sont envoyés que lorsqu'il l'est"""
+* Si le partage des détails IA est activé pour cet appareil. Les détails IA eux-mêmes ne sont envoyés que lorsqu'il l'est
+* Lorsque le domaine gère les réglages de cet appareil depuis EDAMAME Hub : la configuration que cet appareil a reçue, si vous l'avez acceptée ou refusée, si cet appareil s'est connecté à EDAMAME Portal avec elle, et tout problème rencontré pour l'appliquer"""
 
 AI_SECTION_EN = """* The AI details of this machine:
   * AI setup of this machine, sent in every report while AI details are shared, even when no AI check is failing

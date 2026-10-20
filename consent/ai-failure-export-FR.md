@@ -1,7 +1,7 @@
 Politique de partage des détails d'échec IA (FR)
 ================================================
 
-Lorsque cet appareil est connecté à un domaine, il envoie des rapports de score à EDAMAME Hub. Ce réglage ajoute des détails IA à ces rapports. Il est désactivé tant que vous ne l'activez pas, et vos rapports de score fonctionnent sans lui.
+Lorsque cet appareil est connecté à un domaine, il envoie des rapports de score à EDAMAME Hub. Ce réglage ajoute des détails IA à ces rapports. Il est désactivé tant que vous, ou une organisation qui gère cet appareil, ne l'activez pas, et vos rapports de score fonctionnent sans lui.
 
 En l'activant, vous acceptez de partager les informations suivantes avec EDAMAME dans chaque rapport de score.
 
@@ -33,6 +33,6 @@ Les administrateurs du domaine auquel vous êtes connecté voient ces détails �
 
 EDAMAME Hub conserve ces détails avec le dernier rapport de cet appareil, sans date d'expiration. Le rapport suivant qui contient des détails IA les remplace, et ils sont supprimés avec ce rapport : lorsqu'un administrateur retire l'appareil, lorsque le domaine est supprimé, ou 7 jours après le dernier rapport d'un appareil que le domaine a désactivé.
 
-Vous pouvez désactiver ce réglage à tout moment dans Config > Confidentialité ou dans Confiance > Connecter : le rapport de score suivant ne contient plus ces détails, et EDAMAME Hub supprime les détails qu'il conservait. Une organisation qui gère cet appareil peut aussi activer ou désactiver ce partage pour lui.
+Vous pouvez désactiver ce réglage à tout moment dans Config > Confidentialité ou dans Confiance > Connecter : le rapport de score suivant ne contient plus ces détails, et EDAMAME Hub supprime les détails qu'il conservait. Une organisation qui gère cet appareil peut aussi activer ou désactiver ce partage pour lui ; son choix remplace alors le vôtre.
 
 Si vous n'êtes pas d'accord avec cette politique, laissez ce réglage désactivé.
