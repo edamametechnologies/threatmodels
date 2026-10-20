@@ -50,8 +50,11 @@ jobs:
         with:
           python-version: 3.11.3
 
+      # cryptography and its own dependencies, each pinned to its published
+      # files by hash: this job holds the signing key.
       - name: Install the signer's only dependency
-        run: python -m pip install 'cryptography==44.0.2'
+        run: |
+          python -m pip install --require-hashes --only-binary=:all: -r src/publish/requirements-sign.txt
 
       - name: Build data manifest
         run: python3 src/publish/sign-manifest.py build --scope data --branch main
