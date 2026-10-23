@@ -1,5 +1,5 @@
 {
-  "date": "October 14th 2026",
+  "date": "October 21th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -2236,7 +2236,7 @@
         {
           "locale": "FR",
           "summary": "Cursor est installé mais l'observateur de transcripts EDAMAME est en pause. L'intention de l'agent n'est plus corrélée avec la télémétrie système et l'agent est moins protégé.",
-          "title": "Agent Cursor non sécurisé (observateur en pause)"
+          "title": "Agent Cursor non sécurisé"
         }
       ],
       "dimension": "applications",
@@ -2321,7 +2321,7 @@
         {
           "locale": "FR",
           "summary": "Claude Code est installé mais l'observateur de transcripts EDAMAME est en pause. L'intention de l'agent n'est plus corrélée avec la télémétrie système et l'agent est moins protégé.",
-          "title": "Agent Claude Code non sécurisé (observateur en pause)"
+          "title": "Agent Claude Code non sécurisé"
         }
       ],
       "dimension": "applications",
@@ -2406,7 +2406,7 @@
         {
           "locale": "FR",
           "summary": "Claude Desktop est installé mais l'observateur de transcripts EDAMAME est en pause. L'intention de l'agent n'est plus corrélée avec la télémétrie système et l'agent est moins protégé.",
-          "title": "Agent Claude Desktop non sécurisé (observateur en pause)"
+          "title": "Agent Claude Desktop non sécurisé"
         }
       ],
       "dimension": "applications",
@@ -2491,7 +2491,7 @@
         {
           "locale": "FR",
           "summary": "OpenClaw est installé mais l'observateur de transcripts EDAMAME est en pause. L'intention de l'agent n'est plus corrélée avec la télémétrie système et l'agent est moins protégé.",
-          "title": "Agent OpenClaw non sécurisé (observateur en pause)"
+          "title": "Agent OpenClaw non sécurisé"
         }
       ],
       "dimension": "applications",
@@ -3035,7 +3035,7 @@
         {
           "locale": "FR",
           "summary": "Codex CLI est installé mais l'observateur de transcripts EDAMAME est en pause. L'intention de l'agent n'est plus corrélée avec la télémétrie système et l'agent est moins protégé.",
-          "title": "Agent Codex CLI non sécurisé (observateur en pause)"
+          "title": "Agent Codex CLI non sécurisé"
         }
       ],
       "dimension": "applications",
@@ -3120,7 +3120,7 @@
         {
           "locale": "FR",
           "summary": "Hermes Agent est installé mais l'observateur de transcripts EDAMAME est en pause. L'intention de l'agent n'est plus corrélée avec la télémétrie système et l'agent est moins protégé.",
-          "title": "Agent Hermes non sécurisé (observateur en pause)"
+          "title": "Agent Hermes non sécurisé"
         }
       ],
       "dimension": "applications",
@@ -3197,5 +3197,5 @@
     }
   ],
   "name": "threat model Windows",
-  "signature": "3b5209ba20a13f8a03ad6a39c28fe084da9d62e3446e23e2d798f702c941761c"
+  "signature": "80e833f6abb1b4d1b2e7364017f39d8a169e2650b5a1960452f3a7ac16f9234c"
 }
