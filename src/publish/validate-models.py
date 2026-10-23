@@ -1135,6 +1135,14 @@ def validate_cve_detection_params(filename: str) -> None:
         # but a large sustained payload over :53/:123 is a tunneling shape.
         'treat_high_volume_dns_ntp_as_non_routine',
         'dns_ntp_non_routine_min_outbound_bytes',
+        # 2.2: autonomous systems that serve only their owner's platform, the
+        # ownership relation's data (lock files an application holds in its
+        # own store, the data roots installed applications claim), and the
+        # checks whose evidence score is authoritative. Read by 2.2+ only.
+        'routine_platform_asns',
+        'ownership_lock_file_names',
+        'claimed_app_data_roots',
+        'crs_authoritative_checks',
         # Per-user store ownership: the profile-relative roots whose first
         # component names the owning application, the sandboxed-application
         # container layouts, the install roots that name a product, and the
@@ -2072,6 +2080,33 @@ def validate_cve_detection_params(filename: str) -> None:
     ):
         if not isinstance(data[flag_key], bool):
             raise ValueError(f"'{flag_key}' must be a boolean")
+
+    # 2.2 keys.
+    asns = data['routine_platform_asns']
+    if not isinstance(asns, list) or not all(
+        isinstance(a, int) and not isinstance(a, bool) and a > 0 for a in asns
+    ):
+        raise ValueError("'routine_platform_asns' must be a list of positive integers")
+    for string_list_key in ('ownership_lock_file_names', 'crs_authoritative_checks'):
+        values = data[string_list_key]
+        if not isinstance(values, list) or not all(isinstance(v, str) and v.strip() for v in values):
+            raise ValueError(f"'{string_list_key}' must be a list of non-empty strings")
+    roots = data['claimed_app_data_roots']
+    if not isinstance(roots, list):
+        raise ValueError("'claimed_app_data_roots' must be a list")
+    for root in roots:
+        if (
+            not isinstance(root, dict)
+            or set(root) != {'pattern', 'owners'}
+            or not isinstance(root['pattern'], str)
+            or not root['pattern'].strip()
+            or not isinstance(root['owners'], list)
+            or not root['owners']
+            or not all(isinstance(o, str) and o.strip() for o in root['owners'])
+        ):
+            raise ValueError(
+                "'claimed_app_data_roots' entries must be {pattern: non-empty string, owners: non-empty list of strings}"
+            )
 
     for positive_int_key in (
         'ambient_baseline_ttl_days',
