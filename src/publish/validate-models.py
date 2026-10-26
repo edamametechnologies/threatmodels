@@ -1239,6 +1239,14 @@ def validate_cve_detection_params(filename: str) -> None:
         'evaluator_materialisation_measurement_divisor',
         'evaluator_materialisation_burst_secs',
         'evaluator_session_attribution_slack_secs',
+        # How long after a transcript's last line a file write the monitor
+        # stamped (observation time, after its coalescer) still belongs to
+        # that session.
+        'fim_observation_lag_secs',
+        # A project's own package-manager and agent tool configuration files,
+        # relative to the working tree: reading one there is part of working
+        # in the project, not a self-grant.
+        'project_tool_config_files',
         # The SSH client's host-key state a human authorizes by authorizing
         # the connection (never private keys).
         'ssh_client_state_files',
@@ -2178,8 +2186,12 @@ def validate_cve_detection_params(filename: str) -> None:
         'ssh_client_state_files',
         'git_ssh_parent_process_names',
         'git_ssh_remote_commands',
+        'project_tool_config_files',
     ):
         validate_string_list(data[list_key], list_key)
+    for entry in data['project_tool_config_files']:
+        if not entry or entry != entry.lower() or entry.startswith('/') or '\\' in entry or entry.endswith('/'):
+            raise ValueError(f"project_tool_config_files entry {entry!r} must be a relative, lower-case, '/'-separated file path")
 
     sidecars = data['credential_cache_sqlite_sidecars']
     if not isinstance(sidecars, dict) or set(sidecars) != {'dirs', 'suffixes'}:
@@ -2239,6 +2251,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'evaluator_materialisation_measurement_divisor',
         'evaluator_materialisation_burst_secs',
         'evaluator_session_attribution_slack_secs',
+        'fim_observation_lag_secs',
     ):
         value = data[int_key]
         if not isinstance(value, int) or isinstance(value, bool) or value <= 0:
