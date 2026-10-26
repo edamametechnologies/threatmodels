@@ -1242,6 +1242,10 @@ def validate_cve_detection_params(filename: str) -> None:
         # The SSH client's host-key state a human authorizes by authorizing
         # the connection (never private keys).
         'ssh_client_state_files',
+        # git as the SSH client's parent, and the commands git asks the
+        # remote end to run: the session that serves a clone, fetch or push.
+        'git_ssh_parent_process_names',
+        'git_ssh_remote_commands',
         # Hosts the divergence correlation plane does not count as
         # unexplained egress (DNS resolvers, time sync, certificate
         # revocation, connectivity probes, OS update, toolchain telemetry),
@@ -2169,9 +2173,16 @@ def validate_cve_detection_params(filename: str) -> None:
         'global_package_roots',
         'package_bare_runtimes',
         'ssh_client_state_files',
+        'git_ssh_parent_process_names',
+        'git_ssh_remote_commands',
     ):
         validate_string_list(data[list_key], list_key)
 
+    # Compared for equality with a lower-cased process name or argument.
+    for list_key in ('git_ssh_parent_process_names', 'git_ssh_remote_commands'):
+        for entry in data[list_key]:
+            if entry != entry.lower() or '/' in entry or '\\' in entry or ' ' in entry:
+                raise ValueError(f"{list_key} entry {entry!r} must be a lower-case bare name")
     # Matched against lower-cased, `/`-separated paths and actions.
     for list_key in (
         'measurement_test_directory_segments',
