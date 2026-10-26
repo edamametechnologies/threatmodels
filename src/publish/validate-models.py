@@ -1246,6 +1246,9 @@ def validate_cve_detection_params(filename: str) -> None:
         # remote end to run: the session that serves a clone, fetch or push.
         'git_ssh_parent_process_names',
         'git_ssh_remote_commands',
+        # A CLI's own SQLite sidecars in its credential cache directory
+        # (dirs and suffixes): the database's journal, not a credential.
+        'credential_cache_sqlite_sidecars',
         # Hosts the divergence correlation plane does not count as
         # unexplained egress (DNS resolvers, time sync, certificate
         # revocation, connectivity probes, OS update, toolchain telemetry),
@@ -2178,6 +2181,17 @@ def validate_cve_detection_params(filename: str) -> None:
     ):
         validate_string_list(data[list_key], list_key)
 
+    sidecars = data['credential_cache_sqlite_sidecars']
+    if not isinstance(sidecars, dict) or set(sidecars) != {'dirs', 'suffixes'}:
+        raise ValueError("credential_cache_sqlite_sidecars must be {dirs, suffixes}")
+    for key in ('dirs', 'suffixes'):
+        validate_string_list(sidecars[key], f'credential_cache_sqlite_sidecars.{key}')
+        for entry in sidecars[key]:
+            if not entry or entry != entry.lower() or '\\' in entry:
+                raise ValueError(f"credential_cache_sqlite_sidecars.{key} entry {entry!r} must be lower-case and '/'-separated")
+    for entry in sidecars['dirs']:
+        if not (entry.startswith('/') and entry.endswith('/')):
+            raise ValueError(f"credential_cache_sqlite_sidecars.dirs entry {entry!r} must start and end with '/'")
     # Compared for equality with a lower-cased process name or argument.
     for list_key in ('git_ssh_parent_process_names', 'git_ssh_remote_commands'):
         for entry in data[list_key]:
