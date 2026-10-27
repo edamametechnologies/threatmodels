@@ -1135,6 +1135,10 @@ def validate_cve_detection_params(filename: str) -> None:
         # but a large sustained payload over :53/:123 is a tunneling shape.
         'treat_high_volume_dns_ntp_as_non_routine',
         'dns_ntp_non_routine_min_outbound_bytes',
+        # 2.2.2: keepalive-stream bounds (web flows carrying only tiny
+        # records at a trickle are not egress of material).
+        'heartbeat_flow_max_average_payload_bytes',
+        'heartbeat_flow_max_outbound_bytes_per_min',
         # 2.2: autonomous systems that serve only their owner's platform, the
         # ownership relation's data (lock files an application holds in its
         # own store, the data roots installed applications claim), and the
@@ -2127,6 +2131,10 @@ def validate_cve_detection_params(filename: str) -> None:
         'ambient_baseline_ttl_days',
         'ambient_baseline_min_recurrent_days',
         'dns_ntp_non_routine_min_outbound_bytes',
+        # 2.2.2: keepalive-stream bounds (web flows carrying only tiny
+        # records at a trickle are not egress of material).
+        'heartbeat_flow_max_average_payload_bytes',
+        'heartbeat_flow_max_outbound_bytes_per_min',
         'owned_store_min_token_len',
         'publisher_org_min_token_len',
         'memory_scrape_read_enumeration_min_distinct_targets',
