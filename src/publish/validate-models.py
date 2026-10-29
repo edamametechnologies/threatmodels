@@ -1139,6 +1139,9 @@ def validate_cve_detection_params(filename: str) -> None:
         # records at a trickle are not egress of material).
         'heartbeat_flow_max_average_payload_bytes',
         'heartbeat_flow_max_outbound_bytes_per_min',
+        # 2.2.3: the transport and port of a web flow (HTTPS over QUIC is
+        # UDP 443).
+        'standard_web_flows',
         # 2.2: autonomous systems that serve only their owner's platform, the
         # ownership relation's data (lock files an application holds in its
         # own store, the data roots installed applications claim), and the
@@ -2099,6 +2102,19 @@ def validate_cve_detection_params(filename: str) -> None:
     ):
         if not isinstance(data[flag_key], bool):
             raise ValueError(f"'{flag_key}' must be a boolean")
+
+    # 2.2.3: web flows.
+    flows = data['standard_web_flows']
+    if not isinstance(flows, list) or not flows or not all(
+        isinstance(f, dict)
+        and set(f) == {'protocol', 'port'}
+        and f['protocol'] in ('tcp', 'udp')
+        and isinstance(f['port'], int)
+        and not isinstance(f['port'], bool)
+        and 0 < f['port'] < 65536
+        for f in flows
+    ):
+        raise ValueError("'standard_web_flows' must be a non-empty list of {protocol: tcp|udp, port: 1..65535}")
 
     # 2.2 keys.
     asns = data['routine_platform_asns']
