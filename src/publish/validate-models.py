@@ -1204,6 +1204,9 @@ def validate_cve_detection_params(filename: str) -> None:
         'forward_proxy_ports',
         'forward_proxy_min_distinct_processes',
         'cli_credential_cache_path_suffixes',
+        # How long a fresh session of an observed agent waits for the
+        # observer's next read before it is graded unexplained.
+        'divergence_unexplained_ingest_grace_secs',
         # Where each agent keeps its enforcement configuration.
         'agent_control_config_path_suffixes',
         # Certificate / legal-entity vocabulary dropped from a signing
@@ -2174,6 +2177,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'shared_infrastructure_min_local_processes',
         'memory_scrape_inspector_min_attached_targets',
         'forward_proxy_min_distinct_processes',
+        'divergence_unexplained_ingest_grace_secs',
     ):
         value = data[positive_int_key]
         if isinstance(value, bool) or not isinstance(value, int) or value < 1:
