@@ -1189,6 +1189,24 @@ def validate_cve_detection_params(filename: str) -> None:
         # and which name agent instruction / configuration surfaces.
         'sensitive_material_labels',
         'agent_instruction_labels',
+        # 2.3.0 (adjudication lab, 2026-10-31): the sensitive-path labels whose
+        # CRITICAL write by a non-owner the adjudicator may not demote; the
+        # routine rewrites of a measurement surface evaluator_integrity does
+        # not grade; the domains anyone can publish under a vendor's name;
+        # where each credential class is used; the process-inspector attach
+        # breadth; the forward-proxy shape; the CLI login caches a temp
+        # script can plant.
+        'adjudication_pinned_write_labels',
+        'evaluator_routine_rewrites',
+        'user_content_hosting_markers',
+        'credential_service_destinations',
+        'memory_scrape_inspector_min_attached_targets',
+        'forward_proxy_ports',
+        'forward_proxy_min_distinct_processes',
+        'cli_credential_cache_path_suffixes',
+        # How long a fresh session of an observed agent waits for the
+        # observer's next read before it is graded unexplained.
+        'divergence_unexplained_ingest_grace_secs',
         # Where each agent keeps its enforcement configuration.
         'agent_control_config_path_suffixes',
         # Certificate / legal-entity vocabulary dropped from a signing
@@ -2157,6 +2175,9 @@ def validate_cve_detection_params(filename: str) -> None:
         'memory_scrape_per_invocation_min_hex_run',
         'relay_min_credential_classes',
         'shared_infrastructure_min_local_processes',
+        'memory_scrape_inspector_min_attached_targets',
+        'forward_proxy_min_distinct_processes',
+        'divergence_unexplained_ingest_grace_secs',
     ):
         value = data[positive_int_key]
         if isinstance(value, bool) or not isinstance(value, int) or value < 1:
@@ -2515,8 +2536,62 @@ def validate_cve_detection_params(filename: str) -> None:
         value = burn[key]
         if isinstance(value, bool) or not isinstance(value, int) or value < 1:
             raise ValueError(f"wix_burn_layout['{key}'] must be a positive integer")
-    for label_key in ('sensitive_material_labels', 'agent_instruction_labels'):
+    for label_key in ('sensitive_material_labels', 'agent_instruction_labels', 'adjudication_pinned_write_labels'):
         validate_lowercase_tokens(data[label_key], label_key)
+    # 2.3.0: every pinned label is a sensitive-paths catalog label (or the
+    # legacy 'appdata' older captures carry).
+    try:
+        with open('sensitive-paths-db.json', encoding='utf-8') as handle:
+            catalog_labels = set(json.load(handle).get('labels', {}).keys())
+    except OSError:
+        catalog_labels = set()
+    if catalog_labels:
+        unknown = set(data['adjudication_pinned_write_labels']) - catalog_labels - {'appdata'}
+        if unknown:
+            raise ValueError(f"adjudication_pinned_write_labels: {sorted(unknown)} are not sensitive-paths catalog labels")
+    rewrites = data['evaluator_routine_rewrites']
+    rewrite_keys = {
+        'formatter_writers', 'formatter_commands', 'vcs_writers', 'vcs_rewrite_commands',
+        'editor_writers', 'snapshot_path_markers', 'snapshot_update_runners', 'snapshot_update_flags',
+        'snapshot_runner_writers',
+    }
+    if not isinstance(rewrites, dict) or set(rewrites) != rewrite_keys:
+        raise ValueError(f"'evaluator_routine_rewrites' must hold exactly {sorted(rewrite_keys)}")
+    for key, values in rewrites.items():
+        if not isinstance(values, list) or not values or any(
+            not isinstance(v, str) or not v or v != v.lower() for v in values
+        ):
+            raise ValueError(f"evaluator_routine_rewrites['{key}'] must be a non-empty list of lowercase strings")
+    for list_key in ('user_content_hosting_markers', 'cli_credential_cache_path_suffixes'):
+        values = data[list_key]
+        if not isinstance(values, list) or not values or any(
+            not isinstance(v, str) or not v.strip() or v != v.lower() for v in values
+        ):
+            raise ValueError(f"'{list_key}' must be a non-empty list of lowercase strings")
+    for suffix in data['cli_credential_cache_path_suffixes']:
+        if not suffix.startswith('/') or '\\' in suffix:
+            raise ValueError(f"cli_credential_cache_path_suffixes: '{suffix}' must be a '/' path suffix starting with '/'")
+    services = data['credential_service_destinations']
+    if not isinstance(services, dict) or not services:
+        raise ValueError("'credential_service_destinations' must be a non-empty dict")
+    for label, service in services.items():
+        if catalog_labels and label not in catalog_labels:
+            raise ValueError(f"credential_service_destinations: '{label}' is not a sensitive-paths catalog label")
+        if not isinstance(service, dict) or set(service) != {'domain_suffixes', 'private_ports'}:
+            raise ValueError(f"credential_service_destinations['{label}'] must hold domain_suffixes and private_ports")
+        if not service['domain_suffixes'] and not service['private_ports']:
+            raise ValueError(f"credential_service_destinations['{label}'] names no destination")
+        for suffix in service['domain_suffixes']:
+            if not isinstance(suffix, str) or not suffix.startswith('.') or suffix != suffix.lower():
+                raise ValueError(f"credential_service_destinations['{label}']: '{suffix}' must be a lowercase '.suffix'")
+        for port in service['private_ports']:
+            if isinstance(port, bool) or not isinstance(port, int) or not 0 < port < 65536:
+                raise ValueError(f"credential_service_destinations['{label}']: port {port} out of range")
+    ports = data['forward_proxy_ports']
+    if not isinstance(ports, list) or not ports or any(
+        isinstance(p, bool) or not isinstance(p, int) or not 0 < p < 65536 for p in ports
+    ):
+        raise ValueError("'forward_proxy_ports' must be a non-empty list of ports")
     validate_lowercase_tokens(data['publisher_org_stop_tokens'], 'publisher_org_stop_tokens')
     # Agent slug -> path suffixes of that agent's enforcement configuration
     # (lowercase, '/', anchored at a separator); a suffix belongs to one
