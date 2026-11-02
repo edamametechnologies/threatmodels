@@ -34,9 +34,6 @@ jobs:
           - os: macos
             runs-on: macos-15
             name: macos-15
-          - os: macos
-            runs-on: macos-14
-            name: macos-14
           # Windows
           - os: windows
             runs-on: windows-latest
@@ -375,7 +372,6 @@ jobs:
           # Read each report
           MACOS_26=$(cat reports/report-macos-26/report-results.txt 2>/dev/null || echo "N/A")
           MACOS_15=$(cat reports/report-macos-15/report-results.txt 2>/dev/null || echo "N/A")
-          MACOS_14=$(cat reports/report-macos-14/report-results.txt 2>/dev/null || echo "N/A")
           WINDOWS=$(cat reports/report-windows/report-results.txt 2>/dev/null || echo "N/A")
           UBUNTU_X86=$(cat reports/report-ubuntu-x86_64/report-results.txt 2>/dev/null || echo "N/A")
           UBUNTU_ARM=$(cat reports/report-ubuntu-aarch64/report-results.txt 2>/dev/null || echo "N/A")
@@ -384,7 +380,6 @@ jobs:
 
           echo "macos_26=$MACOS_26" >> "$GITHUB_OUTPUT"
           echo "macos_15=$MACOS_15" >> "$GITHUB_OUTPUT"
-          echo "macos_14=$MACOS_14" >> "$GITHUB_OUTPUT"
           echo "windows=$WINDOWS" >> "$GITHUB_OUTPUT"
           echo "ubuntu_x86=$UBUNTU_X86" >> "$GITHUB_OUTPUT"
           echo "ubuntu_arm=$UBUNTU_ARM" >> "$GITHUB_OUTPUT"
@@ -395,7 +390,6 @@ jobs:
         env:
           MACOS_26_REPORT: ${{ steps.assemble_reports.outputs.macos_26 }}
           MACOS_15_REPORT: ${{ steps.assemble_reports.outputs.macos_15 }}
-          MACOS_14_REPORT: ${{ steps.assemble_reports.outputs.macos_14 }}
           WINDOWS_REPORT: ${{ steps.assemble_reports.outputs.windows }}
           UBUNTU_X86_REPORT: ${{ steps.assemble_reports.outputs.ubuntu_x86 }}
           UBUNTU_ARM_REPORT: ${{ steps.assemble_reports.outputs.ubuntu_arm }}
@@ -405,7 +399,6 @@ jobs:
           echo "Reports:"
           echo "  macOS (26): $MACOS_26_REPORT"
           echo "  macOS (15): $MACOS_15_REPORT"
-          echo "  macOS (14): $MACOS_14_REPORT"
           echo "  Windows: $WINDOWS_REPORT"
           echo "  Ubuntu (x86_64): $UBUNTU_X86_REPORT"
           echo "  Ubuntu (aarch64): $UBUNTU_ARM_REPORT"
@@ -420,7 +413,6 @@ jobs:
             GitHub threat models tests result on branch ${{ github.ref }}:
             macOS (26): ${{ steps.assemble_reports.outputs.macos_26 }}
             macOS (15): ${{ steps.assemble_reports.outputs.macos_15 }}
-            macOS (14): ${{ steps.assemble_reports.outputs.macos_14 }}
             Windows: ${{ steps.assemble_reports.outputs.windows }}
             Ubuntu (x86_64): ${{ steps.assemble_reports.outputs.ubuntu_x86 }}
             Ubuntu (aarch64): ${{ steps.assemble_reports.outputs.ubuntu_arm }}
