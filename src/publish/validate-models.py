@@ -1499,7 +1499,7 @@ def validate_cve_detection_params(filename: str) -> None:
         # Lists of case-insensitive substring patterns that the
         # vulnerability detector matches against FIM `path` to suppress
         # browser-cache / browser-state findings (see
-        # ../edamame_core/FALSEPOSITIVES.md FP-WIN-1/2/5).
+        # edamame_core/docs/ai-security/registry/windows.md FP-WIN-1/2/5).
         expected_keys = {
             'chromium_family',
             'chromium_state_files_routine',
