@@ -18,7 +18,7 @@ permissions:
 jobs:
   # The job id is the status check context: keep it `regen`.
   regen:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - name: Checkout
@@ -54,7 +54,7 @@ jobs:
         if: steps.scope.outputs.verify == 'true'
         uses: actions/setup-python@v3.1.4
         with:
-          python-version: 3.11.3
+          python-version: '3.11'
 
       - name: Install dependencies
         if: steps.scope.outputs.verify == 'true'
