@@ -1,0 +1,11 @@
+{
+  "comment": "Ranges removed from the published blacklists at build time (src/iplists/build-blacklists.py). A listed range that overlaps an exclusion is trimmed to the part outside it. Every entry names the source list, the reason and the date; review when the source list changes.",
+  "exclusions": [
+    {
+      "range": "85.203.46.0/24",
+      "source_list": "spamhaus_drop (via firehol_level1)",
+      "reason": "Private Internet Access VPN exit and proxy endpoints (Express-Equinix-London, RIPE). A user on that VPN sees every tunnel session of pia-daemon and of the browser's proxy helper flagged blacklisted (fmba-3: 253 of its 6,377 sessions, the operator Mac: 200 of 200 blacklisted sessions on 2026-11-03), and a blacklisted session is an unbreakable corroborator of the attack-pattern floor. The client's own tunnel to its provider is not an abuse indicator.",
+      "added": "2026-11-03"
+    }
+  ]
+}

@@ -4,8 +4,54 @@ import requests
 import json
 import datetime
 import hashlib
+import ipaddress
 import os
 import base64
+
+EXCLUSIONS_FILE = "src/iplists/blacklist-exclusions.json"
+
+
+def load_exclusions(path=EXCLUSIONS_FILE):
+    """The ranges removed from every published list (see the file's comment)."""
+    if not os.path.exists(path):
+        return []
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    return [ipaddress.ip_network(e["range"], strict=False) for e in data.get("exclusions", [])]
+
+
+def apply_exclusions(ip_ranges, exclusions):
+    """Remove the excluded ranges from a list of CIDR / address strings: a
+    listed range inside an exclusion is dropped, one that contains an
+    exclusion is split into the parts outside it. Returns (ranges, removed)."""
+    if not exclusions:
+        return ip_ranges, 0
+    out, removed = [], 0
+    for text in ip_ranges:
+        try:
+            network = ipaddress.ip_network(text, strict=False)
+        except ValueError:
+            out.append(text)
+            continue
+        pieces = [network]
+        for excl in exclusions:
+            if excl.version != network.version:
+                continue
+            next_pieces = []
+            for piece in pieces:
+                if piece.subnet_of(excl):
+                    removed += 1
+                elif excl.subnet_of(piece):
+                    next_pieces.extend(piece.address_exclude(excl))
+                    removed += 1
+                else:
+                    next_pieces.append(piece)
+            pieces = next_pieces
+        if pieces == [network]:
+            out.append(text)
+        else:
+            out.extend(str(piece) for piece in sorted(pieces))
+    return out, removed
 
 def get_ordinal_suffix(day):
     """Get the ordinal suffix for a day number (1st, 2nd, 3rd, 4th, etc.)"""
@@ -70,12 +116,16 @@ def main():
         print("No existing blacklists file found or file is invalid.")
     
     blacklists = []
-    
+    exclusions = load_exclusions()
+
     # Process each blacklist source
     for source in blacklist_sources:
         print(f"Downloading {source['name']}...")
         content = download_blocklist(source["url"])
         ip_ranges = parse_ip_list(content)
+        ip_ranges, removed = apply_exclusions(ip_ranges, exclusions)
+        if removed:
+            print(f"Removed {removed} range(s) of {source['name']} listed in {EXCLUSIONS_FILE}")
         
         blacklist = {
             "name": source["name"],
