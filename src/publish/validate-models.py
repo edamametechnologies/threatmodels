@@ -1130,6 +1130,9 @@ def validate_cve_detection_params(filename: str) -> None:
         # EvidenceFloor tier gate: when true, the unbreakable tier additionally
         # requires a graded (not merely binary) anomaly verdict.
         'evidence_floor_requires_graded_anomaly',
+        # Minimum distance of the session's anomaly score above the analyzer's
+        # abnormal threshold for the anomaly to corroborate a floor or a pin.
+        'evidence_floor_min_anomaly_margin',
         'crs_authoritative_enabled',
         # High-volume DNS/NTP egress: normally routine infrastructure traffic,
         # but a large sustained payload over :53/:123 is a tunneling shape.
@@ -2120,6 +2123,12 @@ def validate_cve_detection_params(filename: str) -> None:
     ):
         if not isinstance(data[flag_key], bool):
             raise ValueError(f"'{flag_key}' must be a boolean")
+
+    # The anomaly margin is a score distance: a non-negative number, never a
+    # boolean (a gate published as `0`/`1` must fail loudly here too).
+    margin = data['evidence_floor_min_anomaly_margin']
+    if isinstance(margin, bool) or not isinstance(margin, (int, float)) or margin < 0:
+        raise ValueError("'evidence_floor_min_anomaly_margin' must be a non-negative number")
 
     # 2.2.3: web flows.
     flows = data['standard_web_flows']
