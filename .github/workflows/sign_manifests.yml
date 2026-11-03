@@ -38,7 +38,7 @@ jobs:
   # anything else, then hands the signed files to `publish`.
   sign-data:
     if: vars.MODEL_ROOT_PUBLIC_KEYS != ''
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     environment: model-signing
     steps:
@@ -48,7 +48,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v3.1.4
         with:
-          python-version: 3.11.3
+          python-version: '3.11'
 
       # cryptography and its own dependencies, each pinned to its published
       # files by hash: this job holds the signing key.
@@ -95,7 +95,7 @@ jobs:
   # allow list"; the first run's push got 403, run 36563969725).
   publish:
     needs: [sign-data]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 40
     steps:
       - name: Setup EDAMAME Posture

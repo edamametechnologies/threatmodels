@@ -16,7 +16,7 @@ permissions: write-all
 
 jobs:
  validate:
-   runs-on: ubuntu-latest
+   runs-on: ubuntu-24.04
    timeout-minutes: 90
 
    steps:
@@ -32,7 +32,7 @@ jobs:
      - name: Setup Python
        uses: actions/setup-python@v3.1.4
        with:
-         python-version: 3.11.3
+         python-version: '3.11'
 
      - name: Install dependencies
        run: pip install -r requirements.txt
@@ -144,7 +144,7 @@ jobs:
  finalize:
    needs: [validate]
    if: always()
-   runs-on: ubuntu-latest
+   runs-on: ubuntu-24.04
    timeout-minutes: 90
    steps:
       - name: Slack final report
