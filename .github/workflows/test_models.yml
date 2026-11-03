@@ -40,7 +40,7 @@ jobs:
             name: windows
           # Ubuntu x86_64
           - os: ubuntu
-            runs-on: ubuntu-latest
+            runs-on: ubuntu-24.04
             arch: x86_64
             name: ubuntu-x86_64
           # Ubuntu aarch64
@@ -63,7 +63,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v3.1.4
         with:
-          python-version: 3.11.3
+          python-version: '3.11'
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -196,7 +196,13 @@ jobs:
         include:
           - arch: x86_64
             target: x86_64-unknown-linux-musl
-            runs-on: ubuntu-latest
+            # ubuntu-latest resolved to ubuntu-26.04 on 2026-11-03 (run
+            # 41581323394): setup-python has no 3.11.3 build for it and
+            # setup-alpine@v1 stopped at an unbound $INPUT_APK_TOOLS_URL,
+            # while this same job passed on ubuntu-24.04-arm. Every Ubuntu
+            # job in this repo pins ubuntu-24.04 since; moving to 26.04 is a
+            # deliberate change, not a label rolling under us.
+            runs-on: ubuntu-24.04
             name: alpine-x86_64
             apk_tools_url: 'https://gitlab.alpinelinux.org/api/v4/projects/5/packages/generic/v2.14.7/x86_64/apk.static#!sha256!bdd044e0fd6cc388c5e571e1093efa5f35f7767cc5aa338b0a2576a429009a62'
           - arch: aarch64
@@ -357,7 +363,7 @@ jobs:
     needs: [tests-native, tests-alpine]
     # Only for main branch (and always - i.e. in case of failure)
     if: github.ref == 'refs/heads/main' || always()
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Download all reports
         uses: actions/download-artifact@v4
