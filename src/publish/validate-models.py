@@ -1192,6 +1192,9 @@ def validate_cve_detection_params(filename: str) -> None:
         # and which name agent instruction / configuration surfaces.
         'sensitive_material_labels',
         'agent_instruction_labels',
+        # 2.3.2 (FP-WIN-44): the labels that name a credential file by its
+        # own generic name only, a subset of sensitive_material_labels.
+        'own_store_generic_labels',
         # 2.3.0 (adjudication lab, 2026-10-31): the sensitive-path labels whose
         # CRITICAL write by a non-owner the adjudicator may not demote; the
         # routine rewrites of a measurement surface evaluator_integrity does
@@ -1528,6 +1531,8 @@ def validate_cve_detection_params(filename: str) -> None:
             'chromium_process_names',
             'firefox_process_names',
             'directory_target_names',
+            # 2.3.2 (FP-LIN-6): NSS's shared certificate and key database.
+            'shared_nss_db_markers',
         }
         if not isinstance(value, dict):
             raise ValueError(f"'{key_name}' must be a dict")
@@ -2545,8 +2550,13 @@ def validate_cve_detection_params(filename: str) -> None:
         value = burn[key]
         if isinstance(value, bool) or not isinstance(value, int) or value < 1:
             raise ValueError(f"wix_burn_layout['{key}'] must be a positive integer")
-    for label_key in ('sensitive_material_labels', 'agent_instruction_labels', 'adjudication_pinned_write_labels'):
+    for label_key in ('sensitive_material_labels', 'agent_instruction_labels', 'adjudication_pinned_write_labels',
+                      'own_store_generic_labels'):
         validate_lowercase_tokens(data[label_key], label_key)
+    # 2.3.2: a generic store label is a sensitive material label.
+    foreign = set(data['own_store_generic_labels']) - set(data['sensitive_material_labels'])
+    if foreign:
+        raise ValueError(f"own_store_generic_labels: {sorted(foreign)} are not sensitive_material_labels")
     # 2.3.0: every pinned label is a sensitive-paths catalog label (or the
     # legacy 'appdata' older captures carry).
     try:
