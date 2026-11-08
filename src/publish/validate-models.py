@@ -1263,6 +1263,10 @@ def validate_cve_detection_params(filename: str) -> None:
         'measurement_negation_words',
         'global_package_roots',
         'package_bare_runtimes',
+        # 2.3.2 (FP-WIN-48): the hosts a package manager downloads from,
+        # compared exactly with a session's destination name. A host that
+        # also takes uploads (npm's registry) does not belong here.
+        'package_index_hosts',
         # Evaluator integrity thresholds: a writer's batch (paths, measurement
         # share, burst window) and how far outside a session's transcript
         # span a write is still the session's.
@@ -2242,6 +2246,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'measurement_negation_words',
         'global_package_roots',
         'package_bare_runtimes',
+        'package_index_hosts',
         'ssh_client_state_files',
         'git_ssh_parent_process_names',
         'git_ssh_remote_commands',
@@ -2305,6 +2310,10 @@ def validate_cve_detection_params(filename: str) -> None:
     for entry in data['global_package_roots']:
         if not (entry.startswith('/') and entry.endswith('/')):
             raise ValueError(f"global_package_roots entry {entry!r} must start and end with '/'")
+    # Compared for equality with a lower-cased destination name.
+    for entry in data['package_index_hosts']:
+        if not re.fullmatch(r'[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+', entry):
+            raise ValueError(f"package_index_hosts entry {entry!r} must be a lower-case host name, without scheme, port, path or wildcard")
     for int_key in (
         'evaluator_materialisation_min_paths',
         'evaluator_materialisation_measurement_divisor',
