@@ -34,7 +34,7 @@ PRIVACY_HEADER_EN = """* Your machine unique identifier
 * Your score for each category (network, system integrity, system services, applications, credentials), your star rating, and your compliance percentage for each compliance framework
 * The history of the remediations and rollbacks you performed: the check concerned, the action, when it happened, and whether it succeeded and was validated
 * Whether AI details sharing is on for this device. The AI details themselves are sent only when it is
-* When the domain manages this device's settings from EDAMAME Hub: which configuration this device received, whether you accepted or declined it, whether this device connected to the EDAMAME Portal with it, and any problem applying it"""
+* When the domain manages EDAMAME Security's settings on this device from EDAMAME Hub: which configuration this device received, whether you accepted or declined it, whether this device connected to the EDAMAME Portal with it, and any problem applying it"""
 
 PRIVACY_HEADER_FR = """* L'identifiant unique de votre machine
 * Le nom de votre machine (nom d'hôte), sans son suffixe de domaine réseau
@@ -51,7 +51,7 @@ PRIVACY_HEADER_FR = """* L'identifiant unique de votre machine
 * Votre score pour chaque catégorie (réseau, intégrité du système, services système, applications, identifiants), votre nombre d'étoiles, et votre pourcentage de conformité pour chaque référentiel de conformité
 * L'historique des remédiations et des retours en arrière que vous avez effectués : le test concerné, l'action, sa date, et si elle a réussi et a été validée
 * Si le partage des détails IA est activé pour cet appareil. Les détails IA eux-mêmes ne sont envoyés que lorsqu'il l'est
-* Lorsque le domaine gère les réglages de cet appareil depuis EDAMAME Hub : la configuration que cet appareil a reçue, si vous l'avez acceptée ou refusée, si cet appareil s'est connecté à EDAMAME Portal avec elle, et tout problème rencontré pour l'appliquer"""
+* Lorsque le domaine gère les réglages d'EDAMAME Security sur cet appareil depuis EDAMAME Hub : la configuration que cet appareil a reçue, si vous l'avez acceptée ou refusée, si cet appareil s'est connecté à EDAMAME Portal avec elle, et tout problème rencontré pour l'appliquer"""
 
 AI_SECTION_EN = """* The AI details of this machine:
   * AI setup of this machine, sent in every report while AI details are shared, even when no AI check is failing
