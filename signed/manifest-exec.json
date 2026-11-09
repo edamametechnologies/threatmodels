@@ -2,13 +2,13 @@
   "branch": "main",
   "files": {
     "threatmodel-Android.json": "e49264c3ba9b248a0c4a4dd3407136ee773ef04c3619a1be9795070fcc14012b",
-    "threatmodel-Linux.json": "f5dbd61b0b729a545d84ef6066bc0079bb0a57cd7900c7a0fe8a6efc08ea06bc",
-    "threatmodel-Windows.json": "bde3de2dacee4363615f70adb5339420990b354566ab24b76c1eb5ad574e5547",
+    "threatmodel-Linux.json": "913bf148d88f3a80709d7764c2bf5d77c0a88ec92dc3f047f42c0aca879b0eef",
+    "threatmodel-Windows.json": "3beba5458d90fb3a259b996b67b9dd6bdd241239bebb5c465786c2ae4aeca565",
     "threatmodel-iOS.json": "29c3d538da9ec7cabe265794de3d52f0b36689bd695250212eed136277f9c280",
-    "threatmodel-macOS.json": "8eca41ab0308a92f88c6dd32a5b6892ff450b9cc9c7e58fe5673d7d175b46fa9"
+    "threatmodel-macOS.json": "58092943ef9398988f0014fe381c7227f1cdf441f08bf1977988a7f74b82c4f6"
   },
   "format": 1,
-  "issued_at": "2026-10-21T16:14:45Z",
+  "issued_at": "2026-11-09T15:40:55Z",
   "scope": "exec",
-  "sequence": 1792599285
+  "sequence": 1794238855
 }
