@@ -1267,6 +1267,10 @@ def validate_cve_detection_params(filename: str) -> None:
         # compared exactly with a session's destination name. A host that
         # also takes uploads (npm's registry) does not belong here.
         'package_index_hosts',
+        # 2.3.2: the registrable domains one service operates under (PyPI's
+        # index and its file host): a human's grant of one member covers the
+        # others in the divergence policy.
+        'service_host_families',
         # Evaluator integrity thresholds: a writer's batch (paths, measurement
         # share, burst window) and how far outside a session's transcript
         # span a write is still the session's.
@@ -2314,6 +2318,31 @@ def validate_cve_detection_params(filename: str) -> None:
     for entry in data['package_index_hosts']:
         if not re.fullmatch(r'[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+', entry):
             raise ValueError(f"package_index_hosts entry {entry!r} must be a lower-case host name, without scheme, port, path or wildcard")
+    # Each family is two or more registrable domains of one service; a grant
+    # of one member covers the others and their subdomains, so a member may
+    # not sit in two families, under another member, or at or under a
+    # shared-hosting public suffix (where every subdomain is someone else's).
+    families = data['service_host_families']
+    if not isinstance(families, list):
+        raise ValueError("service_host_families must be a list of host-name lists")
+    host_re = r'[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+'
+    members = []
+    for family in families:
+        if not isinstance(family, list) or len(family) < 2 or len(set(family)) != len(family):
+            raise ValueError(f"service_host_families entry {family!r} must list two or more distinct host names")
+        for host in family:
+            if not isinstance(host, str) or not re.fullmatch(host_re, host):
+                raise ValueError(f"service_host_families member {host!r} must be a lower-case host name, without scheme, port, path or wildcard")
+            for suffix in data['shared_hosting_public_suffixes']:
+                if host == suffix or host.endswith('.' + suffix):
+                    raise ValueError(f"service_host_families member {host!r} is at or under the shared-hosting suffix {suffix!r}")
+        members.extend(family)
+    for host in members:
+        if members.count(host) > 1:
+            raise ValueError(f"service_host_families member {host!r} is in more than one family")
+        for other in members:
+            if other != host and host.endswith('.' + other):
+                raise ValueError(f"service_host_families member {host!r} sits under the member {other!r}")
     for int_key in (
         'evaluator_materialisation_min_paths',
         'evaluator_materialisation_measurement_divisor',
