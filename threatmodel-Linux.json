@@ -1,5 +1,5 @@
 {
-  "date": "October 21th 2026",
+  "date": "November 09th 2026",
   "extends": "none",
   "metrics": [
     {
@@ -1729,12 +1729,12 @@
       "description": [
         {
           "locale": "EN",
-          "summary": "Cursor is installed but the EDAMAME transcript observer is paused. Reasoning-plane intent is no longer correlated with system telemetry, weakening agent posture.",
+          "summary": "Cursor is installed but EDAMAME does not fully protect it: attack-pattern detection or intent-divergence detection is off, no AI model adjudicates, or its transcript observer is paused. Reasoning-plane intent is not correlated with system telemetry, weakening agent posture.",
           "title": "Cursor agent unsecured"
         },
         {
           "locale": "FR",
-          "summary": "Cursor est installé mais l'observateur de transcripts EDAMAME est en pause. L'intention de l'agent n'est plus corrélée avec la télémétrie système et l'agent est moins protégé.",
+          "summary": "Cursor est installé mais EDAMAME ne le protège pas complètement : la détection des schémas d'attaque ou la détection de divergence d'intention est désactivée, aucun modèle d'IA n'arbitre, ou son observateur de transcripts est en pause. L'intention de l'agent n'est pas corrélée avec la télémétrie système et l'agent est moins protégé.",
           "title": "Agent Cursor non sécurisé"
         }
       ],
@@ -1756,12 +1756,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in Config &gt; Agents, or uninstall the agent if it is no longer in use.</p>"
+            "target": "<p>Turn protection on in Security, connect an AI model &mdash; EDAMAME Portal or your own &mdash; in Config &gt; AI, and resume the EDAMAME transcript observer for this agent in Config &gt; Agents. Uninstall the agent if it is no longer in use.</p>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Réactivez l'observateur EDAMAME pour cet agent dans l'onglet IA / Config, ou désinstallez l'agent si vous ne l'utilisez plus.</p>"
+            "target": "<p>Activez la protection dans Sécurité, connectez un modèle d'IA &mdash; EDAMAME Portal ou le vôtre &mdash; dans Config &gt; IA, et réactivez l'observateur de transcripts EDAMAME pour cet agent dans Config &gt; Agents. Désinstallez l'agent si vous ne l'utilisez plus.</p>"
           }
         ],
         "elevation": "",
@@ -1776,12 +1776,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in Config &gt; Agents. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+            "target": "<p>Turn protection off in Security, disconnect the AI model in Config &gt; AI, or re-pause the EDAMAME transcript observer for this agent in Config &gt; Agents. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Remettez en pause l'observateur EDAMAME pour cet agent dans l'onglet IA / Config. L'agent continuera de fonctionner mais l'intention ne sera plus corrélée avec la télémétrie système.</p>"
+            "target": "<p>Désactivez la protection dans Sécurité, déconnectez le modèle d'IA dans Config &gt; IA, ou remettez en pause l'observateur de transcripts EDAMAME pour cet agent dans Config &gt; Agents. L'agent continuera de fonctionner mais son intention ne sera plus corrélée avec la télémétrie système.</p>"
           }
         ],
         "elevation": "",
@@ -1814,12 +1814,12 @@
       "description": [
         {
           "locale": "EN",
-          "summary": "Claude Code is installed but the EDAMAME transcript observer is paused. Reasoning-plane intent is no longer correlated with system telemetry, weakening agent posture.",
+          "summary": "Claude Code is installed but EDAMAME does not fully protect it: attack-pattern detection or intent-divergence detection is off, no AI model adjudicates, or its transcript observer is paused. Reasoning-plane intent is not correlated with system telemetry, weakening agent posture.",
           "title": "Claude Code agent unsecured"
         },
         {
           "locale": "FR",
-          "summary": "Claude Code est installé mais l'observateur de transcripts EDAMAME est en pause. L'intention de l'agent n'est plus corrélée avec la télémétrie système et l'agent est moins protégé.",
+          "summary": "Claude Code est installé mais EDAMAME ne le protège pas complètement : la détection des schémas d'attaque ou la détection de divergence d'intention est désactivée, aucun modèle d'IA n'arbitre, ou son observateur de transcripts est en pause. L'intention de l'agent n'est pas corrélée avec la télémétrie système et l'agent est moins protégé.",
           "title": "Agent Claude Code non sécurisé"
         }
       ],
@@ -1841,12 +1841,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in Config &gt; Agents, or uninstall the agent if it is no longer in use.</p>"
+            "target": "<p>Turn protection on in Security, connect an AI model &mdash; EDAMAME Portal or your own &mdash; in Config &gt; AI, and resume the EDAMAME transcript observer for this agent in Config &gt; Agents. Uninstall the agent if it is no longer in use.</p>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Réactivez l'observateur EDAMAME pour cet agent dans l'onglet IA / Config, ou désinstallez l'agent si vous ne l'utilisez plus.</p>"
+            "target": "<p>Activez la protection dans Sécurité, connectez un modèle d'IA &mdash; EDAMAME Portal ou le vôtre &mdash; dans Config &gt; IA, et réactivez l'observateur de transcripts EDAMAME pour cet agent dans Config &gt; Agents. Désinstallez l'agent si vous ne l'utilisez plus.</p>"
           }
         ],
         "elevation": "",
@@ -1861,12 +1861,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in Config &gt; Agents. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+            "target": "<p>Turn protection off in Security, disconnect the AI model in Config &gt; AI, or re-pause the EDAMAME transcript observer for this agent in Config &gt; Agents. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Remettez en pause l'observateur EDAMAME pour cet agent dans l'onglet IA / Config. L'agent continuera de fonctionner mais l'intention ne sera plus corrélée avec la télémétrie système.</p>"
+            "target": "<p>Désactivez la protection dans Sécurité, déconnectez le modèle d'IA dans Config &gt; IA, ou remettez en pause l'observateur de transcripts EDAMAME pour cet agent dans Config &gt; Agents. L'agent continuera de fonctionner mais son intention ne sera plus corrélée avec la télémétrie système.</p>"
           }
         ],
         "elevation": "",
@@ -1899,12 +1899,12 @@
       "description": [
         {
           "locale": "EN",
-          "summary": "Claude Desktop is installed but the EDAMAME transcript observer is paused. Reasoning-plane intent is no longer correlated with system telemetry, weakening agent posture.",
+          "summary": "Claude Desktop is installed but EDAMAME does not fully protect it: attack-pattern detection or intent-divergence detection is off, no AI model adjudicates, or its transcript observer is paused. Reasoning-plane intent is not correlated with system telemetry, weakening agent posture.",
           "title": "Claude Desktop agent unsecured"
         },
         {
           "locale": "FR",
-          "summary": "Claude Desktop est installé mais l'observateur de transcripts EDAMAME est en pause. L'intention de l'agent n'est plus corrélée avec la télémétrie système et l'agent est moins protégé.",
+          "summary": "Claude Desktop est installé mais EDAMAME ne le protège pas complètement : la détection des schémas d'attaque ou la détection de divergence d'intention est désactivée, aucun modèle d'IA n'arbitre, ou son observateur de transcripts est en pause. L'intention de l'agent n'est pas corrélée avec la télémétrie système et l'agent est moins protégé.",
           "title": "Agent Claude Desktop non sécurisé"
         }
       ],
@@ -1926,12 +1926,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in Config &gt; Agents, or uninstall the agent if it is no longer in use.</p>"
+            "target": "<p>Turn protection on in Security, connect an AI model &mdash; EDAMAME Portal or your own &mdash; in Config &gt; AI, and resume the EDAMAME transcript observer for this agent in Config &gt; Agents. Uninstall the agent if it is no longer in use.</p>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Réactivez l'observateur EDAMAME pour cet agent dans l'onglet IA / Config, ou désinstallez l'agent si vous ne l'utilisez plus.</p>"
+            "target": "<p>Activez la protection dans Sécurité, connectez un modèle d'IA &mdash; EDAMAME Portal ou le vôtre &mdash; dans Config &gt; IA, et réactivez l'observateur de transcripts EDAMAME pour cet agent dans Config &gt; Agents. Désinstallez l'agent si vous ne l'utilisez plus.</p>"
           }
         ],
         "elevation": "",
@@ -1946,12 +1946,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in Config &gt; Agents. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+            "target": "<p>Turn protection off in Security, disconnect the AI model in Config &gt; AI, or re-pause the EDAMAME transcript observer for this agent in Config &gt; Agents. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Remettez en pause l'observateur EDAMAME pour cet agent dans l'onglet IA / Config. L'agent continuera de fonctionner mais l'intention ne sera plus corrélée avec la télémétrie système.</p>"
+            "target": "<p>Désactivez la protection dans Sécurité, déconnectez le modèle d'IA dans Config &gt; IA, ou remettez en pause l'observateur de transcripts EDAMAME pour cet agent dans Config &gt; Agents. L'agent continuera de fonctionner mais son intention ne sera plus corrélée avec la télémétrie système.</p>"
           }
         ],
         "elevation": "",
@@ -1984,12 +1984,12 @@
       "description": [
         {
           "locale": "EN",
-          "summary": "OpenClaw is installed but the EDAMAME transcript observer is paused. Reasoning-plane intent is no longer correlated with system telemetry, weakening agent posture.",
+          "summary": "OpenClaw is installed but EDAMAME does not fully protect it: attack-pattern detection or intent-divergence detection is off, no AI model adjudicates, or its transcript observer is paused. Reasoning-plane intent is not correlated with system telemetry, weakening agent posture.",
           "title": "OpenClaw agent unsecured"
         },
         {
           "locale": "FR",
-          "summary": "OpenClaw est installé mais l'observateur de transcripts EDAMAME est en pause. L'intention de l'agent n'est plus corrélée avec la télémétrie système et l'agent est moins protégé.",
+          "summary": "OpenClaw est installé mais EDAMAME ne le protège pas complètement : la détection des schémas d'attaque ou la détection de divergence d'intention est désactivée, aucun modèle d'IA n'arbitre, ou son observateur de transcripts est en pause. L'intention de l'agent n'est pas corrélée avec la télémétrie système et l'agent est moins protégé.",
           "title": "Agent OpenClaw non sécurisé"
         }
       ],
@@ -2011,12 +2011,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in Config &gt; Agents, or uninstall the agent if it is no longer in use.</p>"
+            "target": "<p>Turn protection on in Security, connect an AI model &mdash; EDAMAME Portal or your own &mdash; in Config &gt; AI, and resume the EDAMAME transcript observer for this agent in Config &gt; Agents. Uninstall the agent if it is no longer in use.</p>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Réactivez l'observateur EDAMAME pour cet agent dans l'onglet IA / Config, ou désinstallez l'agent si vous ne l'utilisez plus.</p>"
+            "target": "<p>Activez la protection dans Sécurité, connectez un modèle d'IA &mdash; EDAMAME Portal ou le vôtre &mdash; dans Config &gt; IA, et réactivez l'observateur de transcripts EDAMAME pour cet agent dans Config &gt; Agents. Désinstallez l'agent si vous ne l'utilisez plus.</p>"
           }
         ],
         "elevation": "",
@@ -2031,12 +2031,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in Config &gt; Agents. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+            "target": "<p>Turn protection off in Security, disconnect the AI model in Config &gt; AI, or re-pause the EDAMAME transcript observer for this agent in Config &gt; Agents. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Remettez en pause l'observateur EDAMAME pour cet agent dans l'onglet IA / Config. L'agent continuera de fonctionner mais l'intention ne sera plus corrélée avec la télémétrie système.</p>"
+            "target": "<p>Désactivez la protection dans Sécurité, déconnectez le modèle d'IA dans Config &gt; IA, ou remettez en pause l'observateur de transcripts EDAMAME pour cet agent dans Config &gt; Agents. L'agent continuera de fonctionner mais son intention ne sera plus corrélée avec la télémétrie système.</p>"
           }
         ],
         "elevation": "",
@@ -2528,12 +2528,12 @@
       "description": [
         {
           "locale": "EN",
-          "summary": "Codex CLI is installed but the EDAMAME transcript observer is paused. Reasoning-plane intent is no longer correlated with system telemetry, weakening agent posture.",
+          "summary": "Codex CLI is installed but EDAMAME does not fully protect it: attack-pattern detection or intent-divergence detection is off, no AI model adjudicates, or its transcript observer is paused. Reasoning-plane intent is not correlated with system telemetry, weakening agent posture.",
           "title": "Codex CLI agent unsecured"
         },
         {
           "locale": "FR",
-          "summary": "Codex CLI est installé mais l'observateur de transcripts EDAMAME est en pause. L'intention de l'agent n'est plus corrélée avec la télémétrie système et l'agent est moins protégé.",
+          "summary": "Codex CLI est installé mais EDAMAME ne le protège pas complètement : la détection des schémas d'attaque ou la détection de divergence d'intention est désactivée, aucun modèle d'IA n'arbitre, ou son observateur de transcripts est en pause. L'intention de l'agent n'est pas corrélée avec la télémétrie système et l'agent est moins protégé.",
           "title": "Agent Codex CLI non sécurisé"
         }
       ],
@@ -2555,12 +2555,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in Config &gt; Agents, or uninstall the agent if it is no longer in use.</p>"
+            "target": "<p>Turn protection on in Security, connect an AI model &mdash; EDAMAME Portal or your own &mdash; in Config &gt; AI, and resume the EDAMAME transcript observer for this agent in Config &gt; Agents. Uninstall the agent if it is no longer in use.</p>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Réactivez l'observateur EDAMAME pour cet agent dans l'onglet IA / Config, ou désinstallez l'agent si vous ne l'utilisez plus.</p>"
+            "target": "<p>Activez la protection dans Sécurité, connectez un modèle d'IA &mdash; EDAMAME Portal ou le vôtre &mdash; dans Config &gt; IA, et réactivez l'observateur de transcripts EDAMAME pour cet agent dans Config &gt; Agents. Désinstallez l'agent si vous ne l'utilisez plus.</p>"
           }
         ],
         "elevation": "",
@@ -2575,12 +2575,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in Config &gt; Agents. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+            "target": "<p>Turn protection off in Security, disconnect the AI model in Config &gt; AI, or re-pause the EDAMAME transcript observer for this agent in Config &gt; Agents. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Remettez en pause l'observateur EDAMAME pour cet agent dans l'onglet IA / Config. L'agent continuera de fonctionner mais l'intention ne sera plus corrélée avec la télémétrie système.</p>"
+            "target": "<p>Désactivez la protection dans Sécurité, déconnectez le modèle d'IA dans Config &gt; IA, ou remettez en pause l'observateur de transcripts EDAMAME pour cet agent dans Config &gt; Agents. L'agent continuera de fonctionner mais son intention ne sera plus corrélée avec la télémétrie système.</p>"
           }
         ],
         "elevation": "",
@@ -2613,12 +2613,12 @@
       "description": [
         {
           "locale": "EN",
-          "summary": "Hermes Agent is installed but the EDAMAME transcript observer is paused. Reasoning-plane intent is no longer correlated with system telemetry, weakening agent posture.",
+          "summary": "Hermes Agent is installed but EDAMAME does not fully protect it: attack-pattern detection or intent-divergence detection is off, no AI model adjudicates, or its transcript observer is paused. Reasoning-plane intent is not correlated with system telemetry, weakening agent posture.",
           "title": "Hermes agent unsecured"
         },
         {
           "locale": "FR",
-          "summary": "Hermes Agent est installé mais l'observateur de transcripts EDAMAME est en pause. L'intention de l'agent n'est plus corrélée avec la télémétrie système et l'agent est moins protégé.",
+          "summary": "Hermes Agent est installé mais EDAMAME ne le protège pas complètement : la détection des schémas d'attaque ou la détection de divergence d'intention est désactivée, aucun modèle d'IA n'arbitre, ou son observateur de transcripts est en pause. L'intention de l'agent n'est pas corrélée avec la télémétrie système et l'agent est moins protégé.",
           "title": "Agent Hermes non sécurisé"
         }
       ],
@@ -2640,12 +2640,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-enable the EDAMAME transcript observer for this agent in Config &gt; Agents, or uninstall the agent if it is no longer in use.</p>"
+            "target": "<p>Turn protection on in Security, connect an AI model &mdash; EDAMAME Portal or your own &mdash; in Config &gt; AI, and resume the EDAMAME transcript observer for this agent in Config &gt; Agents. Uninstall the agent if it is no longer in use.</p>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Réactivez l'observateur EDAMAME pour cet agent dans l'onglet IA / Config, ou désinstallez l'agent si vous ne l'utilisez plus.</p>"
+            "target": "<p>Activez la protection dans Sécurité, connectez un modèle d'IA &mdash; EDAMAME Portal ou le vôtre &mdash; dans Config &gt; IA, et réactivez l'observateur de transcripts EDAMAME pour cet agent dans Config &gt; Agents. Désinstallez l'agent si vous ne l'utilisez plus.</p>"
           }
         ],
         "elevation": "",
@@ -2660,12 +2660,12 @@
           {
             "class": "html",
             "locale": "EN",
-            "target": "<p>Re-pause the EDAMAME transcript observer for this agent in Config &gt; Agents. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
+            "target": "<p>Turn protection off in Security, disconnect the AI model in Config &gt; AI, or re-pause the EDAMAME transcript observer for this agent in Config &gt; Agents. The agent will keep running but its reasoning-plane intent will no longer be correlated with system telemetry.</p>"
           },
           {
             "class": "html",
             "locale": "FR",
-            "target": "<p>Remettez en pause l'observateur EDAMAME pour cet agent dans l'onglet IA / Config. L'agent continuera de fonctionner mais l'intention ne sera plus corrélée avec la télémétrie système.</p>"
+            "target": "<p>Désactivez la protection dans Sécurité, déconnectez le modèle d'IA dans Config &gt; IA, ou remettez en pause l'observateur de transcripts EDAMAME pour cet agent dans Config &gt; Agents. L'agent continuera de fonctionner mais son intention ne sera plus corrélée avec la télémétrie système.</p>"
           }
         ],
         "elevation": "",
@@ -2696,5 +2696,5 @@
     }
   ],
   "name": "threat model Linux",
-  "signature": "41ca1ed197c4ea5a5c9ab4962a5de0c87b528fbb2b33c042b2edc62cc143f381"
+  "signature": "b124f55ea1b82338d08239093d17059cf30665b14893a8d03f3acb46f246f2de"
 }

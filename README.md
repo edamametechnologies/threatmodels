@@ -197,10 +197,13 @@ Security threats are categorized along 5 key dimensions:
 | **System Services** | System configuration, service vulnerabilities, ... |
 
 > The `unsecured_cursor`, `unsecured_claude_code`, `unsecured_claude_desktop`,
-> and `unsecured_openclaw`, and `unsecured_codex` threats track AI agent posture: each is active when
-> the named agent plugin is installed AND its EDAMAME-side transcript observer
-> is paused. These threats are defined in macOS, Windows, and Linux
-> threatmodels and tagged `AI Agent Posture`.
+> `unsecured_openclaw`, `unsecured_codex` and `unsecured_hermes` threats track
+> AI agent posture: each is active when the named agent is discovered on the
+> host (its transcript root is on disk) AND EDAMAME does not fully protect it:
+> attack-pattern detection or intent-divergence detection is off, no AI model
+> adjudicates, or its EDAMAME-side transcript observer is paused (clients
+> before 2.3.2 evaluate the paused observer alone). These threats are defined
+> in macOS, Windows, and Linux threatmodels and tagged `AI Agent Posture`.
 
 ## Naming Conventions
 

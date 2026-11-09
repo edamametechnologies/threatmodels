@@ -20,6 +20,13 @@
                     "appletv"
                   ]
                 }
+              },
+              {
+                "Leaf": {
+                  "open_ports": [
+                    1925
+                  ]
+                }
               }
             ],
             "type": "OR"
@@ -544,6 +551,13 @@
                 }
               },
               {
+                "Leaf": {
+                  "open_ports": [
+                    1925
+                  ]
+                }
+              },
+              {
                 "Node": {
                   "sub_conditions": [
                     {
@@ -578,6 +592,7 @@
                           "hisense",
                           "tcl",
                           "tp vision",
+                          "tpvision",
                           "vizio"
                         ]
                       }
@@ -600,6 +615,7 @@
                     "roku",
                     "vizio",
                     "tp vision",
+                    "tpvision",
                     "hisense visual technology",
                     "hisense electric",
                     "sony visual products",
