@@ -1,5 +1,5 @@
 {
-  "date": "September 27th 2026",
+  "date": "November 09th 2026",
   "profiles": [
     {
       "conditions": [
@@ -1036,5 +1036,5 @@
       "device_type": "PC"
     }
   ],
-  "signature": "f11a38ca5606d0ae33cc1047633251f48615608319f58b17f7312e4d51410658"
+  "signature": "ac7e346606738a1a1a60a49e50137821b1c2e15034c6d3bb37648f41fd1cbea6"
 }
