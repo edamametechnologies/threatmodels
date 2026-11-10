@@ -1271,6 +1271,15 @@ def validate_cve_detection_params(filename: str) -> None:
         # index and its file host): a human's grant of one member covers the
         # others in the divergence policy.
         'service_host_families',
+        # Session binding by tool-call time: the switch (published off: the
+        # binding is computed beside the pid-file one and compared, nothing
+        # reads it), how far a transcript's call time may trail the process
+        # birth the sensor stamped, how long after a call its process may be
+        # born, and how late the sensor may deliver a birth.
+        'session_binding_tool_call_enabled',
+        'session_binding_clock_slack_ms',
+        'session_binding_spawn_window_ms',
+        'session_binding_sensor_lag_ms',
         # Evaluator integrity thresholds: a writer's batch (paths, measurement
         # share, burst window) and how far outside a session's transcript
         # span a write is still the session's.
@@ -2133,6 +2142,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'evidence_floor_requires_graded_anomaly',
         'crs_authoritative_enabled',
         'treat_high_volume_dns_ntp_as_non_routine',
+        'session_binding_tool_call_enabled',
     ):
         if not isinstance(data[flag_key], bool):
             raise ValueError(f"'{flag_key}' must be a boolean")
@@ -2200,10 +2210,24 @@ def validate_cve_detection_params(filename: str) -> None:
         'memory_scrape_inspector_min_attached_targets',
         'forward_proxy_min_distinct_processes',
         'divergence_unexplained_ingest_grace_secs',
+        'session_binding_clock_slack_ms',
+        'session_binding_spawn_window_ms',
+        'session_binding_sensor_lag_ms',
     ):
         value = data[positive_int_key]
         if isinstance(value, bool) or not isinstance(value, int) or value < 1:
             raise ValueError(f"'{positive_int_key}' must be a positive integer")
+
+    # The binding matches a process birth against a tool call's time within
+    # these windows. A window of a minute or more would cover several calls of
+    # any busy conversation and bind by coincidence.
+    for window_key in (
+        'session_binding_clock_slack_ms',
+        'session_binding_spawn_window_ms',
+        'session_binding_sensor_lag_ms',
+    ):
+        if data[window_key] >= 60000:
+            raise ValueError(f"'{window_key}' must stay under 60000 ms")
 
     for list_key in (
         'ci_runner_process_name_prefixes',
