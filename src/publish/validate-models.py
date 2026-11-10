@@ -1271,15 +1271,18 @@ def validate_cve_detection_params(filename: str) -> None:
         # index and its file host): a human's grant of one member covers the
         # others in the divergence policy.
         'service_host_families',
-        # Session binding by tool-call time: the switch (published off: the
-        # binding is computed beside the pid-file one and compared, nothing
-        # reads it), how far a transcript's call time may trail the process
-        # birth the sensor stamped, how long after a call its process may be
-        # born, and how late the sensor may deliver a birth.
+        # Session binding by tool-call time: the switch, the tolerances
+        # around a tool call's recorded time (before it, after it, and for
+        # the sensor's delivery), the longest window of one call, and the
+        # limits of the per-transcript list of calls.
         'session_binding_tool_call_enabled',
         'session_binding_clock_slack_ms',
         'session_binding_spawn_window_ms',
         'session_binding_sensor_lag_ms',
+        'session_binding_max_window_ms',
+        'session_binding_max_calls_per_transcript',
+        'session_binding_max_transcripts_per_store',
+        'session_binding_idle_transcript_secs',
         # Evaluator integrity thresholds: a writer's batch (paths, measurement
         # share, burst window) and how far outside a session's transcript
         # span a write is still the session's.
@@ -2213,14 +2216,21 @@ def validate_cve_detection_params(filename: str) -> None:
         'session_binding_clock_slack_ms',
         'session_binding_spawn_window_ms',
         'session_binding_sensor_lag_ms',
+        'session_binding_max_window_ms',
+        'session_binding_max_calls_per_transcript',
+        'session_binding_max_transcripts_per_store',
+        'session_binding_idle_transcript_secs',
     ):
         value = data[positive_int_key]
         if isinstance(value, bool) or not isinstance(value, int) or value < 1:
             raise ValueError(f"'{positive_int_key}' must be a positive integer")
 
-    # The binding matches a process birth against a tool call's time within
-    # these windows. A window of a minute or more would cover several calls of
-    # any busy conversation and bind by coincidence.
+    # Session binding: each value is read with the unit its name gives. The
+    # three tolerances around a tool call's time are under a minute, the
+    # longest window of one call is at most an hour and no shorter than the
+    # spawn window, at most 1024 calls are kept per transcript and at most
+    # 1024 transcripts per store, and a transcript is idle after at least a
+    # minute and at most a week.
     for window_key in (
         'session_binding_clock_slack_ms',
         'session_binding_spawn_window_ms',
@@ -2228,6 +2238,20 @@ def validate_cve_detection_params(filename: str) -> None:
     ):
         if data[window_key] >= 60000:
             raise ValueError(f"'{window_key}' must stay under 60000 ms")
+    if not (data['session_binding_spawn_window_ms']
+            <= data['session_binding_max_window_ms'] <= 3600000):
+        raise ValueError(
+            "'session_binding_max_window_ms' must be between "
+            "'session_binding_spawn_window_ms' and 3600000 ms")
+    if data['session_binding_max_calls_per_transcript'] > 1024:
+        raise ValueError(
+            "'session_binding_max_calls_per_transcript' must be at most 1024")
+    if data['session_binding_max_transcripts_per_store'] > 1024:
+        raise ValueError(
+            "'session_binding_max_transcripts_per_store' must be at most 1024")
+    if not (60 <= data['session_binding_idle_transcript_secs'] <= 604800):
+        raise ValueError(
+            "'session_binding_idle_transcript_secs' must be between 60 and 604800")
 
     for list_key in (
         'ci_runner_process_name_prefixes',
