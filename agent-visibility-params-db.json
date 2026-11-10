@@ -1468,8 +1468,9 @@
       "per_marker": false
     }
   ],
-  "signature": "d6978efd9846c569242940cc83e75f2b39a52f42dd832769c7f996f5bab66f90",
+  "signature": "a0ad9fdf9a08dc362c13c47e755b0c2159ed2cdbda23808528ee3035ac7420f4",
   "transcript_capture": {
+    "creation_reorder_ms": 1000,
     "creation_time_slack_ms": 2000,
     "late_report_ms": 15000,
     "max_backlog_bytes": 67108864,
@@ -1638,7 +1639,7 @@
         ".jsonl",
         ".txt"
       ],
-      "finding_alerting": false,
+      "finding_mode": "shadow",
       "path_segment": "",
       "pid_file_roots": [
         ".claude/sessions"
@@ -1663,7 +1664,7 @@
         ".jsonl",
         ".txt"
       ],
-      "finding_alerting": false,
+      "finding_mode": "off",
       "path_segment": "",
       "pid_file_roots": [],
       "pid_file_suffixes": [],
@@ -1688,7 +1689,7 @@
         ".jsonl",
         ".txt"
       ],
-      "finding_alerting": false,
+      "finding_mode": "shadow",
       "path_segment": "",
       "pid_file_roots": [],
       "pid_file_suffixes": [],
@@ -1709,7 +1710,7 @@
         ".jsonl",
         ".txt"
       ],
-      "finding_alerting": false,
+      "finding_mode": "off",
       "path_segment": "agent-transcripts",
       "pid_file_roots": [],
       "pid_file_suffixes": [],
@@ -1730,7 +1731,7 @@
         ".jsonl",
         ".txt"
       ],
-      "finding_alerting": false,
+      "finding_mode": "off",
       "path_segment": "",
       "pid_file_roots": [],
       "pid_file_suffixes": [],
@@ -1752,7 +1753,7 @@
         ".jsonl",
         ".txt"
       ],
-      "finding_alerting": false,
+      "finding_mode": "off",
       "path_segment": "sessions",
       "pid_file_roots": [],
       "pid_file_suffixes": [],

@@ -3588,16 +3588,18 @@ def validate_agent_visibility_params(filename: str) -> None:
         #   endings of the files that name a harness process;
         # - `writer_images`: tool names of the images that write the store,
         #   besides the agent's own process names;
-        # - `append_only`, `call_logged_before_spawn`, `finding_alerting`:
-        #   measured per agent, each a boolean.
+        # - `append_only`, `call_logged_before_spawn`: measured per agent,
+        #   each a boolean;
+        # - `finding_mode`: `off`, `shadow` or `alert`.
         required_agents = {
             'claude_code', 'claude_desktop', 'codex', 'cursor', 'hermes', 'openclaw',
         }
         entry_keys = {
             'roots', 'path_segment', 'file_suffixes', 'pid_file_roots',
             'pid_file_suffixes', 'writer_images', 'append_only',
-            'call_logged_before_spawn', 'finding_alerting',
+            'call_logged_before_spawn', 'finding_mode',
         }
+        finding_modes = ('off', 'shadow', 'alert')
         platform_keys = {'common', 'macos', 'linux', 'windows'}
         if not isinstance(value, dict):
             raise ValueError(f"'{key_name}' must be a dict")
@@ -3649,9 +3651,12 @@ def validate_agent_visibility_params(filename: str) -> None:
                 if (not image or image != image.lower() or image != image.strip()
                         or '/' in image or '\\' in image):
                     raise ValueError(f"{where}['writer_images']: '{image}' must be a lowercase tool name")
-            for flag in ('append_only', 'call_logged_before_spawn', 'finding_alerting'):
+            for flag in ('append_only', 'call_logged_before_spawn'):
                 if not isinstance(entry[flag], bool):
                     raise ValueError(f"{where}['{flag}'] must be a boolean")
+            mode = entry['finding_mode']
+            if not isinstance(mode, str) or mode not in finding_modes:
+                raise ValueError(f"{where}['finding_mode'] must be one of {list(finding_modes)}")
             # A directory belongs to one agent and to one use.
             every_root = [root for platform in sorted(platform_keys) for root in roots[platform]]
             for root in every_root + entry['pid_file_roots']:
@@ -3668,23 +3673,33 @@ def validate_agent_visibility_params(filename: str) -> None:
         # The bounds of the reader of a growing transcript: the longest line
         # it parses, how much it reads in one pass, how far behind it may
         # fall (bytes, seconds), how far a file's own creation time may
-        # differ from its recorded creation, and how long after a line was
-        # read a report may still name the process that wrote it
-        # (milliseconds).
+        # differ from its recorded creation, how long after a line was read
+        # a report may still name the process that wrote it, and how long
+        # after the first report for a file the report of its creation is
+        # still taken as its creation (milliseconds; 0: never).
         expected_keys = {
             'max_line_bytes', 'max_pass_bytes', 'max_backlog_bytes',
             'max_backlog_secs', 'creation_time_slack_ms', 'late_report_ms',
+            'creation_reorder_ms',
         }
+        # A report is delivered within seconds or not at all: a longer wait
+        # is a typing error.
+        max_creation_reorder_ms = 60000
         if not isinstance(value, dict):
             raise ValueError(f"'{key_name}' must be a dict")
         if set(value.keys()) != expected_keys:
             missing = expected_keys - set(value.keys())
             extra = set(value.keys()) - expected_keys
             raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
-        for subkey in sorted(expected_keys):
+        for subkey in sorted(expected_keys - {'creation_reorder_ms'}):
             sub = value[subkey]
             if isinstance(sub, bool) or not isinstance(sub, int) or sub < 1:
                 raise ValueError(f"{key_name}['{subkey}'] must be a positive integer")
+        reorder = value['creation_reorder_ms']
+        if (isinstance(reorder, bool) or not isinstance(reorder, int)
+                or not 0 <= reorder <= max_creation_reorder_ms):
+            raise ValueError(
+                f"{key_name}['creation_reorder_ms'] must be an integer from 0 to {max_creation_reorder_ms}")
         if not value['max_line_bytes'] <= value['max_pass_bytes'] <= value['max_backlog_bytes']:
             raise ValueError(f"{key_name}: max_line_bytes <= max_pass_bytes <= max_backlog_bytes must hold")
 
