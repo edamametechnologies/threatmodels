@@ -1468,7 +1468,7 @@
       "per_marker": false
     }
   ],
-  "signature": "e2445e965db03966694051c6bf43d2b9738047c9a3a764136088a7c14e316229",
+  "signature": "0c5904920da1156ef7c3e1788a11fe2267869859576c2efbb708b6a0a9a985c7",
   "transcript_capture": {
     "creation_reorder_ms": 1000,
     "creation_time_slack_ms": 2000,
@@ -1636,9 +1636,11 @@
     "claude_code": {
       "append_only": false,
       "call_logged_before_spawn": false,
+      "excluded_segments": [
+        "tool-results"
+      ],
       "file_suffixes": [
-        ".jsonl",
-        ".txt"
+        ".jsonl"
       ],
       "finding_mode": "shadow",
       "path_segment": "",
@@ -1661,9 +1663,12 @@
     "claude_desktop": {
       "append_only": false,
       "call_logged_before_spawn": false,
+      "excluded_segments": [
+        "skills-plugin",
+        "tool-results"
+      ],
       "file_suffixes": [
-        ".jsonl",
-        ".txt"
+        ".jsonl"
       ],
       "finding_mode": "off",
       "path_segment": "",
@@ -1686,9 +1691,9 @@
     "codex": {
       "append_only": false,
       "call_logged_before_spawn": false,
+      "excluded_segments": [],
       "file_suffixes": [
-        ".jsonl",
-        ".txt"
+        ".jsonl"
       ],
       "finding_mode": "shadow",
       "path_segment": "",
@@ -1707,6 +1712,7 @@
     "cursor": {
       "append_only": false,
       "call_logged_before_spawn": false,
+      "excluded_segments": [],
       "file_suffixes": [
         ".jsonl",
         ".txt"
@@ -1728,9 +1734,9 @@
     "hermes": {
       "append_only": false,
       "call_logged_before_spawn": false,
+      "excluded_segments": [],
       "file_suffixes": [
-        ".jsonl",
-        ".txt"
+        ".jsonl"
       ],
       "finding_mode": "off",
       "path_segment": "",
@@ -1750,9 +1756,9 @@
     "openclaw": {
       "append_only": false,
       "call_logged_before_spawn": false,
+      "excluded_segments": [],
       "file_suffixes": [
-        ".jsonl",
-        ".txt"
+        ".jsonl"
       ],
       "finding_mode": "off",
       "path_segment": "sessions",

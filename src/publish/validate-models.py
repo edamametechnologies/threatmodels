@@ -2361,6 +2361,9 @@ def validate_cve_detection_params(filename: str) -> None:
         value = data[int_key]
         if not isinstance(value, int) or isinstance(value, bool) or value <= 0:
             raise ValueError(f"{int_key} must be a positive integer")
+    # Ten years at most.
+    if data['transcript_write_trust_retention_days'] > 3650:
+        raise ValueError("transcript_write_trust_retention_days must be at most 3650")
     # A bare runtime is one of the package-manager runtimes: the ones that run
     # any program, not only installs.
     stray = set(data['package_bare_runtimes']) - set(data['package_manager_runtimes'])
@@ -3583,6 +3586,8 @@ def validate_agent_visibility_params(filename: str) -> None:
         #   platform (`common`) and per platform;
         # - `path_segment`: a directory name a transcript's path carries
         #   below the root, or empty;
+        # - `excluded_segments`: directory names below the root whose files
+        #   are not transcripts;
         # - `file_suffixes`: the endings of a transcript file;
         # - `pid_file_roots` / `pid_file_suffixes`: the directories and
         #   endings of the files that name a harness process;
@@ -3595,9 +3600,9 @@ def validate_agent_visibility_params(filename: str) -> None:
             'claude_code', 'claude_desktop', 'codex', 'cursor', 'hermes', 'openclaw',
         }
         entry_keys = {
-            'roots', 'path_segment', 'file_suffixes', 'pid_file_roots',
-            'pid_file_suffixes', 'writer_images', 'append_only',
-            'call_logged_before_spawn', 'finding_mode',
+            'roots', 'path_segment', 'excluded_segments', 'file_suffixes',
+            'pid_file_roots', 'pid_file_suffixes', 'writer_images',
+            'append_only', 'call_logged_before_spawn', 'finding_mode',
         }
         finding_modes = ('off', 'shadow', 'alert')
         platform_keys = {'common', 'macos', 'linux', 'windows'}
@@ -3614,8 +3619,35 @@ def validate_agent_visibility_params(filename: str) -> None:
                 raise ValueError(f"{where} has duplicate entries")
             for suffix in suffixes:
                 if (len(suffix) < 2 or not suffix.startswith('.') or suffix != suffix.lower()
-                        or '/' in suffix or '\\' in suffix):
+                        or '/' in suffix or '\\' in suffix
+                        or any(ch.isspace() for ch in suffix)):
                     raise ValueError(f"{where}: '{suffix}' must be a lowercase file ending starting with '.'")
+
+        def validate_store_root(root, where: str) -> None:
+            # Joined onto a home: relative, '/'-separated, normalized (no
+            # empty, '.', '..' or '~' component, no leading or trailing
+            # separator, no drive, no whitespace at either end of a part).
+            if not isinstance(root, str) or not root:
+                raise ValueError(f"{where}: a root must be a non-empty string")
+            if (root.startswith('/') or root.endswith('/') or '\\' in root
+                    or (len(root) >= 2 and root[1] == ':')):
+                raise ValueError(f"{where}: '{root}' must be a relative '/'-separated path")
+            for part in root.split('/'):
+                if part in ('', '.', '..') or part.startswith('~') or part != part.strip():
+                    raise ValueError(f"{where}: '{root}' must be a normalized relative path")
+
+        def validate_directory_names(names, where: str) -> None:
+            validate_string_list(names, where)
+            if len(set(n.lower() for n in names)) != len(names):
+                raise ValueError(f"{where} has duplicate entries")
+            for name in names:
+                if (not name or '/' in name or '\\' in name or name in ('.', '..')
+                        or name != name.strip()):
+                    raise ValueError(f"{where}: '{name}' must be one directory name")
+
+        def nested(a: str, b: str) -> bool:
+            a, b = a.lower(), b.lower()
+            return a == b or a.startswith(b + '/') or b.startswith(a + '/')
 
         owners = {}
         for agent in sorted(value):
@@ -3629,7 +3661,7 @@ def validate_agent_visibility_params(filename: str) -> None:
             for platform in sorted(platform_keys):
                 validate_string_list(roots[platform], f"{where}['roots']['{platform}']")
                 for root in roots[platform]:
-                    validate_relative_path(root, f"{where}['roots']['{platform}']")
+                    validate_store_root(root, f"{where}['roots']['{platform}']")
             # A store is found on every desktop platform.
             for platform in ('macos', 'linux', 'windows'):
                 if not roots['common'] and not roots[platform]:
@@ -3637,12 +3669,13 @@ def validate_agent_visibility_params(filename: str) -> None:
             segment = entry['path_segment']
             if not isinstance(segment, str) or '/' in segment or '\\' in segment or segment in ('.', '..'):
                 raise ValueError(f"{where}['path_segment'] must be one directory name or empty")
+            validate_directory_names(entry['excluded_segments'], f"{where}['excluded_segments']")
             validate_suffixes(entry['file_suffixes'], f"{where}['file_suffixes']")
             if not entry['file_suffixes']:
                 raise ValueError(f"{where}['file_suffixes'] must be non-empty")
             validate_string_list(entry['pid_file_roots'], f"{where}['pid_file_roots']")
             for root in entry['pid_file_roots']:
-                validate_relative_path(root, f"{where}['pid_file_roots']")
+                validate_store_root(root, f"{where}['pid_file_roots']")
             validate_suffixes(entry['pid_file_suffixes'], f"{where}['pid_file_suffixes']")
             if bool(entry['pid_file_roots']) != bool(entry['pid_file_suffixes']):
                 raise ValueError(f"{where}: pid_file_roots and pid_file_suffixes are given together")
@@ -3657,17 +3690,34 @@ def validate_agent_visibility_params(filename: str) -> None:
             mode = entry['finding_mode']
             if not isinstance(mode, str) or mode not in finding_modes:
                 raise ValueError(f"{where}['finding_mode'] must be one of {list(finding_modes)}")
-            # A directory belongs to one agent and to one use.
+            # A directory belongs to one agent and one use, and no root lies
+            # in another (of any agent, any use), whatever the letter case:
+            # the same file never belongs to two stores.
+            pid_roots = entry['pid_file_roots']
+            for i, pid_root in enumerate(pid_roots):
+                for other in pid_roots[i + 1:]:
+                    if nested(pid_root, other):
+                        raise ValueError(f"{where}['pid_file_roots']: '{pid_root}' and '{other}' overlap")
+            for platform in ('macos', 'linux', 'windows'):
+                listed = roots['common'] + roots[platform]
+                for i, root in enumerate(listed):
+                    for other in listed[i + 1:]:
+                        if nested(root, other):
+                            raise ValueError(
+                                f"{where}['roots']: '{root}' and '{other}' overlap on {platform}")
+                    for pid_root in pid_roots:
+                        if nested(root, pid_root):
+                            raise ValueError(
+                                f"{where}: '{pid_root}' is both a store root and a pid-file root")
             every_root = [root for platform in sorted(platform_keys) for root in roots[platform]]
-            for root in every_root + entry['pid_file_roots']:
-                owner = f"{agent}"
-                key = root.rstrip('/').lower()
-                if key in owners and owners[key] != owner:
-                    raise ValueError(f"{key_name}: '{root}' is listed for both '{owners[key]}' and '{agent}'")
-                owners[key] = owner
-            for root in entry['pid_file_roots']:
-                if root.rstrip('/').lower() in {r.rstrip('/').lower() for r in every_root}:
-                    raise ValueError(f"{where}: '{root}' is both a store root and a pid-file root")
+            mine = every_root + pid_roots
+            for root in mine:
+                for other_agent, other_roots in owners.items():
+                    for other in other_roots:
+                        if nested(root, other):
+                            raise ValueError(
+                                f"{key_name}: '{root}' ({agent}) and '{other}' ({other_agent}) overlap")
+            owners[agent] = mine
 
     def validate_transcript_capture(value, key_name: str) -> None:
         # The bounds of the reader of a growing transcript: the longest line
@@ -3683,6 +3733,16 @@ def validate_agent_visibility_params(filename: str) -> None:
             'max_backlog_secs', 'creation_time_slack_ms', 'late_report_ms',
             'creation_reorder_ms', 'max_files_held',
         }
+        # The largest sane value of each bound.
+        maxima = {
+            'max_line_bytes': 64 * 1024 * 1024,
+            'max_pass_bytes': 256 * 1024 * 1024,
+            'max_backlog_bytes': 4 * 1024 * 1024 * 1024,
+            'max_backlog_secs': 3600,
+            'creation_time_slack_ms': 60000,
+            'late_report_ms': 300000,
+            'max_files_held': 65536,
+        }
         # A report is delivered within seconds or not at all: a longer wait
         # is a typing error.
         max_creation_reorder_ms = 60000
@@ -3696,6 +3756,8 @@ def validate_agent_visibility_params(filename: str) -> None:
             sub = value[subkey]
             if isinstance(sub, bool) or not isinstance(sub, int) or sub < 1:
                 raise ValueError(f"{key_name}['{subkey}'] must be a positive integer")
+            if sub > maxima[subkey]:
+                raise ValueError(f"{key_name}['{subkey}'] must be at most {maxima[subkey]}")
         reorder = value['creation_reorder_ms']
         if (isinstance(reorder, bool) or not isinstance(reorder, int)
                 or not 0 <= reorder <= max_creation_reorder_ms):
