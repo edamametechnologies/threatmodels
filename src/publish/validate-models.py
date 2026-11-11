@@ -1276,13 +1276,17 @@ def validate_cve_detection_params(filename: str) -> None:
         # the sensor's delivery), the longest window of one call, and the
         # limits of the per-transcript list of calls.
         'session_binding_tool_call_enabled',
+        'session_binding_tool_call_agents',
+        'session_binding_shell_programs',
         'session_binding_clock_slack_ms',
         'session_binding_spawn_window_ms',
         'session_binding_sensor_lag_ms',
         'session_binding_max_window_ms',
         'session_binding_max_calls_per_transcript',
-        'session_binding_max_transcripts_per_store',
+        'session_binding_max_transcripts',
         'session_binding_idle_transcript_secs',
+        'session_binding_max_conversation_chain',
+        'session_binding_result_wait_lines',
         # Evaluator integrity thresholds: a writer's batch (paths, measurement
         # share, burst window) and how far outside a session's transcript
         # span a write is still the session's.
@@ -2218,8 +2222,10 @@ def validate_cve_detection_params(filename: str) -> None:
         'session_binding_sensor_lag_ms',
         'session_binding_max_window_ms',
         'session_binding_max_calls_per_transcript',
-        'session_binding_max_transcripts_per_store',
+        'session_binding_max_transcripts',
         'session_binding_idle_transcript_secs',
+        'session_binding_max_conversation_chain',
+        'session_binding_result_wait_lines',
     ):
         value = data[positive_int_key]
         if isinstance(value, bool) or not isinstance(value, int) or value < 1:
@@ -2229,8 +2235,11 @@ def validate_cve_detection_params(filename: str) -> None:
     # three tolerances around a tool call's time are under a minute, the
     # longest window of one call is at most an hour and no shorter than the
     # spawn window, at most 1024 calls are kept per transcript and at most
-    # 1024 transcripts per store, and a transcript is idle after at least a
-    # minute and at most a week.
+    # 4096 transcripts, a call is let go after at least a minute and at most
+    # a week, a process tree is tied to at most 16 conversations, and a call
+    # waits at most 65536 lines for its result. The two lists hold lower-case
+    # names without a path or an extension; the list of agent types may be
+    # empty, the list of shells may not.
     for window_key in (
         'session_binding_clock_slack_ms',
         'session_binding_spawn_window_ms',
@@ -2246,9 +2255,34 @@ def validate_cve_detection_params(filename: str) -> None:
     if data['session_binding_max_calls_per_transcript'] > 1024:
         raise ValueError(
             "'session_binding_max_calls_per_transcript' must be at most 1024")
-    if data['session_binding_max_transcripts_per_store'] > 1024:
+    if data['session_binding_max_transcripts'] > 4096:
         raise ValueError(
-            "'session_binding_max_transcripts_per_store' must be at most 1024")
+            "'session_binding_max_transcripts' must be at most 4096")
+    if data['session_binding_max_conversation_chain'] > 16:
+        raise ValueError(
+            "'session_binding_max_conversation_chain' must be at most 16")
+    if data['session_binding_result_wait_lines'] > 65536:
+        raise ValueError(
+            "'session_binding_result_wait_lines' must be at most 65536")
+    for name_list_key in (
+        'session_binding_tool_call_agents',
+        'session_binding_shell_programs',
+    ):
+        names = data[name_list_key]
+        if not isinstance(names, list):
+            raise ValueError(f"'{name_list_key}' must be a list")
+        for name in names:
+            if (not isinstance(name, str) or not name
+                    or name != name.strip().lower()
+                    or any(c in name for c in '/\\ ')
+                    or name.endswith('.exe')):
+                raise ValueError(
+                    f"'{name_list_key}' entries must be lower-case names "
+                    f"without a path or an extension: {name!r}")
+        if len(set(names)) != len(names):
+            raise ValueError(f"'{name_list_key}' must not repeat a name")
+    if not data['session_binding_shell_programs']:
+        raise ValueError("'session_binding_shell_programs' must not be empty")
     if not (60 <= data['session_binding_idle_transcript_secs'] <= 604800):
         raise ValueError(
             "'session_binding_idle_transcript_secs' must be between 60 and 604800")
