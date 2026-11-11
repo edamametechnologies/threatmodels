@@ -1278,6 +1278,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'session_binding_tool_call_enabled',
         'session_binding_tool_call_agents',
         'session_binding_host_agents',
+        'session_binding_records_after_run_agents',
         'session_binding_shell_programs',
         'session_binding_clock_slack_ms',
         'session_binding_spawn_window_ms',
@@ -1289,6 +1290,9 @@ def validate_cve_detection_params(filename: str) -> None:
         'session_binding_max_conversation_chain',
         'session_binding_result_wait_lines',
         'session_binding_max_remembered_roots',
+        'session_binding_process_start_tolerance_ms',
+        'session_binding_typed_prompt_min_delay_ms',
+        'session_binding_settle_ms',
         # Evaluator integrity thresholds: a writer's batch (paths, measurement
         # share, burst window) and how far outside a session's transcript
         # span a write is still the session's.
@@ -2229,6 +2233,8 @@ def validate_cve_detection_params(filename: str) -> None:
         'session_binding_max_conversation_chain',
         'session_binding_result_wait_lines',
         'session_binding_max_remembered_roots',
+        'session_binding_process_start_tolerance_ms',
+        'session_binding_typed_prompt_min_delay_ms',
     ):
         value = data[positive_int_key]
         if isinstance(value, bool) or not isinstance(value, int) or value < 1:
@@ -2271,9 +2277,25 @@ def validate_cve_detection_params(filename: str) -> None:
     if data['session_binding_max_remembered_roots'] > 65536:
         raise ValueError(
             "'session_binding_max_remembered_roots' must be at most 65536")
+    # Two readings of one process's start agree within one to ten seconds
+    # (on Linux two derivations can be a second apart); a typed first turn
+    # is told from a prompt at start after at most a minute; a notification
+    # waits at most two minutes (0: it does not).
+    tolerance = data['session_binding_process_start_tolerance_ms']
+    if not 1000 <= tolerance <= 10000:
+        raise ValueError(
+            "'session_binding_process_start_tolerance_ms' must be between 1000 and 10000")
+    if data['session_binding_typed_prompt_min_delay_ms'] > 60000:
+        raise ValueError(
+            "'session_binding_typed_prompt_min_delay_ms' must be at most 60000")
+    settle = data['session_binding_settle_ms']
+    if isinstance(settle, bool) or not isinstance(settle, int) or not 0 <= settle <= 120000:
+        raise ValueError(
+            "'session_binding_settle_ms' must be an integer between 0 and 120000")
     for name_list_key in (
         'session_binding_tool_call_agents',
         'session_binding_host_agents',
+        'session_binding_records_after_run_agents',
         'session_binding_shell_programs',
     ):
         names = data[name_list_key]
