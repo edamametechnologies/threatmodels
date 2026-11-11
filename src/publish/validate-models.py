@@ -1277,6 +1277,7 @@ def validate_cve_detection_params(filename: str) -> None:
         # limits of the per-transcript list of calls.
         'session_binding_tool_call_enabled',
         'session_binding_tool_call_agents',
+        'session_binding_host_agents',
         'session_binding_shell_programs',
         'session_binding_clock_slack_ms',
         'session_binding_spawn_window_ms',
@@ -1287,6 +1288,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'session_binding_idle_transcript_secs',
         'session_binding_max_conversation_chain',
         'session_binding_result_wait_lines',
+        'session_binding_max_remembered_roots',
         # Evaluator integrity thresholds: a writer's batch (paths, measurement
         # share, burst window) and how far outside a session's transcript
         # span a write is still the session's.
@@ -2226,6 +2228,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'session_binding_idle_transcript_secs',
         'session_binding_max_conversation_chain',
         'session_binding_result_wait_lines',
+        'session_binding_max_remembered_roots',
     ):
         value = data[positive_int_key]
         if isinstance(value, bool) or not isinstance(value, int) or value < 1:
@@ -2236,10 +2239,11 @@ def validate_cve_detection_params(filename: str) -> None:
     # longest window of one call is at most an hour and no shorter than the
     # spawn window, at most 1024 calls are kept per transcript and at most
     # 4096 transcripts, a call is let go after at least a minute and at most
-    # a week, a process tree is tied to at most 16 conversations, and a call
-    # waits at most 65536 lines for its result. The two lists hold lower-case
-    # names without a path or an extension; the list of agent types may be
-    # empty, the list of shells may not.
+    # a week, a process tree is tied to at most 16 conversations, a call
+    # waits at most 65536 lines for its result, and at most 65536 process
+    # trees keep the conversation they were tied to. The three lists hold
+    # lower-case names without a path or an extension; the lists of agent
+    # types may be empty, the list of shells may not.
     for window_key in (
         'session_binding_clock_slack_ms',
         'session_binding_spawn_window_ms',
@@ -2264,8 +2268,12 @@ def validate_cve_detection_params(filename: str) -> None:
     if data['session_binding_result_wait_lines'] > 65536:
         raise ValueError(
             "'session_binding_result_wait_lines' must be at most 65536")
+    if data['session_binding_max_remembered_roots'] > 65536:
+        raise ValueError(
+            "'session_binding_max_remembered_roots' must be at most 65536")
     for name_list_key in (
         'session_binding_tool_call_agents',
+        'session_binding_host_agents',
         'session_binding_shell_programs',
     ):
         names = data[name_list_key]
