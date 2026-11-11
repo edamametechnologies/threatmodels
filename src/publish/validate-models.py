@@ -3676,11 +3676,12 @@ def validate_agent_visibility_params(filename: str) -> None:
         # differ from its recorded creation, how long after a line was read
         # a report may still name the process that wrote it, and how long
         # after the first report for a file the report of its creation is
-        # still taken as its creation (milliseconds; 0: never).
+        # still taken as its creation (milliseconds; 0: never), and how many
+        # transcripts the reader holds at once.
         expected_keys = {
             'max_line_bytes', 'max_pass_bytes', 'max_backlog_bytes',
             'max_backlog_secs', 'creation_time_slack_ms', 'late_report_ms',
-            'creation_reorder_ms',
+            'creation_reorder_ms', 'max_files_held',
         }
         # A report is delivered within seconds or not at all: a longer wait
         # is a typing error.
