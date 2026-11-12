@@ -1271,6 +1271,28 @@ def validate_cve_detection_params(filename: str) -> None:
         # index and its file host): a human's grant of one member covers the
         # others in the divergence policy.
         'service_host_families',
+        # Session binding by tool-call time: the switch, the tolerances
+        # around a tool call's recorded time (before it, after it, and for
+        # the sensor's delivery), the longest window of one call, and the
+        # limits of the per-transcript list of calls.
+        'session_binding_tool_call_enabled',
+        'session_binding_tool_call_agents',
+        'session_binding_host_agents',
+        'session_binding_records_after_run_agents',
+        'session_binding_shell_programs',
+        'session_binding_clock_slack_ms',
+        'session_binding_spawn_window_ms',
+        'session_binding_sensor_lag_ms',
+        'session_binding_max_window_ms',
+        'session_binding_max_calls_per_transcript',
+        'session_binding_max_transcripts',
+        'session_binding_idle_transcript_secs',
+        'session_binding_max_conversation_chain',
+        'session_binding_result_wait_lines',
+        'session_binding_max_remembered_roots',
+        'session_binding_process_start_tolerance_ms',
+        'session_binding_typed_prompt_min_delay_ms',
+        'session_binding_settle_ms',
         # Evaluator integrity thresholds: a writer's batch (paths, measurement
         # share, burst window) and how far outside a session's transcript
         # span a write is still the session's.
@@ -2140,6 +2162,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'crs_authoritative_enabled',
         'treat_high_volume_dns_ntp_as_non_routine',
         'transcript_write_trust_enabled',
+        'session_binding_tool_call_enabled',
     ):
         if not isinstance(data[flag_key], bool):
             raise ValueError(f"'{flag_key}' must be a boolean")
@@ -2207,10 +2230,99 @@ def validate_cve_detection_params(filename: str) -> None:
         'memory_scrape_inspector_min_attached_targets',
         'forward_proxy_min_distinct_processes',
         'divergence_unexplained_ingest_grace_secs',
+        'session_binding_clock_slack_ms',
+        'session_binding_spawn_window_ms',
+        'session_binding_sensor_lag_ms',
+        'session_binding_max_window_ms',
+        'session_binding_max_calls_per_transcript',
+        'session_binding_max_transcripts',
+        'session_binding_idle_transcript_secs',
+        'session_binding_max_conversation_chain',
+        'session_binding_result_wait_lines',
+        'session_binding_max_remembered_roots',
+        'session_binding_process_start_tolerance_ms',
+        'session_binding_typed_prompt_min_delay_ms',
     ):
         value = data[positive_int_key]
         if isinstance(value, bool) or not isinstance(value, int) or value < 1:
             raise ValueError(f"'{positive_int_key}' must be a positive integer")
+
+    # Session binding: each value is read with the unit its name gives. The
+    # three tolerances around a tool call's time are under a minute, the
+    # longest window of one call is at most an hour and no shorter than the
+    # spawn window, at most 1024 calls are kept per transcript and at most
+    # 4096 transcripts, a call is let go after at least a minute and at most
+    # a week, a process tree is tied to at most 16 conversations, a call
+    # waits at most 65536 lines for its result, and at most 65536 process
+    # trees keep the conversation they were tied to. The three lists hold
+    # lower-case names without a path or an extension; the lists of agent
+    # types may be empty, the list of shells may not.
+    for window_key in (
+        'session_binding_clock_slack_ms',
+        'session_binding_spawn_window_ms',
+        'session_binding_sensor_lag_ms',
+    ):
+        if data[window_key] >= 60000:
+            raise ValueError(f"'{window_key}' must stay under 60000 ms")
+    if not (data['session_binding_spawn_window_ms']
+            <= data['session_binding_max_window_ms'] <= 3600000):
+        raise ValueError(
+            "'session_binding_max_window_ms' must be between "
+            "'session_binding_spawn_window_ms' and 3600000 ms")
+    if data['session_binding_max_calls_per_transcript'] > 1024:
+        raise ValueError(
+            "'session_binding_max_calls_per_transcript' must be at most 1024")
+    if data['session_binding_max_transcripts'] > 4096:
+        raise ValueError(
+            "'session_binding_max_transcripts' must be at most 4096")
+    if data['session_binding_max_conversation_chain'] > 16:
+        raise ValueError(
+            "'session_binding_max_conversation_chain' must be at most 16")
+    if data['session_binding_result_wait_lines'] > 65536:
+        raise ValueError(
+            "'session_binding_result_wait_lines' must be at most 65536")
+    if data['session_binding_max_remembered_roots'] > 65536:
+        raise ValueError(
+            "'session_binding_max_remembered_roots' must be at most 65536")
+    # Two readings of one process's start agree within one to ten seconds
+    # (on Linux two derivations can be a second apart); a typed first turn
+    # is told from a prompt at start after at most a minute; a notification
+    # waits at most two minutes (0: it does not).
+    tolerance = data['session_binding_process_start_tolerance_ms']
+    if not 1000 <= tolerance <= 10000:
+        raise ValueError(
+            "'session_binding_process_start_tolerance_ms' must be between 1000 and 10000")
+    if data['session_binding_typed_prompt_min_delay_ms'] > 60000:
+        raise ValueError(
+            "'session_binding_typed_prompt_min_delay_ms' must be at most 60000")
+    settle = data['session_binding_settle_ms']
+    if isinstance(settle, bool) or not isinstance(settle, int) or not 0 <= settle <= 120000:
+        raise ValueError(
+            "'session_binding_settle_ms' must be an integer between 0 and 120000")
+    for name_list_key in (
+        'session_binding_tool_call_agents',
+        'session_binding_host_agents',
+        'session_binding_records_after_run_agents',
+        'session_binding_shell_programs',
+    ):
+        names = data[name_list_key]
+        if not isinstance(names, list):
+            raise ValueError(f"'{name_list_key}' must be a list")
+        for name in names:
+            if (not isinstance(name, str) or not name
+                    or name != name.strip().lower()
+                    or any(c in name for c in '/\\ ')
+                    or name.endswith('.exe')):
+                raise ValueError(
+                    f"'{name_list_key}' entries must be lower-case names "
+                    f"without a path or an extension: {name!r}")
+        if len(set(names)) != len(names):
+            raise ValueError(f"'{name_list_key}' must not repeat a name")
+    if not data['session_binding_shell_programs']:
+        raise ValueError("'session_binding_shell_programs' must not be empty")
+    if not (60 <= data['session_binding_idle_transcript_secs'] <= 604800):
+        raise ValueError(
+            "'session_binding_idle_transcript_secs' must be between 60 and 604800")
 
     for list_key in (
         'ci_runner_process_name_prefixes',
