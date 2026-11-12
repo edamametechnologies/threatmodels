@@ -1349,6 +1349,9 @@ def validate_cve_detection_params(filename: str) -> None:
         # room), and the names of the logs and delete-on-reboot markers the
         # engine writes directly in an OS temp root.
         'wix_burn_layout',
+        # The per-process destination history: its time windows and counts,
+        # its size bounds, and the name lists it reads.
+        'destination_history',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -2711,6 +2714,113 @@ def validate_cve_detection_params(filename: str) -> None:
         value = burn[key]
         if isinstance(value, bool) or not isinstance(value, int) or value < 1:
             raise ValueError(f"wix_burn_layout['{key}'] must be a positive integer")
+
+    # The per-process destination history. Units: `*_days` are UTC days,
+    # `*_hours` hours, `*_minutes` minutes, `*_percent` a share between 50
+    # and 100; `max_*` are entry counts. Each value has a lower bound, the
+    # window holds at least the day count, and the table-wide record count
+    # holds at least one program's. The `established_*` values and the
+    # record counts have upper bounds too: the window at most 60 days, the
+    # idle limit at most the window, the age at most the window in hours,
+    # at most 1,024 records a program and 16,384 in all.
+    history = data['destination_history']
+    validate_exact_keys(history, 'destination_history', {
+        'established_enabled', 'established_min_distinct_days', 'established_min_age_hours',
+        'established_max_idle_days', 'established_window_days',
+        'established_min_clean_share_percent',
+        'new_destination_window_minutes', 'identity_maturity_minutes',
+        'identity_retention_days', 'max_destinations_per_identity', 'max_identities',
+        'max_standing_destinations_per_identity', 'max_standing_records',
+        'registrable_domain_second_level_labels',
+        'rpc_provider_suffixes', 'browser_process_names', 'browser_process_name_prefixes',
+        'standing_inline_code_options', 'standing_subcommand_words',
+    })
+    if not isinstance(history['established_enabled'], bool):
+        raise ValueError("destination_history['established_enabled'] must be a boolean")
+    for key, floor in (
+        ('established_min_distinct_days', 2),
+        ('established_min_age_hours', 24),
+        ('established_max_idle_days', 1),
+        ('established_window_days', 2),
+        ('new_destination_window_minutes', 1),
+        ('identity_maturity_minutes', 1),
+        ('identity_retention_days', 1),
+        ('max_destinations_per_identity', 1),
+        ('max_identities', 1),
+        ('max_standing_destinations_per_identity', 1),
+        ('max_standing_records', 1),
+        ('established_min_clean_share_percent', 50),
+    ):
+        value = history[key]
+        if isinstance(value, bool) or not isinstance(value, int) or value < floor:
+            raise ValueError(f"destination_history['{key}'] must be an integer of at least {floor}")
+    for key, ceiling in (
+        ('established_window_days', 60),
+        ('max_standing_destinations_per_identity', 1024),
+        ('max_standing_records', 16384),
+    ):
+        if history[key] > ceiling:
+            raise ValueError(f"destination_history['{key}'] must be at most {ceiling}")
+    if history['established_max_idle_days'] > history['established_window_days']:
+        raise ValueError(
+            "destination_history['established_max_idle_days'] must be at most "
+            "'established_window_days'"
+        )
+    if history['established_min_age_hours'] > 24 * history['established_window_days']:
+        raise ValueError(
+            "destination_history['established_min_age_hours'] must be at most "
+            "24 times 'established_window_days'"
+        )
+    if history['established_min_clean_share_percent'] > 100:
+        raise ValueError(
+            "destination_history['established_min_clean_share_percent'] must be at most 100"
+        )
+    if history['max_standing_records'] < history['max_standing_destinations_per_identity']:
+        raise ValueError(
+            "destination_history['max_standing_records'] must be at least "
+            "'max_standing_destinations_per_identity'"
+        )
+    if history['established_window_days'] < history['established_min_distinct_days']:
+        raise ValueError(
+            "destination_history['established_window_days'] must be at least "
+            "'established_min_distinct_days'"
+        )
+    for key in ('rpc_provider_suffixes', 'browser_process_names', 'browser_process_name_prefixes',
+                'standing_inline_code_options', 'standing_subcommand_words',
+                'registrable_domain_second_level_labels'):
+        if not history[key]:
+            raise ValueError(f"destination_history['{key}'] must be non-empty")
+        validate_lowercase_tokens(history[key], f"destination_history['{key}']")
+    # A second-level label is a DNS label: lowercase letters only.
+    for label in history['registrable_domain_second_level_labels']:
+        if not label.isascii() or not label.isalpha() or not label.islower():
+            raise ValueError(
+                "destination_history['registrable_domain_second_level_labels'] entries must be "
+                "lowercase ASCII letters"
+            )
+        if len(set(history[key])) != len(history[key]):
+            raise ValueError(f"destination_history['{key}'] has duplicates")
+    # Command-line options: each starts with the option marker of its shell
+    # family and holds no whitespace.
+    for i, option in enumerate(history['standing_inline_code_options']):
+        if option[0] not in '-/' or len(option) < 2 or any(c.isspace() for c in option):
+            raise ValueError(
+                f"destination_history['standing_inline_code_options'][{i}] must start with "
+                f"'-' or '/' and hold no whitespace; got '{option}'"
+            )
+    # Command words: a single argument, never a path.
+    for i, word in enumerate(history['standing_subcommand_words']):
+        if '/' in word or '\\' in word or any(c.isspace() for c in word):
+            raise ValueError(
+                f"destination_history['standing_subcommand_words'][{i}] must be one word "
+                f"without a path separator; got '{word}'"
+            )
+    for i, suffix in enumerate(history['rpc_provider_suffixes']):
+        if suffix.startswith('.') or suffix.endswith('.') or '.' not in suffix or '/' in suffix:
+            raise ValueError(
+                f"destination_history['rpc_provider_suffixes'][{i}] must be a domain without "
+                f"leading or trailing dots; got '{suffix}'"
+            )
     for label_key in ('sensitive_material_labels', 'agent_instruction_labels', 'adjudication_pinned_write_labels',
                       'own_store_generic_labels'):
         validate_lowercase_tokens(data[label_key], label_key)
