@@ -246,7 +246,7 @@ jobs:
           needs.update-vendor-vulns-db.outputs.outcome == 'failure'
         uses: slackapi/slack-github-action@v1.26.0
         with:
-          channel-id: 'C072J0U9TH7'
+          channel-id: ${{ vars.SLACK_ALERTS_CHANNEL || 'C072J0U9TH7' }}
           slack-message: |
             GitHub vulnerability database update workflow failed:
             Port vulns: ${{ needs.update-port-vulns-db.outputs.outcome }}
@@ -262,7 +262,7 @@ jobs:
           steps.check_changes.outputs.changes == 'true'
         uses: slackapi/slack-github-action@v1.26.0
         with:
-          channel-id: 'C07127YECN4'
+          channel-id: ${{ vars.SLACK_REPORTS_CHANNEL || 'C07127YECN4' }}
           slack-message: |
             GitHub vulnerability database update workflow successful:
             - Created PR #${{ steps.create-pr.outputs.pull-request-number }} for vulnerability databases update

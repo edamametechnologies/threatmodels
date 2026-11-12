@@ -113,14 +113,11 @@ jobs:
                        f"{utc(not_after)}, {int(days_left)} days from now (this check fails "
                        f"{warn_days} days before).")
 
-      - name: Slack alert
-        if: failure()
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          channel-id: 'C072J0U9TH7'
-          slack-message: |
-            Model-signing CI certificate check failed on threatmodels main:
-            ${{ steps.expiry.outputs.message || 'the check did not run, see the workflow run' }}
-            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+  notify:
+    name: Slack alert
+    needs: [certificate-expiry]
+    if: always() && github.event_name != 'pull_request'
+    uses: edamametechnologies/.github/.github/workflows/slack-notify.yml@main
+    with:
+      results: ${{ toJSON(needs) }}
+    secrets: inherit

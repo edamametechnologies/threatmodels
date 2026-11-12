@@ -125,35 +125,11 @@ jobs:
            exit 1
          fi
 
-     - name: Slack alert for validation failure
-       if: steps.validate.outcome == 'failure' || steps.validate_whitelist.outcome == 'failure' || steps.validate_blacklist.outcome == 'failure' || steps.validate_lanscan.outcome == 'failure' || steps.validate_sensitive_paths.outcome == 'failure' || steps.validate_cve_params.outcome == 'failure'
-       uses: slackapi/slack-github-action@v1.26.0
-       with:
-         channel-id: 'C072J0U9TH7'
-         slack-message: |
-           GitHub validation failed on branch ${{ github.ref }} (PR: ${{ github.event.pull_request.number || 'N/A' }}). Details:
-           Threat Models: ${{ steps.validate.outcome }} ${{ steps.validate.outcome == 'failure' && format(': {0}', steps.validate.outputs.error_message) || '' }}
-           Whitelist: ${{ steps.validate_whitelist.outcome }} ${{ steps.validate_whitelist.outcome == 'failure' && format(': {0}', steps.validate_whitelist.outputs.error_message_whitelist) || '' }}
-           Blacklist: ${{ steps.validate_blacklist.outcome }} ${{ steps.validate_blacklist.outcome == 'failure' && format(': {0}', steps.validate_blacklist.outputs.error_message_blacklist) || '' }}
-           Lanscan: ${{ steps.validate_lanscan.outcome }} ${{ steps.validate_lanscan.outcome == 'failure' && format(': {0}', steps.validate_lanscan.outputs.error_message_lanscan) || '' }}
-           Sensitive Paths: ${{ steps.validate_sensitive_paths.outcome }} ${{ steps.validate_sensitive_paths.outcome == 'failure' && format(': {0}', steps.validate_sensitive_paths.outputs.error_message_sensitive_paths) || '' }}
-           CVE Params: ${{ steps.validate_cve_params.outcome }} ${{ steps.validate_cve_params.outcome == 'failure' && format(': {0}', steps.validate_cve_params.outputs.error_message_cve_params) || '' }}
-       env:
-         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-
- finalize:
+ notify:
+   name: Slack alert
    needs: [validate]
-   if: always()
-   runs-on: ubuntu-24.04
-   timeout-minutes: 90
-   steps:
-      - name: Slack final report
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          channel-id: 'C07127YECN4'
-          slack-message: |
-            GitHub threat models validation results on branch ${{ github.ref }} (PR: ${{ github.event.pull_request.number || 'N/A' }}):
-            Validation: ${{ needs.validate.result }}
-            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+   if: always() && github.event_name != 'pull_request'
+   uses: edamametechnologies/.github/.github/workflows/slack-notify.yml@main
+   with:
+     results: ${{ toJSON(needs) }}
+   secrets: inherit

@@ -63,20 +63,11 @@ jobs:
               exit 0
             fi
 
-        - name: Slack reports
-          if: success() # Only report success if the job succeeded
-          uses: slackapi/slack-github-action@v1.26.0
-          with:
-            channel-id: 'C07127YECN4'
-            slack-message: "GitHub threat models wiki updated from branch ${{ github.ref }} - see: https://github.com/edamametechnologies/threatmodels/wiki"
-          env:
-              SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-
-        - name: Slack failure report
-          if: failure() # Report if any step failed
-          uses: slackapi/slack-github-action@v1.26.0
-          with:
-            channel-id: 'C072J0U9TH7'
-            slack-message: "FAILED: GitHub threat models wiki update from branch ${{ github.ref }}. Check workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          env:
-              SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+    notify:
+      name: Slack alert
+      needs: [build]
+      if: always() && github.event_name != 'pull_request'
+      uses: edamametechnologies/.github/.github/workflows/slack-notify.yml@main
+      with:
+        results: ${{ toJSON(needs) }}
+      secrets: inherit
