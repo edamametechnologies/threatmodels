@@ -615,7 +615,7 @@
       "title": "Investigate prompt-injection bait"
     }
   ],
-  "date": "November 11th 2026",
+  "date": "November 13th 2026",
   "delegation_markers": {
     "spawn_goal_keys": [
       "description",
@@ -1320,6 +1320,23 @@
       }
     ]
   },
+  "print_mode_markers": {
+    "claude_code": {
+      "flags": [
+        "-p",
+        "--print"
+      ],
+      "subcommands": []
+    },
+    "codex": {
+      "flags": [],
+      "subcommands": [
+        "exec",
+        "e",
+        "review"
+      ]
+    }
+  },
   "prompt_injection_signatures": [
     {
       "hits": 2,
@@ -1468,7 +1485,7 @@
       "per_marker": false
     }
   ],
-  "signature": "0c5904920da1156ef7c3e1788a11fe2267869859576c2efbb708b6a0a9a985c7",
+  "signature": "867a12bd4038b0ba98d82deacbb059f0c8ef2deecc5c66e3130b8a95014bbd91",
   "transcript_capture": {
     "creation_reorder_ms": 1000,
     "creation_time_slack_ms": 2000,

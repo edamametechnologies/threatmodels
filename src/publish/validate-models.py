@@ -1293,6 +1293,10 @@ def validate_cve_detection_params(filename: str) -> None:
         'session_binding_process_start_tolerance_ms',
         'session_binding_typed_prompt_min_delay_ms',
         'session_binding_settle_ms',
+        # How far a new process's creation time, read after its creation
+        # event, may be from the event's own timestamp before it is taken for
+        # another process's (2.3.3).
+        'process_start_event_tolerance_ms',
         # Evaluator integrity thresholds: a writer's batch (paths, measurement
         # share, burst window) and how far outside a session's transcript
         # span a write is still the session's.
@@ -2245,6 +2249,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'session_binding_max_remembered_roots',
         'session_binding_process_start_tolerance_ms',
         'session_binding_typed_prompt_min_delay_ms',
+        'process_start_event_tolerance_ms',
     ):
         value = data[positive_int_key]
         if isinstance(value, bool) or not isinstance(value, int) or value < 1:
@@ -2298,6 +2303,11 @@ def validate_cve_detection_params(filename: str) -> None:
     if data['session_binding_typed_prompt_min_delay_ms'] > 60000:
         raise ValueError(
             "'session_binding_typed_prompt_min_delay_ms' must be at most 60000")
+    # A creation event and the creation time read after it are seconds
+    # apart at most.
+    if data['process_start_event_tolerance_ms'] > 10000:
+        raise ValueError(
+            "'process_start_event_tolerance_ms' must be at most 10000")
     settle = data['session_binding_settle_ms']
     if isinstance(settle, bool) or not isinstance(settle, int) or not 0 <= settle <= 120000:
         raise ValueError(
@@ -2972,6 +2982,9 @@ def validate_agent_visibility_params(filename: str) -> None:
         # The bounds of the reader that takes the shell calls of a transcript
         # as it grows (2.3.3).
         'transcript_capture',
+        # Per agent type, what on its harness's command line says print
+        # (non-interactive) mode: options and subcommands (2.3.3).
+        'print_mode_markers',
     }
 
     def validate_string_list(value, key_name: str) -> None:
@@ -3941,6 +3954,31 @@ def validate_agent_visibility_params(filename: str) -> None:
                                 f"{key_name}: '{root}' ({agent}) and '{other}' ({other_agent}) overlap")
             owners[agent] = mine
 
+    def validate_print_mode_markers(value, key_name: str) -> None:
+        # Per agent type (a lower-case slug), the options (each starting with
+        # '-', no whitespace) and the subcommands (no '-' first, no
+        # whitespace) that say print mode on its command line. Both lists
+        # are present; either may be empty.
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be an object")
+        for agent, markers in value.items():
+            where = f"{key_name}.{agent}"
+            if not isinstance(agent, str) or agent != agent.strip().lower() or not agent:
+                raise ValueError(f"'{where}' must be a lower-case agent type")
+            if not isinstance(markers, dict) or set(markers) != {'flags', 'subcommands'}:
+                raise ValueError(f"'{where}' must hold exactly 'flags' and 'subcommands'")
+            for list_key in ('flags', 'subcommands'):
+                validate_string_list(markers[list_key], f"{where}.{list_key}")
+                for item in markers[list_key]:
+                    if not item or any(c.isspace() for c in item):
+                        raise ValueError(f"'{where}.{list_key}' holds an empty or spaced item")
+            for flag in markers['flags']:
+                if not flag.startswith('-') or flag in ('-', '--'):
+                    raise ValueError(f"'{where}.flags' item '{flag}' is not an option")
+            for sub in markers['subcommands']:
+                if sub.startswith('-'):
+                    raise ValueError(f"'{where}.subcommands' item '{sub}' is an option")
+
     def validate_transcript_capture(value, key_name: str) -> None:
         # The bounds of the reader of a growing transcript: the longest line
         # it parses, how much it reads in one pass, how far behind it may
@@ -4098,6 +4136,10 @@ def validate_agent_visibility_params(filename: str) -> None:
     validate_transcript_capture(
         data['transcript_capture'],
         'transcript_capture',
+    )
+    validate_print_mode_markers(
+        data['print_mode_markers'],
+        'print_mode_markers',
     )
 
     print("Agent visibility params validation successful")
