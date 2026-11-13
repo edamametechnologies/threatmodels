@@ -1485,7 +1485,7 @@
       "per_marker": false
     }
   ],
-  "signature": "867a12bd4038b0ba98d82deacbb059f0c8ef2deecc5c66e3130b8a95014bbd91",
+  "signature": "d441caae4e92232a74f289fabfaad68a358f5b77d4a6ea17e86765b33126413c",
   "transcript_capture": {
     "creation_reorder_ms": 1000,
     "creation_time_slack_ms": 2000,
@@ -1675,6 +1675,7 @@
         "macos": [],
         "windows": []
       },
+      "subagent_segment": "subagents",
       "writer_images": []
     },
     "claude_desktop": {
@@ -1703,6 +1704,7 @@
           "AppData/Roaming/Claude/local-agent-mode-sessions"
         ]
       },
+      "subagent_segment": "subagents",
       "writer_images": []
     },
     "codex": {
@@ -1724,6 +1726,7 @@
         "macos": [],
         "windows": []
       },
+      "subagent_segment": "",
       "writer_images": []
     },
     "cursor": {
@@ -1746,6 +1749,7 @@
         "macos": [],
         "windows": []
       },
+      "subagent_segment": "",
       "writer_images": []
     },
     "hermes": {
@@ -1768,6 +1772,7 @@
         "macos": [],
         "windows": []
       },
+      "subagent_segment": "",
       "writer_images": []
     },
     "openclaw": {
@@ -1789,6 +1794,7 @@
         "macos": [],
         "windows": []
       },
+      "subagent_segment": "",
       "writer_images": []
     }
   },
