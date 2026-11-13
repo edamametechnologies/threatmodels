@@ -1304,6 +1304,11 @@ def validate_cve_detection_params(filename: str) -> None:
         # stamped (observation time, after its coalescer) still belongs to
         # that session.
         'fim_observation_lag_secs',
+        # Agent transcript stores (2.3.3): whether the processes recorded per
+        # transcript file are read, and how many days a record is kept after
+        # its last operation.
+        'transcript_write_trust_enabled',
+        'transcript_write_trust_retention_days',
         # A project's own package-manager and agent tool configuration files,
         # relative to the working tree: reading one there is part of working
         # in the project, not a self-grant.
@@ -1399,6 +1404,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'sensitive_material_egress',
         'agent_control_tampering',
         'agent_denylist_bypass',
+        'agent_transcript_tampering',
         'package_install_lifecycle',
         'process_memory_scrape',
         'cloud_metadata_egress',
@@ -2158,6 +2164,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'evidence_floor_requires_graded_anomaly',
         'crs_authoritative_enabled',
         'treat_high_volume_dns_ntp_as_non_routine',
+        'transcript_write_trust_enabled',
         'session_binding_tool_call_enabled',
     ):
         if not isinstance(data[flag_key], bool):
@@ -2464,10 +2471,14 @@ def validate_cve_detection_params(filename: str) -> None:
         'evaluator_materialisation_burst_secs',
         'evaluator_session_attribution_slack_secs',
         'fim_observation_lag_secs',
+        'transcript_write_trust_retention_days',
     ):
         value = data[int_key]
         if not isinstance(value, int) or isinstance(value, bool) or value <= 0:
             raise ValueError(f"{int_key} must be a positive integer")
+    # Ten years at most.
+    if data['transcript_write_trust_retention_days'] > 3650:
+        raise ValueError("transcript_write_trust_retention_days must be at most 3650")
     # A bare runtime is one of the package-manager runtimes: the ones that run
     # any program, not only installs.
     stray = set(data['package_bare_runtimes']) - set(data['package_manager_runtimes'])
@@ -2952,6 +2963,15 @@ def validate_agent_visibility_params(filename: str) -> None:
         # rather than a command, URL or path it acted on, and the remote
         # shells whose remote command runs on another host.
         'transcript_hints',
+        # Per agent type, where its transcript store lives under a home and
+        # what is published about it (2.3.3): the store roots per platform,
+        # the path segment and suffixes of a transcript file, the pid-file
+        # roots, the images that write the store besides the agent's own,
+        # and three measured facts, each published as a boolean.
+        'transcript_stores',
+        # The bounds of the reader that takes the shell calls of a transcript
+        # as it grows (2.3.3).
+        'transcript_capture',
     }
 
     def validate_string_list(value, key_name: str) -> None:
@@ -3781,6 +3801,193 @@ def validate_agent_visibility_params(filename: str) -> None:
                 if endpoint not in hosts:
                     raise ValueError(f"{where}['provider_endpoints']: '{endpoint}' is not in llm_hosts")
 
+    def validate_transcript_stores(value, key_name: str) -> None:
+        # Per agent type (edamame_foundation::agent_transcripts collectors),
+        # its transcript store:
+        # - `roots`: the store's directories, relative to a home, on every
+        #   platform (`common`) and per platform;
+        # - `path_segment`: a directory name a transcript's path carries
+        #   below the root, or empty;
+        # - `excluded_segments`: directory names below the root whose files
+        #   are not transcripts;
+        # - `file_suffixes`: the endings of a transcript file;
+        # - `pid_file_roots` / `pid_file_suffixes`: the directories and
+        #   endings of the files that name a harness process;
+        # - `writer_images`: tool names of the images that write the store,
+        #   besides the agent's own process names;
+        # - `append_only`, `call_logged_before_spawn`: measured per agent,
+        #   each a boolean;
+        # - `finding_mode`: `off`, `shadow` or `alert`.
+        required_agents = {
+            'claude_code', 'claude_desktop', 'codex', 'cursor', 'hermes', 'openclaw',
+        }
+        entry_keys = {
+            'roots', 'path_segment', 'excluded_segments', 'file_suffixes',
+            'pid_file_roots', 'pid_file_suffixes', 'writer_images',
+            'append_only', 'call_logged_before_spawn', 'finding_mode',
+        }
+        finding_modes = ('off', 'shadow', 'alert')
+        platform_keys = {'common', 'macos', 'linux', 'windows'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != required_agents:
+            missing = required_agents - set(value.keys())
+            extra = set(value.keys()) - required_agents
+            raise ValueError(f"{key_name} has missing agents {sorted(missing)} and unexpected agents {sorted(extra)}")
+
+        def validate_suffixes(suffixes, where: str) -> None:
+            validate_string_list(suffixes, where)
+            if len(set(suffixes)) != len(suffixes):
+                raise ValueError(f"{where} has duplicate entries")
+            for suffix in suffixes:
+                if (len(suffix) < 2 or not suffix.startswith('.') or suffix != suffix.lower()
+                        or '/' in suffix or '\\' in suffix
+                        or any(ch.isspace() for ch in suffix)):
+                    raise ValueError(f"{where}: '{suffix}' must be a lowercase file ending starting with '.'")
+
+        def validate_store_root(root, where: str) -> None:
+            # Joined onto a home: relative, '/'-separated, normalized (no
+            # empty, '.', '..' or '~' component, no leading or trailing
+            # separator, no drive, no whitespace at either end of a part).
+            if not isinstance(root, str) or not root:
+                raise ValueError(f"{where}: a root must be a non-empty string")
+            if (root.startswith('/') or root.endswith('/') or '\\' in root
+                    or (len(root) >= 2 and root[1] == ':')):
+                raise ValueError(f"{where}: '{root}' must be a relative '/'-separated path")
+            for part in root.split('/'):
+                if part in ('', '.', '..') or part.startswith('~') or part != part.strip():
+                    raise ValueError(f"{where}: '{root}' must be a normalized relative path")
+
+        def validate_directory_names(names, where: str) -> None:
+            validate_string_list(names, where)
+            if len(set(n.lower() for n in names)) != len(names):
+                raise ValueError(f"{where} has duplicate entries")
+            for name in names:
+                if (not name or '/' in name or '\\' in name or name in ('.', '..')
+                        or name != name.strip()):
+                    raise ValueError(f"{where}: '{name}' must be one directory name")
+
+        def nested(a: str, b: str) -> bool:
+            a, b = a.lower(), b.lower()
+            return a == b or a.startswith(b + '/') or b.startswith(a + '/')
+
+        owners = {}
+        for agent in sorted(value):
+            entry = value[agent]
+            where = f"{key_name}['{agent}']"
+            if not isinstance(entry, dict) or set(entry.keys()) != entry_keys:
+                raise ValueError(f"{where} must hold exactly {sorted(entry_keys)}")
+            roots = entry['roots']
+            if not isinstance(roots, dict) or set(roots.keys()) != platform_keys:
+                raise ValueError(f"{where}['roots'] must hold exactly {sorted(platform_keys)}")
+            for platform in sorted(platform_keys):
+                validate_string_list(roots[platform], f"{where}['roots']['{platform}']")
+                for root in roots[platform]:
+                    validate_store_root(root, f"{where}['roots']['{platform}']")
+            # A store is found on every desktop platform.
+            for platform in ('macos', 'linux', 'windows'):
+                if not roots['common'] and not roots[platform]:
+                    raise ValueError(f"{where}['roots'] names no root on {platform}")
+            segment = entry['path_segment']
+            if not isinstance(segment, str) or '/' in segment or '\\' in segment or segment in ('.', '..'):
+                raise ValueError(f"{where}['path_segment'] must be one directory name or empty")
+            validate_directory_names(entry['excluded_segments'], f"{where}['excluded_segments']")
+            validate_suffixes(entry['file_suffixes'], f"{where}['file_suffixes']")
+            if not entry['file_suffixes']:
+                raise ValueError(f"{where}['file_suffixes'] must be non-empty")
+            validate_string_list(entry['pid_file_roots'], f"{where}['pid_file_roots']")
+            for root in entry['pid_file_roots']:
+                validate_store_root(root, f"{where}['pid_file_roots']")
+            validate_suffixes(entry['pid_file_suffixes'], f"{where}['pid_file_suffixes']")
+            if bool(entry['pid_file_roots']) != bool(entry['pid_file_suffixes']):
+                raise ValueError(f"{where}: pid_file_roots and pid_file_suffixes are given together")
+            validate_string_list(entry['writer_images'], f"{where}['writer_images']")
+            for image in entry['writer_images']:
+                if (not image or image != image.lower() or image != image.strip()
+                        or '/' in image or '\\' in image):
+                    raise ValueError(f"{where}['writer_images']: '{image}' must be a lowercase tool name")
+            for flag in ('append_only', 'call_logged_before_spawn'):
+                if not isinstance(entry[flag], bool):
+                    raise ValueError(f"{where}['{flag}'] must be a boolean")
+            mode = entry['finding_mode']
+            if not isinstance(mode, str) or mode not in finding_modes:
+                raise ValueError(f"{where}['finding_mode'] must be one of {list(finding_modes)}")
+            # A directory belongs to one agent and one use, and no root lies
+            # in another (of any agent, any use), whatever the letter case:
+            # the same file never belongs to two stores.
+            pid_roots = entry['pid_file_roots']
+            for i, pid_root in enumerate(pid_roots):
+                for other in pid_roots[i + 1:]:
+                    if nested(pid_root, other):
+                        raise ValueError(f"{where}['pid_file_roots']: '{pid_root}' and '{other}' overlap")
+            for platform in ('macos', 'linux', 'windows'):
+                listed = roots['common'] + roots[platform]
+                for i, root in enumerate(listed):
+                    for other in listed[i + 1:]:
+                        if nested(root, other):
+                            raise ValueError(
+                                f"{where}['roots']: '{root}' and '{other}' overlap on {platform}")
+                    for pid_root in pid_roots:
+                        if nested(root, pid_root):
+                            raise ValueError(
+                                f"{where}: '{pid_root}' is both a store root and a pid-file root")
+            every_root = [root for platform in sorted(platform_keys) for root in roots[platform]]
+            mine = every_root + pid_roots
+            for root in mine:
+                for other_agent, other_roots in owners.items():
+                    for other in other_roots:
+                        if nested(root, other):
+                            raise ValueError(
+                                f"{key_name}: '{root}' ({agent}) and '{other}' ({other_agent}) overlap")
+            owners[agent] = mine
+
+    def validate_transcript_capture(value, key_name: str) -> None:
+        # The bounds of the reader of a growing transcript: the longest line
+        # it parses, how much it reads in one pass, how far behind it may
+        # fall (bytes, seconds), how far a file's own creation time may
+        # differ from its recorded creation, how long after a line was read
+        # a report may still name the process that wrote it, and how long
+        # after the first report for a file the report of its creation is
+        # still taken as its creation (milliseconds; 0: never), and how many
+        # transcripts the reader holds at once.
+        expected_keys = {
+            'max_line_bytes', 'max_pass_bytes', 'max_backlog_bytes',
+            'max_backlog_secs', 'creation_time_slack_ms', 'late_report_ms',
+            'creation_reorder_ms', 'max_files_held',
+        }
+        # The largest sane value of each bound.
+        maxima = {
+            'max_line_bytes': 64 * 1024 * 1024,
+            'max_pass_bytes': 256 * 1024 * 1024,
+            'max_backlog_bytes': 4 * 1024 * 1024 * 1024,
+            'max_backlog_secs': 3600,
+            'creation_time_slack_ms': 60000,
+            'late_report_ms': 300000,
+            'max_files_held': 65536,
+        }
+        # A report is delivered within seconds or not at all: a longer wait
+        # is a typing error.
+        max_creation_reorder_ms = 60000
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for subkey in sorted(expected_keys - {'creation_reorder_ms'}):
+            sub = value[subkey]
+            if isinstance(sub, bool) or not isinstance(sub, int) or sub < 1:
+                raise ValueError(f"{key_name}['{subkey}'] must be a positive integer")
+            if sub > maxima[subkey]:
+                raise ValueError(f"{key_name}['{subkey}'] must be at most {maxima[subkey]}")
+        reorder = value['creation_reorder_ms']
+        if (isinstance(reorder, bool) or not isinstance(reorder, int)
+                or not 0 <= reorder <= max_creation_reorder_ms):
+            raise ValueError(
+                f"{key_name}['creation_reorder_ms'] must be an integer from 0 to {max_creation_reorder_ms}")
+        if not value['max_line_bytes'] <= value['max_pass_bytes'] <= value['max_backlog_bytes']:
+            raise ValueError(f"{key_name}: max_line_bytes <= max_pass_bytes <= max_backlog_bytes must hold")
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -3883,6 +4090,14 @@ def validate_agent_visibility_params(filename: str) -> None:
     validate_agent_llm_traffic(
         data['agent_llm_traffic'],
         'agent_llm_traffic',
+    )
+    validate_transcript_stores(
+        data['transcript_stores'],
+        'transcript_stores',
+    )
+    validate_transcript_capture(
+        data['transcript_capture'],
+        'transcript_capture',
     )
 
     print("Agent visibility params validation successful")
