@@ -615,7 +615,7 @@
       "title": "Investigate prompt-injection bait"
     }
   ],
-  "date": "November 11th 2026",
+  "date": "November 13th 2026",
   "delegation_markers": {
     "spawn_goal_keys": [
       "description",
@@ -1468,7 +1468,7 @@
       "per_marker": false
     }
   ],
-  "signature": "0c5904920da1156ef7c3e1788a11fe2267869859576c2efbb708b6a0a9a985c7",
+  "signature": "810934f98e4f3f1ad5e36fca02ed015099cd839d15c74213d10952474ff11866",
   "transcript_capture": {
     "creation_reorder_ms": 1000,
     "creation_time_slack_ms": 2000,
@@ -1658,6 +1658,7 @@
         "macos": [],
         "windows": []
       },
+      "subagent_segment": "subagents",
       "writer_images": []
     },
     "claude_desktop": {
@@ -1686,6 +1687,7 @@
           "AppData/Roaming/Claude/local-agent-mode-sessions"
         ]
       },
+      "subagent_segment": "subagents",
       "writer_images": []
     },
     "codex": {
@@ -1707,6 +1709,7 @@
         "macos": [],
         "windows": []
       },
+      "subagent_segment": "",
       "writer_images": []
     },
     "cursor": {
@@ -1729,6 +1732,7 @@
         "macos": [],
         "windows": []
       },
+      "subagent_segment": "",
       "writer_images": []
     },
     "hermes": {
@@ -1751,6 +1755,7 @@
         "macos": [],
         "windows": []
       },
+      "subagent_segment": "",
       "writer_images": []
     },
     "openclaw": {
@@ -1772,6 +1777,7 @@
         "macos": [],
         "windows": []
       },
+      "subagent_segment": "",
       "writer_images": []
     }
   },

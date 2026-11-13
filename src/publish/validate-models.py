@@ -3809,7 +3809,10 @@ def validate_agent_visibility_params(filename: str) -> None:
         # - `path_segment`: a directory name a transcript's path carries
         #   below the root, or empty;
         # - `excluded_segments`: directory names below the root whose files
-        #   are not transcripts;
+        #   are not transcripts (never the `path_segment` itself);
+        # - `subagent_segment`: the directory name whose files are a
+        #   subagent's transcripts, the main conversation's being the
+        #   directory above it, or empty;
         # - `file_suffixes`: the endings of a transcript file;
         # - `pid_file_roots` / `pid_file_suffixes`: the directories and
         #   endings of the files that name a harness process;
@@ -3822,7 +3825,7 @@ def validate_agent_visibility_params(filename: str) -> None:
             'claude_code', 'claude_desktop', 'codex', 'cursor', 'hermes', 'openclaw',
         }
         entry_keys = {
-            'roots', 'path_segment', 'excluded_segments', 'file_suffixes',
+            'roots', 'path_segment', 'excluded_segments', 'subagent_segment', 'file_suffixes',
             'pid_file_roots', 'pid_file_suffixes', 'writer_images',
             'append_only', 'call_logged_before_spawn', 'finding_mode',
         }
@@ -3892,6 +3895,17 @@ def validate_agent_visibility_params(filename: str) -> None:
             if not isinstance(segment, str) or '/' in segment or '\\' in segment or segment in ('.', '..'):
                 raise ValueError(f"{where}['path_segment'] must be one directory name or empty")
             validate_directory_names(entry['excluded_segments'], f"{where}['excluded_segments']")
+            excluded = {name.lower() for name in entry['excluded_segments']}
+            if segment and segment.lower() in excluded:
+                raise ValueError(
+                    f"{where}['excluded_segments'] names the path_segment '{segment}': no file would be a transcript")
+            subagent = entry['subagent_segment']
+            if (not isinstance(subagent, str) or '/' in subagent or '\\' in subagent
+                    or subagent in ('.', '..') or subagent != subagent.strip()):
+                raise ValueError(f"{where}['subagent_segment'] must be one directory name or empty")
+            if subagent and subagent.lower() in excluded:
+                raise ValueError(
+                    f"{where}['subagent_segment'] '{subagent}' is excluded: a subagent's file would be no transcript")
             validate_suffixes(entry['file_suffixes'], f"{where}['file_suffixes']")
             if not entry['file_suffixes']:
                 raise ValueError(f"{where}['file_suffixes'] must be non-empty")
