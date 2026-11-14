@@ -1278,6 +1278,10 @@ def validate_cve_detection_params(filename: str) -> None:
         'session_binding_tool_call_enabled',
         'session_binding_tool_call_agents',
         'session_binding_host_agents',
+        # Per platform, the image names of editors' extension hosts: a
+        # harness they create may narrow although its standard input and
+        # output are not a terminal.
+        'session_binding_ide_extension_hosts',
         'session_binding_records_after_run_agents',
         'session_binding_shell_programs',
         'session_binding_clock_slack_ms',
@@ -2333,6 +2337,30 @@ def validate_cve_detection_params(filename: str) -> None:
             raise ValueError(f"'{name_list_key}' must not repeat a name")
     if not data['session_binding_shell_programs']:
         raise ValueError("'session_binding_shell_programs' must not be empty")
+    # Editors' extension hosts: exactly the three platforms, each a list of
+    # image names as the file is named (compared without case and without
+    # '.exe'): no path, no extension, no wildcard, no repeat. A list may be
+    # empty (no exception on that platform).
+    hosts = data['session_binding_ide_extension_hosts']
+    if not isinstance(hosts, dict) or set(hosts) != {'macos', 'linux', 'windows'}:
+        raise ValueError(
+            "'session_binding_ide_extension_hosts' must hold exactly "
+            "'macos', 'linux' and 'windows'")
+    for platform, names in hosts.items():
+        where = f"session_binding_ide_extension_hosts.{platform}"
+        if not isinstance(names, list):
+            raise ValueError(f"'{where}' must be a list")
+        for name in names:
+            if (not isinstance(name, str) or not name or name != name.strip()
+                    or any(c in name for c in '/\\*?')
+                    or any(ord(c) < 32 for c in name)
+                    or name.lower().endswith('.exe')):
+                raise ValueError(
+                    f"'{where}' entries must be image names without a path, "
+                    f"an extension or a wildcard: {name!r}")
+        folded = [name.lower() for name in names]
+        if len(set(folded)) != len(folded):
+            raise ValueError(f"'{where}' must not repeat a name")
     if not (60 <= data['session_binding_idle_transcript_secs'] <= 604800):
         raise ValueError(
             "'session_binding_idle_transcript_secs' must be between 60 and 604800")
@@ -4006,7 +4034,9 @@ def validate_agent_visibility_params(filename: str) -> None:
         # Per agent type (a lower-case slug), the options (each starting with
         # '-', no whitespace) and the subcommands (no '-' first, no
         # whitespace) that say print mode on its command line. Both lists
-        # are present; either may be empty.
+        # are present; either may be empty, not both: an agent with no
+        # marker to find would read every command line as measured without
+        # one, the answer that may narrow.
         if not isinstance(value, dict):
             raise ValueError(f"'{key_name}' must be an object")
         for agent, markers in value.items():
@@ -4026,6 +4056,11 @@ def validate_agent_visibility_params(filename: str) -> None:
             for sub in markers['subcommands']:
                 if sub.startswith('-'):
                     raise ValueError(f"'{where}.subcommands' item '{sub}' is an option")
+            if not markers['flags'] and not markers['subcommands']:
+                raise ValueError(f"'{where}' must list at least one marker")
+            for list_key in ('flags', 'subcommands'):
+                if len(set(markers[list_key])) != len(markers[list_key]):
+                    raise ValueError(f"'{where}.{list_key}' must not repeat a marker")
 
     def validate_transcript_capture(value, key_name: str) -> None:
         # The bounds of the reader of a growing transcript: the longest line
