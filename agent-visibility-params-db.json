@@ -615,7 +615,7 @@
       "title": "Investigate prompt-injection bait"
     }
   ],
-  "date": "November 13th 2026",
+  "date": "November 14th 2026",
   "delegation_markers": {
     "spawn_goal_keys": [
       "description",
@@ -1324,7 +1324,11 @@
     "claude_code": {
       "flags": [
         "-p",
-        "--print"
+        "--print",
+        "--sdk-url",
+        "--init-only",
+        "--bg",
+        "--background"
       ],
       "subcommands": []
     },
@@ -1333,7 +1337,10 @@
       "subcommands": [
         "exec",
         "e",
-        "review"
+        "review",
+        "mcp-server",
+        "app-server",
+        "exec-server"
       ]
     }
   },
@@ -1485,7 +1492,7 @@
       "per_marker": false
     }
   ],
-  "signature": "d441caae4e92232a74f289fabfaad68a358f5b77d4a6ea17e86765b33126413c",
+  "signature": "d3964a7fa074ce7344bab563591a7e1b1a6716634bfd15df3bd702515d6f9f40",
   "transcript_capture": {
     "creation_reorder_ms": 1000,
     "creation_time_slack_ms": 2000,
