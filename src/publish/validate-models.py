@@ -3830,7 +3830,12 @@ def validate_agent_visibility_params(filename: str) -> None:
         # - `pid_file_roots` / `pid_file_suffixes`: the directories and
         #   endings of the files that name a harness process;
         # - `writer_images`: tool names of the images that write the store,
-        #   besides the agent's own process names;
+        #   besides the agent's own process names (never a general-purpose
+        #   interpreter or shell: a tool child running it would read as the
+        #   agent);
+        # - `launcher_images`: images that start the store's harness and are
+        #   not the agent, each a lowercase tool name or a lowercase
+        #   '/'-separated path pattern where '*' stands for any characters;
         # - `append_only`, `call_logged_before_spawn`: measured per agent,
         #   each a boolean;
         # - `finding_mode`: `off`, `shadow` or `alert`.
@@ -3839,10 +3844,16 @@ def validate_agent_visibility_params(filename: str) -> None:
         }
         entry_keys = {
             'roots', 'path_segment', 'excluded_segments', 'subagent_segment', 'file_suffixes',
-            'pid_file_roots', 'pid_file_suffixes', 'writer_images',
+            'pid_file_roots', 'pid_file_suffixes', 'writer_images', 'launcher_images',
             'append_only', 'call_logged_before_spawn', 'finding_mode',
         }
         finding_modes = ('off', 'shadow', 'alert')
+        # Images that run anything: never one store's writer or launcher.
+        general_purpose_images = {
+            'bash', 'sh', 'zsh', 'dash', 'fish', 'ksh', 'csh', 'tcsh', 'pwsh', 'powershell', 'cmd',
+            'node', 'nodejs', 'deno', 'bun', 'python', 'python3', 'pythonw', 'ruby', 'perl', 'php',
+            'java', 'dotnet', 'osascript', 'env', 'sudo',
+        }
         platform_keys = {'common', 'macos', 'linux', 'windows'}
         if not isinstance(value, dict):
             raise ValueError(f"'{key_name}' must be a dict")
@@ -3919,6 +3930,9 @@ def validate_agent_visibility_params(filename: str) -> None:
             if subagent and subagent.lower() in excluded:
                 raise ValueError(
                     f"{where}['subagent_segment'] '{subagent}' is excluded: a subagent's file would be no transcript")
+            if subagent and segment and subagent.lower() == segment.lower():
+                raise ValueError(
+                    f"{where}['subagent_segment'] equals the path_segment '{segment}'")
             validate_suffixes(entry['file_suffixes'], f"{where}['file_suffixes']")
             if not entry['file_suffixes']:
                 raise ValueError(f"{where}['file_suffixes'] must be non-empty")
@@ -3933,6 +3947,26 @@ def validate_agent_visibility_params(filename: str) -> None:
                 if (not image or image != image.lower() or image != image.strip()
                         or '/' in image or '\\' in image):
                     raise ValueError(f"{where}['writer_images']: '{image}' must be a lowercase tool name")
+                if image in general_purpose_images:
+                    raise ValueError(
+                        f"{where}['writer_images']: '{image}' is a general-purpose interpreter or shell")
+            launchers = entry['launcher_images']
+            validate_string_list(launchers, f"{where}['launcher_images']")
+            if len(set(launchers)) != len(launchers):
+                raise ValueError(f"{where}['launcher_images'] has duplicate entries")
+            for launcher in launchers:
+                if (not launcher or launcher != launcher.lower() or launcher != launcher.strip()
+                        or '\\' in launcher):
+                    raise ValueError(
+                        f"{where}['launcher_images']: '{launcher}' must be a lowercase tool name or '/'-separated pattern")
+                if '/' not in launcher and '*' in launcher:
+                    raise ValueError(
+                        f"{where}['launcher_images']: '{launcher}' is a tool name and takes no '*'")
+                if '/' in launcher and not launcher.replace('*', '').replace('/', ''):
+                    raise ValueError(f"{where}['launcher_images']: '{launcher}' matches every path")
+                if '/' not in launcher and (launcher in entry['writer_images'] or launcher in general_purpose_images):
+                    raise ValueError(
+                        f"{where}['launcher_images']: '{launcher}' is a writer image or a general-purpose interpreter")
             for flag in ('append_only', 'call_logged_before_spawn'):
                 if not isinstance(entry[flag], bool):
                     raise ValueError(f"{where}['{flag}'] must be a boolean")
@@ -4001,11 +4035,12 @@ def validate_agent_visibility_params(filename: str) -> None:
         # a report may still name the process that wrote it, and how long
         # after the first report for a file the report of its creation is
         # still taken as its creation (milliseconds; 0: never), and how many
-        # transcripts the reader holds at once.
+        # transcripts the reader holds at once, and how long a file whose
+        # creator the lineage does not hold yet is looked up again.
         expected_keys = {
             'max_line_bytes', 'max_pass_bytes', 'max_backlog_bytes',
             'max_backlog_secs', 'creation_time_slack_ms', 'late_report_ms',
-            'creation_reorder_ms', 'max_files_held',
+            'creation_reorder_ms', 'max_files_held', 'creator_retry_ms',
         }
         # The largest sane value of each bound.
         maxima = {
@@ -4016,6 +4051,7 @@ def validate_agent_visibility_params(filename: str) -> None:
             'creation_time_slack_ms': 60000,
             'late_report_ms': 300000,
             'max_files_held': 65536,
+            'creator_retry_ms': 600000,
         }
         # A report is delivered within seconds or not at all: a longer wait
         # is a typing error.

@@ -615,7 +615,7 @@
       "title": "Investigate prompt-injection bait"
     }
   ],
-  "date": "November 13th 2026",
+  "date": "November 14th 2026",
   "delegation_markers": {
     "spawn_goal_keys": [
       "description",
@@ -1485,10 +1485,11 @@
       "per_marker": false
     }
   ],
-  "signature": "d441caae4e92232a74f289fabfaad68a358f5b77d4a6ea17e86765b33126413c",
+  "signature": "8c3937f5559c1a8bee506e95e2f944fadb97d1280c311698bacee684390d3c38",
   "transcript_capture": {
     "creation_reorder_ms": 1000,
     "creation_time_slack_ms": 2000,
+    "creator_retry_ms": 60000,
     "late_report_ms": 15000,
     "max_backlog_bytes": 67108864,
     "max_backlog_secs": 30,
@@ -1660,6 +1661,11 @@
         ".jsonl"
       ],
       "finding_mode": "shadow",
+      "launcher_images": [
+        "*/claude.app/contents/macos/claude",
+        "*/anthropicclaude/app-*/claude.exe",
+        "*/windowsapps/claude*/claude.exe"
+      ],
       "path_segment": "",
       "pid_file_roots": [
         ".claude/sessions"
@@ -1689,6 +1695,7 @@
         ".jsonl"
       ],
       "finding_mode": "off",
+      "launcher_images": [],
       "path_segment": "",
       "pid_file_roots": [],
       "pid_file_suffixes": [],
@@ -1715,6 +1722,9 @@
         ".jsonl"
       ],
       "finding_mode": "shadow",
+      "launcher_images": [
+        "*/codex.app/contents/macos/codex"
+      ],
       "path_segment": "",
       "pid_file_roots": [],
       "pid_file_suffixes": [],
@@ -1738,6 +1748,7 @@
         ".txt"
       ],
       "finding_mode": "off",
+      "launcher_images": [],
       "path_segment": "agent-transcripts",
       "pid_file_roots": [],
       "pid_file_suffixes": [],
@@ -1760,6 +1771,7 @@
         ".jsonl"
       ],
       "finding_mode": "off",
+      "launcher_images": [],
       "path_segment": "",
       "pid_file_roots": [],
       "pid_file_suffixes": [],
@@ -1783,6 +1795,9 @@
         ".jsonl"
       ],
       "finding_mode": "off",
+      "launcher_images": [
+        "openclaw"
+      ],
       "path_segment": "sessions",
       "pid_file_roots": [],
       "pid_file_suffixes": [],
