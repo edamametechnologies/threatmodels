@@ -2771,7 +2771,6 @@ def validate_cve_detection_params(filename: str) -> None:
         'max_standing_destinations_per_identity', 'max_standing_records',
         'registrable_domain_second_level_labels',
         'rpc_provider_suffixes', 'browser_process_names', 'browser_process_name_prefixes',
-        'standing_inline_code_options', 'standing_subcommand_words',
     })
     if not isinstance(history['established_enabled'], bool):
         raise ValueError("destination_history['established_enabled'] must be a boolean")
@@ -2824,7 +2823,6 @@ def validate_cve_detection_params(filename: str) -> None:
             "'established_min_distinct_days'"
         )
     for key in ('rpc_provider_suffixes', 'browser_process_names', 'browser_process_name_prefixes',
-                'standing_inline_code_options', 'standing_subcommand_words',
                 'registrable_domain_second_level_labels'):
         if not history[key]:
             raise ValueError(f"destination_history['{key}'] must be non-empty")
@@ -2838,21 +2836,6 @@ def validate_cve_detection_params(filename: str) -> None:
             )
         if len(set(history[key])) != len(history[key]):
             raise ValueError(f"destination_history['{key}'] has duplicates")
-    # Command-line options: each starts with the option marker of its shell
-    # family and holds no whitespace.
-    for i, option in enumerate(history['standing_inline_code_options']):
-        if option[0] not in '-/' or len(option) < 2 or any(c.isspace() for c in option):
-            raise ValueError(
-                f"destination_history['standing_inline_code_options'][{i}] must start with "
-                f"'-' or '/' and hold no whitespace; got '{option}'"
-            )
-    # Command words: a single argument, never a path.
-    for i, word in enumerate(history['standing_subcommand_words']):
-        if '/' in word or '\\' in word or any(c.isspace() for c in word):
-            raise ValueError(
-                f"destination_history['standing_subcommand_words'][{i}] must be one word "
-                f"without a path separator; got '{word}'"
-            )
     for i, suffix in enumerate(history['rpc_provider_suffixes']):
         if suffix.startswith('.') or suffix.endswith('.') or '.' not in suffix or '/' in suffix:
             raise ValueError(
