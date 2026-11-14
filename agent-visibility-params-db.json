@@ -1468,10 +1468,11 @@
       "per_marker": false
     }
   ],
-  "signature": "810934f98e4f3f1ad5e36fca02ed015099cd839d15c74213d10952474ff11866",
+  "signature": "3f9aed7a6ae81f2b9fcea98960c0583e71dd78dcd3a6255af7294b7260f585ef",
   "transcript_capture": {
     "creation_reorder_ms": 1000,
     "creation_time_slack_ms": 2000,
+    "creator_retry_ms": 60000,
     "late_report_ms": 15000,
     "max_backlog_bytes": 67108864,
     "max_backlog_secs": 30,
@@ -1643,6 +1644,11 @@
         ".jsonl"
       ],
       "finding_mode": "shadow",
+      "launcher_images": [
+        "*/claude.app/contents/macos/claude",
+        "*/anthropicclaude/app-*/claude.exe",
+        "*/windowsapps/claude*/claude.exe"
+      ],
       "path_segment": "",
       "pid_file_roots": [
         ".claude/sessions"
@@ -1672,6 +1678,7 @@
         ".jsonl"
       ],
       "finding_mode": "off",
+      "launcher_images": [],
       "path_segment": "",
       "pid_file_roots": [],
       "pid_file_suffixes": [],
@@ -1698,6 +1705,9 @@
         ".jsonl"
       ],
       "finding_mode": "shadow",
+      "launcher_images": [
+        "*/codex.app/contents/macos/codex"
+      ],
       "path_segment": "",
       "pid_file_roots": [],
       "pid_file_suffixes": [],
@@ -1721,6 +1731,7 @@
         ".txt"
       ],
       "finding_mode": "off",
+      "launcher_images": [],
       "path_segment": "agent-transcripts",
       "pid_file_roots": [],
       "pid_file_suffixes": [],
@@ -1743,6 +1754,7 @@
         ".jsonl"
       ],
       "finding_mode": "off",
+      "launcher_images": [],
       "path_segment": "",
       "pid_file_roots": [],
       "pid_file_suffixes": [],
@@ -1766,6 +1778,9 @@
         ".jsonl"
       ],
       "finding_mode": "off",
+      "launcher_images": [
+        "openclaw"
+      ],
       "path_segment": "sessions",
       "pid_file_roots": [],
       "pid_file_suffixes": [],
