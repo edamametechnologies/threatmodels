@@ -1152,6 +1152,10 @@ def validate_cve_detection_params(filename: str) -> None:
         'routine_platform_asns',
         'ownership_lock_file_names',
         'claimed_app_data_roots',
+        # 2.3.3: the directories a store owned by lock may never be (the
+        # homes and volume roots, their top-level directories, the shared
+        # application-data roots). Read by 2.3.3+ only.
+        'ownership_lock_store_bounds',
         'crs_authoritative_checks',
         # Per-user store ownership: the profile-relative roots whose first
         # component names the owning application, the sandboxed-application
@@ -2703,6 +2707,30 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_lowercase_tokens([temp_roots['macos_per_user_temp_leaf']], "os_temp_roots['macos_per_user_temp_leaf']")
     if '/' in temp_roots['macos_per_user_temp_leaf']:
         raise ValueError("os_temp_roots['macos_per_user_temp_leaf'] must be a directory name")
+
+    # The directories a store owned by lock may never be (2.3.3): the
+    # parents of user and volume roots, the roots that are a home
+    # themselves, and the shared application-data roots whose first child is
+    # one application's own directory. Each list is non-empty, each entry a
+    # lowercase '/' fragment with a leading and a trailing '/' that names at
+    # least one path component, matched as whole components anywhere in a
+    # path. Every list is required: an empty one would leave the store
+    # unbounded on that axis.
+    lock_bounds = data['ownership_lock_store_bounds']
+    validate_exact_keys(lock_bounds, 'ownership_lock_store_bounds', {
+        'root_parent_directories', 'root_directories', 'shared_data_roots',
+    })
+    for list_key in ('root_parent_directories', 'root_directories', 'shared_data_roots'):
+        where = f"ownership_lock_store_bounds['{list_key}']"
+        if not lock_bounds[list_key]:
+            raise ValueError(f"{where} must be non-empty")
+        validate_path_fragments(lock_bounds[list_key], where, relative=False, directory=True)
+        for i, item in enumerate(lock_bounds[list_key]):
+            parts = item.strip('/').split('/')
+            if not item.strip('/') or any(not part.strip() or part in ('.', '..') for part in parts):
+                raise ValueError(f"{where}[{i}] must name whole path components; got '{item}'")
+        if len(set(lock_bounds[list_key])) != len(lock_bounds[list_key]):
+            raise ValueError(f"{where} has duplicates")
 
     # A per-invocation temp scratch directory name: optional leading dots,
     # `prefix`, optional dots, then an alphanumeric token of min_token_len.
