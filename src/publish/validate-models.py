@@ -2771,6 +2771,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'max_standing_destinations_per_identity', 'max_standing_records',
         'registrable_domain_second_level_labels',
         'rpc_provider_suffixes', 'browser_process_names', 'browser_process_name_prefixes',
+        'standing_refused_program_prefixes',
     })
     if not isinstance(history['established_enabled'], bool):
         raise ValueError("destination_history['established_enabled'] must be a boolean")
@@ -2823,6 +2824,7 @@ def validate_cve_detection_params(filename: str) -> None:
             "'established_min_distinct_days'"
         )
     for key in ('rpc_provider_suffixes', 'browser_process_names', 'browser_process_name_prefixes',
+                'standing_refused_program_prefixes',
                 'registrable_domain_second_level_labels'):
         if not history[key]:
             raise ValueError(f"destination_history['{key}'] must be non-empty")
@@ -2836,6 +2838,20 @@ def validate_cve_detection_params(filename: str) -> None:
             )
         if len(set(history[key])) != len(history[key]):
             raise ValueError(f"destination_history['{key}'] has duplicates")
+    # Path prefixes under which a script runtime's argument names no single
+    # program: the POSIX shapes start with '/', the Windows shapes with '\\'.
+    # Each ends with a separator, so it names a directory or a namespace, not
+    # the start of a file name; none holds whitespace or repeats.
+    prefixes = history['standing_refused_program_prefixes']
+    for i, prefix in enumerate(prefixes):
+        if (len(prefix) < 2 or prefix[0] not in '/\\' or prefix[-1] not in '/\\'
+                or any(c.isspace() for c in prefix)):
+            raise ValueError(
+                f"destination_history['standing_refused_program_prefixes'][{i}] must start and "
+                f"end with a path separator and hold no whitespace; got '{prefix}'"
+            )
+    if len(set(prefixes)) != len(prefixes):
+        raise ValueError("destination_history['standing_refused_program_prefixes'] has duplicates")
     for i, suffix in enumerate(history['rpc_provider_suffixes']):
         if suffix.startswith('.') or suffix.endswith('.') or '.' not in suffix or '/' in suffix:
             raise ValueError(
