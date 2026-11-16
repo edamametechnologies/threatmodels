@@ -1152,6 +1152,10 @@ def validate_cve_detection_params(filename: str) -> None:
         'routine_platform_asns',
         'ownership_lock_file_names',
         'claimed_app_data_roots',
+        # 2.3.3: the directories a store owned by lock may never be (the
+        # homes, the volume roots, their top-level directories, the shared
+        # application-data roots). Read by 2.3.3+ only.
+        'ownership_lock_store_bounds',
         'crs_authoritative_checks',
         # Per-user store ownership: the profile-relative roots whose first
         # component names the owning application, the sandboxed-application
@@ -2703,6 +2707,45 @@ def validate_cve_detection_params(filename: str) -> None:
     validate_lowercase_tokens([temp_roots['macos_per_user_temp_leaf']], "os_temp_roots['macos_per_user_temp_leaf']")
     if '/' in temp_roots['macos_per_user_temp_leaf']:
         raise ValueError("os_temp_roots['macos_per_user_temp_leaf'] must be a directory name")
+
+    # The directories a store owned by lock may never be (2.3.3): the
+    # parents of users' roots (homes, per-user runtime directories), the
+    # roots that are a home themselves, the parents of volume roots, and the
+    # shared application-data roots whose first child is one application's
+    # own directory. Each list is non-empty, each entry a lowercase '/'
+    # fragment with a leading and a trailing '/' naming whole path
+    # components, matched only at the start of a root (the filesystem root, a
+    # volume's root, a home), never anywhere in a path. A component is never
+    # '.', '..', empty, edged with whitespace or holding whitespace other than
+    # a single space: the loader keeps it as written, so a padded component
+    # matches no real path and silently reopens the store it was meant to
+    # bound. '*' (any one directory, the user level of /media/<user>/<volume>)
+    # is allowed in volume_parent_directories only, never first. Every list is
+    # required: an empty one would leave the store unbounded on that axis.
+    lock_bounds = data['ownership_lock_store_bounds']
+    lock_bound_lists = (
+        'root_parent_directories', 'root_directories', 'volume_parent_directories', 'shared_data_roots',
+    )
+    validate_exact_keys(lock_bounds, 'ownership_lock_store_bounds', set(lock_bound_lists))
+    for list_key in lock_bound_lists:
+        where = f"ownership_lock_store_bounds['{list_key}']"
+        if not lock_bounds[list_key]:
+            raise ValueError(f"{where} must be non-empty")
+        validate_path_fragments(lock_bounds[list_key], where, relative=False, directory=True)
+        for i, item in enumerate(lock_bounds[list_key]):
+            parts = item[1:-1].split('/') if len(item) >= 2 else ['']
+            for position, part in enumerate(parts):
+                if not part or part in ('.', '..') or part != part.strip() \
+                        or re.search(r"[^\S ]", part) or '  ' in part:
+                    raise ValueError(f"{where}[{i}] must name whole path components; got {item!r}")
+                if part == '*' and (list_key != 'volume_parent_directories' or position == 0):
+                    raise ValueError(
+                        f"{where}[{i}]: '*' stands for one directory below a named one, "
+                        f"in volume_parent_directories only; got {item!r}")
+                if '*' in part and part != '*':
+                    raise ValueError(f"{where}[{i}]: '*' must be a whole component; got {item!r}")
+        if len(set(lock_bounds[list_key])) != len(lock_bounds[list_key]):
+            raise ValueError(f"{where} has duplicates")
 
     # A per-invocation temp scratch directory name: optional leading dots,
     # `prefix`, optional dots, then an alphanumeric token of min_token_len.
