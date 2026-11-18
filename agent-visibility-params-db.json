@@ -615,7 +615,7 @@
       "title": "Investigate prompt-injection bait"
     }
   ],
-  "date": "October 15th 2026",
+  "date": "November 14th 2026",
   "delegation_markers": {
     "spawn_goal_keys": [
       "description",
@@ -1320,6 +1320,30 @@
       }
     ]
   },
+  "print_mode_markers": {
+    "claude_code": {
+      "flags": [
+        "-p",
+        "--print",
+        "--sdk-url",
+        "--init-only",
+        "--bg",
+        "--background"
+      ],
+      "subcommands": []
+    },
+    "codex": {
+      "flags": [],
+      "subcommands": [
+        "exec",
+        "e",
+        "review",
+        "mcp-server",
+        "app-server",
+        "exec-server"
+      ]
+    }
+  },
   "prompt_injection_signatures": [
     {
       "hits": 2,
@@ -1468,7 +1492,18 @@
       "per_marker": false
     }
   ],
-  "signature": "1ebe69db7740a8bc7ba977ff3e2471508864d041f7fb5d5d2f2430619ee081f2",
+  "signature": "70453947e7030b29f2af27648532cf0be87efc06bc558fae8f197f130af2b6f8",
+  "transcript_capture": {
+    "creation_reorder_ms": 1000,
+    "creation_time_slack_ms": 2000,
+    "creator_retry_ms": 60000,
+    "late_report_ms": 15000,
+    "max_backlog_bytes": 67108864,
+    "max_backlog_secs": 30,
+    "max_files_held": 2048,
+    "max_line_bytes": 4194304,
+    "max_pass_bytes": 8388608
+  },
   "transcript_hints": {
     "content_input_keys": [
       "body",
@@ -1622,6 +1657,169 @@
       "per_marker": false
     }
   ],
+  "transcript_stores": {
+    "claude_code": {
+      "append_only": false,
+      "call_logged_before_spawn": false,
+      "excluded_segments": [
+        "tool-results"
+      ],
+      "file_suffixes": [
+        ".jsonl"
+      ],
+      "finding_mode": "shadow",
+      "launcher_images": [
+        "*/claude.app/contents/macos/claude",
+        "*/anthropicclaude/app-*/claude.exe",
+        "*/windowsapps/claude*/claude.exe"
+      ],
+      "path_segment": "",
+      "pid_file_roots": [
+        ".claude/sessions"
+      ],
+      "pid_file_suffixes": [
+        ".json"
+      ],
+      "roots": {
+        "common": [
+          ".claude/projects"
+        ],
+        "linux": [],
+        "macos": [],
+        "windows": []
+      },
+      "subagent_segment": "subagents",
+      "writer_images": []
+    },
+    "claude_desktop": {
+      "append_only": false,
+      "call_logged_before_spawn": false,
+      "excluded_segments": [
+        "skills-plugin",
+        "tool-results"
+      ],
+      "file_suffixes": [
+        ".jsonl"
+      ],
+      "finding_mode": "off",
+      "launcher_images": [],
+      "path_segment": "",
+      "pid_file_roots": [],
+      "pid_file_suffixes": [],
+      "roots": {
+        "common": [],
+        "linux": [
+          ".local/share/claude-desktop/local-agent-mode-sessions"
+        ],
+        "macos": [
+          "Library/Application Support/Claude/local-agent-mode-sessions"
+        ],
+        "windows": [
+          "AppData/Roaming/Claude/local-agent-mode-sessions"
+        ]
+      },
+      "subagent_segment": "subagents",
+      "writer_images": []
+    },
+    "codex": {
+      "append_only": false,
+      "call_logged_before_spawn": false,
+      "excluded_segments": [],
+      "file_suffixes": [
+        ".jsonl"
+      ],
+      "finding_mode": "shadow",
+      "launcher_images": [
+        "*/codex.app/contents/macos/codex"
+      ],
+      "path_segment": "",
+      "pid_file_roots": [],
+      "pid_file_suffixes": [],
+      "roots": {
+        "common": [
+          ".codex/sessions"
+        ],
+        "linux": [],
+        "macos": [],
+        "windows": []
+      },
+      "subagent_segment": "",
+      "writer_images": []
+    },
+    "cursor": {
+      "append_only": false,
+      "call_logged_before_spawn": false,
+      "excluded_segments": [],
+      "file_suffixes": [
+        ".jsonl",
+        ".txt"
+      ],
+      "finding_mode": "off",
+      "launcher_images": [],
+      "path_segment": "agent-transcripts",
+      "pid_file_roots": [],
+      "pid_file_suffixes": [],
+      "roots": {
+        "common": [
+          ".cursor/projects"
+        ],
+        "linux": [],
+        "macos": [],
+        "windows": []
+      },
+      "subagent_segment": "",
+      "writer_images": []
+    },
+    "hermes": {
+      "append_only": false,
+      "call_logged_before_spawn": false,
+      "excluded_segments": [],
+      "file_suffixes": [
+        ".jsonl"
+      ],
+      "finding_mode": "off",
+      "launcher_images": [],
+      "path_segment": "",
+      "pid_file_roots": [],
+      "pid_file_suffixes": [],
+      "roots": {
+        "common": [
+          ".hermes/sessions",
+          ".hermes/projects"
+        ],
+        "linux": [],
+        "macos": [],
+        "windows": []
+      },
+      "subagent_segment": "",
+      "writer_images": []
+    },
+    "openclaw": {
+      "append_only": false,
+      "call_logged_before_spawn": false,
+      "excluded_segments": [],
+      "file_suffixes": [
+        ".jsonl"
+      ],
+      "finding_mode": "off",
+      "launcher_images": [
+        "openclaw"
+      ],
+      "path_segment": "sessions",
+      "pid_file_roots": [],
+      "pid_file_suffixes": [],
+      "roots": {
+        "common": [
+          ".openclaw/agents"
+        ],
+        "linux": [],
+        "macos": [],
+        "windows": []
+      },
+      "subagent_segment": "",
+      "writer_images": []
+    }
+  },
   "workspace_attribution": {
     "agent_cli_package_markers": [
       "@anthropic-ai/claude-code",

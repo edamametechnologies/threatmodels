@@ -1152,6 +1152,10 @@ def validate_cve_detection_params(filename: str) -> None:
         'routine_platform_asns',
         'ownership_lock_file_names',
         'claimed_app_data_roots',
+        # 2.3.3: the directories a store owned by lock may never be (the
+        # homes, the volume roots, their top-level directories, the shared
+        # application-data roots). Read by 2.3.3+ only.
+        'ownership_lock_store_bounds',
         'crs_authoritative_checks',
         # Per-user store ownership: the profile-relative roots whose first
         # component names the owning application, the sandboxed-application
@@ -1271,6 +1275,36 @@ def validate_cve_detection_params(filename: str) -> None:
         # index and its file host): a human's grant of one member covers the
         # others in the divergence policy.
         'service_host_families',
+        # Session binding by tool-call time: the switch, the tolerances
+        # around a tool call's recorded time (before it, after it, and for
+        # the sensor's delivery), the longest window of one call, and the
+        # limits of the per-transcript list of calls.
+        'session_binding_tool_call_enabled',
+        'session_binding_tool_call_agents',
+        'session_binding_host_agents',
+        # Per platform, the image names of editors' extension hosts: a
+        # harness they create may narrow although its standard input and
+        # output are not a terminal.
+        'session_binding_ide_extension_hosts',
+        'session_binding_records_after_run_agents',
+        'session_binding_shell_programs',
+        'session_binding_clock_slack_ms',
+        'session_binding_spawn_window_ms',
+        'session_binding_sensor_lag_ms',
+        'session_binding_max_window_ms',
+        'session_binding_max_calls_per_transcript',
+        'session_binding_max_transcripts',
+        'session_binding_idle_transcript_secs',
+        'session_binding_max_conversation_chain',
+        'session_binding_result_wait_lines',
+        'session_binding_max_remembered_roots',
+        'session_binding_process_start_tolerance_ms',
+        'session_binding_typed_prompt_min_delay_ms',
+        'session_binding_settle_ms',
+        # How far a new process's creation time, read after its creation
+        # event, may be from the event's own timestamp before it is taken for
+        # another process's (2.3.3).
+        'process_start_event_tolerance_ms',
         # Evaluator integrity thresholds: a writer's batch (paths, measurement
         # share, burst window) and how far outside a session's transcript
         # span a write is still the session's.
@@ -1282,6 +1316,11 @@ def validate_cve_detection_params(filename: str) -> None:
         # stamped (observation time, after its coalescer) still belongs to
         # that session.
         'fim_observation_lag_secs',
+        # Agent transcript stores (2.3.3): whether the processes recorded per
+        # transcript file are read, and how many days a record is kept after
+        # its last operation.
+        'transcript_write_trust_enabled',
+        'transcript_write_trust_retention_days',
         # A project's own package-manager and agent tool configuration files,
         # relative to the working tree: reading one there is part of working
         # in the project, not a self-grant.
@@ -1322,6 +1361,9 @@ def validate_cve_detection_params(filename: str) -> None:
         # room), and the names of the logs and delete-on-reboot markers the
         # engine writes directly in an OS temp root.
         'wix_burn_layout',
+        # The per-process destination history: its time windows and counts,
+        # its size bounds, and the name lists it reads.
+        'destination_history',
     }
     allowed_check_keys = {'severity', 'description', 'reference'}
     # Corroboration Risk Score signal weights. Every key is required so a
@@ -1374,6 +1416,7 @@ def validate_cve_detection_params(filename: str) -> None:
         'sensitive_material_egress',
         'agent_control_tampering',
         'agent_denylist_bypass',
+        'agent_transcript_tampering',
         'package_install_lifecycle',
         'process_memory_scrape',
         'cloud_metadata_egress',
@@ -2133,6 +2176,8 @@ def validate_cve_detection_params(filename: str) -> None:
         'evidence_floor_requires_graded_anomaly',
         'crs_authoritative_enabled',
         'treat_high_volume_dns_ntp_as_non_routine',
+        'transcript_write_trust_enabled',
+        'session_binding_tool_call_enabled',
     ):
         if not isinstance(data[flag_key], bool):
             raise ValueError(f"'{flag_key}' must be a boolean")
@@ -2200,10 +2245,129 @@ def validate_cve_detection_params(filename: str) -> None:
         'memory_scrape_inspector_min_attached_targets',
         'forward_proxy_min_distinct_processes',
         'divergence_unexplained_ingest_grace_secs',
+        'session_binding_clock_slack_ms',
+        'session_binding_spawn_window_ms',
+        'session_binding_sensor_lag_ms',
+        'session_binding_max_window_ms',
+        'session_binding_max_calls_per_transcript',
+        'session_binding_max_transcripts',
+        'session_binding_idle_transcript_secs',
+        'session_binding_max_conversation_chain',
+        'session_binding_result_wait_lines',
+        'session_binding_max_remembered_roots',
+        'session_binding_process_start_tolerance_ms',
+        'session_binding_typed_prompt_min_delay_ms',
+        'process_start_event_tolerance_ms',
     ):
         value = data[positive_int_key]
         if isinstance(value, bool) or not isinstance(value, int) or value < 1:
             raise ValueError(f"'{positive_int_key}' must be a positive integer")
+
+    # Session binding: each value is read with the unit its name gives. The
+    # three tolerances around a tool call's time are under a minute, the
+    # longest window of one call is at most an hour and no shorter than the
+    # spawn window, at most 1024 calls are kept per transcript and at most
+    # 4096 transcripts, a call is let go after at least a minute and at most
+    # a week, a process tree is tied to at most 16 conversations, a call
+    # waits at most 65536 lines for its result, and at most 65536 process
+    # trees keep the conversation they were tied to. The three lists hold
+    # lower-case names without a path or an extension; the lists of agent
+    # types may be empty, the list of shells may not.
+    for window_key in (
+        'session_binding_clock_slack_ms',
+        'session_binding_spawn_window_ms',
+        'session_binding_sensor_lag_ms',
+    ):
+        if data[window_key] >= 60000:
+            raise ValueError(f"'{window_key}' must stay under 60000 ms")
+    if not (data['session_binding_spawn_window_ms']
+            <= data['session_binding_max_window_ms'] <= 3600000):
+        raise ValueError(
+            "'session_binding_max_window_ms' must be between "
+            "'session_binding_spawn_window_ms' and 3600000 ms")
+    if data['session_binding_max_calls_per_transcript'] > 1024:
+        raise ValueError(
+            "'session_binding_max_calls_per_transcript' must be at most 1024")
+    if data['session_binding_max_transcripts'] > 4096:
+        raise ValueError(
+            "'session_binding_max_transcripts' must be at most 4096")
+    if data['session_binding_max_conversation_chain'] > 16:
+        raise ValueError(
+            "'session_binding_max_conversation_chain' must be at most 16")
+    if data['session_binding_result_wait_lines'] > 65536:
+        raise ValueError(
+            "'session_binding_result_wait_lines' must be at most 65536")
+    if data['session_binding_max_remembered_roots'] > 65536:
+        raise ValueError(
+            "'session_binding_max_remembered_roots' must be at most 65536")
+    # Two readings of one process's start agree within one to ten seconds
+    # (on Linux two derivations can be a second apart); a typed first turn
+    # is told from a prompt at start after at most a minute; a notification
+    # waits at most two minutes (0: it does not).
+    tolerance = data['session_binding_process_start_tolerance_ms']
+    if not 1000 <= tolerance <= 10000:
+        raise ValueError(
+            "'session_binding_process_start_tolerance_ms' must be between 1000 and 10000")
+    if data['session_binding_typed_prompt_min_delay_ms'] > 60000:
+        raise ValueError(
+            "'session_binding_typed_prompt_min_delay_ms' must be at most 60000")
+    # A creation event and the creation time read after it are seconds
+    # apart at most.
+    if data['process_start_event_tolerance_ms'] > 10000:
+        raise ValueError(
+            "'process_start_event_tolerance_ms' must be at most 10000")
+    settle = data['session_binding_settle_ms']
+    if isinstance(settle, bool) or not isinstance(settle, int) or not 0 <= settle <= 120000:
+        raise ValueError(
+            "'session_binding_settle_ms' must be an integer between 0 and 120000")
+    for name_list_key in (
+        'session_binding_tool_call_agents',
+        'session_binding_host_agents',
+        'session_binding_records_after_run_agents',
+        'session_binding_shell_programs',
+    ):
+        names = data[name_list_key]
+        if not isinstance(names, list):
+            raise ValueError(f"'{name_list_key}' must be a list")
+        for name in names:
+            if (not isinstance(name, str) or not name
+                    or name != name.strip().lower()
+                    or any(c in name for c in '/\\ ')
+                    or name.endswith('.exe')):
+                raise ValueError(
+                    f"'{name_list_key}' entries must be lower-case names "
+                    f"without a path or an extension: {name!r}")
+        if len(set(names)) != len(names):
+            raise ValueError(f"'{name_list_key}' must not repeat a name")
+    if not data['session_binding_shell_programs']:
+        raise ValueError("'session_binding_shell_programs' must not be empty")
+    # Editors' extension hosts: exactly the three platforms, each a list of
+    # image names as the file is named (compared without case and without
+    # '.exe'): no path, no extension, no wildcard, no repeat. A list may be
+    # empty (no exception on that platform).
+    hosts = data['session_binding_ide_extension_hosts']
+    if not isinstance(hosts, dict) or set(hosts) != {'macos', 'linux', 'windows'}:
+        raise ValueError(
+            "'session_binding_ide_extension_hosts' must hold exactly "
+            "'macos', 'linux' and 'windows'")
+    for platform, names in hosts.items():
+        where = f"session_binding_ide_extension_hosts.{platform}"
+        if not isinstance(names, list):
+            raise ValueError(f"'{where}' must be a list")
+        for name in names:
+            if (not isinstance(name, str) or not name or name != name.strip()
+                    or any(c in name for c in '/\\*?')
+                    or any(ord(c) < 32 for c in name)
+                    or name.lower().endswith('.exe')):
+                raise ValueError(
+                    f"'{where}' entries must be image names without a path, "
+                    f"an extension or a wildcard: {name!r}")
+        folded = [name.lower() for name in names]
+        if len(set(folded)) != len(folded):
+            raise ValueError(f"'{where}' must not repeat a name")
+    if not (60 <= data['session_binding_idle_transcript_secs'] <= 604800):
+        raise ValueError(
+            "'session_binding_idle_transcript_secs' must be between 60 and 604800")
 
     for list_key in (
         'ci_runner_process_name_prefixes',
@@ -2349,10 +2513,14 @@ def validate_cve_detection_params(filename: str) -> None:
         'evaluator_materialisation_burst_secs',
         'evaluator_session_attribution_slack_secs',
         'fim_observation_lag_secs',
+        'transcript_write_trust_retention_days',
     ):
         value = data[int_key]
         if not isinstance(value, int) or isinstance(value, bool) or value <= 0:
             raise ValueError(f"{int_key} must be a positive integer")
+    # Ten years at most.
+    if data['transcript_write_trust_retention_days'] > 3650:
+        raise ValueError("transcript_write_trust_retention_days must be at most 3650")
     # A bare runtime is one of the package-manager runtimes: the ones that run
     # any program, not only installs.
     stray = set(data['package_bare_runtimes']) - set(data['package_manager_runtimes'])
@@ -2540,6 +2708,45 @@ def validate_cve_detection_params(filename: str) -> None:
     if '/' in temp_roots['macos_per_user_temp_leaf']:
         raise ValueError("os_temp_roots['macos_per_user_temp_leaf'] must be a directory name")
 
+    # The directories a store owned by lock may never be (2.3.3): the
+    # parents of users' roots (homes, per-user runtime directories), the
+    # roots that are a home themselves, the parents of volume roots, and the
+    # shared application-data roots whose first child is one application's
+    # own directory. Each list is non-empty, each entry a lowercase '/'
+    # fragment with a leading and a trailing '/' naming whole path
+    # components, matched only at the start of a root (the filesystem root, a
+    # volume's root, a home), never anywhere in a path. A component is never
+    # '.', '..', empty, edged with whitespace or holding whitespace other than
+    # a single space: the loader keeps it as written, so a padded component
+    # matches no real path and silently reopens the store it was meant to
+    # bound. '*' (any one directory, the user level of /media/<user>/<volume>)
+    # is allowed in volume_parent_directories only, never first. Every list is
+    # required: an empty one would leave the store unbounded on that axis.
+    lock_bounds = data['ownership_lock_store_bounds']
+    lock_bound_lists = (
+        'root_parent_directories', 'root_directories', 'volume_parent_directories', 'shared_data_roots',
+    )
+    validate_exact_keys(lock_bounds, 'ownership_lock_store_bounds', set(lock_bound_lists))
+    for list_key in lock_bound_lists:
+        where = f"ownership_lock_store_bounds['{list_key}']"
+        if not lock_bounds[list_key]:
+            raise ValueError(f"{where} must be non-empty")
+        validate_path_fragments(lock_bounds[list_key], where, relative=False, directory=True)
+        for i, item in enumerate(lock_bounds[list_key]):
+            parts = item[1:-1].split('/') if len(item) >= 2 else ['']
+            for position, part in enumerate(parts):
+                if not part or part in ('.', '..') or part != part.strip() \
+                        or re.search(r"[^\S ]", part) or '  ' in part:
+                    raise ValueError(f"{where}[{i}] must name whole path components; got {item!r}")
+                if part == '*' and (list_key != 'volume_parent_directories' or position == 0):
+                    raise ValueError(
+                        f"{where}[{i}]: '*' stands for one directory below a named one, "
+                        f"in volume_parent_directories only; got {item!r}")
+                if '*' in part and part != '*':
+                    raise ValueError(f"{where}[{i}]: '*' must be a whole component; got {item!r}")
+        if len(set(lock_bounds[list_key])) != len(lock_bounds[list_key]):
+            raise ValueError(f"{where} has duplicates")
+
     # A per-invocation temp scratch directory name: optional leading dots,
     # `prefix`, optional dots, then an alphanumeric token of min_token_len.
     scratch = data['temp_scratch_name']
@@ -2588,6 +2795,112 @@ def validate_cve_detection_params(filename: str) -> None:
         value = burn[key]
         if isinstance(value, bool) or not isinstance(value, int) or value < 1:
             raise ValueError(f"wix_burn_layout['{key}'] must be a positive integer")
+
+    # The per-process destination history. Units: `*_days` are UTC days,
+    # `*_hours` hours, `*_minutes` minutes, `*_percent` a share between 50
+    # and 100; `max_*` are entry counts. Each value has a lower bound, the
+    # window holds at least the day count, and the table-wide record count
+    # holds at least one program's. The `established_*` values and the
+    # record counts have upper bounds too: the window at most 60 days, the
+    # idle limit at most the window, the age at most the window in hours,
+    # at most 1,024 records a program and 16,384 in all.
+    history = data['destination_history']
+    validate_exact_keys(history, 'destination_history', {
+        'established_enabled', 'established_min_distinct_days', 'established_min_age_hours',
+        'established_max_idle_days', 'established_window_days',
+        'established_min_clean_share_percent',
+        'new_destination_window_minutes', 'identity_maturity_minutes',
+        'identity_retention_days', 'max_destinations_per_identity', 'max_identities',
+        'max_standing_destinations_per_identity', 'max_standing_records',
+        'registrable_domain_second_level_labels',
+        'rpc_provider_suffixes', 'browser_process_names', 'browser_process_name_prefixes',
+        'standing_refused_program_prefixes',
+    })
+    if not isinstance(history['established_enabled'], bool):
+        raise ValueError("destination_history['established_enabled'] must be a boolean")
+    for key, floor in (
+        ('established_min_distinct_days', 2),
+        ('established_min_age_hours', 24),
+        ('established_max_idle_days', 1),
+        ('established_window_days', 2),
+        ('new_destination_window_minutes', 1),
+        ('identity_maturity_minutes', 1),
+        ('identity_retention_days', 1),
+        ('max_destinations_per_identity', 1),
+        ('max_identities', 1),
+        ('max_standing_destinations_per_identity', 1),
+        ('max_standing_records', 1),
+        ('established_min_clean_share_percent', 50),
+    ):
+        value = history[key]
+        if isinstance(value, bool) or not isinstance(value, int) or value < floor:
+            raise ValueError(f"destination_history['{key}'] must be an integer of at least {floor}")
+    for key, ceiling in (
+        ('established_window_days', 60),
+        ('max_standing_destinations_per_identity', 1024),
+        ('max_standing_records', 16384),
+    ):
+        if history[key] > ceiling:
+            raise ValueError(f"destination_history['{key}'] must be at most {ceiling}")
+    if history['established_max_idle_days'] > history['established_window_days']:
+        raise ValueError(
+            "destination_history['established_max_idle_days'] must be at most "
+            "'established_window_days'"
+        )
+    if history['established_min_age_hours'] > 24 * history['established_window_days']:
+        raise ValueError(
+            "destination_history['established_min_age_hours'] must be at most "
+            "24 times 'established_window_days'"
+        )
+    if history['established_min_clean_share_percent'] > 100:
+        raise ValueError(
+            "destination_history['established_min_clean_share_percent'] must be at most 100"
+        )
+    if history['max_standing_records'] < history['max_standing_destinations_per_identity']:
+        raise ValueError(
+            "destination_history['max_standing_records'] must be at least "
+            "'max_standing_destinations_per_identity'"
+        )
+    if history['established_window_days'] < history['established_min_distinct_days']:
+        raise ValueError(
+            "destination_history['established_window_days'] must be at least "
+            "'established_min_distinct_days'"
+        )
+    for key in ('rpc_provider_suffixes', 'browser_process_names', 'browser_process_name_prefixes',
+                'standing_refused_program_prefixes',
+                'registrable_domain_second_level_labels'):
+        if not history[key]:
+            raise ValueError(f"destination_history['{key}'] must be non-empty")
+        validate_lowercase_tokens(history[key], f"destination_history['{key}']")
+    # A second-level label is a DNS label: lowercase letters only.
+    for label in history['registrable_domain_second_level_labels']:
+        if not label.isascii() or not label.isalpha() or not label.islower():
+            raise ValueError(
+                "destination_history['registrable_domain_second_level_labels'] entries must be "
+                "lowercase ASCII letters"
+            )
+        if len(set(history[key])) != len(history[key]):
+            raise ValueError(f"destination_history['{key}'] has duplicates")
+    # Path prefixes under which a script runtime's argument names no single
+    # program: the POSIX shapes start with '/', the Windows shapes with '\\'.
+    # Each ends with a separator, so it names a directory or a namespace, not
+    # the start of a file name; none holds whitespace or repeats.
+    prefixes = history['standing_refused_program_prefixes']
+    for i, prefix in enumerate(prefixes):
+        if (len(prefix) < 2 or prefix[0] not in '/\\' or prefix[-1] not in '/\\'
+                or any(c.isspace() for c in prefix)):
+            raise ValueError(
+                f"destination_history['standing_refused_program_prefixes'][{i}] must start and "
+                f"end with a path separator and hold no whitespace; got '{prefix}'"
+            )
+    if len(set(prefixes)) != len(prefixes):
+        raise ValueError("destination_history['standing_refused_program_prefixes'] has duplicates")
+    for i, suffix in enumerate(history['rpc_provider_suffixes']):
+        if suffix.startswith('.') or suffix.endswith('.') or '.' not in suffix or '/' in suffix:
+            raise ValueError(
+                f"destination_history['rpc_provider_suffixes'][{i}] must be a domain without "
+                f"leading or trailing dots; got '{suffix}'"
+            )
     for label_key in ('sensitive_material_labels', 'agent_instruction_labels', 'adjudication_pinned_write_labels',
                       'own_store_generic_labels'):
         validate_lowercase_tokens(data[label_key], label_key)
@@ -2730,6 +3043,18 @@ def validate_agent_visibility_params(filename: str) -> None:
         # rather than a command, URL or path it acted on, and the remote
         # shells whose remote command runs on another host.
         'transcript_hints',
+        # Per agent type, where its transcript store lives under a home and
+        # what is published about it (2.3.3): the store roots per platform,
+        # the path segment and suffixes of a transcript file, the pid-file
+        # roots, the images that write the store besides the agent's own,
+        # and three measured facts, each published as a boolean.
+        'transcript_stores',
+        # The bounds of the reader that takes the shell calls of a transcript
+        # as it grows (2.3.3).
+        'transcript_capture',
+        # Per agent type, what on its harness's command line says print
+        # (non-interactive) mode: options and subcommands (2.3.3).
+        'print_mode_markers',
     }
 
     def validate_string_list(value, key_name: str) -> None:
@@ -3559,6 +3884,275 @@ def validate_agent_visibility_params(filename: str) -> None:
                 if endpoint not in hosts:
                     raise ValueError(f"{where}['provider_endpoints']: '{endpoint}' is not in llm_hosts")
 
+    def validate_transcript_stores(value, key_name: str) -> None:
+        # Per agent type (edamame_foundation::agent_transcripts collectors),
+        # its transcript store:
+        # - `roots`: the store's directories, relative to a home, on every
+        #   platform (`common`) and per platform;
+        # - `path_segment`: a directory name a transcript's path carries
+        #   below the root, or empty;
+        # - `excluded_segments`: directory names below the root whose files
+        #   are not transcripts (never the `path_segment` itself);
+        # - `subagent_segment`: the directory name whose files are a
+        #   subagent's transcripts, the main conversation's being the
+        #   directory above it, or empty;
+        # - `file_suffixes`: the endings of a transcript file;
+        # - `pid_file_roots` / `pid_file_suffixes`: the directories and
+        #   endings of the files that name a harness process;
+        # - `writer_images`: tool names of the images that write the store,
+        #   besides the agent's own process names (never a general-purpose
+        #   interpreter or shell: a tool child running it would read as the
+        #   agent);
+        # - `launcher_images`: images that start the store's harness and are
+        #   not the agent, each a lowercase tool name or a lowercase
+        #   '/'-separated path pattern where '*' stands for any characters;
+        # - `append_only`, `call_logged_before_spawn`: measured per agent,
+        #   each a boolean;
+        # - `finding_mode`: `off`, `shadow` or `alert`.
+        required_agents = {
+            'claude_code', 'claude_desktop', 'codex', 'cursor', 'hermes', 'openclaw',
+        }
+        entry_keys = {
+            'roots', 'path_segment', 'excluded_segments', 'subagent_segment', 'file_suffixes',
+            'pid_file_roots', 'pid_file_suffixes', 'writer_images', 'launcher_images',
+            'append_only', 'call_logged_before_spawn', 'finding_mode',
+        }
+        finding_modes = ('off', 'shadow', 'alert')
+        # Images that run anything: never one store's writer or launcher.
+        general_purpose_images = {
+            'bash', 'sh', 'zsh', 'dash', 'fish', 'ksh', 'csh', 'tcsh', 'pwsh', 'powershell', 'cmd',
+            'node', 'nodejs', 'deno', 'bun', 'python', 'python3', 'pythonw', 'ruby', 'perl', 'php',
+            'java', 'dotnet', 'osascript', 'env', 'sudo',
+        }
+        platform_keys = {'common', 'macos', 'linux', 'windows'}
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != required_agents:
+            missing = required_agents - set(value.keys())
+            extra = set(value.keys()) - required_agents
+            raise ValueError(f"{key_name} has missing agents {sorted(missing)} and unexpected agents {sorted(extra)}")
+
+        def validate_suffixes(suffixes, where: str) -> None:
+            validate_string_list(suffixes, where)
+            if len(set(suffixes)) != len(suffixes):
+                raise ValueError(f"{where} has duplicate entries")
+            for suffix in suffixes:
+                if (len(suffix) < 2 or not suffix.startswith('.') or suffix != suffix.lower()
+                        or '/' in suffix or '\\' in suffix
+                        or any(ch.isspace() for ch in suffix)):
+                    raise ValueError(f"{where}: '{suffix}' must be a lowercase file ending starting with '.'")
+
+        def validate_store_root(root, where: str) -> None:
+            # Joined onto a home: relative, '/'-separated, normalized (no
+            # empty, '.', '..' or '~' component, no leading or trailing
+            # separator, no drive, no whitespace at either end of a part).
+            if not isinstance(root, str) or not root:
+                raise ValueError(f"{where}: a root must be a non-empty string")
+            if (root.startswith('/') or root.endswith('/') or '\\' in root
+                    or (len(root) >= 2 and root[1] == ':')):
+                raise ValueError(f"{where}: '{root}' must be a relative '/'-separated path")
+            for part in root.split('/'):
+                if part in ('', '.', '..') or part.startswith('~') or part != part.strip():
+                    raise ValueError(f"{where}: '{root}' must be a normalized relative path")
+
+        def validate_directory_names(names, where: str) -> None:
+            validate_string_list(names, where)
+            if len(set(n.lower() for n in names)) != len(names):
+                raise ValueError(f"{where} has duplicate entries")
+            for name in names:
+                if (not name or '/' in name or '\\' in name or name in ('.', '..')
+                        or name != name.strip()):
+                    raise ValueError(f"{where}: '{name}' must be one directory name")
+
+        def nested(a: str, b: str) -> bool:
+            a, b = a.lower(), b.lower()
+            return a == b or a.startswith(b + '/') or b.startswith(a + '/')
+
+        owners = {}
+        for agent in sorted(value):
+            entry = value[agent]
+            where = f"{key_name}['{agent}']"
+            if not isinstance(entry, dict) or set(entry.keys()) != entry_keys:
+                raise ValueError(f"{where} must hold exactly {sorted(entry_keys)}")
+            roots = entry['roots']
+            if not isinstance(roots, dict) or set(roots.keys()) != platform_keys:
+                raise ValueError(f"{where}['roots'] must hold exactly {sorted(platform_keys)}")
+            for platform in sorted(platform_keys):
+                validate_string_list(roots[platform], f"{where}['roots']['{platform}']")
+                for root in roots[platform]:
+                    validate_store_root(root, f"{where}['roots']['{platform}']")
+            # A store is found on every desktop platform.
+            for platform in ('macos', 'linux', 'windows'):
+                if not roots['common'] and not roots[platform]:
+                    raise ValueError(f"{where}['roots'] names no root on {platform}")
+            segment = entry['path_segment']
+            if not isinstance(segment, str) or '/' in segment or '\\' in segment or segment in ('.', '..'):
+                raise ValueError(f"{where}['path_segment'] must be one directory name or empty")
+            validate_directory_names(entry['excluded_segments'], f"{where}['excluded_segments']")
+            excluded = {name.lower() for name in entry['excluded_segments']}
+            if segment and segment.lower() in excluded:
+                raise ValueError(
+                    f"{where}['excluded_segments'] names the path_segment '{segment}': no file would be a transcript")
+            subagent = entry['subagent_segment']
+            if (not isinstance(subagent, str) or '/' in subagent or '\\' in subagent
+                    or subagent in ('.', '..') or subagent != subagent.strip()):
+                raise ValueError(f"{where}['subagent_segment'] must be one directory name or empty")
+            if subagent and subagent.lower() in excluded:
+                raise ValueError(
+                    f"{where}['subagent_segment'] '{subagent}' is excluded: a subagent's file would be no transcript")
+            if subagent and segment and subagent.lower() == segment.lower():
+                raise ValueError(
+                    f"{where}['subagent_segment'] equals the path_segment '{segment}'")
+            validate_suffixes(entry['file_suffixes'], f"{where}['file_suffixes']")
+            if not entry['file_suffixes']:
+                raise ValueError(f"{where}['file_suffixes'] must be non-empty")
+            validate_string_list(entry['pid_file_roots'], f"{where}['pid_file_roots']")
+            for root in entry['pid_file_roots']:
+                validate_store_root(root, f"{where}['pid_file_roots']")
+            validate_suffixes(entry['pid_file_suffixes'], f"{where}['pid_file_suffixes']")
+            if bool(entry['pid_file_roots']) != bool(entry['pid_file_suffixes']):
+                raise ValueError(f"{where}: pid_file_roots and pid_file_suffixes are given together")
+            validate_string_list(entry['writer_images'], f"{where}['writer_images']")
+            for image in entry['writer_images']:
+                if (not image or image != image.lower() or image != image.strip()
+                        or '/' in image or '\\' in image):
+                    raise ValueError(f"{where}['writer_images']: '{image}' must be a lowercase tool name")
+                if image in general_purpose_images:
+                    raise ValueError(
+                        f"{where}['writer_images']: '{image}' is a general-purpose interpreter or shell")
+            launchers = entry['launcher_images']
+            validate_string_list(launchers, f"{where}['launcher_images']")
+            if len(set(launchers)) != len(launchers):
+                raise ValueError(f"{where}['launcher_images'] has duplicate entries")
+            for launcher in launchers:
+                if (not launcher or launcher != launcher.lower() or launcher != launcher.strip()
+                        or '\\' in launcher):
+                    raise ValueError(
+                        f"{where}['launcher_images']: '{launcher}' must be a lowercase tool name or '/'-separated pattern")
+                if '/' not in launcher and '*' in launcher:
+                    raise ValueError(
+                        f"{where}['launcher_images']: '{launcher}' is a tool name and takes no '*'")
+                if '/' in launcher and not launcher.replace('*', '').replace('/', ''):
+                    raise ValueError(f"{where}['launcher_images']: '{launcher}' matches every path")
+                if '/' not in launcher and (launcher in entry['writer_images'] or launcher in general_purpose_images):
+                    raise ValueError(
+                        f"{where}['launcher_images']: '{launcher}' is a writer image or a general-purpose interpreter")
+            for flag in ('append_only', 'call_logged_before_spawn'):
+                if not isinstance(entry[flag], bool):
+                    raise ValueError(f"{where}['{flag}'] must be a boolean")
+            mode = entry['finding_mode']
+            if not isinstance(mode, str) or mode not in finding_modes:
+                raise ValueError(f"{where}['finding_mode'] must be one of {list(finding_modes)}")
+            # A directory belongs to one agent and one use, and no root lies
+            # in another (of any agent, any use), whatever the letter case:
+            # the same file never belongs to two stores.
+            pid_roots = entry['pid_file_roots']
+            for i, pid_root in enumerate(pid_roots):
+                for other in pid_roots[i + 1:]:
+                    if nested(pid_root, other):
+                        raise ValueError(f"{where}['pid_file_roots']: '{pid_root}' and '{other}' overlap")
+            for platform in ('macos', 'linux', 'windows'):
+                listed = roots['common'] + roots[platform]
+                for i, root in enumerate(listed):
+                    for other in listed[i + 1:]:
+                        if nested(root, other):
+                            raise ValueError(
+                                f"{where}['roots']: '{root}' and '{other}' overlap on {platform}")
+                    for pid_root in pid_roots:
+                        if nested(root, pid_root):
+                            raise ValueError(
+                                f"{where}: '{pid_root}' is both a store root and a pid-file root")
+            every_root = [root for platform in sorted(platform_keys) for root in roots[platform]]
+            mine = every_root + pid_roots
+            for root in mine:
+                for other_agent, other_roots in owners.items():
+                    for other in other_roots:
+                        if nested(root, other):
+                            raise ValueError(
+                                f"{key_name}: '{root}' ({agent}) and '{other}' ({other_agent}) overlap")
+            owners[agent] = mine
+
+    def validate_print_mode_markers(value, key_name: str) -> None:
+        # Per agent type (a lower-case slug), the options (each starting with
+        # '-', no whitespace) and the subcommands (no '-' first, no
+        # whitespace) that say print mode on its command line. Both lists
+        # are present; either may be empty, not both: an agent with no
+        # marker to find would read every command line as measured without
+        # one, the answer that may narrow.
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be an object")
+        for agent, markers in value.items():
+            where = f"{key_name}.{agent}"
+            if not isinstance(agent, str) or agent != agent.strip().lower() or not agent:
+                raise ValueError(f"'{where}' must be a lower-case agent type")
+            if not isinstance(markers, dict) or set(markers) != {'flags', 'subcommands'}:
+                raise ValueError(f"'{where}' must hold exactly 'flags' and 'subcommands'")
+            for list_key in ('flags', 'subcommands'):
+                validate_string_list(markers[list_key], f"{where}.{list_key}")
+                for item in markers[list_key]:
+                    if not item or any(c.isspace() for c in item):
+                        raise ValueError(f"'{where}.{list_key}' holds an empty or spaced item")
+            for flag in markers['flags']:
+                if not flag.startswith('-') or flag in ('-', '--'):
+                    raise ValueError(f"'{where}.flags' item '{flag}' is not an option")
+            for sub in markers['subcommands']:
+                if sub.startswith('-'):
+                    raise ValueError(f"'{where}.subcommands' item '{sub}' is an option")
+            if not markers['flags'] and not markers['subcommands']:
+                raise ValueError(f"'{where}' must list at least one marker")
+            for list_key in ('flags', 'subcommands'):
+                if len(set(markers[list_key])) != len(markers[list_key]):
+                    raise ValueError(f"'{where}.{list_key}' must not repeat a marker")
+
+    def validate_transcript_capture(value, key_name: str) -> None:
+        # The bounds of the reader of a growing transcript: the longest line
+        # it parses, how much it reads in one pass, how far behind it may
+        # fall (bytes, seconds), how far a file's own creation time may
+        # differ from its recorded creation, how long after a line was read
+        # a report may still name the process that wrote it, and how long
+        # after the first report for a file the report of its creation is
+        # still taken as its creation (milliseconds; 0: never), and how many
+        # transcripts the reader holds at once, and how long a file whose
+        # creator the lineage does not hold yet is looked up again.
+        expected_keys = {
+            'max_line_bytes', 'max_pass_bytes', 'max_backlog_bytes',
+            'max_backlog_secs', 'creation_time_slack_ms', 'late_report_ms',
+            'creation_reorder_ms', 'max_files_held', 'creator_retry_ms',
+        }
+        # The largest sane value of each bound.
+        maxima = {
+            'max_line_bytes': 64 * 1024 * 1024,
+            'max_pass_bytes': 256 * 1024 * 1024,
+            'max_backlog_bytes': 4 * 1024 * 1024 * 1024,
+            'max_backlog_secs': 3600,
+            'creation_time_slack_ms': 60000,
+            'late_report_ms': 300000,
+            'max_files_held': 65536,
+            'creator_retry_ms': 600000,
+        }
+        # A report is delivered within seconds or not at all: a longer wait
+        # is a typing error.
+        max_creation_reorder_ms = 60000
+        if not isinstance(value, dict):
+            raise ValueError(f"'{key_name}' must be a dict")
+        if set(value.keys()) != expected_keys:
+            missing = expected_keys - set(value.keys())
+            extra = set(value.keys()) - expected_keys
+            raise ValueError(f"{key_name} has missing keys {missing} and unexpected keys {extra}")
+        for subkey in sorted(expected_keys - {'creation_reorder_ms'}):
+            sub = value[subkey]
+            if isinstance(sub, bool) or not isinstance(sub, int) or sub < 1:
+                raise ValueError(f"{key_name}['{subkey}'] must be a positive integer")
+            if sub > maxima[subkey]:
+                raise ValueError(f"{key_name}['{subkey}'] must be at most {maxima[subkey]}")
+        reorder = value['creation_reorder_ms']
+        if (isinstance(reorder, bool) or not isinstance(reorder, int)
+                or not 0 <= reorder <= max_creation_reorder_ms):
+            raise ValueError(
+                f"{key_name}['creation_reorder_ms'] must be an integer from 0 to {max_creation_reorder_ms}")
+        if not value['max_line_bytes'] <= value['max_pass_bytes'] <= value['max_backlog_bytes']:
+            raise ValueError(f"{key_name}: max_line_bytes <= max_pass_bytes <= max_backlog_bytes must hold")
+
     with open(filename, 'r', encoding='utf-8') as file:
         data = json.load(file)
 
@@ -3661,6 +4255,18 @@ def validate_agent_visibility_params(filename: str) -> None:
     validate_agent_llm_traffic(
         data['agent_llm_traffic'],
         'agent_llm_traffic',
+    )
+    validate_transcript_stores(
+        data['transcript_stores'],
+        'transcript_stores',
+    )
+    validate_transcript_capture(
+        data['transcript_capture'],
+        'transcript_capture',
+    )
+    validate_print_mode_markers(
+        data['print_mode_markers'],
+        'print_mode_markers',
     )
 
     print("Agent visibility params validation successful")
