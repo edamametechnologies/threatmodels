@@ -411,19 +411,12 @@ jobs:
           echo "  Alpine (x86_64): $ALPINE_X86_REPORT"
           echo "  Alpine (aarch64): $ALPINE_ARM_REPORT"
 
-      - name: slack-send
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          channel-id: 'C07127YECN4'
-          slack-message: |
-            GitHub threat models tests result on branch ${{ github.ref }}:
-            macOS (26): ${{ steps.assemble_reports.outputs.macos_26 }}
-            macOS (15): ${{ steps.assemble_reports.outputs.macos_15 }}
-            Windows: ${{ steps.assemble_reports.outputs.windows }}
-            Ubuntu (x86_64): ${{ steps.assemble_reports.outputs.ubuntu_x86 }}
-            Ubuntu (aarch64): ${{ steps.assemble_reports.outputs.ubuntu_arm }}
-            Alpine (x86_64): ${{ steps.assemble_reports.outputs.alpine_x86 }}
-            Alpine (aarch64): ${{ steps.assemble_reports.outputs.alpine_arm }}
-            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+  notify:
+    name: Slack alert
+    needs: [tests-native, tests-alpine, slack]
+    if: always() && github.event_name != 'pull_request'
+    uses: edamametechnologies/.github/.github/workflows/slack-notify.yml@main
+    with:
+      results: ${{ toJSON(needs) }}
+    secrets:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
