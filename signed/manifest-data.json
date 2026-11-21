@@ -2,7 +2,7 @@
   "branch": "main",
   "files": {
     "agent-visibility-params-db.json": "cb604556d8f4e0bf9f0c39fac342a7a6c06d4472e03cf6733f92616db650f572",
-    "blacklists-db.json": "fa50f8172684f42f78af71f596ac76a3dce04272185371ab829ee5cdd7c29310",
+    "blacklists-db.json": "a7f001ac16f532d8d958e13f807f149e14298aca6e192e91ed4815e63cc319e2",
     "consent/ai-failure-export-EN.md": "66cf2acfc68965d64f1f6a8f631788f21022cab4271c2b50f7c1b76a0f9c3b34",
     "consent/ai-failure-export-FR.md": "d7382688329fc2746a6736df6d07b86888fb552068767a75f2df7286fcd5ad77",
     "consent/compliance-scanner-EN.md": "083f9895932792f7f056ca8100ad119754f213b8cec0eaded1a39c955d2831dd",
@@ -42,7 +42,7 @@
     "whitelists-db.json": "307647c3013061df0b600b6468d749e81ed5224b45a349a5e2640096e8ccc22d"
   },
   "format": 1,
-  "issued_at": "2026-11-20T01:26:12Z",
+  "issued_at": "2026-11-21T01:27:02Z",
   "scope": "data",
-  "sequence": 1795137972
+  "sequence": 1795224422
 }
